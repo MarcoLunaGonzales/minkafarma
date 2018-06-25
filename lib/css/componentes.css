@@ -1,0 +1,172 @@
+/* 
+    Document   : textos
+    Created on : 14-12-2010, 04:38:26 PM
+    Author     : rruz
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+#split01 {
+}
+
+#split01pnlizq {
+	overflow: auto;
+    border-left: 2px solid #b4dbf5;
+    border-bottom: 2px solid #b4dbf5;
+    border-top: 2px solid #b4dbf5;
+    /*background-color: #999900;*/
+}
+
+#split01pnlder {
+	overflow: auto;
+    border-right: 2px solid #b4dbf5;
+    border-bottom: 2px solid #b4dbf5;
+    border-top: 2px solid #b4dbf5;
+}
+
+#split01 .vsplitbar {
+	width: 5px;
+	background: #87c9f3 url(../imagenes/split.png) no-repeat center;
+}
+
+#split01 .vsplitbar.active {
+	background: #5eb5ee url(../imagenes/split.png) no-repeat center;
+}
+
+/* nodo de arbol */
+
+.arbnodo {
+    color: #4c79aa;
+    white-space: nowrap;
+    text-decoration: none;
+    background-color: #f7fbfe;
+    border: 1px solid #f1faff;
+}
+
+.arbnodohover {
+    color: #154d8a;
+    text-decoration: none;
+    background-color: #e3f1fa;
+    border: 1px solid #aed0ea;
+}
+
+/* boton enlace compacto */
+
+.menenlace {
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 12px;
+    color: #4c79aa;
+    text-align: center;
+    text-decoration: none;
+    background-color: #e3f1fa;
+    border: 1px solid #aed0ea;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.menenlace:hover {
+    color: #3370a3;
+    background-color: #fff1a0;
+    border: 1px solid #f9dd34;
+}
+
+.menenlace:active {
+    color: #2e71b4;
+    background-color: #e2f3ff;
+    border: 1px solid #91c0e4;
+}
+
+/* texto enlace compacto */
+
+.txtenlace {
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 12px;
+    color: #4c79aa;
+    text-align: center;
+    text-decoration: none;
+}
+
+.txtenlace img {
+    border: none;
+}
+
+.txtenlace:hover {
+    color: #3370a3;
+    background-color: #eef6fc;
+    border-right-color: #74b2e2;
+    border-left-color: #74b2e2;
+    border-bottom-color: #74b2e2;
+    border-top-color: #74b2e2;
+}
+
+.txtenlace:active {
+    color: #2e71b4;
+    background-color: #e2f3ff;
+}
+
+/* componentes */
+
+.txtlabel {
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 11px;
+    text-align: left;
+}
+
+.txtlnkizq {
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 12px;
+    color: #387dc2;
+    text-align: left;
+    padding-left: 10px;
+}
+
+.txtlnkcen {
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 12px;
+    color: #387dc2;
+    text-align: center;
+    text-decoration: none;
+}
+
+.txtlnkder {
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 12px;
+    color: #387dc2;
+    text-align: right;
+    padding-right: 10px;
+}
+
+a img {border: none;}
+
+.txtfield {
+    border: 1px solid #d8eaff;
+    color: #1f71c3;
+}
+
+.txtfieldseleccionable {
+    background-color: #fcfcf1;
+    border: 1px solid #3399ff;
+}
+
+.txtfieldmodificado {
+    background-color: #fee4f0;
+    border: 1px solid #ff99cc;
+}
+
+/* otros */
+
+.cmpppppppppppppp {
+    background-color: #ff3333;
+}
+
+
+
+
+

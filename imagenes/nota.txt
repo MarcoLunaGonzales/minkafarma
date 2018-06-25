@@ -1,0 +1,17 @@
+LOs números que tienes que introducir para el mixto es
+a=81, c=89, m=100,Xo=5
+a=65, c=421, m=1000,Xo=7
+a=25, c=221, m=100,Xo=11
+
+
+
+LOs números que tienes que introducir para el Multi  con    c=0
+
+a=203, m= 10E5,Xo=17
+a=211, m= 10E8,Xo=19
+
+lo guardas en un archivo con 100 corridas
+
+
+Nota: Que viva el Tigre Cara...!
+

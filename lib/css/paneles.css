@@ -1,0 +1,105 @@
+/* 
+    Document   : paneles
+    Created on : 30-11-2010, 11:39:49 AM
+    Author     : Administrador
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+/* Pnls: mensages */
+
+.pnlerror {
+    background-color: #FFFE36;
+    border: 1px solid red;
+    font-size: 12px;
+    font-family: Arial,Helvetica,sans-serif;
+    color: red;
+    padding: 3px 10px;
+    margin-left: -2px;
+}
+
+.pnlalertar {
+    position: relative;
+    left: 5px;
+    background-color: #fff0f7;
+    border: 1px solid #ff99cc;
+    font-size: 12px;
+    color: #ff00cc;
+    padding: 3px 10px;
+    margin-left: -2px;
+    font-family: Arial,Helvetica,sans-serif;
+    text-align: left;
+    vertical-align: top;
+}
+
+.pnlenespera {
+    background-color: #d8eaff;
+    border: 1px solid #a1c2eb;
+    font-size: 12px;
+    color: #1f71c3;
+    font-family: Arial,Helvetica,sans-serif;
+    padding-left: 2px;
+    padding-top: 2px;
+    padding-right: 2px;
+    padding-bottom: 2px;
+}
+.pnlenesperabloque {
+    position: relative;
+    left: 5px;
+    top: 5px;
+    width: 100px;
+    background-color: #d8eaff;
+    border: 1px solid #a1c2eb;
+    font-size: 12px;
+    color: #1f71c3;
+    padding: 3px 10px;
+    margin-left: -2px;
+    font-family: Arial,Helvetica,sans-serif;
+    text-align: left;
+    vertical-align: top;
+}
+
+.pnlconfirmar {
+    background-color: #f9f9e1;
+    color: #117d3b;
+    border: 1px solid #FFFE36;
+    padding: 3px 10px;
+    margin-left: -2px;
+}
+
+.pnlinformar {
+    background-color: #cbe9cf;
+    color: #117d3b;
+    border: 1px solid #b0ddb6;
+    padding: 3px 10px;
+    margin-left: -2px;
+}
+
+/* Pnls: componentes */
+
+.pnlinformarapoyo {
+    background-color: #efeff0;
+    border: 1px solid #cccccc;
+    color: #828181;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+.pnldlgsombra {
+    background: url(../imagenes/ui-bg01-1x100.png) repeat-x;
+    padding-left: 3px;
+    padding-top: 3px;
+    padding-right: 3px;
+    padding-bottom: 3px;
+}
+
+/* Pnls: dinamicos o temporales */
+
+.pnlppppppppppppp {
+    background-color: #ff3333;
+}

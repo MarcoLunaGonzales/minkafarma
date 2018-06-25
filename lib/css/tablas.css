@@ -1,0 +1,196 @@
+/* 
+    Document   : textos
+    Created on : 14-12-2010, 04:38:26 PM
+    Author     : rruz
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+table {
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 12px;
+}
+
+/* tabla detalle */
+
+.tbldetalle {
+    border: 1px solid #a1c2eb;
+    color: #2f68ab;
+}
+
+.tbldetalle caption {
+    color: #245791;
+    font-weight: bold;
+    background: #deedf7 url(../imagenes/ui-bg01-1x50.png) 50% 50% repeat-x;
+}
+
+.tbldetalle th {
+    color: #245791;
+    font-weight: bold;
+    background: #deedf7 url(../imagenes/ui-bg01-1x50.png) 50% 50% repeat-x;
+    padding-left: 5px;
+    padding-right: 5px;
+    border-left-style: solid;
+    border-left-width: 1px;
+    border-left-color: #c5e3f7;
+}
+
+.tbldetalle td {
+    padding-left: 3px;
+    padding-right: 3px;
+    border-left-style: solid;
+    border-left-width: 1px;
+    border-left-color: #e4edf5;
+}
+
+.tblfilaimpar {
+    background-color: #f1f6fa;
+    border: 1px solid #a1c2eb;
+}
+
+.tblfilapar {
+    background-color: #e0eef6;
+    border: 1px solid #a1c2eb;
+}
+
+.tbldetallefilahover {
+    background-color: #c9e1ee;
+}
+
+/* tabla detalle 1 */
+
+.tbldetalle1 {
+    border: 1px solid #a1c2eb;
+    color: #2f68ab;
+}
+
+.tbldetalle1 caption {
+    color: #245791;
+    font-weight: bold;
+    background: #deedf7 url(../imagenes/ui-bg01-1x50.png) 50% 50% repeat-x;
+}
+
+.tbldetalle1 th {
+    color: #245791;
+    font-weight: bold;
+    background: #deedf7 url(../imagenes/ui-bg01-1x50.png) 50% 50% repeat-x;
+    padding-left: 5px;
+    padding-right: 5px;
+    border-left-style: solid;
+    border-left-width: 1px;
+    border-left-color: #c5e3f7;
+}
+
+.tbldetalle1 td {
+    color: #245791;
+    border-top-style: solid;
+    border-top-width: 1px;
+    border-top-color: #deedf7;
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
+.tbldetalle1 tr:hover {
+    background-color: #c9e1ee;
+}
+
+/* tabla apoyo */
+
+.tblapoyo {
+    border: 1px solid #cccccc;
+    color: #7c95b3;
+}
+
+.tblapoyo caption {
+    color: #92a1b3;
+    font-weight: bold;
+    background: #deedf7 url(../imagenes/ui-bg02-1x50.png) 50% 50% repeat-x;
+}
+
+.tblapoyo th {
+    color: #8695a7;
+    font-weight: bold;
+    background: #deedf7 url(../imagenes/ui-bg02-1x50.png) 50% 50% repeat-x;
+    padding-left: 5px;
+    padding-right: 5px;
+    border-left-style: solid;
+    border-left-width: 1px;
+    border-left-color: #dde8f1;
+}
+
+.tblapoyo td {
+    padding-left: 3px;
+    padding-right: 3px;
+    border-left-style: solid;
+    border-left-width: 1px;
+    border-left-color: #ecf1f5;
+}
+
+.tblfilaapoyoimpar {
+    background-color: #f1f4f7;
+    border: 1px solid #cccccc;
+}
+
+.tblfilaapoyopar {
+    background-color: #e9eef3;
+    border: 1px solid #cccccc;
+}
+
+
+/* tabla encabezado */
+
+.tblencabezado {
+    border: 1px solid #a1c2eb;
+    color: #2f68ab;
+    font-size: 12px;
+}
+
+.tblencabezado th {
+    background: #deedf7 url(../imagenes/ui-bg01-1x50.png) 50% 50% repeat-x;
+}
+
+.tblencabezado td {
+    background: #deedf7 url(../imagenes/ui-bg01-1x50.png) 50% 50% repeat-x;
+}
+
+.tblencabezado td b {
+    font-size: 12px;
+}
+
+.tblencabezado td a {
+    font-size: 11px;
+    color: #2f68ab;
+}
+
+/* tabla descripcion */
+
+.tbldescripcion {
+    color: #387dc2;
+    font-size: 12px;
+}
+
+.tbldescripcion th {
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+}
+
+/* tabla */
+
+.tblvacio {
+    color: #387dc2;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* tabla */
+
+.tblppppppppppppp {
+    background-color: #ff3333;
+}
+
+

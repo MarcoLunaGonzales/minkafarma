@@ -1,0 +1,79 @@
+h2.acc_trigger {
+	padding: 0;	margin: 0 0 5px 0;
+	background: url(../imagenes/h2_trigger_a.gif) no-repeat;
+	height: 46px;	line-height: 46px;
+	width: 100%;
+	font-size: 1.5em;
+	font-weight: normal;
+	float: left;
+	text-align: left !important
+}
+h2.acc_trigger a {
+	color: #fff;
+	text-decoration: none;
+	display: block;
+	padding: 0 0 0 50px;
+}
+h2.acc_trigger a:hover {
+	color: #ccc;
+}
+h2.active {background-position: left bottom;}
+.acc_container .var h3 {
+	text-align: left !important;
+	cursor: pointer;
+	-webkit-transition: padding 1s;
+	transition : padding 1s;
+}
+.acc_container .selected h3, .acc_container .var h3:hover {
+	background: #7ccfee;
+	padding-left: 10px ;
+	-webkit-transition: padding 1s;
+	transition : padding 1s;
+}
+.acc_container {
+	margin: 0 0 5px; padding: 0;
+	overflow: hidden;
+	font-size: 1.2em;
+	width: 95.2%;
+	clear: both;
+	background: #f0f0f0;
+	border: 1px solid #d6d6d6;
+	-webkit-border-bottom-right-radius: 5px;
+	-webkit-border-bottom-left-radius: 5px;
+	-moz-border-radius-bottomright: 5px;
+	-moz-border-radius-bottomleft: 5px;
+	border-bottom-right-radius: 5px;
+	border-bottom-left-radius: 5px; 
+}
+.acc_container .block {
+	padding: 20px;
+}
+.acc_container .block p {
+	padding: 5px 0;
+	margin: 5px 0;
+}
+.acc_container h3 {
+	font: 1.3em normal Georgia, "Times New Roman", Times, serif;
+	margin: 0 0 10px;
+	padding: 0 0 5px 0;
+	border-bottom: 1px dashed #ccc;
+}
+.espe {
+	display:block; 
+	float: left;
+	margin:7px 10px; 
+	padding:0 7px;
+	height:40px; 
+	line-height:40px;  
+	background:#eee;  
+	border: 1px dashed #999;
+	color:#000;  
+	position: relative;             
+}
+.espe img.eliminar_espe {
+	cursor: pointer;
+	margin-left: 10px;
+	position: absolute;
+	top: -7px;
+	left: -20px
+}

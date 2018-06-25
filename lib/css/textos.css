@@ -1,0 +1,63 @@
+/* 
+    Document   : textos
+    Created on : 14-12-2010, 04:38:26 PM
+    Author     : rruz
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+body {
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 12px;
+    color: #387dc2;
+}
+
+/* titulos */
+
+.txttitulo1 {
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 18px;
+    color: #387dc2;
+}
+
+.txttitulo2 {
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 16px;
+    color: #387dc2;
+}
+
+.txttitulo3 {
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 14px;
+    color: #387dc2;
+}
+
+/* textos */
+
+.txtnormal {
+    color: #387dc2;
+}
+
+.txtpeque {
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 11px;
+}
+
+.txtapoyo {
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 12px;
+    color: #7c95b3;
+}
+
+/* NUEVOS ELEMENTOS */
+
+.txtppppppppppppp {
+    background-color: #ff3333;
+}
+
+
