@@ -17,7 +17,7 @@ $fecha_rptdefault=date("d/m/Y");
 echo "<table align='center' class='textotit'><tr><th>Reporte Ventas x Vendedor</th></tr></table><br>";
 echo"<form method='post' action=''>";
 
-	echo"\n<table class='texto' border='1' align='center' cellSpacing='0' width='50%'>\n";
+	echo"\n<table class='texto' align='center' cellSpacing='0' width='50%'>\n";
 	echo "<tr><th align='left'>Territorio</th><td><select name='rpt_territorio' class='texto'>";
 	$sql="select cod_ciudad, descripcion from ciudades order by descripcion";
 	$resp=mysql_query($sql);

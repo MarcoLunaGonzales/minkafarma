@@ -16,7 +16,8 @@ if($tipo_ingreso!="")
 else
 {	$nombre_tipoingresomostrar="Todos los tipos de Ingreso";
 }
-	echo "<table align='center' class='textotit'><tr><td align='center'>Reporte Ingresos Almacen<br>$nombre_tipoingresomostrar Fecha inicio: <strong>$fecha_ini</strong> Fecha final: <strong>$fecha_fin</strong><br>$txt_reporte</th></tr></table>";
+	echo "<h1>Reporte Ingresos Almacen</h1>
+	<h1>$nombre_tipoingresomostrar Fecha inicio: <strong>$fecha_ini</strong> Fecha final: <strong>$fecha_fin</strong><br>$txt_reporte</h1>";
 
 	//desde esta parte viene el reporte en si
 	$fecha_iniconsulta=cambia_formatofecha($fecha_ini);
@@ -30,7 +31,7 @@ else
 		where i.cod_tipoingreso=ti.cod_tipoingreso and i.cod_almacen='$rpt_almacen' and i.fecha>='$fecha_iniconsulta' and i.fecha<='$fecha_finconsulta' order by i.nro_correlativo";
 	}
 	$resp=mysql_query($sql);
-	echo "<center><br><table border='1' class='texto' cellspacing='0' width='100%'>";
+	echo "<center><br><table class='texto' width='100%'>";
 	echo "<tr class='textomini'><th>Nro.</th><th>Nota de Entrega</th><th>Fecha</th><th>Tipo de Ingreso</th><th>Observaciones</th><th>Estado</th><th>&nbsp;</th></tr>";
 	while($dat=mysql_fetch_array($resp))
 	{

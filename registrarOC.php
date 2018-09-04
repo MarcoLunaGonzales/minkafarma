@@ -40,11 +40,10 @@ function ajaxNroSalida(){
 function listaMateriales(f){
 	var contenedor;
 	var codTipo=f.itemTipoMaterial.value;
-	var codItem=f.itemCodMaterial.value;
 	var nombreItem=f.itemNombreMaterial.value;
 	contenedor = document.getElementById('divListaMateriales');
 	ajax=nuevoAjax();
-	ajax.open("GET", "ajaxListaMateriales.php?codTipo="+codTipo+"&codItem="+codItem+"&nombreItem="+nombreItem,true);
+	ajax.open("GET", "ajaxListaMateriales.php?codTipo="+codTipo+"&nombreItem="+nombreItem,true);
 	ajax.onreadystatechange=function() {
 		if (ajax.readyState==4) {
 			contenedor.innerHTML = ajax.responseText;
@@ -147,9 +146,9 @@ function fun13(cadIdOrg,cadIdDes)
 	}
 
 function validar(f)
-{   f.cantidad_material.value=num;
-	var cantidadItems=num;
-	
+{   var cantidadItems=num;
+	f.cantidad_material.value=num;
+	//alert(num);
 	if(cantidadItems>0){
 		var nroFactura=document.getElementById("nro_factura").value;
 		var item="";
@@ -175,16 +174,12 @@ function validar(f)
 				alert("La cantidad no puede ser 0 ni vacia. Fila "+i);
 				return(false);
 			}
-			/*if(precioBruto==0){
-				alert("El precio no puede ser 0 ni vacio. Fila "+i);
-				return(false);
-			}*/
+
 			totales();
-			f.submit();
-		}
-		
+			return(true);
+		}		
 	}else{
-		alert("El ingreso debe tener al menos 1 item.");
+		alert("La OC debe tener al menos 1 item.");
 		return(false);
 	}
 	
@@ -281,11 +276,13 @@ echo "</table><br>";
 					</td>				
 				</tr>				
 				<tr class="titulo_tabla" align="center">
-					<td width="60%">Material</td>
-					<td width="8%">Cantidad</td>
-					<td width="8%">Precio </td>
-					<td width="8%">Precio Total</td>
-					<td width="8%">&nbsp;</td>
+					<td width="40%" align="center">Producto</td>
+					<td width="10%" align="center">Cantidad</td>
+					<td width="10%" align="center">Lote</td>
+					<td width="10%" align="center">Vencimiento</td>
+					<td width="10%" align="center">Precio </td>
+					<td width="10%" align="center">Precio Neto</td>
+					<td width="10%" align="center">&nbsp;</td>
 				</tr>
 				
 
@@ -307,10 +304,11 @@ echo "</table><br>";
 
 <?php
 
-echo "<table align='center'><tr><td><a href='navegador_ordenCompra.php'><img  border='0'src='imagenes/volver.gif' width='15' height='8'>Volver Atras</a></td></tr></table>";
-echo "<center><input type='button' class='boton' value='Guardar' onClick='validar(this.form)'></center>";
+echo "<div class='divBotones'>
+<input type='submit' class='boton' value='Guardar' onClick='return validar(this.form);'>
+<input type='button' class='boton2' value='Cancelar' onClick='location.href=\"navegador_ordenCompra.php\"'>
+</div>";
 echo "</div>";
-echo "<script type='text/javascript' language='javascript'  src='dlcalendar.js'></script>";
 
 ?>
 
@@ -321,12 +319,13 @@ echo "<script type='text/javascript' language='javascript'  src='dlcalendar.js'>
 
 <div id="divProfileData" style="background-color:#FFF; width:750px; height:350px; position:absolute; top:50px; left:170px; -webkit-border-radius: 20px; 	-moz-border-radius: 20px; visibility: hidden; z-index:2;">
   	<div id="divProfileDetail" style="visibility:hidden; text-align:center">
-		<table align='center'>
-			<tr><th>Tipo Material</th><th>Cod. Int.</th><th>Material</th><th>&nbsp;</th></tr>
+		<table align='center' class="texto">
+			<tr><th>Linea</th><th>Material</th><th>&nbsp;</th></tr>
 			<tr>
 			<td><select name='itemTipoMaterial' id="itemTipoMaterial">
 			<?php
-			$sqlTipo="select t.`cod_tipomaterial`, t.`nombre_tipomaterial` from `tipos_material` t order by t.`nombre_tipomaterial`";
+			$sqlTipo="select pl.cod_linea_proveedor, CONCAT(p.nombre_proveedor,' - ',pl.nombre_linea_proveedor) from proveedores p, proveedores_lineas pl 
+			where p.cod_proveedor=pl.cod_proveedor and pl.estado=1 order by 2;";
 			$respTipo=mysql_query($sqlTipo);
 			echo "<option value='0'>--</option>";
 			while($datTipo=mysql_fetch_array($respTipo)){
@@ -336,9 +335,6 @@ echo "<script type='text/javascript' language='javascript'  src='dlcalendar.js'>
 			}
 			?>
 			</select>
-			</td>
-			<td>
-				<input type='text' name='itemCodMaterial' id="itemCodMaterial">
 			</td>
 			<td>
 				<input type='text' name='itemNombreMaterial' id="itemNombreMaterial">

@@ -20,8 +20,9 @@ echo "<script language='Javascript'>
 require("conexion.inc");
 require("estilos.inc");
 echo "<form action='' method='post'>";
-echo "<center><table border='0' class='textotit'><tr><td>Adicionar Almacen</td></tr></table></center><br>";
-echo "<center><table border='1' class='texto' cellspacing='0'>";
+echo "<h1>Adicionar Almacen</h1>";
+
+echo "<center><table class='texto'>";
 echo "<tr><th>Nombre Almacen</th><th>Territorio</th><th>Responsable</th></tr>";
 echo "<tr><td align='center'><input type='text' class='texto' value='$nombre_almacen' name='nombre_almacen' size='40' onKeyUp='javascript:this.value=this.value.toUpperCase();'></td>";
 $sql1="select * from ciudades order by descripcion";
@@ -52,8 +53,11 @@ while($dat2=mysql_fetch_array($resp2))
 	}
 }
 echo "</select></td>";
-echo "</table><br>";
-echo"\n<table align='center'><tr><td><a href='navegador_almacenes.php'><img  border='0'src='imagenes/volver.gif' width='15' height='8'>Volver Atras</a></td></tr></table>";
-echo "<input type='button' class='boton' value='Guardar' onClick='validar(this.form)'></center>";
+echo "</table></center>";
+
+echo "<div class='divBotones'><input type='button' class='boton' value='Guardar' onClick='validar(this.form)'>
+<input type='button' class='boton2' value='Cancelar' onClick='javascript:location.href=\"navegador_almacenes.php\"'>
+</div>";
+
 echo "</form>";
 ?>

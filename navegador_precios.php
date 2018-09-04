@@ -117,12 +117,18 @@ function enviar(f){
 	require("estilos.inc");
 	require("funciones.php");
 
+	$globalAlmacen=$_COOKIE['global_almacen'];
+	
 	echo "<form method='POST' action='guardarPrecios.php' name='form1'>";
-	$sql="select codigo_material, descripcion_material, t.`nombre_tipomaterial` from material_apoyo ma, `tipos_material` t
-			where ma.`cod_tipo_material`=t.`cod_tipomaterial` order by 3,2";
+	
+	$sql="select codigo_material, descripcion_material, p.nombre_linea_proveedor 
+		from material_apoyo ma, proveedores_lineas p 
+		where ma.cod_linea_proveedor=p.cod_linea_proveedor order by 3,2";
 
+	//echo $sql;
+	
 	$resp=mysql_query($sql);
-	echo "<h1>Registro de Precios</h1>";
+	echo "<h1>Registro y Edición de Precios</h1>";
 	
 	echo "<center><table class='texto' id='main'>";
 
@@ -134,6 +140,7 @@ function enviar(f){
 	<a href='javascript:modifPrecioC()'><img src='imagenes/edit.png' width='30' alt='Editar'></a></th>
 	<th>Precio Factura<input type='text' size='2' name='valorPrecioF' id='valorPrecioF' value='0'>
 	<a href='javascript:modifPrecioF()'><img src='imagenes/edit.png' width='30' alt='Editar'></th>
+	<th>-</th>
 	</tr>";
 	$indice=1;
 	while($dat=mysql_fetch_array($resp))
@@ -186,9 +193,33 @@ function enviar(f){
 			$precio4=0;
 			$precio4=redondear2($precio4);
 		}
+		//sql ultimo precio compra
+		$sqlUltimaCompra="select id.precio_neto from ingreso_almacenes i, ingreso_detalle_almacenes id
+			where id.cod_ingreso_almacen=i.cod_ingreso_almacen and i.ingreso_anulado=0 and 
+		i.cod_almacen='$globalAlmacen' and id.cod_material='$codigo' order by i.fecha desc limit 0,1";
+		$respUltimaCompra=mysql_query($sqlUltimaCompra);
+		$numFilasUltimaCompra=mysql_num_rows($respUltimaCompra);
+		$precioBase=0;
+		if($numFilasUltimaCompra>0){
+			$precioBase=mysql_result($respUltimaCompra,0,0);
+		}
+		$precioBase=redondear2($precioBase);
 		
+		$sqlMargen="select p.margen_precio from material_apoyo m, proveedores_lineas p
+			where m.cod_linea_proveedor=p.cod_linea_proveedor and m.codigo_material='$codigo'";
+		$respMargen=mysql_query($sqlMargen);
+		$numFilasMargen=mysql_num_rows($respMargen);
+		$porcentajeMargen=0;
+
+		if($numFilasMargen>0){
+			$porcentajeMargen=mysql_result($respMargen,0,0);			
+		}
+		
+		$precioConMargen=$precioBase+($precioBase*($porcentajeMargen/100));
+		
+		//
 		echo "<tr><td>$nombreMaterial <a href='javascript:modifPreciosAjax($indice)'>
-		<img src='imagenes/save3.png' alt='Guardar' width='30'></a></td>";
+		<img src='imagenes/save3.png' alt='Guardar' width='30'></a>  (Ultima compra: $precioBase  --  Precio+Margen: $precioConMargen)</td>";
 		echo "<input type='hidden' name='item_$indice' id='item_$indice' value='$codigo'>";
 		echo "<td align='center'><input type='text' size='5' value='$precio1' id='precio1_$indice' name='$codigo|1'></td>";
 		echo "<td align='center'><input type='text' size='5' value='$precio2' id='precio2_$indice' name='$codigo|2'></td>";
@@ -202,8 +233,8 @@ function enviar(f){
 	}
 	echo "</table></center>";
 
-	echo "<div class='divBotones'>
+	/*echo "<div class='divBotones'>
 	<input type='button' value='Guardar Todo' name='adicionar' class='boton' onclick='enviar(form1)'>
-	</div>";
+	</div>";*/
 	echo "</form>";
 ?>

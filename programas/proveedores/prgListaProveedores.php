@@ -5,10 +5,10 @@ require("../../estilos_almacenes.inc");
 
 echo "<center>";
 
-echo "<h1>Proveedores</h1>";
+echo "<h1>Distribuidores</h1>";
 echo "<table class='texto'>";
 echo "<tr>";
-echo "<th>&nbsp;</th><th>Proveedor</th><th>Direccion</th><th>Telefono 1</th><th>Telefono 2</th><th>Contacto</th>";
+echo "<th>&nbsp;</th><th>Nombre</th><th>Direccion</th><th>Telefono 1</th><th>Telefono 2</th><th>Contacto</th><th>Lineas</th>";
 echo "</tr>";
 $consulta="
     SELECT p.cod_proveedor, p.nombre_proveedor, p.direccion, p.telefono1, p.telefono2, p.contacto
@@ -26,8 +26,10 @@ while($reg=mysql_fetch_array($rs))
     $telefono2 = $reg["telefono2"];
     $contacto  = $reg["contacto"];
     echo "<tr>";
-    echo "<td><input type='checkbox' id='idchk$cont' value='$codProv' ></td><td>$nomProv</td><td>$direccion</td><td>$telefono1</td><td>$telefono2</td><td>$contacto</td>";
-    echo "</tr>";
+    echo "<td><input type='checkbox' id='idchk$cont' value='$codProv' ></td><td>$nomProv</td><td>$direccion</td><td>$telefono1</td>
+	<td>$telefono2</td><td>$contacto</td>";
+    echo "<td><a href='navegadorLineasDistribuidores.php?codProveedor=$codProv'><img src='../../imagenes/detalle.png' width='40' title='Ver Lineas'></a></td>";
+	echo "</tr>";
    }
 echo "</table>";
 echo "<input type='hidden' id='idtotal' value='$cont' >";

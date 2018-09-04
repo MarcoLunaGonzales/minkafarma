@@ -192,7 +192,9 @@ while ($dat = mysql_fetch_array($resp)) {
 	<td align='center'>$fecha_ingreso_mostrar $hora_ingreso</td><td>$nombre_tipoingreso</td>
 	<td>&nbsp;$proveedor</td>
 	<td>&nbsp;$obs_ingreso</td><td align='center'>
-	<a target='_BLANK' href='navegador_detalleingresomateriales.php?codigo_ingreso=$codigo'><img src='imagenes/detalles.png' border='0' alt='Ver Detalles del Ingreso'></a></td></tr>";
+	<a target='_BLANK' href='navegador_detalleingresomateriales.php?codigo_ingreso=$codigo'>
+	<img src='imagenes/detalles.png' border='0' title='Ver Detalles del Ingreso' width='40'></a>
+	</td></tr>";
 }
 echo "</table></center><br>";
 echo "</div>";

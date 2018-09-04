@@ -11,8 +11,8 @@ $provBusqueda=$_GET['provBusqueda'];
 $fechaIniBusqueda=formateaFechaVista($fechaIniBusqueda);
 $fechaFinBusqueda=formateaFechaVista($fechaFinBusqueda);
 
-echo "<center><table border='1' class='texto' cellspacing='0' width='100%'>";
-echo "<tr><th>&nbsp;</th><th>Numero Ingreso</th><th>Nota de Ingreso</th><th>Fecha</th><th>Tipo de Ingreso</th>
+echo "<center><table class='texto' width='100%'>";
+echo "<tr><th>&nbsp;</th><th>Nro. Ingreso</th><th>Nota de Ingreso</th><th>Fecha</th><th>Tipo de Ingreso</th>
 <th>Proveedor</th>
 <th>Observaciones</th><th>&nbsp;</th></tr>";
 	
@@ -71,7 +71,8 @@ while ($dat = mysql_fetch_array($resp)) {
 	<td align='center'>$fecha_ingreso_mostrar $hora_ingreso</td><td>$nombre_tipoingreso</td>
 	<td>&nbsp;$proveedor</td>
 	<td>&nbsp;$obs_ingreso</td><td align='center'>
-	<a target='_BLANK' href='navegador_detalleingresomateriales.php?codigo_ingreso=$codigo'><img src='imagenes/detalles.png' border='0' alt='Ver Detalles del Ingreso'></a></td></tr>";
+	<a target='_BLANK' href='navegador_detalleingresomateriales.php?codigo_ingreso=$codigo'>
+	<img src='imagenes/detalles.png' border='0' title='Ver Detalles del Ingreso' width='40'></a></td></tr>";
 }
 
 echo "</table></center><br>";

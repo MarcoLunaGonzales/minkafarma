@@ -24,7 +24,7 @@ include("datosUsuario.php");
 <div id="page">
 	<div class="header">
 		<a href="#menu"><span></span></a>
-		Minka AV
+		Minka Farmacia
 		<div style="position:absolute; width:95%; height:50px; text-align:right; top:0px; font-size: 9px; font-weight: bold; color: #fff;">
 			[<? echo $fechaSistemaSesion?>][<? echo $horaSistemaSesion;?>]			
 		<div>
@@ -43,17 +43,16 @@ include("datosUsuario.php");
 		<ul>
 			<li><span>Datos Generales</span>
 				<ul>
+					<li><a href="programas/proveedores/inicioProveedores.php" target="contenedorPrincipal">Distribuidores</a></li>
+					<li><a href="navegador_material.php" target="contenedorPrincipal">Productos</a></li>
 					<li><a href="navegador_funcionarios1.php" target="contenedorPrincipal">Funcionarios</a></li>
 					<li><a href="programas/clientes/inicioClientes.php" target="contenedorPrincipal">Clientes</a></li>
-					<li><a href="programas/proveedores/inicioProveedores.php" target="contenedorPrincipal">Proveedores</a></li>
-					<li><a href="navegador_vehiculos.php" target="contenedorPrincipal">Vehiculos</a></li>
+					<!--li><a href="navegador_vehiculos.php" target="contenedorPrincipal">Vehiculos</a></li-->
 				</ul>	
 			</li>
-			<li><span>Materiales y Gestion de Almacenes</span>
+			<li><span>Materiales, Gestion de Almacenes y Precios</span>
 				<ul>
 					<li><a href="navegador_almacenes.php" target="contenedorPrincipal">Almacenes</a></li>
-					<li><a href="navegador_material.php" target="contenedorPrincipal">Materiales</a></li>
-					<li><a href="navegador_tiposmaterial.php" target="contenedorPrincipal">Tipos de Materiales</a></li>
 					<li><a href="navegador_tiposingreso.php" target="contenedorPrincipal">Tipos de Ingreso</a></li>
 					<li><a href="navegador_tipossalida.php" target="contenedorPrincipal">Tipos de Salida</a></li>
 					<li><a href="navegador_precios.php" target="contenedorPrincipal">Precios</a></li>
@@ -63,20 +62,15 @@ include("datosUsuario.php");
 			<li><span>Ordenes de Compra</span>
 				<ul>
 					<li><a href="navegador_ordenCompra.php" target="contenedorPrincipal">Registro de O.C.</a></li>
-					<li><a href="registrarOCTerceros.php" target="contenedorPrincipal">Registro de O.C. de Terceros</a></li>
-					<li><a href="navegadorIngresosOC.php" target="contenedorPrincipal">Generar OC a traves de Ingreso</a></li>
+					<!--li><a href="registrarOCTerceros.php" target="contenedorPrincipal">Registro de O.C. de Terceros</a></li-->
+					<!--li><a href="navegadorIngresosOC.php" target="contenedorPrincipal">Generar OC a traves de Ingreso</a></li-->
 					<li><a href="navegador_pagos.php" target="contenedorPrincipal">Registro de Pagos</a></li>
-				</ul>	
-			</li>
-			<li><span>Listado de Cobranzas</span>
-				<ul>
-					<li><a href="navegadorCobranzas.php" target="contenedorPrincipal">Listado de Cobranzas</a></li>
 				</ul>	
 			</li>
 			<li><span>Ingresos</span>
 				<ul>
 					<li><a href="navegador_ingresomateriales.php" target="contenedorPrincipal">Ingreso de Materiales</a></li>
-					<li><a href="navegadorLiquidacionIngresos.php" target="contenedorPrincipal">Liquidacion de Ingresos</a></li>
+					<!--li><a href="navegadorLiquidacionIngresos.php" target="contenedorPrincipal">Liquidacion de Ingresos</a></li-->
 				</ul>	
 			</li>
 			<li><span>Salidas</span>
@@ -85,11 +79,16 @@ include("datosUsuario.php");
 					<li><a href="navegadorVentas.php" target="contenedorPrincipal">Listado de Ventas</a></li>
 				</ul>	
 			</li>
-			<li><span>Configuracion</span>
+			<!--li><span>Listado de Cobranzas</span>
+				<ul>
+					<li><a href="navegadorCobranzas.php" target="contenedorPrincipal">Listado de Cobranzas</a></li>
+				</ul>	
+			</li-->
+			<!--li><span>Configuracion</span>
 				<ul>
 					<li><a href="navegadorDolar.php" target="contenedorPrincipal">Cambiar Cotizacion de Dolar</a></li>
 				</ul>	
-			</li>
+			</li-->
 			
 			<li><span>Reportes</span>
 				<ul>
@@ -100,26 +99,26 @@ include("datosUsuario.php");
 							<li><a href="rpt_op_inv_ingresos.php" target="contenedorPrincipal">Ingresos</a></li>
 							<li><a href="rpt_op_inv_salidas.php" target="contenedorPrincipal">Salidas</a></li>
 							<li><a href="rptPrecios.php" target="contenedorPrincipal">Precios</a></li>
-							<li><a href="rptOCPagar.php" target="contenedorPrincipal">OC por Pagar</a></li>
+							<!--li><a href="rptOCPagar.php" target="contenedorPrincipal">OC por Pagar</a></li-->
 						</ul>
 					</li>	
-					<li><span>Costos</span>
+					<!--li><span>Costos</span>
 						<ul>
 							<li><a href="rptOpKardexCostos.php" target="contenedorPrincipal">Kardex de Movimiento Precio Promedio</a></li>
-							<!--li><a href="rptOpKardexCostosPEPS.php" target="contenedorPrincipal">Kardex de Movimiento PEPS</a></li>
-							<li><a href="rptOpKardexCostosUEPS.php" target="contenedorPrincipal">Kardex de Movimiento UEPS</a></li-->							
+							<li><a href="rptOpKardexCostosPEPS.php" target="contenedorPrincipal">Kardex de Movimiento PEPS</a></li>
+							<li><a href="rptOpKardexCostosUEPS.php" target="contenedorPrincipal">Kardex de Movimiento UEPS</a></li>							
 							<li><a href="rptOpExistenciasCostos.php" target="contenedorPrincipal">Existencias</a></li>							
 						</ul>
-					</li>
+					</li-->
 					<li><span>Ventas</span>
 						<ul>
 							<li><a href="rptOpVentasDocumento.php" target="contenedorPrincipal">Ventas x Documento</a></li>
 							<li><a href="rptOpVentasxItem.php" target="contenedorPrincipal">Ventas x Item</a></li>
 							<li><a href="rptOpVentasxPersona.php" target="contenedorPrincipal">Ventas x Vendedor</a></li>
-							<li><a href="rptOpKardexCliente.php" target="contenedorPrincipal">Kardex x Cliente</a></li>
+							<!--li><a href="rptOpKardexCliente.php" target="contenedorPrincipal">Kardex x Cliente</a></li-->
 						</ul>	
 					</li>
-					<li><span>Utilidades</span>
+					<!--li><span>Utilidades</span>
 						<ul>
 							<li><a href="rptOpUtilidadesDocumento.php" target="contenedorPrincipal">Utilidades x Documento</a></li>
 							<li><a href="rptOpUtilidadesxItem.php" target="contenedorPrincipal">Utilidades x Item</a></li>
@@ -130,7 +129,7 @@ include("datosUsuario.php");
 							<li><a href="rptOpCobranzas.php" target="contenedorPrincipal">Cobranzas</a></li>
 							<li><a href="rptOpCuentasCobrar.php" target="contenedorPrincipal">Cuentas por Cobrar</a></li>
 						</ul>	
-					</li>
+					</li-->
 				</ul>
 			</li>			
 	</nav>

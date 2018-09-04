@@ -4,11 +4,11 @@ require("conexion.inc");
 $usuario = $_POST["usuario"];
 $contrasena = $_POST["contrasena"];
 $contrasena = str_replace("'", "''", $contrasena);
+
 $sql = "
     SELECT f.cod_cargo, f.cod_ciudad
     FROM funcionarios f, usuarios_sistema u
     WHERE u.codigo_funcionario=f.codigo_funcionario AND u.codigo_funcionario='$usuario' AND u.contrasena='$contrasena' ";
-
 $resp = mysql_query($sql);
 $num_filas = mysql_num_rows($resp);
 if ($num_filas != 0) {

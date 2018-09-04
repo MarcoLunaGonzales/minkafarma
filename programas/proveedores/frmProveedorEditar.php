@@ -29,7 +29,7 @@ if($nroregs==1)
 ?>
 <center>
     <br/>
-    <h1>Editar Proveedor</h1>
+    <h1>Editar Distribuidor</h1>
     <table class="texto">
         <tr>
             <th>Codigo</th>

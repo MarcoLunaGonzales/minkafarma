@@ -73,30 +73,33 @@ echo "<script language='Javascript'>
 	require("conexion.inc");
 	require('estilos.inc');
 	
-	echo "<h1>Registro de Materiales</h1>";
+	echo "<h1>Registro de Producto</h1>";
 
 	echo "<form method='post' action=''>";
-	$sql="select m.codigo_material, m.descripcion_material, m.estado, t.nombre_tipomaterial, 
-	m.peso, m.orden_grupo, m.abreviatura, m.item_metraje, m.nro_metros from material_apoyo m, 
-	tipos_material t where m.codigo_material<>0 and m.cod_tipo_material=t.cod_tipomaterial and m.estado='Activo' order by t.nombre_tipomaterial, m.orden_grupo";
+	$sql="select m.codigo_material, m.descripcion_material, m.estado, 
+		(select e.nombre_empaque from empaques e where e.cod_empaque=m.cod_empaque), 
+		(select f.nombre_forma_far from formas_farmaceuticas f where f.cod_forma_far=m.cod_forma_far), 
+		(select pl.nombre_linea_proveedor from proveedores p, proveedores_lineas pl where p.cod_proveedor=pl.cod_proveedor and pl.cod_linea_proveedor=m.cod_linea_proveedor),
+		(select t.nombre_tipoventa from tipos_venta t where t.cod_tipoventa=m.cod_tipoventa), m.cantidad_presentacion, m.principio_activo 
+		from material_apoyo m
+		where m.estado='1' order by m.descripcion_material";
 	if($vista==1)
-	{	$sql="select m.codigo_material, m.descripcion_material, m.estado, t.nombre_tipomaterial, 
-		m.peso, m.orden_grupo, m.abreviatura, m.item_metraje, m.nro_metros from material_apoyo m, tipos_material t where m.codigo_material<>0 and m.cod_tipo_material=t.cod_tipomaterial 
-		and m.estado='Retirado' order by t.nombre_tipomaterial, m.orden_grupo";
+	{	$sql="select m.codigo_material, m.descripcion_material, m.estado, 
+		(select e.nombre_empaque from empaques e where e.cod_empaque=m.cod_empaque), 
+		(select f.nombre_forma_far from formas_farmaceuticas f where f.cod_forma_far=m.cod_forma_far), 
+		(select pl.nombre_linea_proveedor from proveedores p, proveedores_lineas pl where p.cod_proveedor=pl.cod_proveedor and pl.cod_linea_proveedor=m.cod_linea_proveedor),
+		(select t.nombre_tipoventa from tipos_venta t where t.cod_tipoventa=m.cod_tipoventa), m.cantidad_presentacion, m.principio_activo 
+		from material_apoyo m
+		where m.estado='0' order by m.descripcion_material";
 	}
-	if($vista==2)
-	{
-	 	$sql="select m.codigo_material, m.descripcion_material, m.estado, t.nombre_tipomaterial, 
-		m.peso, m.orden_grupo, m.abreviatura, m.item_metraje, m.nro_metros from material_apoyo m, tipos_material t where m.codigo_material<>0 and m.cod_tipo_material=t.cod_tipomaterial 
-		order by t.nombre_tipomaterial, m.orden_grupo";
-	}
+	
+	//echo $sql;
 	$resp=mysql_query($sql);
 	
-	echo "<table align='center' class='texto'><tr><th>Ver Material de Apoyo:</th>
+	echo "<table align='center' class='texto'><tr><th>Ver Productos:</th>
 	<th><select name='vista' class='texto' onChange='cambiar_vista(this, this.form)'>";
 	if($vista==0)	echo "<option value='0' selected>Activos</option><option value='1'>Retirados</option><option value='2'>Todo</option>";
 	if($vista==1)	echo "<option value='0'>Activos</option><option value='1' selected>Retirados</option><option value='2'>Todo</option>";
-	if($vista==2)	echo "<option value='0'>Activos</option><option value='1'>Retirados</option><option value='2' selected>Todo</option>";
 	echo "</select>";
 	echo "</th></tr></table><br>";
 	
@@ -110,40 +113,38 @@ echo "<script language='Javascript'>
 		</div>";
 	
 	echo "<center><table class='texto'>";
-	echo "<tr><th>Indice</th><th>&nbsp;</th><th>Codigo Interno</th><th>Abreviatura</th><th>Nombre Item</th>
-		<th>Tipo de Material de Apoyo</th><th>Peso</th><th>Manejo por Metros</th><th>Nro. Metros</th></tr>";
+	echo "<tr><th>Indice</th><th>&nbsp;</th><th>Nombre Producto</th><th>Empaque</th>
+		<th>Cant.Presentacion</th><th>Forma Farmaceutica</th><th>Linea Distribuidor</th><th>Principio Activo</th><th>Tipo Venta</th>
+		<th>Accion Terapeutica</th></tr>";
 	
 	$indice_tabla=1;
 	while($dat=mysql_fetch_array($resp))
 	{
 		$codigo=$dat[0];
-		$desc=$dat[1];
+		$nombreProd=$dat[1];
 		$estado=$dat[2];
-		$tipo_material=$dat[3];
-		$pesoMaterial=$dat[4];
-		$ordenGrupo=$dat[5];
-		$abreviatura=$dat[6];
-		$itemMetraje=$dat[7];
-		$nroMetros=$dat[8];
-
-		if($itemMetraje==0){
-			$nombreMetraje="No";
-		}else{
-			$nombreMetraje="Si";
+		$empaque=$dat[3];
+		$formaFar=$dat[4];
+		$nombreLinea=$dat[5];
+		$tipoVenta=$dat[6];
+		$cantPresentacion=$dat[7];
+		$principioActivo=$dat[8];
+		
+		$txtAccionTerapeutica="";
+		$sqlAccion="select a.nombre_accionterapeutica from acciones_terapeuticas a, material_accionterapeutica m
+			where m.cod_accionterapeutica=a.cod_accionterapeutica and 
+			m.codigo_material='$codigo'";
+		$respAccion=mysql_query($sqlAccion);
+		while($datAccion=mysql_fetch_array($respAccion)){
+			$nombreAccionTerX=$datAccion[0];
+			$txtAccionTerapeutica=$txtAccionTerapeutica." - ".$nombreAccionTerX;
 		}
 		
-		if($estado=='Retirado')
-		{
-			$fondo_fila="#ff6666";
-		}
-		else
-		{
-		 	$fondo_fila="";
-		}
-		echo "<tr bgcolor='$fondo_fila'><td align='center'>$indice_tabla</td><td align='center'>
+		echo "<tr><td align='center'>$indice_tabla</td><td align='center'>
 		<input type='checkbox' name='codigo' value='$codigo'></td>
-		<td align='center'><span style='color:#ff0000; font-size: 14pt'>$ordenGrupo</span></td><td>$abreviatura</td><td>$desc</td><td>$tipo_material</td>
-		<td>&nbsp;$pesoMaterial</td><td>&nbsp;$nombreMetraje</td><td>&nbsp;$nroMetros</td></tr>";
+		<td>$nombreProd</td><td>$empaque</td>
+		<td>$cantPresentacion</td><td>$formaFar</td>
+		<td>$nombreLinea</td><td>$principioActivo</td><td>$tipoVenta</td><td>$txtAccionTerapeutica</td></tr>";
 		$indice_tabla++;
 	}
 	echo "</table></center><br>";

@@ -33,7 +33,7 @@ $sql="select m.`codigo_material`, m.`descripcion_material`,
 	
 $resp=mysql_query($sql);
 
-echo "<br><table cellspacing='0' border=1 align='center' class='texto' width='100%'>
+echo "<br><table align='center' class='texto' width='100%'>
 <tr>
 <th>Codigo</th>
 <th>Item</th>
@@ -55,8 +55,8 @@ while($datos=mysql_fetch_array($resp)){
 	echo "<tr>
 	<td>$codItem</td>
 	<td>$nombreItem</td>
-	<td>$montoPtr</td>
 	<td>$cantidadFormat</td>
+	<td>$montoPtr</td>
 	
 	</tr>";
 }

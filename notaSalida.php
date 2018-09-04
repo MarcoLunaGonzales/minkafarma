@@ -58,20 +58,17 @@ class PDF extends FPDF
 		$this->SetXY(10,20);		$this->Cell(0,0,"NIT: $nitVenta",0,0);
 		
 		
-		$this->SetXY(10,25);		$this->Cell(0,0,"Chofer: ".$nombreChofer,0,0);
-		$this->SetXY(90,25);		$this->Cell(0,0,"Placa: ".$placa,0,0);
-		$this->SetXY(165,25);		$this->Cell(0,0,"Celular: ".$celularChofer,0,0);
+		$this->SetXY(10,25);		$this->Cell(0,0,"Vendedor: ".$nombreChofer,0,0);
+		$this->SetXY(90,25);		$this->Cell(0,0,".",0,0);
+		$this->SetXY(165,25);		$this->Cell(0,0,"",0,0);
 		
 		
 		$this->Line(5, 30, 210,30);
 		
 		$this->SetXY(10,33);		$this->Cell(0,0,"Cantidad",0,0);
 		$this->SetXY(40,33);		$this->Cell(0,0,"Material",0,0);
-		$this->SetXY(100,33);		$this->Cell(0,0,"U(Kg)",0,0);
-		$this->SetXY(115,33);		$this->Cell(0,0,"Total(Kg)",0,0);
-		$this->SetXY(135,33);		$this->Cell(0,0,"Total(qq)",0,0);
-		$this->SetXY(155,33);		$this->Cell(0,0,"Precio",0,0);
-		$this->SetXY(175,33);		$this->Cell(0,0,"Desc.(%)",0,0);
+		$this->SetXY(100,33);		$this->Cell(0,0,"Precio",0,0);
+		$this->SetXY(150,33);		$this->Cell(0,0,"Desc.(%)",0,0);
 		$this->SetXY(190,33);		$this->Cell(0,0,"Monto",0,0);
 		
 		$this->Line(5, 35, 210,35);
@@ -90,33 +87,18 @@ class PDF extends FPDF
 		
 		$this->Line(5, 100, 210,100);
 		
-		$this->SetY(-35);
-		$this->SetX(90);		$this->Cell(0,0,"Peso Total(Kg)",0,0);	
-		$this->SetX(120);		$this->Cell(0,0,$pesoTotal,0,0);
 		$this->SetX(150);		$this->Cell(0,0,"Monto Total",0,0);
 		$this->SetX(190);		$this->Cell(0,0,$montoTotal,0,0);
-		
-		$this->SetX(10);		$this->Cell(0,0,"Chofer:   ______________________",0,0);
-		
+				
 		
 		$this->SetY(-30);
 
-		$this->SetX(90);		$this->Cell(0,0,"Peso Total(qq)",0,0);
-		$this->SetX(120);		$this->Cell(0,0,$pesoTotalqq,0,0);
-
 		$this->SetX(150);		$this->Cell(0,0,"Descuento Final",0,0);
 		$this->SetX(190);		$this->Cell(0,0,$descuentoFinal,0,0);
-
-		$this->SetX(10);		$this->Cell(0,0,"Placa:   _______________________",0,0);
-
-		
 		
 		$this->SetY(-25);
 		$this->SetX(150);		$this->Cell(0,0,"Monto Final",0,0);
 		$this->SetX(190);		$this->Cell(0,0,$montoTotal-$descuentoFinal,0,0);
-
-		$this->SetX(10);		$this->Cell(0,0,"Celular:   ______________________",0,0);
-
 
 		$this->SetY(-15);
 		$this->SetX(30);	  $this->Cell(0,0,"Despachado",0,0);
@@ -144,7 +126,7 @@ $pdf->SetFont('Arial','',10);
 //AQUI EMPEZAMOS CON EL DETALLE
 $codigoVenta=$_GET['codVenta'];
 
-$sql_detalle="select s.cod_material, m.descripcion_material, m.orden_grupo, m.peso,
+$sql_detalle="select s.cod_material, m.descripcion_material, s.lote, s.fecha_vencimiento,
 	s.cantidad_unitaria, s.precio_unitario, s.`descuento_unitario`, s.`monto_unitario`, ss.`descuento`
 	from salida_detalle_almacenes s, material_apoyo m, `salida_almacenes` ss
 	where s.cod_salida_almacen='$codigoVenta' and s.cod_material=m.codigo_material and ss.`cod_salida_almacenes`=s.`cod_salida_almacen`";
@@ -186,14 +168,8 @@ while($dat_detalle=mysql_fetch_array($resp_detalle))
 	$pdf->SetX(25);
 	$pdf->Cell(0,0,$nombre_material,0,0);
 	$pdf->SetX(100);
-	$pdf->Cell(0,0,$peso,0,0);
-	$pdf->SetX(120);
-	$pdf->Cell(0,0,$pesoItem,0,0);
-	$pdf->SetX(135);
-	$pdf->Cell(0,0,$pesoItemqq,0,0);
-	$pdf->SetX(155);
 	$pdf->Cell(0,0,$precioUnitario,0,0);
-	$pdf->SetX(175);
+	$pdf->SetX(150);
 	$pdf->Cell(0,0,$descuentoUnitario,0,0);
 	$pdf->SetX(190);
 	$pdf->Cell(0,0,$montoUnitario,0,0);

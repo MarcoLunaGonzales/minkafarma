@@ -79,24 +79,6 @@ function validar(f)
 	}	
 }
 
-function solonumeros(e)
-{
-	var key;
-	if(window.event) {// IE
-		key = e.keyCode;
-	}else if(e.which) // Netscape/Firefox/Opera
-	{
-		key = e.which;
-	}
-	if (key < 45 || key > 57) 
-	{
-	  return false;
-	}
-	return true;
-}
-
-
-
 	</script>
 <?php
 
@@ -151,15 +133,11 @@ $fecha=date("d/m/Y");
 </div>
 
 
-<table align='center'>
-	<tr>
-	<td><a href='navegador_pagos.php'><img  border='0'src='imagenes/volver.gif' width='15' height='8'>Volver Atras</a>
-	</td>
-	</tr>
-</table>
+<div class="divBotones">
+<input type='submit' class='boton' value='Guardar' onClick='validar(this.form)'>
+<input type='button' class='boton2' value='Cancelar' onClick="location.href='navegador_pagos.php'">
+</div>
 
-
-<center><input type='button' class='boton' value='Guardar' onClick='validar(this.form)'></center>
 <script type='text/javascript' language='javascript'  src='dlcalendar.js'></script>
 
 </form>

@@ -29,7 +29,6 @@ for ($i = 1; $i <= $cantidad_items-1; $i++) {
 }
 echo "<script language='Javascript'>
     alert('Los datos fueron guardados correctamente.');
-    opener.location.reload();
-	window.close;
+	location.href='navegadorLiquidacionIngresos.php';
     </script>";
 ?>

@@ -40,7 +40,7 @@ where s.`cod_salida_almacenes` = sd.`cod_salida_almacen` and
       s.`cod_chofer`=f.`codigo_funcionario` group by f.`codigo_funcionario`";		
 $resp=mysql_query($sql);
 
-echo "<br><table cellspacing='0' border=1 align='center' class='texto' width='100%'>
+echo "<br><table align='center' class='texto' width='100%'>
 <tr>
 <th>Codigo</th>
 <th>Vendedor</th>

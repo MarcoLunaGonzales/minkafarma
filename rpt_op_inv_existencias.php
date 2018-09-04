@@ -33,9 +33,11 @@ else
 {	require("estilos_almacenes.inc");
 }
 $fecha_rptdefault=date("d/m/Y");
-echo "<table align='center' class='textotit'><tr><th>Reporte Existencias Almacen</th></tr></table><br>";
+echo "<h1>Reporte Existencias Almacen</h1>";
+
 echo"<form method='post' action=''>";
-	echo"\n<table class='texto' border='1' align='center' cellSpacing='0' width='50%'>\n";
+	
+	echo"\n<table class='texto' align='center' cellSpacing='0' width='50%'>\n";
 	echo "<tr><th align='left'>Territorio</th><td><select name='rpt_territorio' class='texto' onChange='envia_select(this.form)'>";
 	
 	$sql="select cod_ciudad, descripcion from ciudades order by descripcion";

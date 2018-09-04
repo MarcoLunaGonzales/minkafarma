@@ -4,7 +4,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <script type="text/javascript" src="lib/js/xlibPrototipoSimple-v0.1.js"></script>
 		
-		        <script type='text/javascript' language='javascript'>
+<script type='text/javascript' language='javascript'>
 function nuevoAjax()
 {	var xmlhttp=false;
 	try {
@@ -25,11 +25,10 @@ function nuevoAjax()
 function listaMateriales(f){
 	var contenedor;
 	var codTipo=f.itemTipoMaterial.value;
-	var codItem=f.itemCodMaterial.value;
 	var nombreItem=f.itemNombreMaterial.value;
 	contenedor = document.getElementById('divListaMateriales');
 	ajax=nuevoAjax();
-	ajax.open("GET", "ajaxListaMateriales.php?codTipo="+codTipo+"&codItem="+codItem+"&nombreItem="+nombreItem,true);
+	ajax.open("GET", "ajaxListaMateriales.php?codTipo="+codTipo+"&nombreItem="+nombreItem,true);
 	ajax.onreadystatechange=function() {
 		if (ajax.readyState==4) {
 			contenedor.innerHTML = ajax.responseText
@@ -93,6 +92,7 @@ function actStock(indice){
 			ajaxPrecioItem(indice);
 		}
 	}
+	totales();
 	ajax.send(null);
 }
 
@@ -121,25 +121,9 @@ function ajaxPrecioItem(indice){
 	ajax.onreadystatechange=function() {
 		if (ajax.readyState==4) {
 			contenedor.innerHTML = ajax.responseText;
-			ajaxPesoItem(indice);
 		}
 	}
 	ajax.send(null);
-}
-
-function calcularCantidadMetros(indice){
-	var  nroMetrosItem=document.getElementById("cantidadMetrosItem"+indice).value;
-	var  nroMetrosSal=document.getElementById("nro_metros"+indice).value;
-	var cantidad=document.getElementById("cantidadMM"+indice).value;
-	cantidad=parseFloat(cantidad);
-	if(nroMetrosItem==0){
-		var totalCantidad= cantidad;
-	}else{
-		var totalCantidad= cantidad +(nroMetrosSal/nroMetrosItem);
-	}
-	//alert(nroMetrosSal+' '+nroMetrosItem);
-	document.getElementById("cantidad_unitaria"+indice).value=totalCantidad;
-	calculaMontoMaterial(indice);
 }
 
 function ajaxPesoItem(indice){
@@ -158,21 +142,6 @@ function ajaxPesoItem(indice){
 	ajax.send(null);
 }
 
-
-function ajaxTipoPrecio(f){
-	var contenedor;
-	contenedor=document.getElementById("divTipoPrecio");
-	var codCliente=document.getElementById("cliente").value;
-	ajax=nuevoAjax();
-	ajax.open("GET", "ajaxTipoPrecio.php?codCliente="+codCliente,true);
-	ajax.onreadystatechange=function() {
-		if (ajax.readyState==4) {
-			contenedor.innerHTML = ajax.responseText;
-			ajaxRazonSocial(codCliente);
-		}
-	}
-	ajax.send(null);
-}
 
 function ajaxRazonSocial(f){
 	var contenedor;
@@ -208,34 +177,25 @@ function calculaMontoMaterial(indice){
 	var cantidadUnitaria=document.getElementById("cantidad_unitaria"+indice).value;
 	var precioUnitario=document.getElementById("precio_unitario"+indice).value;
 	var descuentoUnitario=document.getElementById("descuentoProducto"+indice).value;
-	var peso=document.getElementById("pesoItem"+indice).value;
 	
 	var montoUnitario=(parseFloat(cantidadUnitaria)*parseFloat(precioUnitario)) * (1-(descuentoUnitario/100));
 	montoUnitario=Math.round(montoUnitario*100)/100
-	
-	var pesoTotalItem=(parseFloat(cantidadUnitaria)*parseFloat(peso));
-	
+		
 	document.getElementById("montoMaterial"+indice).value=montoUnitario;
-	document.getElementById("pesoItemTotal"+indice).value=pesoTotalItem;
 	
 	totales();
 }
 
 function totales(){
 	var subtotal=0;
-	var pesoTotal=0;
     for(var ii=1;ii<=num;ii++){
 	 	var monto=document.getElementById("montoMaterial"+ii).value;
-		var peso=document.getElementById("pesoItemTotal"+ii).value;
 		subtotal=subtotal+parseFloat(monto);
-		pesoTotal=pesoTotal+parseFloat(peso);
     }
 	subtotal=Math.round(subtotal*100)/100;
-	pesoTotal=Math.round(pesoTotal*100)/100;
 	
     document.getElementById("totalVenta").value=subtotal;
 	document.getElementById("totalFinal").value=subtotal;
-	document.getElementById("totalPesoVenta").value=pesoTotal;
 }
 
 function aplicarDescuento(f){
@@ -299,7 +259,7 @@ function fun13(cadIdOrg,cadIdDes)
 			var div_material;
 			div_material=document.getElementById("div"+num);			
 			ajax=nuevoAjax();
-			ajax.open("GET","ajaxMaterialSalida.php?codigo="+num,true);
+			ajax.open("GET","ajaxMaterialVentas.php?codigo="+num,true);
 			ajax.onreadystatechange=function(){
 			if (ajax.readyState==4) {
 				div_material.innerHTML=ajax.responseText;
@@ -331,31 +291,6 @@ function validar(f)
 	var descuentoTotal=document.getElementById("descuentoVenta").value;
 
 	var globalAlmacen=document.getElementById("global_almacen").value;
-
-	if(tipoDoc==0){
-		alert("El tipo de documento no puede estar vacio.");
-		return(false);
-	}
-	if(cliente==0){
-		alert("El cliente no puede estar vacio.");
-		return(false);
-	}
-	if(tipoPrecio==0){
-		alert("El tipo de precio no puede estar vacio.");
-		return(false);
-	}
-	if(razonSocial==""){
-		alert("La Razon Social no puede estar vacia.");
-		return(false);
-	}
-	if(nitCliente==""){
-		alert("El NIT del Cliente no puede estar vacio.");
-		return(false);
-	}
-	if(descuentoVenta==""){
-		alert("El descuento Final no puede estar vacio.");
-		return(false);
-	}
 
 	if(cantidadItems>0){
 		
@@ -399,23 +334,8 @@ function validar(f)
 			if(stock<cantidad && globalAlmacen!=1003){
 				alert("No puede sacar cantidades mayores a las existencias. Fila "+i);
 				return(false);
-			}
-			/*if(descuento==0){
-				alert("El descuento no puede ser 0 ni vacio. Fila "+i);
-				return(false);
-			}*/
-			var pesoTotalVenta=parseFloat(document.getElementById("totalPesoVenta").value);
-			var pesoMaximoVehiculo=parseFloat(document.getElementById("pesoMaximoVehiculo").value);
-			
-			if(pesoTotalVenta>=pesoMaximoVehiculo && pesoMaximoVehiculo!=0){
-				if(confirm("El peso Total excede a la capacidad del vehiculo. Desea guardar la nota de todas formas.")){
-					f.submit();
-				}else{
-					return(false);
-				}
-			}else{
-				f.submit();
-			}
+			}			
+			return(true);
 		}
 		
 	}else{
@@ -432,29 +352,33 @@ function validar(f)
 echo "<body>";
 require("conexion.inc");
 require("estilos_almacenes.inc");
-if($fecha=="")
-{   $fecha=date("d/m/Y");
+if($fecha==""){   
+	$fecha=date("d/m/Y");
 }
-$sql="select nro_correlativo from salida_almacenes where cod_almacen='$global_almacen' order by cod_salida_almacenes desc";
-$resp=mysql_query($sql);
-$dat=mysql_fetch_array($resp);
-$num_filas=mysql_num_rows($resp);
-if($num_filas==0)
-{   $codigo=1;
-}
-else
-{   $codigo=$dat[0];
-    $codigo++;
-}
+
+$usuarioVentas=$_COOKIE['global_usuario'];
+
+//SACAMOS LA CONFIGURACION PARA EL DOCUMENTO POR DEFECTO
+$sqlConf="select valor_configuracion from configuraciones where id_configuracion=1";
+$respConf=mysql_query($sqlConf);
+$tipoDocDefault=mysql_result($respConf,0,0);
+
+//SACAMOS LA CONFIGURACION PARA EL CLIENTE POR DEFECTO
+$sqlConf="select valor_configuracion from configuraciones where id_configuracion=2";
+$respConf=mysql_query($sqlConf);
+$clienteDefault=mysql_result($respConf,0,0);
+
+
 ?>
 <form action='guardarSalidaMaterial.php' method='POST' name='form1'>
-<table border='0' class='textotit' align='center'><tr><th>Registrar Venta</th></tr></table><br>
-<table border='1' class='texto' cellspacing='0' align='center' width='100%'>
-<tr><th>Tipo de Salida</th><th>Tipo de Documento</th><th>Numero de Salida/Venta</th><th>Fecha</th><th>Almacen Destino</th></tr>
+
+<h1>Registrar Venta</h1>
+
+<table class='texto' align='center' width='100%'>
+<tr><th>Tipo de Salida</th><th>Tipo de Documento</th><th>Nro.Factura</th><th>Fecha</th><th>Almacen Destino</th></tr>
 <tr>
 <td align='center'>
-	<select name='tipoSalida' id='tipoSalida' onChange='ajaxTipoDoc(form1)'>
-		<option value="0">--------</option>
+	<select name='tipoSalida' id='tipoSalida'>
 <?php
 	$sqlTipo="select cod_tiposalida, nombre_tiposalida from tipos_salida where cod_tiposalida=1001 order by 2";
 	$respTipo=mysql_query($sqlTipo);
@@ -469,22 +393,46 @@ else
 	</select>
 </td>
 <td align='center'>
-	<div id='divTipoDoc'>
-		<select name='tipoDoc' id='tipoDoc'><option value="0"></select>
-	</div>
+	<?php
+		$sql="select codigo, nombre, abreviatura from tipos_docs where codigo in (1,2) order by 2 desc";
+		$resp=mysql_query($sql);
+
+		echo "<select name='tipoDoc' id='tipoDoc' onChange='ajaxNroDoc(form1)' required>";
+		echo "<option value=''>-</option>";
+		while($dat=mysql_fetch_array($resp)){
+			$codigo=$dat[0];
+			$nombre=$dat[1];
+			if($codigo==$tipoDocDefault){
+				echo "<option value='$codigo' selected>$nombre</option>";
+			}else{
+				echo "<option value='$codigo'>$nombre</option>";
+			}
+		}
+		echo "</select>";
+		?>
 </td>
 <td align='center'>
 	<div id='divNroDoc'>
+		<?php
+		$sql="select IFNULL(max(nro_correlativo)+1,1) from salida_almacenes where cod_tipo_doc='$tipoDocDefault'";
+		//echo $sql;
+		$resp=mysql_query($sql);
+
+		while($dat=mysql_fetch_array($resp)){
+				$codigo=$dat[0];
+				echo "<input class='textogranderojo' type='text' name='nroCorrelativoFactura' value='$codigo' size='2' id='nroCorrelativoFactura' readonly>";
+			}
+		?>
 	</div>
 </td>
 
 <td align='center'>
-	<input type='text' class='texto' value='<?php echo $fecha?>' id='fecha' size='10' name='fecha'>
+	<input type='text' class='texto' value='<?php echo $fecha?>' id='fecha' size='10' name='fecha' readonly>
 	<img id='imagenFecha' src='imagenes/fecha.bmp'>
 </td>
 
 <td align='center'>
-	<select name='almacen' id='almacen' class='texto'>
+	<select name='almacen' id='almacen' class='texto' disabled>
 		<option value='0'>-----</option>
 <?php
 	$sql3="select cod_almacen, nombre_almacen from almacenes order by nombre_almacen";
@@ -504,25 +452,31 @@ else
 <tr>
 	<th>Cliente</th>
 	<th>Precio</th>
-	<th>Razon Social</th>
+	<th>Nombre/RazonSocial</th>
 	<th>NIT</th>
-	<th>Vendedor - Vehiculo</th>
+	<th>Vendedor</th>
 </tr>
 <tr>
 	<td align='center'>
-		<select name='cliente' class='texto' id='cliente' onChange='ajaxTipoPrecio(form1);'>
+		<select name='cliente' class='texto' id='cliente' onChange='ajaxTipoPrecio(form1);' required>
 			<option value=''>----</option>
 <?php
     $sql2="select c.`cod_cliente`, c.`nombre_cliente` from clientes c order by 2";
-    //$sql2="select c.`cod_cliente`, c.`nombre_cliente` from clientes c where c.`cod_area_empresa`=$global_agencia";
     $resp2=mysql_query($sql2);
 
 	while($dat2=mysql_fetch_array($resp2)){
 	   $codCliente=$dat2[0];
 		$nombreCliente=$dat2[1];
+		if($codCliente==$clienteDefault){
+?>		
+		<option value='<?php echo $codCliente?>' selected><?php echo $nombreCliente?></option>
+<?php			
+		}else{
 ?>		
 		<option value='<?php echo $codCliente?>'><?php echo $nombreCliente?></option>
-<?php    
+<?php			
+		}
+    
 	}
 ?>
 		</select>
@@ -530,30 +484,41 @@ else
 
 	<td>
 		<div id='divTipoPrecio'>
-			<select name='tipoPrecio' class='texto' id='tipoPrecio'><option value="0"></select>
+			<?php
+				$sql1="select codigo, nombre from tipos_precio order by 2 desc";
+				$resp1=mysql_query($sql1);
+				echo "<select name='tipoPrecio' class='texto' id='tipoPrecio'>";
+				while($dat=mysql_fetch_array($resp1)){
+					$codigo=$dat[0];
+					$nombre=$dat[1];
+					echo "<option value='$codigo'>$nombre</option>";
+				}
+				echo "</select>";
+				?>
+
 		</div>
 	</td>
 
 	<td>
 		<div id='divRazonSocial'>
-			<input type='text' name='razonSocial' id='razonSocial' value='0'>
+			<input type='text' name='razonSocial' id='razonSocial' value='' required>
 		</div>
 	</td>
 
 	<td>
 		<div id='divNIT'>
-			<input type='text' value='0' name='nitCliente' id='nitCliente'>
+			<input type='text' value='0' name='nitCliente' id='nitCliente' required>
 		</div>
 	</td>
 	<td>
-		<select name='chofer' class='texto' id='chofer'>
-			<option value=''>----</option>
+		<?php
+			$sql2="select f.codigo_funcionario,
+				concat(f.paterno,' ', f.nombres) as nombre from funcionarios f where f.codigo_funcionario='$usuarioVentas'";
+			//echo $sql2;
+		?>
+		<select name='chofer' class='texto' id='chofer' required>
 			<?php
-			$sql2="select f.`codigo_funcionario`,
-				concat(f.`paterno`,' ', f.`nombres`) as nombre from `funcionarios` f where f.`cod_cargo`=1002 
-				and f.`cod_ciudad`=$global_agencia order by 2";
 			$resp2=mysql_query($sql2);
-
 			while($dat2=mysql_fetch_array($resp2)){
 				$codChofer=$dat2[0];
 				$nombreChofer=$dat2[1];
@@ -563,82 +528,49 @@ else
 			}
 			?>
 		</select>
-
-		<select name='vehiculo' class='texto' id='chofer' onChange='ajaxPesoMaximo(this.value);'>
-			<option value=''>----</option>
-			<?php
-			$sql2="select codigo, nombre, placa, peso_maximo from vehiculos order by 2";
-			$resp2=mysql_query($sql2);
-
-			while($dat2=mysql_fetch_array($resp2)){
-				$codVehi=$dat2[0];
-				$nombreVehi="$dat2[1] $dat2[2]";
-				$pesoMaximoVehiculo=$dat2[3];
-			?>		
-			<option value='<?php echo $codVehi?>'><?php echo $nombreVehi?></option>
-			<?php    
-			}
-			?>
-		</select>
-		<div id='divPesoMax'>
-			<input type='hidden' name='pesoMaximoVehiculo' id='pesoMaximoVehiculo' value='0'>
-			Peso Maximo: 0
-		</div>
 		
 	</td>
 
 </tr>
 
 <tr>
-	<th colspan="5">Observaciones</th>
-</tr>
-
-
-<tr>	
-	<td align='center' colspan="5">
+	<th>Observaciones</th>
+	<th align='center' colspan="4">
 		<input type='text' class='texto' name='observaciones' value='' size='100' rows="2">
-	</td>
+	</th>
 </tr>
+
 </table>
 
 
 <fieldset id="fiel" style="width:100%;border:0;">
-	<table align="center" class="texto" cellSpacing="0" cellPadding="0" width="100%" border="1" id="data0" style="border:#ccc 1px solid;">
+	<table align="center" class="texto" width="100%" id="data0">
 	<tr>
-		<td align="center" colspan="6">
-			<input class="boton" type="button" value="Nuevo Item (+)" onclick="mas(this)" />
+		<td align="center" colspan="8">
+			<b>Detalle de la Venta    </b><input class="boton" type="button" value="Nuevo Item (+)" onclick="mas(this)" />
 		</td>
 	</tr>
-	<tr>
-		<td align="center" colspan="6">
-			<div style="width:100%;" align="center"><b>DETALLE</b></div>
-		</td>				
-	</tr>				
-	<tr class="titulo_tabla" align="center">
+
+	<tr align="center">
 		<td width="40%">Material</td>
-		<td width="7.5%">Stock</td>
-		<td width="7.5%">Cant/Metro</td>
-		<td width="7.5%">Cant. Total</td>
-		<td width="7.5%">Precio </td>
-		<td width="7.5%">Desc.(%)</td>
-		<td width="7.5%">Monto</td>
-		<td width="7.5%">Peso Total</td>
-		<td width="7.5%">&nbsp;</td>
+		<td width="10%">Stock</td>
+		<td width="10%">Cantidad</td>
+		<td width="10%">Precio </td>
+		<td width="10%">Desc.(%)</td>
+		<td width="10%">Monto</td>
+		<td width="10%">&nbsp;</td>
 	</tr>
 	</table>
 </fieldset>
 	<table id='pieNota' width='100%' border="0">
 		<tr>
-			<td align='right' width='90%'>Peso Total</td><td><input type='text' name='totalPesoVenta' id='totalPesoVenta'></td>
+			<td align='right' width='90%'>Monto Nota</td><td><input type='number' name='totalVenta' id='totalVenta' readonly></td>
 		</tr>
 		<tr>
-			<td align='right' width='90%'>Monto Nota</td><td><input type='text' name='totalVenta' id='totalVenta'></td>
+			<td align='right' width='90%'>Descuento Bs.</td><td><input type='number' name='descuentoVenta' id='descuentoVenta' onChange='aplicarDescuento(form1);' value="0" required></td>
 		</tr>
 		<tr>
-			<td align='right' width='90%'>Descuento Bs.</td><td><input type='text' name='descuentoVenta' id='descuentoVenta' onChange='aplicarDescuento(form1);' value="0"></td>
-		</tr>
-		<tr>
-			<td align='right' width='90%'>Monto Final</td><td><input type='text' name='totalFinal' id='totalFinal' ></td>
+			<td align='right' width='90%'>Monto Final</td><td><input type='number' name='totalFinal' id='totalFinal' readonly></td>
 		</tr>
 
 	</table>
@@ -646,13 +578,13 @@ else
 
 <?php
 
-echo "<table align='center'><tr><td><a href='navegador_ingresomateriales.php'><img  border='0'src='imagenes/volver.gif' width='15' height='8'>Volver Atras</a></td></tr></table>";
-echo "<center><input type='button' class='boton' value='Guardar' onClick='validar(this.form)'></center>";
+echo "<div class='divBotones'><input type='submit' class='boton' value='Guardar' onClick='return validar(this.form)'>
+		<input type='button' class='boton2' value='Cancelar' onClick='location.href=\"navegador_ingresomateriales.php\"';></div>";
+		
 echo "</div>";
 echo "<script type='text/javascript' language='javascript'  src='dlcalendar.js'></script>";
 
 ?>
-
 
 
 <div id="divRecuadroExt" style="background-color:#666; position:absolute; width:800px; height: 400px; top:30px; left:150px; visibility: hidden; opacity: .70; -moz-opacity: .70; filter:alpha(opacity=70); -webkit-border-radius: 20px; -moz-border-radius: 20px; z-index:2; overflow: auto;">
@@ -661,11 +593,12 @@ echo "<script type='text/javascript' language='javascript'  src='dlcalendar.js'>
 <div id="divProfileData" style="background-color:#FFF; width:750px; height:350px; position:absolute; top:50px; left:170px; -webkit-border-radius: 20px; 	-moz-border-radius: 20px; visibility: hidden; z-index:2; overflow: auto;">
   	<div id="divProfileDetail" style="visibility:hidden; text-align:center">
 		<table align='center'>
-			<tr><th>Tipo Material</th><th>Cod. Int.</th><th>Material</th><th>&nbsp;</th></tr>
+			<tr><th>Linea</th><th>Material</th><th>&nbsp;</th></tr>
 			<tr>
 			<td><select name='itemTipoMaterial'>
 			<?php
-			$sqlTipo="select t.`cod_tipomaterial`, t.`nombre_tipomaterial` from `tipos_material` t order by t.`nombre_tipomaterial`";
+			$sqlTipo="select pl.cod_linea_proveedor, CONCAT(p.nombre_proveedor,' - ',pl.nombre_linea_proveedor) from proveedores p, proveedores_lineas pl 
+			where p.cod_proveedor=pl.cod_proveedor and pl.estado=1 order by 2;";
 			$respTipo=mysql_query($sqlTipo);
 			echo "<option value='0'>--</option>";
 			while($datTipo=mysql_fetch_array($respTipo)){
@@ -674,16 +607,14 @@ echo "<script type='text/javascript' language='javascript'  src='dlcalendar.js'>
 				echo "<option value=$codTipoMat>$nombreTipoMat</option>";
 			}
 			?>
+
 			</select>
-			</td>
-			<td>
-				<input type='text' name='itemCodMaterial'>
 			</td>
 			<td>
 				<input type='text' name='itemNombreMaterial'>
 			</td>
 			<td>
-				<input type='button' value='Buscar' onClick="listaMateriales(this.form)">
+				<input type='button' class='boton' value='Buscar' onClick="listaMateriales(this.form)">
 			</td>
 			</tr>
 			
@@ -693,6 +624,7 @@ echo "<script type='text/javascript' language='javascript'  src='dlcalendar.js'>
 	
 	</div>
 </div>
+
 <input type='hidden' name='materialActivo' value="0">
 <input type='hidden' name='cantidad_material' value="0">
 

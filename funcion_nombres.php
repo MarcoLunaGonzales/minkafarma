@@ -85,5 +85,12 @@ function nombreCliente($codigo)
 	return($nombre);
 }
 
+function nombreProveedor($codigo){
+	$sql="select nombre_proveedor from proveedores where cod_proveedor='$codigo'";
+	$resp=mysql_query($sql);
+	$nombre=mysql_result($resp,0,0);
+	return($nombre);
+}
+
 
 ?>

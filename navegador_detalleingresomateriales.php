@@ -11,8 +11,9 @@
 	
 	$resp=mysql_query($sql);
 	echo "<center><table border='0' class='textotit'><tr><th>Detalle de Ingreso</th></tr></table></center><br>";
-	echo "<table border='1' class='texto' cellspacing='0' width='70%' align='center'>";
-	echo "<tr><th>Número de Ingreso</th><th>Fecha</th><th>Tipo de Ingreso</th><th>Observaciones</th></tr>";
+	
+	echo "<table border='0' class='texto' align='center'>";
+	echo "<tr><th>Nro. de Ingreso</th><th>Fecha</th><th>Tipo de Ingreso</th><th>Observaciones</th></tr>";
 	$dat=mysql_fetch_array($resp);
 	$codigo=$dat[0];
 	$fecha_ingreso=$dat[1];
@@ -22,16 +23,18 @@
 	$nro_correlativo=$dat[4];
 	echo "<tr><td align='center'>$nro_correlativo</td><td align='center'>$fecha_ingreso_mostrar</td><td>$nombre_tipoingreso</td><td>&nbsp;$obs_ingreso</td></tr>";
 	echo "</table>";
-	$sql_detalle="select i.cod_material, i.cantidad_unitaria, i.precio_neto from ingreso_detalle_almacenes i, material_apoyo m
+	$sql_detalle="select i.cod_material, i.cantidad_unitaria, i.precio_neto, i.lote, DATE_FORMAT(i.fecha_vencimiento, '%d/%m/%Y') from ingreso_detalle_almacenes i, material_apoyo m
 	where i.cod_ingreso_almacen='$codigo' and m.codigo_material=i.cod_material";
 	$resp_detalle=mysql_query($sql_detalle);
-	echo "<br><table border=1 cellspacing='0' class='textomini' width='70%' align='center'>";
-	echo "<tr><th>&nbsp;</th><th>Material</th><th>Cantidad</th><th>Precio(Bs.)</th><th>Total(Bs.)</th></tr>";
+	echo "<br><table border=0 class='texto' align='center'>";
+	echo "<tr><th>&nbsp;</th><th>Material</th><th>Cantidad</th><th>Lote</th><th>Fecha Vencimiento</th><th>Precio(Bs.)</th><th>Total(Bs.)</th></tr>";
 	$indice=1;
 	while($dat_detalle=mysql_fetch_array($resp_detalle))
 	{	$cod_material=$dat_detalle[0];
 		$cantidad_unitaria=$dat_detalle[1];
 		$precioNeto=redondear2($dat_detalle[2]);
+		$loteProducto=$dat_detalle[3];
+		$fechaVenc=$dat_detalle[4];
 		
 		$totalValorItem=$cantidad_unitaria*$precioNeto;
 		
@@ -41,12 +44,14 @@
 		$dat_nombre_material=mysql_fetch_array($resp_nombre_material);
 		$nombre_material=$dat_nombre_material[0];
 		echo "<tr><td align='center'>$indice</td><td>$nombre_material</td><td align='center'>$cantidad_unitaria</td>
+		<td align='center'>$loteProducto</td>
+		<td align='center'>$fechaVenc</td>
 		<td align='center'>$precioNeto</td><td align='center'>$totalValorItem</td></tr>";
 		$indice++;
 	}
 	echo "</table>";
-	echo "<br><center><table border='0'><tr><td><a href='javascript:window.print();'><IMG border='no' alt='Imprimir esta' src='imagenes/print.gif'>Imprimir</a></td></tr></table>";
-
-//	echo "<tr><td><input type='checkbox' name='codigo' value='$codigo'></td><td align='center'>$fecha_ingreso_mostrar</td><td>$nombre_tipoingreso</td><td>&nbsp;$obs_ingreso</td><td>$txt_detalle</td></tr>";
+	
+	echo "<center><a href='javascript:window.print();'><IMG border='no'
+	 src='imagenes/print.jpg' width='40'></a></center>";
 	
 ?>

@@ -1,3 +1,8 @@
+<?php
+require("conexion.inc");
+require('function_formatofecha.php');
+require("estilos_almacenes.inc");
+?>
 <html>
     <head>
         <title>Busqueda</title>
@@ -154,10 +159,8 @@ function anular_ingreso(f)
         </script>
     </head>
     <body>
-<?php
 
-require("conexion.inc");
-require('function_formatofecha.php');
+<?php
 
 $txtnroingreso = $_GET["txtnroingreso"];
 $fecha1 = $_GET["fecha1"];
@@ -167,9 +170,8 @@ $txtnroingreso = str_replace("'", "''", $txtnroingreso);
 $fecha1 = str_replace("'", "''", $fecha1);
 $fecha2 = str_replace("'", "''", $fecha2);
 
-    require("estilos_almacenes.inc");
-
-	echo "<form method='post' action='navegador_ingresomateriales.php'>";
+ 
+echo "<form method='post' action='navegador_ingresomateriales.php'>";
 echo "<input type='hidden' name='fecha_sistema' value='$fecha_sistema'>";
 
 $consulta = "
@@ -294,9 +296,9 @@ echo "</form>";
 				</td>
 			</tr>			
 		</table>	
-		<center>
-			<input type='button' value='Buscar' onClick="ajaxBuscarIngresos(this.form)">
-			<input type='button' value='Cancelar' onClick="HiddenBuscar()">
+		<center><br>
+			<input type='button' value='Buscar' class='boton' onClick="ajaxBuscarIngresos(this.form)">
+			<input type='button' value='Cancelar' class='boton2' onClick="HiddenBuscar();">
 			
 		</center>
 	</div>

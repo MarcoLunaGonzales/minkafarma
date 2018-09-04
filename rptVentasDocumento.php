@@ -43,7 +43,7 @@ $sql.=" order by s.fecha, s.nro_correlativo";
 	
 $resp=mysql_query($sql);
 
-echo "<br><table cellspacing='0' border=1 align='center' class='texto' width='70%'>
+echo "<br><table align='center' class='texto' width='70%'>
 <tr>
 <th>Fecha</th>
 <th>Cliente</th>

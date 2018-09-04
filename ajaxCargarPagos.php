@@ -1,5 +1,3 @@
-<html>
-<body>
 
 <table border='0' class='texto' cellspacing='0' align='center' width='90%' style='border:#ccc 1px solid;'>
 	<tr><th>Nro. OC</th><th>Fecha OC</th><th>Monto OC</th><th>A Cuenta</th><th>Saldo OC</th><th>Monto a Pagar</th><th>Nro. Doc. Pago</th></tr>
@@ -36,15 +34,14 @@ while($dat=mysql_fetch_array($resp)){
 		<td>$montoOrden</td>
 		<td>$montoCancelado</td>
 		<td>$saldoOC</td>
-		<input type='hidden' value='$saldoOc' name='saldo$i' id='saldo$i'>
-		<td align='center'><input type='text' class='texto' name='montoPago$i' id='montoPago$i' size='10' onKeyPress='javascript:return solonumeros(event)' value='0'></td>
-		<td align='center'><input type='text' class='texto' name='nroDoc$i' id='nroDoc$i' size='10' onKeyPress='javascript:return solonumeros(event)' value='0'></td>
+		<input type='hidden' value='$saldoOC' name='saldo$i' id='saldo$i'>
+		<td align='center'>
+		<input type='number' class='texto' name='montoPago$i' id='montoPago$i' size='10' value='0' min='0' max='$saldoOC' required='required'></td>
+		<td align='center'>
+		<input type='number' class='texto' name='nroDoc$i' id='nroDoc$i' size='10' value='0' required='required'></td>
 		</tr>";
 	$i++;
 }
 
 ?>
 </table>
-
-</body>
-</html>

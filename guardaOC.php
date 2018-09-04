@@ -32,7 +32,7 @@ $tipo_pago=$_POST['tipo_pago'];
 $proveedor=$_POST['proveedor'];
 $nro_factura=$_POST['nro_factura'];
 $observaciones=$_POST['observaciones'];
-$totalVenta=$_POS['totalOC'];
+$totalVenta=$_POST['totalOC'];
 
 $fecha_real=date("Y-m-d");
 
@@ -41,20 +41,30 @@ $consulta="insert into orden_compra
 	values($codigo,$nro_correlativo,$proveedor,'$fecha_real','$observaciones',1,$tipo_pago,$nro_factura,'$totalOC', '0',1,'',0,0,0)";
 
 $sql_inserta = mysql_query($consulta);
-echo "aaaa:$consulta";
+echo "$sql_inserta";
 
-for ($i = 1; $i <= $cantidad_material; $i++) {
-	$cod_material = $_POST["material$i"];
-    $cantidad=$_POST["cantidad_unitaria$i"];
-	$precioBruto=$_POST["precio$i"];
-	$precioNeto=$_POST["neto$i"];
-	
-    $consulta="insert into orden_compra_detalle values($codigo,'$cod_material',' ', $cantidad,$precioBruto)";
-    echo "bbb:$consulta";
-    $sql_inserta2 = mysql_query($consulta);
+if($sql_inserta==1){
+	echo "entro detalle";
+	for ($i = 1; $i <= $cantidad_material; $i++) {
+		$cod_material = $_POST["material$i"];
+		$cantidad=$_POST["cantidad_unitaria$i"];
+		$precioBruto=$_POST["precio$i"];
+		$precioNeto=$_POST["neto$i"];
+		$loteProd=$_POST["lote$i"];
+		$fechaVencProd=$_POST["fechaVenc$i"];
+		
+		$consulta="insert into orden_compra_detalle (cod_orden, cod_material, observaciones, cantidad, precio_unitario, lote, fecha_vencimiento) 
+			values($codigo,'$cod_material',' ', $cantidad,$precioBruto,'$loteProd','$fechaVencProd')";
+		
+		//echo "bbb:$consulta";
+		
+		$sql_inserta2 = mysql_query($consulta);
+	}
 }
-/*echo "<script language='Javascript'>
+
+echo "<script language='Javascript'>
     alert('Los datos fueron insertados correctamente.');
     location.href='navegador_ordenCompra.php';
-    </script>";*/
+    </script>";
+	
 ?>

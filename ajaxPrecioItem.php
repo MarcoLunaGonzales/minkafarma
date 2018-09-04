@@ -35,9 +35,8 @@ while($datCosto=mysql_fetch_array($respCosto)){
 	$costoMaterialii=redondear2($costoMaterialii);
 }
 
-echo "<input type='text' id='precio_unitario$indice' name='precio_unitario$indice' value='$cadRespuesta' size='4' onChange='calculaMontoMaterial($indice);'>
- CP[$costoMaterialii]<input type='hidden' id='costoUnit$indice' value='$costoMaterialii' name='costoUnit$indice'>";
-//echo "$cadRespuesta -> ".rand(0, 10);
-//
+echo "<input type='number' id='precio_unitario$indice' name='precio_unitario$indice' value='$cadRespuesta' class='inputnumber' onKeyUp='calculaMontoMaterial($indice);' step='0.01'>";
+//echo " CP[$costoMaterialii]";
+echo "<input type='hidden' id='costoUnit$indice' value='$costoMaterialii' name='costoUnit$indice'>";
 
 ?>

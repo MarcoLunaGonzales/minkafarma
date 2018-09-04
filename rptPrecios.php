@@ -90,8 +90,8 @@ function ajaxBuscarItems(f){
 	echo "<div class='divBotones'><input type='button' value='Buscar' class='boton' onclick='ShowBuscar()'></div>";
 	
 	echo "<div id='divCuerpo'>";
-	$sql="select codigo_material, descripcion_material, t.`nombre_tipomaterial` from material_apoyo ma, `tipos_material` t
-			where ma.`cod_tipo_material`=t.`cod_tipomaterial` order by 3,2";
+	$sql="select codigo_material, descripcion_material from material_apoyo ma
+			where estado=1 order by 2";
 	$resp=mysql_query($sql);
 	
 	echo "<center><table class='texto'>";

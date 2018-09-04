@@ -79,7 +79,7 @@ echo "<script language='Javascript'>
 	</div>";
 	
 	echo "<center><table class='texto'>";
-	echo "<tr><th>&nbsp;</th><th>Nombre de Tipo de Ingreso</th><th>Definición de Tipo de Ingreso</th><th>Tipo de Almacen</th></tr>";
+	echo "<tr><th>&nbsp;</th><th>Nombre de Tipo de Ingreso</th><th>Definicion de Tipo de Ingreso</th><th>Tipo de Almacen</th></tr>";
 	while($dat=mysql_fetch_array($resp))
 	{
 		$codigo=$dat[0];

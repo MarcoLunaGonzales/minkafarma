@@ -10,7 +10,7 @@ $sqlNro="select count(*) from `salida_detalle_almacenes` s where s.`cod_salida_a
 $respNro=mysql_query($sqlNro);
 $nroItems=mysql_result($respNro,0,0);
 
-$tamanoLargo=100+($nroItems*3)-3;
+$tamanoLargo=200+($nroItems*3)-3;
 
 $pdf=new FPDF('P','mm',array(76,$tamanoLargo));
 $pdf->SetMargins(0,0,0);
@@ -51,26 +51,28 @@ $pdf->SetXY(0,$y+18);		$pdf->Cell(0,0,"-----------------------------------------
 $pdf->SetXY(0,$y+21);		$pdf->Cell(0,0,"NIT: $nitEmpresa", 0,0,"C");
 $pdf->SetXY(0,$y+24);		$pdf->Cell(0,0,"$nombreTipoDoc Nro. $nroDocVenta", 0,0,"C");
 $pdf->SetXY(0,$y+27);		$pdf->Cell(0,0,"Autorizacion Nro. ------", 0,0,"C");
-$pdf->SetXY(0,$y+30);		$pdf->Cell(0,0,"-------------------------------------------------------------------------------", 0,0,"C");
+
+$pdf->SetXY(0,$y+30);		$pdf->Cell(0,0,"Venta al por menor de productos farmaceuticos, medicinales, cosmeticos y articulos de tabaco.", 0,0,"C");
+$pdf->SetXY(0,$y+33);		$pdf->Cell(0,0,"-------------------------------------------------------------------------------", 0,0,"C");
 
 
-$pdf->SetXY(0,$y+33);		$pdf->Cell(0,0,"FECHA: $fechaVenta",0,0,"C");
-$pdf->SetXY(0,$y+36);		$pdf->Cell(0,0,"Sr(es): $nombreCliente",0,0,"C");
-$pdf->SetXY(0,$y+39);		$pdf->Cell(0,0,"NIT/CI:	0",0,0,"C");
+$pdf->SetXY(0,$y+36);		$pdf->Cell(0,0,"FECHA: $fechaVenta",0,0,"C");
+$pdf->SetXY(0,$y+39);		$pdf->Cell(0,0,"Sr(es): $nombreCliente",0,0,"C");
+$pdf->SetXY(0,$y+42);		$pdf->Cell(0,0,"NIT/CI:	0",0,0,"C");
 
-$pdf->SetXY(0,$y+43);		$pdf->Cell(0,0,"=================================================================================",0,0,"C");
-$pdf->SetXY(2,$y+45);		$pdf->Cell(0,0,"ITEM");
-$pdf->SetXY(43,$y+45);		$pdf->Cell(0,0,"Cant.");
-$pdf->SetXY(53,$y+45);		$pdf->Cell(0,0,"Importe");
-$pdf->SetXY(0,$y+47);		$pdf->Cell(0,0,"=================================================================================",0,0,"C");
+$pdf->SetXY(0,$y+45);		$pdf->Cell(0,0,"=================================================================================",0,0,"C");
+$pdf->SetXY(2,$y+48);		$pdf->Cell(0,0,"ITEM");
+$pdf->SetXY(43,$y+48);		$pdf->Cell(0,0,"Cant.");
+$pdf->SetXY(53,$y+48);		$pdf->Cell(0,0,"Importe");
+$pdf->SetXY(0,$y+52);		$pdf->Cell(0,0,"=================================================================================",0,0,"C");
 
 
-$sqlDetalle="select m.`orden_grupo`, s.`cantidad_unitaria`, m.`descripcion_material`, s.`precio_unitario`, 
+$sqlDetalle="select m.codigo_material, s.`cantidad_unitaria`, m.`descripcion_material`, s.`precio_unitario`, 
 		s.`descuento_unitario`, s.`monto_unitario` from `salida_detalle_almacenes` s, `material_apoyo` m where 
 		m.`codigo_material`=s.`cod_material` and s.`cod_salida_almacen`=$codigoVenta";
 $respDetalle=mysql_query($sqlDetalle);
 
-$yyy=50;
+$yyy=55;
 
 $montoTotal=0;
 while($datDetalle=mysql_fetch_array($respDetalle)){
@@ -102,6 +104,15 @@ $pdf->SetXY(37,$y+$yyy+8);		$pdf->Cell(0,0,"Total Final:  $montoTotal",0,0);
 $pdf->SetXY(5,$y+$yyy+12);		$pdf->Cell(0,0,"-------------------------------------------------------------------------------",0,0,"C");
 $pdf->SetXY(5,$y+$yyy+16);		$pdf->Cell(0,0,"CODIGO DE CONTROL: 00-00-00-00",0,0,"C");
 $pdf->SetXY(5,$y+$yyy+20);		$pdf->Cell(0,0,"FECHA LIMITE DE EMISION: --/--/----",0,0,"C");
+$pdf->SetXY(5,$y+$yyy+25);		$pdf->Cell(0,0,"Sr. Cliente una vez retirada la mercaderia",0,0,"C");
+$pdf->SetXY(5,$y+$yyy+28);		$pdf->Cell(0,0,"no se aceptan devoluciones",0,0,"C");
+
+$pdf->Image('imagenes/qrcode.png' , 25 ,$y+$yyy+35, 20, 20,'PNG');
+
+$pdf->SetXY(5,$y+$yyy+60);		$pdf->Cell(0,0,"Esta factura contribuye al desarrollo del",0,0,"C");
+$pdf->SetXY(5,$y+$yyy+63);		$pdf->Cell(0,0,"pais, el uso ilicito de esta sera sancionado",0,0,"C");
+$pdf->SetXY(5,$y+$yyy+66);		$pdf->Cell(0,0,"de acuerdo a ley.",0,0,"C");
+
 
 $pdf->Output();
 ?>

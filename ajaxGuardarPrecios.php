@@ -21,5 +21,5 @@ $precio4=$_GET['precio4'];
 	$sqlInsert="insert into precios values($item, 4,$precio4)";
 	$respInsert=mysql_query($sqlInsert);
 
-echo "listo.";
+echo "Precio Guardado!";
 ?>

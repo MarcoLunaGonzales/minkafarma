@@ -277,7 +277,6 @@ echo "<table border='1' class='textomini' cellspacing='0' width='90%'><tr><th>Le
 //
 echo "<div class='divBotones'>
 <input type='button' value='Registrar Salida' name='adicionar' class='boton' onclick='enviar_nav()'>
-		<input type='button' value='Cambiar No Entregado' class='boton' onclick='cambiarNoEntregado(this.form)'>
 		<input type='button' value='Buscar' class='boton' onclick='ShowBuscar()'>
 		<input type='button' value='Anular Salida' class='boton2' onclick='anular_salida(this.form)'>
 </div>";
@@ -285,7 +284,7 @@ echo "<div class='divBotones'>
 echo "<div id='divCuerpo'>";
 echo "<center><table class='texto'>";
 echo "<tr><th>&nbsp;</th><th>Numero Salida</th><th>Fecha/hora<br>Registro Salida</th><th>Tipo de Salida</th>
-	<th>Almacen Destino</th><th>Cliente</th><th>Observaciones</th><th>&nbsp;</th><th>&nbsp;</th><th>&nbsp;</th></tr>";
+	<th>Almacen Destino</th><th>Cliente</th><th>Observaciones</th><th>&nbsp;</th></tr>";
 	
 	
 //
@@ -367,14 +366,14 @@ while ($dat = mysql_fetch_array($resp)) {
     echo "<td>&nbsp;$nombreCliente</td><td>&nbsp;$obs_salida</td>";
     $url_notaremision = "navegador_detallesalidamuestras.php?codigo_salida=$codigo";    
     echo "<td><a href='javascript:llamar_preparado(this.form, $estado_preparado, $codigo)'>
-		<img src='imagenes/detalles.png' border='0' alt='Ver Detalles de la Salida Interna'></a></td>";
-	if($codTipoDoc==1){
+		<img src='imagenes/detalles.png' border='0' title='Detalle' width='40'></a></td>";
+	/*if($codTipoDoc==1){
 		echo "<td><a href='formatoFactura.php?codVenta=$codigo' target='_BLANK'>Ver F.P.</a></td>";
 	}else{
 		echo "<td><a href='formatoNotaRemision.php?codVenta=$codigo' target='_BLANK'>Ver F.P.</a></td>";
 	}
-	
-	echo "<td><a href='notaSalida.php?codVenta=$codigo' target='_BLANK'>Imp. Formato</a></td>";
+	echo "<td><a href='notaSalida.php?codVenta=$codigo' target='_BLANK'>Imp. Formato</a></td>";*/
+
 	echo "</tr>";
 }
 echo "</table></center><br>";
@@ -382,7 +381,6 @@ echo "</div>";
 
 echo "<div class='divBotones'>
 <input type='button' value='Registrar Salida' name='adicionar' class='boton' onclick='enviar_nav()'>
-		<input type='button' value='Cambiar No Entregado' class='boton' onclick='cambiarNoEntregado(this.form)'>
 		<input type='button' value='Buscar' class='boton' onclick='ShowBuscar()'>
 		<input type='button' value='Anular Salida' class='boton2' onclick='anular_salida(this.form)'>
 </div>";

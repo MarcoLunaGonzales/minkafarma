@@ -59,9 +59,10 @@ function validar(f, numItems)
 	
 	echo "<input type='hidden' name='codigoIngreso' value='$codigo_ingreso'>";
 	
-	echo "<center><table border='0' class='textotit'><tr><th>Liquidación de Ingreso</th></tr></table></center><br>";
-	echo "<table border='1' class='texto' cellspacing='0' width='70%' align='center'>";
-	echo "<tr><th>Número de Ingreso</th><th>Fecha</th><th>Tipo de Ingreso</th><th>Observaciones</th></tr>";
+	echo "<center><h1>Liquidar Ingreso</h1>";
+	
+	echo "<table class='texto' align='center'>";
+	echo "<tr><th>Nro. Ingreso</th><th>Fecha</th><th>Tipo de Ingreso</th><th>Observaciones</th></tr>";
 	$dat=mysql_fetch_array($resp);
 	$codigo=$dat[0];
 	$fecha_ingreso=$dat[1];
@@ -94,7 +95,7 @@ function validar(f, numItems)
 	$sql_detalle="select i.cod_material, i.cantidad_unitaria from ingreso_detalle_almacenes i, material_apoyo m
 	where i.cod_ingreso_almacen='$codigo' and m.codigo_material=i.cod_material";
 	$resp_detalle=mysql_query($sql_detalle);
-	echo "<br><table border=1 cellspacing='0' class='textomini' width='70%' align='center'>";
+	echo "<br><table class='texto' align='center'>";
 	echo "<tr><th>&nbsp;</th><th>Material</th><th>Cantidad</th><th>Precio Bruto</th><th>Precio Neto</th></tr>";
 	$indice=1;
 	while($dat_detalle=mysql_fetch_array($resp_detalle))

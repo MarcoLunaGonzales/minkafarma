@@ -1,3 +1,9 @@
+<?php
+
+require("conexion.inc");
+require('function_formatofecha.php');
+
+?>
 <html>
     <head>
         <title>Busqueda</title>
@@ -38,45 +44,11 @@ function funOk(codReg,funOkConfirm)
         },function(){});
     });
 }
-function enviar_nav()
-{   location.href='registrarOC.php';
+function enviar_nav(){   
+	location.href='registrarOC.php';
 }
-function editar_ingreso(f)
-{   var i;
-    var j=0;
-    var j_cod_registro;
-    var fecha_registro;
-    for(i=0;i<=f.length-1;i++)
-    {   if(f.elements[i].type=='checkbox')
-        {   if(f.elements[i].checked==true)
-            {   j_cod_registro=f.elements[i].value;
-                fecha_registro=f.elements[i-1].value;
-                j=j+1;
-            }
-        }
-    }
-    if(j>1)
-    {   alert('Debe seleccionar solamente un registro para anularlo.');
-    }
-    else
-    {   if(j==0)
-        {   alert('Debe seleccionar un registro para anularlo.');
-        }
-        else
-        {   if(f.fecha_sistema.value==fecha_registro)
-            {   //location.href='editar_ingresomateriales.php?codigo_registro='+j_cod_registro+'&grupo_ingreso=1&valor_inicial=1';
-                funOk(j_cod_registro,function(){
-                    location.href='editar_ingresomateriales.php?codigo_registro='+j_cod_registro+'&grupo_ingreso=1&valor_inicial=1';
-                });
-            }
-            else
-            {   alert('Usted no esta autorizado(a) para anular el ingreso.');
-            }
-        }
-    }
-}
-function anular_ingreso(f)
-{   var i;
+function anular_ingreso(f){
+	var i;
     var j=0;
     var j_cod_registro;
     var fecha_registro;
@@ -113,10 +85,10 @@ function anular_ingreso(f)
         </script>
     </head>
     <body>
+
+
 <?php
 
-require("conexion.inc");
-require('function_formatofecha.php');
 
 $txtnroingreso = $_GET["txtnroingreso"];
 $fecha1 = $_GET["fecha1"];
@@ -134,7 +106,7 @@ echo "<input type='hidden' name='fecha_sistema' value='$fecha_sistema'>";
 $consulta = "select o.`nro_orden`, p.`nombre_proveedor`, 
 	(select t.nombre_tipopago from tipos_pago t where t.cod_tipopago=o.tipo_pago) as tipopago,
 	o.`cod_estado`, o.`fecha_orden`, o.`observaciones`,
-	(select op.nombre_propiedad from ordenes_propias op where op.cod_propiedad=o.orden_propia),
+	(select e.nombre_estado from estados_oc e where e.cod_estado=o.cod_estado),
 	o.fecha_vencimiento, monto_orden, monto_cancelado, o.orden_propia, o.nro_factura
 	from `orden_compra` o, `proveedores` p where o.`cod_proveedor`=p.`cod_proveedor` 
 	ORDER BY o.nro_orden DESC limit 0, 50 ";
@@ -145,7 +117,6 @@ echo "<h1>Ordenes de Compra</h1>";
 echo "<table border='1' cellspacing='0' class='textomini'><tr><th>Leyenda:</th>
 <th>OC Anuladas</th><td bgcolor='#ff8080' width='10%'></td>
 <th>OC Canceladas</th><td bgcolor='#58FA58' width='10%'></td>
-<th>OC Terceros</th><td bgcolor='#FF8000' width='10%'></td>
 <th>OC Normales</th><td bgcolor='' width='10%'>&nbsp;</td></tr></table><br>";
 require('home_almacen.php');
 
@@ -155,8 +126,8 @@ require('home_almacen.php');
 		</div>";
 
 	echo "<br><center><table class='texto'>";
-echo "<tr><th>&nbsp;</th><th>Numero Ingreso</th><th>Proveedor</th><th>Tipo de Pago</th><th>Fecha</th><th>Observaciones</th>
-<th>Propiedad OC</th><th>Nro Documento</th><th>Monto OC Bs.</th><th>Monto Oc Dolares</th><th>&nbsp;</th></tr>";
+echo "<tr><th>&nbsp;</th><th>Nro. OC</th><th>Proveedor</th><th>Tipo de Pago</th><th>Fecha</th><th>Observaciones</th>
+<th>Estado</th><th>Nro Documento</th><th>Monto OC Bs.</th><th>&nbsp;</th></tr>";
 while ($dat = mysql_fetch_array($resp)) {
     $nroOC = $dat[0];
     $nombreProveedor = $dat[1];
@@ -164,7 +135,7 @@ while ($dat = mysql_fetch_array($resp)) {
 	$codEstado=$dat[3];
     $fechaOC = $dat[4];
     $obsOC = $dat[5];
-	$propiedadOC=$dat[6];
+	$estadoOC=$dat[6];
 	$fechaVencimiento=$dat[7];
 	$montoOC=$dat[8];
 	$montoOCDol=$montoOC/6.96;
@@ -174,9 +145,6 @@ while ($dat = mysql_fetch_array($resp)) {
 	
 	$color_fondo = "";
         
-	if($ordenPropia==2){
-		$color_fondo="#ff8000";
-	}
 	$saldo=$montoOC-$montoCancelado;
 	if($saldo==0){
 		$color_fondo = "#58fa58";
@@ -187,17 +155,16 @@ while ($dat = mysql_fetch_array($resp)) {
     }else {
         $chkbox = "<input type='checkbox' name='codigo' value='$nroOC'>";
     }
-    echo "<tr bgcolor='$color_fondo'>
+    echo "<tr>
 	<td align='center'>$chkbox</td><td align='center'>$nroOC</td><td align='center'>$nombreProveedor</td>
 	<td align='center'>$nombrePago</td>
 	<td align='center'>$fechaOC</td><td>&nbsp;$obsOC</td>
-	<td align='center'>$propiedadOC</td>
+	<td align='center'>$estadoOC</td>
 	<td>$nroDoc</td>
 	<td>$montoOC</td>
-	<td>$montoOCDol</td>
-	<td align='center'>
+	<td align='center' bgcolor='$color_fondo'>
 	<a target='_BLANK' href='detalleOC.php?codigo_orden=$nroOC'>
-	<img src='imagenes/detalles.png' border='0' alt='Ver Detalles de la OC'></a></td></tr>";
+	<img src='imagenes/detalles.png' border='0' title='Ver Detalles de la OC' width='40'></a></td></tr>";
 }
 echo "</table></center><br>";
 require('home_almacen.php');

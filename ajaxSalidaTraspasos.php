@@ -11,9 +11,9 @@ $global_almacen=$_GET['global_almacen'];
 $fechaIniBusqueda=formateaFechaVista($fechaIniBusqueda);
 $fechaFinBusqueda=formateaFechaVista($fechaFinBusqueda);
 
-echo "<center><table border='1' class='texto' cellspacing='0' width='100%'>";
+echo "<center><table class='texto' width='100%'>";
 echo "<tr><th>&nbsp;</th><th>Numero Salida</th><th>Fecha/hora<br>Registro Salida</th><th>Tipo de Salida</th>
-	<th>Almacen Destino</th><th>Cliente</th><th>Observaciones</th><th>&nbsp;</th><th>&nbsp;</th><th>&nbsp;</th></tr>";
+	<th>Almacen Destino</th><th>Cliente</th><th>Observaciones</th><th>&nbsp;</th></tr>";
 	
 	
 //
@@ -95,14 +95,14 @@ while ($dat = mysql_fetch_array($resp)) {
     echo "<td>&nbsp;$nombreCliente</td><td>&nbsp;$obs_salida</td>";
     $url_notaremision = "navegador_detallesalidamuestras.php?codigo_salida=$codigo";    
     echo "<td><a href='javascript:llamar_preparado(this.form, $estado_preparado, $codigo)'>
-		<img src='imagenes/detalles.png' border='0' alt='Ver Detalles de la Salida Interna'></a></td>";
-	if($codTipoDoc==1){
+		<img src='imagenes/detalles.png' border='0' alt='Detalle' width='40'></a></td>";
+	/*if($codTipoDoc==1){
 		echo "<td><a href='formatoFactura.php?codVenta=$codigo' target='_BLANK'>Ver F.P.</a></td>";
 	}else{
 		echo "<td><a href='formatoNotaRemision.php?codVenta=$codigo' target='_BLANK'>Ver F.P.</a></td>";
 	}
+	echo "<td><a href='notaSalida.php?codVenta=$codigo' target='_BLANK'>Imp. Formato</a></td>";*/
 	
-	echo "<td><a href='notaSalida.php?codVenta=$codigo' target='_BLANK'>Imp. Formato</a></td>";
 	echo "</tr>";
 }
 echo "</table></center><br>";

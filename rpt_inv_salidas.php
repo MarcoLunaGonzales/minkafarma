@@ -17,12 +17,13 @@ $nombre_tiposalida=$datos_tipo_salida[0];
 	{	$nombre_tiposalidamostrar="Todos los tipos de Salida";
 	}
 	if($tipo_reporte==0)
-	{	$nombre_tiporeporte="Reporte x Número de Salida";
+	{	$nombre_tiporeporte="Reporte x Nro. de Salida";
 	}
 	else
 	{	$nombre_tiporeporte="Reporte x Producto";
 	}
-	echo "<table align='center' class='textotit'><tr><td align='center'>Reporte Salidas Almacen<br>$nombre_tiporeporte<br>$nombre_tiposalidamostrar Fecha inicio: <strong>$fecha_ini</strong> Fecha final: <strong>$fecha_fin</strong> <br>$txt_reporte</th></tr></table>";
+	echo "<h1>Reporte Salidas Almacen</h1>
+	<h1>$nombre_tiporeporte<br>$nombre_tiposalidamostrar Fecha inicio: <strong>$fecha_ini</strong> Fecha final: <strong>$fecha_fin</strong> <br>$txt_reporte</th></tr></table>";
 if($tipo_reporte==0)
 {
 
@@ -50,7 +51,7 @@ if($tipo_reporte==0)
 		order by s.nro_correlativo";
 	}
 	$resp=mysql_query($sql);
-	echo "<center><br><table border='1' class='texto' cellspacing='0' width='130%'>";
+	echo "<center><br><table class='texto'>";
 	echo "<tr><th>Nro.</th><th>Fecha</th><th>Tipo de Salida</th><th>Territorio<br>Destino</th><th>Almacen Destino</th><th>Cliente</th><th>Observaciones</th><th>Estado</th><th>Detalle</th></tr>";
 	while($dat=mysql_fetch_array($resp))
 	{
@@ -128,7 +129,7 @@ if($tipo_reporte==1)
 	$sql_producto="select codigo_material, descripcion_material from material_apoyo order by descripcion_material";
 
 	$resp_producto=mysql_query($sql_producto);
-	echo "<table border='1' class='texto' width='70%' align='center'>";
+	echo "<table class='texto' width='70%' align='center'>";
 
 	echo "<tr><th>Material</th><th>Salidas</th></tr>";
 	
@@ -137,7 +138,8 @@ if($tipo_reporte==1)
 		$nombre_producto="$dat_producto[1] $dat_producto[2]";
 		$sql="select * from ciudades order by descripcion";
 		$resp=mysql_query($sql);
-		$cadena_ciudades="<table border=1 cellspacing='0' class='textomini' width='100%'><tr><th>Territorio Destino</th><th>Cantidad</th><th>&nbsp;</th></tr>";
+		$cadena_ciudades="<table cellspacing='0' class='textomini' width='100%'>
+		<tr><th>Territorio Destino</th><th>Cantidad</th></tr>";
 		$bandera_producto=0;
 		$suma_salida_producto=0;
 		while($dat=mysql_fetch_array($resp))
@@ -151,13 +153,13 @@ if($tipo_reporte==1)
 			$fecha_iniconsulta=cambia_formatofecha($fecha_ini);
 			$fecha_finconsulta=cambia_formatofecha($fecha_fin);
 
-			$sql_salidas="select sum(sdi.cantidad_unitaria), s.cod_salida_almacenes, sdi.nro_lote
-from salida_almacenes s, salida_detalle_almacenes sd, salida_detalle_ingreso sdi
-where sd.cod_salida_almacen=s.cod_salida_almacenes and sd.cod_salida_almacen=sdi.cod_salida_almacen 
-and sd.cod_material='$codigo_producto' and s.cod_salida_almacenes=sdi.cod_salida_almacen and 
-sd.cod_material=sdi.material and s.salida_anulada<>1 and s.cod_almacen='$global_almacen'
-and s.almacen_destino='$cod_almacen' and s.fecha>='$fecha_iniconsulta' and s.fecha<='$fecha_finconsulta'
-group by (sdi.nro_lote)";
+			$sql_salidas="select sum(sd.cantidad_unitaria), s.cod_salida_almacenes, sd.lote
+				from salida_almacenes s, salida_detalle_almacenes sd 
+				where sd.cod_salida_almacen=s.cod_salida_almacenes
+				and sd.cod_material='$codigo_producto' and  
+				s.salida_anulada<>1 and s.cod_almacen='$global_almacen'
+				and s.almacen_destino='$cod_almacen' and s.fecha>='$fecha_iniconsulta' and s.fecha<='$fecha_finconsulta'
+				group by (sd.lote)";
 			//echo $sql_salidas;
 			$resp_salidas=mysql_query($sql_salidas);
 			$cantidad_salida=0;

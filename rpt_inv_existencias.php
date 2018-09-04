@@ -20,12 +20,15 @@ if($rpt_territorio!=0)
 	$nombre_almacen=$datos_nombre_almacen[0];
 		echo "<table align='center' class='textotit' width='70%'><tr><td align='center'>Reporte Existencias Almacen<br>Territorio: <strong>$nombre_territorio</strong> Nombre Almacen: <strong>$nombre_almacen</strong> <br>Existencias a Fecha: <strong>$rpt_fecha</strong><br>$txt_reporte</th></tr></table>";
 		//desde esta parte viene el reporte en si
-		$sql_item="select codigo_material, descripcion_material from material_apoyo
-		where codigo_material<>0 and estado='Activo' order by descripcion_material";
 		
+		$sql_item="select codigo_material, descripcion_material from material_apoyo
+		where codigo_material<>0 and estado='1' order by descripcion_material";
+		
+		//echo $sql_item;
 		$resp_item=mysql_query($sql_item);
 		
-		echo "<br><table cellspacing='0' border=1 align='center' class='texto' width='70%'><tr><th>&nbsp;</th><th>Código</th><th>Material</th>
+		echo "<br><table border=0 align='center' class='texto' width='70%'>
+		<tr><th>&nbsp;</th><th>Codigo</th><th>Material</th>
 		<th>Cantidad</th></tr>";
 		
 		$indice=1;
@@ -87,8 +90,11 @@ if($rpt_territorio!=0)
 			}
 		}
 		echo "</table>";
-		echo "<br><center><table border='0'><tr><td><a href='javascript:window.print();'><IMG border='no' alt='Imprimir esta' src='imagenes/print.gif'>Imprimir</a></td></tr></table>";
+		
+				include("imprimirInc.php");
+
 }
+
 //aqui sacamos el reporte para todas las regionales
 if($rpt_territorio==0)
 {		if($rpt_linea!=0)

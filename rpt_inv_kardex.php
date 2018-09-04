@@ -46,7 +46,9 @@ $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
 	$cantidad_sacada_afecha=$dat_salidas_afecha[0];
 	$cantidad_inicial_kardex=$cantidad_ingresada_afecha-$cantidad_sacada_afecha;
 	echo "<br><table class='texto' align='center'><tr><th>Existencia a fecha inicio reporte:  $cantidad_inicial_kardex</th></tr></table>";
-	echo "<center><br><table border='1' class='texto' cellspacing='0' width='100%'>";
+	
+	
+	echo "<center><br><table class='texto' cellspacing='0' width='100%'>";
 	echo "<tr class='textomini'><th>Fecha</th><th>Tipo</th><th>Nro. Ingreso/Salida</th><th>Entrada</th><th>Salida</th><th>Saldo</th><th>Tipo Ingreso/Salida</th><th>Destino Salida</th><th>Observaciones</th></tr>";
 	$sql_fechas_ingresos="select distinct(i.fecha) from ingreso_almacenes i, ingreso_detalle_almacenes id
 	where i.cod_ingreso_almacen=id.cod_ingreso_almacen and i.cod_almacen='$rpt_almacen' and

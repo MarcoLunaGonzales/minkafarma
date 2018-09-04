@@ -116,9 +116,9 @@ while ($dat = mysql_fetch_array($resp)) {
         $chkbox = "<input type='checkbox' name='codigo' value='$codigo'>";
     }
     
-	echo "<tr bgcolor='$color_fondo'><td align='center'>$chkbox</td><td align='center'>$nro_correlativo</td><td align='center'>&nbsp;$nota_entrega</td>
-	<td align='center'>$fecha_ingreso_mostrar $hora_ingreso</td><td>$nombre_tipoingreso</td><td>&nbsp;$obs_ingreso</td><td align='center'>
-	<a target='_BLANK' href='navegador_detalleingresomateriales.php?codigo_ingreso=$codigo'><img src='imagenes/icon_detail.png' width='30' border='0' alt='Ver Detalles del Ingreso'></a></td></tr>";
+	echo "<tr><td align='center'>$chkbox</td><td align='center'>$nro_correlativo</td><td align='center'>&nbsp;$nota_entrega</td>
+	<td align='center'>$fecha_ingreso_mostrar $hora_ingreso</td><td>$nombre_tipoingreso</td><td>&nbsp;$obs_ingreso</td><td align='center' bgcolor='$color_fondo'>
+	<a target='_BLANK' href='navegador_detalleingresomateriales.php?codigo_ingreso=$codigo'><img src='imagenes/icon_detail.png' width='30' border='0' title='Ver Detalles del Ingreso'></a></td></tr>";
 }
 echo "</table></center><br>";
 
