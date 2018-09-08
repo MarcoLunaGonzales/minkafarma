@@ -27,9 +27,10 @@
 	require("estilos.inc");
 	
 	$ciudad_volver=$cod_ciudad;
-	echo "<center><table border=0 cellspacing=0 class='textotit'><tr><th>Adición de Funcionarios</th></tr></table><br>";
+	echo "<h1>Registro de Funcionarios</h1>";
+	
 	echo "<form action='guardar_funcionario.php' method='get'>";
-	echo "<table border=1 cellspacing=0 class='texto'><tr><th colspan=4>Registro de Datos Personales</th></tr>";
+	echo "<table class='texto' align='center'><tr><th colspan=4>Registro de Datos Personales</th></tr>";
 	echo "<tr><th>Paterno</th><th>Materno (*)</th><th>Nombres (*)</th><th>Fecha de Nacimiento</th></tr>";
 	echo "<tr>";
 	echo "<td align='center'><input type='text' name='paterno' class='texto'></td>";
@@ -43,7 +44,7 @@
     		echo" input_element_id='exafinicial' ";
     		echo" click_element_id='imagenFecha'></DLCALENDAR></td>";
 	echo "</tr>";
-	echo "<tr><th>Dirección</th><th>Telefono Domicilio</th><th>Telefono Celular</th><th>Cargo</th></tr>";
+	echo "<tr><th>Direccion</th><th>Telefono Domicilio</th><th>Telefono Celular</th><th>Cargo</th></tr>";
 	echo "<tr>";
 	echo "<td align='center'><input type='text' name='direccion' class='texto'></td>";
 	echo "<td align='center'><input type='text' name='telefono' class='texto'></td>";
@@ -57,7 +58,7 @@
 			}
 	echo "</select></td>";
 	echo "</tr>";
-	echo "<tr><th>Correo Electrónico</th><th>Agencia (*)</th><th></th><th></th></tr>";
+	echo "<tr><th>Email</th><th>Agencia (*)</th><th></th><th></th></tr>";
 	echo "<tr>";
 	echo "<td align='center'><input type='text' name='email' class='texto'></td>";
 	echo "<td align='center'><select name='agencia' class='texto'>";
@@ -77,10 +78,13 @@
 	echo "</tr>";
 	echo "</table><br>";
 	
-	echo"\n<table align='center'><tr><td><a href='navegador_funcionarios.php?cod_ciudad=$cod_ciudad'><img  border='0'src='imagenes/volver.gif' width='15' height='8'>Volver Atras</a></td></tr></table>";
-	
 	echo "<input type='hidden' name'cod_ciudad' value='$codciudad'>";
-	echo "<input type='button' class='boton' value='Guardar' onClick='validar(this.form)'>";
+	
+	echo "<div class='divBotones'>
+	<input type='button' class='boton' value='Guardar' onClick='validar(this.form)'>
+	<input type='button' class='boton2' value='Cancelar' onClick='location.href=\"navegador_funcionarios.php?cod_ciudad=$ciudad_volver\"'>
+	</div>";
+	
 	echo "</form>";
 	echo "</center>";
 	echo "<center><table class='texto'><tr><th>Los campos marcados con (*) deben ser llenados obligatoriamente.<br>Al registrar un funcionario este ingresa a la base de datos como funcionario activo.</th></tr></table></center>";

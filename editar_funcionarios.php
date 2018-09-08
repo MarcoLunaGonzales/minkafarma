@@ -1,10 +1,7 @@
 <?php
-/**
- * Desarrollado por Datanet-Bolivia.
- * @autor: Marco Antonio Luna Gonzales
- * Sistema de Visita Médica
- * * @copyright 2006
-*/
+	require("conexion.inc");
+	require("estilos.inc");
+
 	echo "<script language='Javascript'>
 		function validar(f)
 		{
@@ -21,13 +18,10 @@
 			f.submit();
 		}
 	</script>";
-	require("conexion.inc");
-	if($usuario_rrhh!="")
-	{	require("estilos_rrhh.php");
-	}
-	else
-	{	require("estilos.inc");
-	}
+
+	$ciudad_volver=$_GET['cod_ciudad'];
+
+	
 	//sacamos los datos
 	$sql="select * from funcionarios where codigo_funcionario='$j_funcionario'";
 	$resp=mysql_query($sql);
@@ -46,9 +40,11 @@
 		$estado=$dat[11];
 		$exafinicial="$fecha_nac[8]$fecha_nac[9]/$fecha_nac[5]$fecha_nac[6]/$fecha_nac[0]$fecha_nac[1]$fecha_nac[2]$fecha_nac[3]";
 	}
-	echo "<center><table border=0 cellspacing=0 class='textotit'><tr><th>Editar Datos de Funcionario</th></tr></table><br>";
-	echo "<form action='guardar_modi_funcionario.php' method='post'>";
-	echo "<table border=1 cellspacing=0 class='texto'><tr><th colspan=4>Editar Datos Personales</th></tr>";
+	echo "<h1>Editar Datos de Funcionario</h1>";
+	
+	echo "<form action='guardar_modi_funcionario.php' method='POST'>";
+	
+	echo "<table class='texto' align='center'><tr><th colspan=4>Editar Datos Personales</th></tr>";
 	echo "<tr><th>Paterno (*)</th><th>Materno (*)</th><th>Nombres (*)</th><th>Fecha de Nacimiento</th></tr>";
 	echo "<input type='hidden' value='$codigo' name='codigo'>";
 	echo "<tr>";
@@ -63,7 +59,7 @@
     		echo" input_element_id='exafinicial' ";
     		echo" click_element_id='imagenFecha'></DLCALENDAR></td>";
 	echo "</tr>";
-	echo "<tr><th>Dirección</th><th>Telefono Domicilio (*)</th><th>Telefono Celular</th><th>Cargo</th></tr>";
+	echo "<tr><th>Direccion</th><th>Telefono Domicilio (*)</th><th>Telefono Celular</th><th>Cargo</th></tr>";
 	echo "<tr>";
 	echo "<td align='center'><input type='text' name='direccion' class='texto' value='$direccion'></td>";
 	echo "<td align='center'><input type='text' name='telefono' class='texto' value='$telefono'></td>";
@@ -82,7 +78,7 @@
 			}
 	echo "</select></td>";
 	echo "</tr>";
-	echo "<tr><th>Correo Electrónico</th><th>Agencia (*)</th><th>Estado</th><th></th></tr>";
+	echo "<tr><th>Email</th><th>Agencia (*)</th><th>Estado</th><th></th></tr>";
 	echo "<tr>";
 	echo "<td align='center'><input type='text' name='email' class='texto' value='$email'></td>";
 	echo "<td align='center'><select name='agencia' class='texto'>";
@@ -111,8 +107,11 @@
 	echo "</td><td></td>";
 	echo "</tr>";
 	echo "</table><br>";
-	echo"\n<table align='center'><tr><td><a href='navegador_funcionarios.php?cod_ciudad=$agencia'><img  border='0'src='imagenes/volver.gif' width='15' height='8'>Volver Atras</a></td></tr></table>";
-	echo "<input type='button' class='boton' value='Guardar' onClick='validar(this.form)'>";
+
+	echo "<div class='divBotones'>
+	<input type='button' class='boton' value='Guardar' onClick='validar(this.form)'>
+	<input type='button' class='boton2' value='Cancelar' onClick='location.href=\"navegador_funcionarios.php?cod_ciudad=$ciudad_volver\"'>
+	</div>";
 	echo "</form>";
 	echo "</center>";
 	echo "<center><table class='texto'><tr><th>Los campos marcados con (*) deben ser llenados obligatoriamente.</th></tr></table></center>";

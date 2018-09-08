@@ -6,8 +6,8 @@
  * * @copyright 2006
 */
 echo "<script language='Javascript'>
-                function enviar_nav()
-                {       location.href='registro_funcionarios.php?cod_ciudad=$cod_ciudad';
+                function enviar_nav(cod_ciudad)
+                {       location.href='registro_funcionarios.php?cod_ciudad='+cod_ciudad;
                 }
                 function eliminar_nav(f)
                 {
@@ -38,7 +38,7 @@ echo "<script language='Javascript'>
                                 }
                         }
                 }
-				function editar_nav(f)
+				function editar_nav(f, cod_ciudad)
                 {
                         var i;
                         var j=0;
@@ -63,7 +63,7 @@ echo "<script language='Javascript'>
                                 }
                                 else
                                 {
-                                        location.href='editar_funcionarios.php?j_funcionario='+j_contacto+'&cod_ciudad=$cod_ciudad';
+                                        location.href='editar_funcionarios.php?j_funcionario='+j_contacto+'&cod_ciudad='+cod_ciudad;
                                 }
                         }
                 }
@@ -76,6 +76,9 @@ echo "<script language='Javascript'>
                 </script>";
         require("conexion.inc");
 		require("estilos_almacenes.inc");
+		
+		$cod_ciudad=$_GET['cod_ciudad'];
+		
 		$sql_cab="select descripcion from ciudades where cod_ciudad=$cod_ciudad";
                 $resp_cab=mysql_query($sql_cab);
                 $dat_cab=mysql_fetch_array($resp_cab);
@@ -124,8 +127,8 @@ echo "<script language='Javascript'>
 		echo "</table></center><br>";
 		
         echo "<div class='divBotones'>
-		<input type='button' value='Adicionar' name='adicionar' class='boton' onclick='enviar_nav()'>
-		<input type='button' value='Editar' name='Editar' class='boton' onclick='editar_nav(this.form)'>
+		<input type='button' value='Adicionar' name='adicionar' class='boton' onclick='enviar_nav($cod_ciudad)'>
+		<input type='button' value='Editar' name='Editar' class='boton' onclick='editar_nav(this.form, $cod_ciudad)'>
 		<input type='button' value='Eliminar' name='eliminar' class='boton2' onclick='eliminar_nav(this.form)'>
 		</div>";
 		

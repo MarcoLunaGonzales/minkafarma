@@ -12,7 +12,7 @@ $nombre_completo="$paterno $materno $nombre";
 $sql="select descripcion from ciudades where cod_ciudad=$global_agencia";
 $resp=mysql_query($sql);
 $dat=mysql_fetch_array($resp);
-$agencia=$dat[0];
+//$agencia=$dat[0];
 $sql_almacen="select cod_almacen, nombre_almacen from almacenes where cod_ciudad='$global_agencia'";
 $resp_almacen=mysql_query($sql_almacen);
 $dat_almacen=mysql_fetch_array($resp_almacen);
