@@ -31,7 +31,7 @@ function recalculaCostos($codigoItem, $rpt_almacen){
 		$cantidad_sacada_afecha=$dat_salidas_afecha[0];
 		$cantidad_inicial_kardex=$cantidad_ingresada_afecha-$cantidad_sacada_afecha;
 			//sacamos el costo promedio del mes anterior
-			list($anio, $mes, $dia) = split('-', $fecha_iniconsulta);
+			list($anio, $mes, $dia) = explode('-', $fecha_iniconsulta);
 			$mesCosto=$mes-1;
 			$anioCosto=$anio;
 			if($mesCosto==0){

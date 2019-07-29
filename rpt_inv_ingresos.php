@@ -24,11 +24,13 @@ else
 	$fecha_finconsulta=cambia_formatofecha($fecha_fin);
 	$sql="select i.cod_ingreso_almacen, i.fecha, ti.nombre_tipoingreso, i.observaciones, i.nota_entrega, i.nro_correlativo, i.ingreso_anulado
 	FROM ingreso_almacenes i, tipos_ingreso ti
-	where i.cod_tipoingreso=ti.cod_tipoingreso and i.cod_almacen='$rpt_almacen' and i.fecha>='$fecha_iniconsulta' and i.fecha<='$fecha_finconsulta' and i.cod_tipoingreso='$tipo_ingreso' order by i.nro_correlativo";
+	where i.cod_tipoingreso=ti.cod_tipoingreso and i.cod_almacen='$rpt_almacen' and i.fecha>='$fecha_iniconsulta' and i.fecha<='$fecha_finconsulta' and i.cod_tipoingreso='$tipo_ingreso' and i.ingreso_anulado=0 
+	order by i.nro_correlativo";
 	if($tipo_ingreso=='')
 	{	$sql="select i.cod_ingreso_almacen, i.fecha, ti.nombre_tipoingreso, i.observaciones, i.nota_entrega, i.nro_correlativo, i.ingreso_anulado
 		FROM ingreso_almacenes i, tipos_ingreso ti
-		where i.cod_tipoingreso=ti.cod_tipoingreso and i.cod_almacen='$rpt_almacen' and i.fecha>='$fecha_iniconsulta' and i.fecha<='$fecha_finconsulta' order by i.nro_correlativo";
+		where i.cod_tipoingreso=ti.cod_tipoingreso and i.cod_almacen='$rpt_almacen' and i.fecha>='$fecha_iniconsulta' 
+		and i.fecha<='$fecha_finconsulta' and i.ingreso_anulado=0 order by i.nro_correlativo";
 	}
 	$resp=mysql_query($sql);
 	echo "<center><br><table class='texto' width='100%'>";

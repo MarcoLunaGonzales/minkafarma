@@ -2,6 +2,8 @@
 require('fpdf.php');
 require('conexion.inc');
 require('funciones.php');
+require('NumeroALetras.php');
+
 
 $codigoVenta=$_GET["codVenta"];
 
@@ -10,28 +12,54 @@ $sqlNro="select count(*) from `salida_detalle_almacenes` s where s.`cod_salida_a
 $respNro=mysql_query($sqlNro);
 $nroItems=mysql_result($respNro,0,0);
 
-$tamanoLargo=70+($nroItems*3)-3;
+$tamanoLargo=130+($nroItems*3)-3;
 
 //$pdf=new FPDF('P','mm',array(76,$tamanoLargo));
-$pdf=new FPDF('P','mm',array(76,140));
+$pdf=new FPDF('P','mm',array(100,$tamanoLargo));
 $pdf->SetMargins(0,0,0);
 $pdf->AddPage(); 
 $pdf->SetFont('Arial','',10);
 
-$y=0;
+$y=10;
 $incremento=3;
 
-$sqlEmp="select cod_empresa, nombre, nit, direccion, ciudad from datos_empresa";
-$respEmp=mysql_query($sqlEmp);
+//desde aca
+$sqlConf="select id, valor from configuracion_facturas where id=1";
+$respConf=mysql_query($sqlConf);
+$nombreEmpresa=mysql_result($respConf,0,1);
 
-$nombreEmpresa=mysql_result($respEmp,0,1);
+$sqlConf="select id, valor from configuracion_facturas where id=2";
+$respConf=mysql_query($sqlConf);
+$ciudadEmpresa=mysql_result($respConf,0,1);
 
-list($nombre1, $nombre2) = split("&", $nombreEmpresa);
+$sqlConf="select id, valor from configuracion_facturas where id=3";
+$respConf=mysql_query($sqlConf);
+$direccionEmpresa=mysql_result($respConf,0,1);
 
-$nitEmpresa=mysql_result($respEmp,0,2);
-$direccionEmpresa=mysql_result($respEmp,0,3);
-$ciudadEmpresa=mysql_result($respEmp,0,4);
+$sqlConf="select id, valor from configuracion_facturas where id=4";
+$respConf=mysql_query($sqlConf);
+$telefonoTxt=mysql_result($respConf,0,1);
 
+$sqlConf="select id, valor from configuracion_facturas where id=5";
+$respConf=mysql_query($sqlConf);
+$ciudadTxt=mysql_result($respConf,0,1);
+
+$sqlConf="select id, valor from configuracion_facturas where id=6";
+$respConf=mysql_query($sqlConf);
+$txt1=mysql_result($respConf,0,1);
+
+$sqlConf="select id, valor from configuracion_facturas where id=7";
+$respConf=mysql_query($sqlConf);
+$txt2=mysql_result($respConf,0,1);
+
+$sqlConf="select id, valor from configuracion_facturas where id=8";
+$respConf=mysql_query($sqlConf);
+$txt3=mysql_result($respConf,0,1);
+
+
+$sqlConf="select id, valor from configuracion_facturas where id=9";
+$respConf=mysql_query($sqlConf);
+$nitEmpresa=mysql_result($respConf,0,1);
 		
 $sqlDatosVenta="select concat(s.fecha,' ',s.hora_salida) as fecha, t.`nombre`, 
 (select c.nombre_cliente from clientes c where c.cod_cliente=s.cod_cliente) as nombreCliente, 
@@ -49,7 +77,6 @@ while($datDatosVenta=mysql_fetch_array($respDatosVenta)){
 	$obsVenta=$datDatosVenta[5];
 }
 
-
 $pdf->SetXY(0,$y+3);		$pdf->Cell(0,0,$nombre1,0,0,"C");
 $pdf->SetXY(0,$y+6);		$pdf->Cell(0,0,$nombre2,0,0,"C");
 
@@ -60,23 +87,24 @@ $pdf->SetXY(0,$y+12);		$pdf->Cell(0,0,"-----------------------------------------
 $pdf->SetXY(0,$y+15);		$pdf->Cell(0,0,"FECHA: $fechaVenta",0,0,"C");
 $pdf->SetXY(0,$y+18);		$pdf->Cell(0,0,"Sr(es): $nombreCliente",0,0,"C");
 $pdf->SetXY(0,$y+21);		$pdf->Cell(0,0,"R.S.: $razonSocial",0,0,"C");
-$pdf->SetXY(0,$y+24);		$pdf->Cell(0,0,"Obs.: $obsVenta",0,0,"C");
-
-$pdf->SetXY(0,$y+27);		$pdf->Cell(0,0,"=================================================================================",0,0,"C");
-$pdf->SetXY(5,$y+30);		$pdf->Cell(0,0,"Cant.");
-$pdf->SetXY(15,$y+30);		$pdf->Cell(0,0,"ITEM");
-$pdf->SetXY(53,$y+30);		$pdf->Cell(0,0,"Importe");
-$pdf->SetXY(0,$y+33);		$pdf->Cell(0,0,"=================================================================================",0,0,"C");
 
 
-$sqlDetalle="select m.`orden_grupo`, s.`cantidad_unitaria`, m.`descripcion_material`, s.`precio_unitario`, 
-		s.`descuento_unitario`, s.`monto_unitario`, m.abreviatura, ss.descuento 
-		from `salida_detalle_almacenes` s, `material_apoyo` m , salida_almacenes ss
-		where 
-		m.`codigo_material`=s.`cod_material` and s.`cod_salida_almacen`=$codigoVenta and s.cod_salida_almacen=ss.cod_salida_almacenes order by m.descripcion_material";
+$y=$y-15;
+
+$pdf->SetXY(0,$y+45);		$pdf->Cell(0,0,"=================================================================================",0,0,"C");
+$pdf->SetXY(15,$y+48);		$pdf->Cell(0,0,"ITEM");
+$pdf->SetXY(60,$y+48);		$pdf->Cell(0,0,"Cant.");
+$pdf->SetXY(70,$y+48);		$pdf->Cell(0,0,"Importe");
+$pdf->SetXY(0,$y+52);		$pdf->Cell(0,0,"=================================================================================",0,0,"C");
+
+$sqlDetalle="select m.codigo_material, sum(s.`cantidad_unitaria`), m.`descripcion_material`, s.`precio_unitario`, 
+		sum(s.`descuento_unitario`), sum(s.`monto_unitario`) from `salida_detalle_almacenes` s, `material_apoyo` m where 
+		m.`codigo_material`=s.`cod_material` and s.`cod_salida_almacen`=$codigoVenta 
+		group by s.cod_material
+		order by 3";
 $respDetalle=mysql_query($sqlDetalle);
 
-$yyy=36;
+$yyy=55;
 
 $montoTotal=0;
 while($datDetalle=mysql_fetch_array($respDetalle)){
@@ -89,31 +117,29 @@ while($datDetalle=mysql_fetch_array($respDetalle)){
 	$descUnit=$datDetalle[4];
 	$montoUnit=$datDetalle[5];
 	$montoUnit=redondear2($montoUnit);
-	$abrevMat=$datDetalle[6];
-	$descuentoNota=$datDetalle[7];
-	$descuentoNota=redondear2($descuentoNota);
-	$cadMaterial="";
-	if($abrevMat==""){
-		$cadMaterial=$nombreMat;
-	}else{
-		$cadMaterial=$abrevMat;
-	}
 	
-	$pdf->SetXY(7,$y+$yyy);		$pdf->Cell(0,0,"$cantUnit");
-	$pdf->SetXY(13,$y+$yyy);		$pdf->Cell(20,0,"$cadMaterial",0,0);
-	$pdf->SetXY(59,$y+$yyy);		$pdf->Cell(0,0,"$montoUnit");
+	$pdf->SetXY(5,$y+$yyy);		$pdf->MultiCell(60,3,"$nombreMat","C");
+	$pdf->SetXY(64,$y+$yyy+1);		$pdf->Cell(0,0,"$cantUnit");
+	$pdf->SetXY(72,$y+$yyy+1);		$pdf->Cell(0,0,"$montoUnit");
 	$montoTotal=$montoTotal+$montoUnit;
 	
-	$yyy=$yyy+4;
+	$yyy=$yyy+8;
 }
 $pdf->SetXY(0,$y+$yyy+2);		$pdf->Cell(0,0,"=================================================================================",0,0,"C");		
 $yyy=$yyy+5;
 
 
-$pdf->SetXY(37,$y+$yyy);		$pdf->Cell(0,0,"Total Venta:  $montoTotal",0,0);
-$pdf->SetXY(40,$y+$yyy+4);		$pdf->Cell(0,0,"Descuento:  $descuentoNota",0,0);
-$totalFinal=$montoTotal-$descuentoNota;
-$pdf->SetXY(37,$y+$yyy+8);		$pdf->Cell(0,0,"Total Final:  $totalFinal",0,0);
+$pdf->SetXY(42,$y+$yyy);		$pdf->Cell(0,0,"Total Venta:  $montoTotal",0,0);
+$pdf->SetXY(44,$y+$yyy+4);		$pdf->Cell(0,0,"Descuento:  0",0,0);
+$pdf->SetXY(43,$y+$yyy+8);		$pdf->Cell(0,0,"Total Final:  $montoTotal",0,0);
+
+list($montoEntero, $montoDecimal) = explode('.', $montoTotal);
+if($montoDecimal==""){
+	$montoDecimal="00";
+}
+$txtMonto=NumeroALetras::convertir($montoEntero);
+$pdf->SetXY(5,$y+$yyy+11);		$pdf->MultiCell(0,3,"Son:  $txtMonto"." ".$montoDecimal."/100 Bolivianos",0,"L");
+$pdf->SetXY(0,$y+$yyy+19);		$pdf->Cell(0,0,"=================================================================================",0,0,"C");
 
 $pdf->Output();
 ?>

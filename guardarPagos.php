@@ -37,14 +37,14 @@ for($i=1;$i<=$nroFilas;$i++)
 			`cod_estado`)
 			values ('$codigo', '$codOC', '$fecha', '$nroDoc', '$observaciones', '$montoPago', '$proveedor', 1)";
 	
-		echo $sql_inserta;
+		//echo $sql_inserta;
 		$sql_inserta=mysql_query($sql_inserta);
 		//actualizamos la tabla ordenes de compra
 		$sqlUpd="update orden_compra set monto_cancelado=monto_cancelado+$montoPago where cod_orden='$codOC'";
 		$respUpd=mysql_query($sqlUpd);
 
 	}	
-	echo $i;
+	//echo $i;
 }
 
 

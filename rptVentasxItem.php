@@ -49,7 +49,7 @@ while($datos=mysql_fetch_array($resp)){
 	$cantidad=$datos[3];
 	
 	$montoPtr=number_format($montoVenta,2,".",",");
-	$cantidadFormat=number_format($cantidad,2,".",",");
+	$cantidadFormat=number_format($cantidad,0,".",",");
 	
 	$totalVenta=$totalVenta+$montoVenta;
 	echo "<tr>

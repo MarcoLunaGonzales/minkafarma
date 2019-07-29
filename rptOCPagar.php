@@ -11,13 +11,12 @@
 
 	//echo $sql;	
 	$resp=mysql_query($sql);
-	echo "<center><table border='0' class='textotit'><tr><td>Reporte de Ordenes de Compra por Pagar</td></tr></table></center><br>";
-	echo "<center><table border='1' class='texto' cellspacing='0' width='80%' id='main'>";
+	echo "<h1>Reporte de Ordenes de Compra por Pagar</h1>";
+	echo "<center><table class='texto' id='main'>";
 	echo "<tr><th>Nro. Documento</th>
 	<th>Proveedor</th>
 	<th>Fecha OC</th>
 	<th>Saldo Bs.</th>
-	<th>Saldo Dolar</th>
 	<th>Dias Vencimiento</th>
 	</tr>";
 	$indice=1;
@@ -47,19 +46,16 @@ $sumaDol=0;
 		echo "<td align='center'>$proveedor</td>";
 		echo "<td align='center'>$fechaOrden</td>";
 		echo "<td align='center'>$saldo</td>";
-		echo "<td align='center'>$saldoDol</td>";
 		echo "<td align='center'>$diasVenc</td>";
 		echo "</tr>";
 	}
 	
 
 
-	echo "<tr><td>$codOrden</td>";
-
+	echo "<tr><td>-</td>";
 		echo "<td align='center'>&nbsp;</td>";
 		echo "<td align='center'>&nbsp;</td>";
 		echo "<td align='center'>$sumaBs</td>";
-		echo "<td align='center'>$sumaDol</td>";
 		echo "<td align='center'>&nbsp;</td>";
 		echo "</tr>";
 

@@ -3,10 +3,8 @@
         <title>Busqueda</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <script type="text/javascript" src="lib/js/xlibPrototipoSimple-v0.1.js"></script>
-
 		
-		
-		        <script type='text/javascript' language='javascript'>
+<script type='text/javascript' language='javascript'>
 function nuevoAjax()
 {	var xmlhttp=false;
 	try {
@@ -28,9 +26,21 @@ function listaMateriales(f){
 	var contenedor;
 	var codTipo=f.itemTipoMaterial.value;
 	var nombreItem=f.itemNombreMaterial.value;
+	var tipoSalida=(f.tipoSalida.value);
 	contenedor = document.getElementById('divListaMateriales');
+	
+	var arrayItemsUtilizados=new Array();	
+	var i=0;
+	for(var j=1; j<=num; j++){
+		if(document.getElementById('materiales'+j)!=null){
+			console.log("codmaterial: "+document.getElementById('materiales'+j).value);
+			arrayItemsUtilizados[i]=document.getElementById('materiales'+j).value;
+			i++;
+		}
+	}
+	
 	ajax=nuevoAjax();
-	ajax.open("GET", "ajaxListaMateriales.php?codTipo="+codTipo+"&nombreItem="+nombreItem,true);
+	ajax.open("GET", "ajaxListaMateriales.php?codTipo="+codTipo+"&nombreItem="+nombreItem+"&arrayItemsUtilizados="+arrayItemsUtilizados+"&tipoSalida="+tipoSalida,true);
 	ajax.onreadystatechange=function() {
 		if (ajax.readyState==4) {
 			contenedor.innerHTML = ajax.responseText
@@ -105,29 +115,59 @@ function buscarMaterial(f, numMaterial){
 	document.getElementById('divRecuadroExt').style.visibility='visible';
 	document.getElementById('divProfileData').style.visibility='visible';
 	document.getElementById('divProfileDetail').style.visibility='visible';
+	document.getElementById('divboton').style.visibility='visible';
+	
+	document.getElementById('divListaMateriales').innerHTML='';
+	document.getElementById('itemNombreMaterial').value='';	
+	document.getElementById('itemNombreMaterial').focus();
 }
+function Hidden(){
+	document.getElementById('divRecuadroExt').style.visibility='hidden';
+	document.getElementById('divProfileData').style.visibility='hidden';
+	document.getElementById('divProfileDetail').style.visibility='hidden';
+	document.getElementById('divboton').style.visibility='hidden';
 
+}
 function setMateriales(f, cod, nombreMat){
 	var numRegistro=f.materialActivo.value;
 	
 	document.getElementById('materiales'+numRegistro).value=cod;
-	document.getElementById('cod_material'+numRegistro).value=nombreMat;
+	document.getElementById('cod_material'+numRegistro).innerHTML=nombreMat;
 	
 	document.getElementById('divRecuadroExt').style.visibility='hidden';
 	document.getElementById('divProfileData').style.visibility='hidden';
 	document.getElementById('divProfileDetail').style.visibility='hidden';
+	document.getElementById('divboton').style.visibility='hidden';
 	
+	document.getElementById("cantidad_unitaria"+numRegistro).focus();
+
 	actStock(numRegistro);
 }
 
-	num=0;
+num=0;
+cantidad_items=0;
 
-	function mas(obj) {
+function mas(obj) {
+	if(num>=15){
+		alert("No puede registrar mas de 15 items en una nota.");
+	}else{
+		//aca validamos que el item este seleccionado antes de adicionar nueva fila de datos
+		var banderaItems0=0;
+		for(var j=1; j<=num; j++){
+			if(document.getElementById('materiales'+j)!=null){
+				if(document.getElementById('materiales'+j).value==0){
+					banderaItems0=1;
+				}
+			}
+		}
+		//fin validacion
+		console.log("bandera: "+banderaItems0);
 
-  		if(num>=15){
-			alert("No puede registrar mas de 15 items en una nota.");
-		}else{
+		if(banderaItems0==0){
 			num++;
+			cantidad_items++;
+			console.log("num: "+num);
+			console.log("cantidadItems: "+cantidad_items);
 			fi = document.getElementById('fiel');
 			contenedor = document.createElement('div');
 			contenedor.id = 'div'+num;  
@@ -138,22 +178,39 @@ function setMateriales(f, cod, nombreMat){
 			ajax=nuevoAjax();
 			ajax.open("GET","ajaxMaterialSalida.php?codigo="+num,true);
 			ajax.onreadystatechange=function(){
-			if (ajax.readyState==4) {
-				div_material.innerHTML=ajax.responseText;
+				if (ajax.readyState==4) {
+					div_material.innerHTML=ajax.responseText;
+					buscarMaterial(form1, num);
 				}
 			}		
 			ajax.send(null);
 		}
-		
-	}	
-		
-	function menos(numero) {
-		num=parseInt(num)-1;		
-		fi = document.getElementById('fiel');
-  		fi.removeChild(document.getElementById('div'+numero));
- 		totales();
-	}
 
+	}
+	
+}
+		
+function menos(numero) {
+	cantidad_items--;
+	console.log("TOTAL ITEMS: "+num);
+	console.log("NUMERO A DISMINUIR: "+numero);
+	if(numero==num){
+		num=parseInt(num)-1;
+ 	}
+	fi = document.getElementById('fiel');
+	fi.removeChild(document.getElementById('div'+numero));
+	totales();
+}
+
+function pressEnter(e, f){
+	tecla = (document.all) ? e.keyCode : e.which;
+	if (tecla==13){
+		document.getElementById('itemNombreMaterial').focus();
+		listaMateriales(f);
+		return false;
+	}
+}
+	
 function validar(f)
 {   
 	f.cantidad_material.value=num;
@@ -262,9 +319,8 @@ else
 
 <td align='center'>
 	<select name='almacen' id='almacen' class='texto'>
-		<option value='0'>-----</option>
 <?php
-	$sql3="select cod_almacen, nombre_almacen from almacenes order by nombre_almacen";
+	$sql3="select cod_almacen, nombre_almacen from almacenes where cod_almacen<>'$global_almacen' order by nombre_almacen";
 	$resp3=mysql_query($sql3);
 	while($dat3=mysql_fetch_array($resp3)){
 		$cod_almacen=$dat3[0];
@@ -321,12 +377,16 @@ echo "<script type='text/javascript' language='javascript'  src='dlcalendar.js'>
 <div id="divRecuadroExt" style="background-color:#666; position:absolute; width:800px; height: 400px; top:30px; left:150px; visibility: hidden; opacity: .70; -moz-opacity: .70; filter:alpha(opacity=70); -webkit-border-radius: 20px; -moz-border-radius: 20px; z-index:2; overflow: auto;">
 </div>
 
+<div id="divboton" style="position: absolute; top:20px; left:920px;visibility:hidden; text-align:center; z-index:3">
+	<a href="javascript:Hidden();"><img src="imagenes/cerrar4.png" height="45px" width="45px"></a>
+</div>
+
 <div id="divProfileData" style="background-color:#FFF; width:750px; height:350px; position:absolute; top:50px; left:170px; -webkit-border-radius: 20px; 	-moz-border-radius: 20px; visibility: hidden; z-index:2; overflow: auto;">
   	<div id="divProfileDetail" style="visibility:hidden; text-align:center">
 		<table align='center'>
 			<tr><th>Linea</th><th>Material</th><th>&nbsp;</th></tr>
 			<tr>
-			<td><select name='itemTipoMaterial'>
+			<td><select class="textogranderojo" name='itemTipoMaterial' style="width:300px">
 			<?php
 			$sqlTipo="select pl.cod_linea_proveedor, CONCAT(p.nombre_proveedor,' - ',pl.nombre_linea_proveedor) from proveedores p, proveedores_lineas pl 
 			where p.cod_proveedor=pl.cod_proveedor and pl.estado=1 order by 2;";
@@ -342,7 +402,7 @@ echo "<script type='text/javascript' language='javascript'  src='dlcalendar.js'>
 			</select>
 			</td>
 			<td>
-				<input type='text' name='itemNombreMaterial'>
+				<input type='text' name='itemNombreMaterial' id='itemNombreMaterial' class="textogranderojo" onkeypress="return pressEnter(event, this.form);">
 			</td>
 			<td>
 				<input type='button' class='boton' value='Buscar' onClick="listaMateriales(this.form)">

@@ -41,7 +41,7 @@ function modifPrecioC(){
    var datoModif=parseFloat(document.getElementById('valorPrecioC').value);
    datoModif=datoModif/100;
 	for(var i=1; i<=numFilas-1; i++){
-		var dato=parseFloat(main.rows[i].cells[2].firstChild.value);
+		var dato=parseFloat(main.rows[i].cells[1].firstChild.value);
 		var datoNuevo=dato+(datoModif*dato);
 		main.rows[i].cells[3].firstChild.value=datoNuevo;
 	}
@@ -55,7 +55,7 @@ function modifPrecioF(){
    var datoModif=parseFloat(document.getElementById('valorPrecioF').value);
    datoModif=datoModif/100;
 	for(var i=1; i<=numFilas-1; i++){
-		var dato=parseFloat(main.rows[i].cells[3].firstChild.value);
+		var dato=parseFloat(main.rows[i].cells[1].firstChild.value);
 		var datoNuevo=dato+(datoModif*dato);
 		main.rows[i].cells[4].firstChild.value=datoNuevo;
 	}
@@ -106,6 +106,30 @@ function modifPreciosAjax(indice){
 	ajax.send(null)
 	
 }
+
+function cambiarPrecioIndividual(indice){
+	var item=document.getElementById('item_'+indice).value;
+	var precio1=document.getElementById('precio1_'+indice).value;
+	precio1=parseFloat(precio1);
+	
+	var porcentajeCambiar=parseFloat(document.getElementById('valorPrecioB').value);
+	porcentajeCambiar=porcentajeCambiar/100;
+	var datoNuevo=precio1+(porcentajeCambiar*precio1);
+	main.rows[indice].cells[2].firstChild.value=datoNuevo;
+	
+	var porcentajeCambiar=parseFloat(document.getElementById('valorPrecioC').value);
+	porcentajeCambiar=porcentajeCambiar/100;
+	var datoNuevo=precio1+(porcentajeCambiar*precio1);
+	main.rows[indice].cells[3].firstChild.value=datoNuevo;
+	
+	var porcentajeCambiar=parseFloat(document.getElementById('valorPrecioF').value);
+	porcentajeCambiar=porcentajeCambiar/100;
+	var datoNuevo=precio1+(porcentajeCambiar*precio1);
+	main.rows[indice].cells[4].firstChild.value=datoNuevo;
+	
+		
+}
+
 function enviar(f){
 	f.submit();
 }
@@ -118,12 +142,22 @@ function enviar(f){
 	require("funciones.php");
 
 	$globalAlmacen=$_COOKIE['global_almacen'];
+	$ordenLista=$_GET['orden'];
 	
 	echo "<form method='POST' action='guardarPrecios.php' name='form1'>";
 	
-	$sql="select codigo_material, descripcion_material, p.nombre_linea_proveedor 
+	if($ordenLista==2){
+		$sql="select codigo_material, descripcion_material, p.nombre_linea_proveedor 
 		from material_apoyo ma, proveedores_lineas p 
 		where ma.cod_linea_proveedor=p.cod_linea_proveedor order by 3,2";
+	}
+	if($ordenLista==1){
+		$sql="select codigo_material, descripcion_material, p.nombre_linea_proveedor 
+		from material_apoyo ma, proveedores_lineas p 
+		where ma.cod_linea_proveedor=p.cod_linea_proveedor order by 2";
+	}
+	
+
 
 	//echo $sql;
 	
@@ -133,12 +167,12 @@ function enviar(f){
 	echo "<center><table class='texto' id='main'>";
 
 	echo "<tr><th>Material</th>
-	<th>Precio A</th>
-	<th>Precio B<input type='text' size='2' name='valorPrecioB' id='valorPrecioB' value='0'>
+	<th>Precio Normal</th>
+	<th>Precio Super Oferta<br><input type='text' size='2' name='valorPrecioB' id='valorPrecioB' value='0'>
 	<a href='javascript:modifPrecioB()'><img src='imagenes/edit.png' width='30' alt='Editar'></a></th>
-	<th>Precio C<input type='text' size='2' name='valorPrecioC' id='valorPrecioC' value='0'>
+	<th>Precio Oferta<br><input type='text' size='2' name='valorPrecioC' id='valorPrecioC' value='0'>
 	<a href='javascript:modifPrecioC()'><img src='imagenes/edit.png' width='30' alt='Editar'></a></th>
-	<th>Precio Factura<input type='text' size='2' name='valorPrecioF' id='valorPrecioF' value='0'>
+	<th>Precio Excepcional<br><input type='text' size='2' name='valorPrecioF' id='valorPrecioF' value='0'>
 	<a href='javascript:modifPrecioF()'><img src='imagenes/edit.png' width='30' alt='Editar'></th>
 	<th>-</th>
 	</tr>";
@@ -217,9 +251,12 @@ function enviar(f){
 		
 		$precioConMargen=$precioBase+($precioBase*($porcentajeMargen/100));
 		
-		//
-		echo "<tr><td>$nombreMaterial <a href='javascript:modifPreciosAjax($indice)'>
-		<img src='imagenes/save3.png' alt='Guardar' width='30'></a>  (Ultima compra: $precioBase  --  Precio+Margen: $precioConMargen)</td>";
+		//(Ultima compra: $precioBase  --  Precio+Margen: $precioConMargen)
+		echo "<tr><td>$nombreMaterial ($nombreTipo) <a href='javascript:modifPreciosAjax($indice)'>
+		<img src='imagenes/save3.png' title='Guardar este item.' width='30'></a>
+		<a href='javascript:cambiarPrecioIndividual($indice)'>
+		<img src='imagenes/flecha.png' title='Aplicar Porcentaje a este item.' width='30'></a>
+		</td>";
 		echo "<input type='hidden' name='item_$indice' id='item_$indice' value='$codigo'>";
 		echo "<td align='center'><input type='text' size='5' value='$precio1' id='precio1_$indice' name='$codigo|1'></td>";
 		echo "<td align='center'><input type='text' size='5' value='$precio2' id='precio2_$indice' name='$codigo|2'></td>";

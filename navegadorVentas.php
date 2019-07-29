@@ -155,8 +155,38 @@ function anular_salida(f)
         }
         else
         {   funOk(j_cod_registro,function() {
-                        location.href='anular_salida.php?codigo_registro='+j_cod_registro+'&grupo_salida=2';
+                        location.href='anular_venta.php?codigo_registro='+j_cod_registro;
             });
+        }
+    }
+}
+
+function anular_salida2(f)
+{   var i;
+    var j=0;
+    var j_cod_registro, estado_preparado;
+    var fecha_registro;
+    for(i=0;i<=f.length-1;i++)
+    {   if(f.elements[i].type=='checkbox')
+        {   if(f.elements[i].checked==true)
+            {   j_cod_registro=f.elements[i].value;
+                fecha_registro=f.elements[i-2].value;
+                estado_preparado=f.elements[i-1].value;
+                j=j+1;
+            }
+        }
+    }
+    if(j>1)
+    {   alert('Debe seleccionar solamente un registro para anularlo.');
+    }
+    else
+    {   if(j==0)
+        {   alert('Debe seleccionar un registro para anularlo.');
+        }
+        else
+        {   if(confirm('Esta seguro de anular?')) {
+                        location.href='anular_venta.php?codigo_registro='+j_cod_registro;
+            };
         }
     }
 }
@@ -315,6 +345,12 @@ $fecha2 = $_GET["fecha2"];
 
 require("estilos_almacenes.inc");
 
+//SACAMOS LA CONFIGURACION PARA LA ANULACION
+$anulacionCodigo=1;
+$sqlConf="select valor_configuracion from configuraciones where id_configuracion=6";
+$respConf=mysql_query($sqlConf);
+$anulacionCodigo=mysql_result($respConf,0,0);
+
 echo "<form method='post' action=''>";
 echo "<input type='hidden' name='fecha_sistema' value='$fecha_sistema'>";
 
@@ -329,14 +365,18 @@ echo "<table class='texto' cellspacing='0' width='90%'>
 echo "<div class='divBotones'>
 		<input type='button' value='Registrar' name='adicionar' class='boton' onclick='enviar_nav()'>
         <input type='button' value='Editar' class='boton' onclick='editar_salida(this.form)'>
-		<input type='button' value='Buscar' class='boton' onclick='ShowBuscar()'></td>		
-		<input type='button' value='Anular' class='boton2' onclick='anular_salida(this.form)'>
-    </div>";
+		<input type='button' value='Buscar' class='boton' onclick='ShowBuscar()'></td>";		
+if($anulacionCodigo==1){
+	echo "<input type='button' value='Anular' class='boton2' onclick='anular_salida(this.form)'>";
+}else{
+	echo "<input type='button' value='Anular' class='boton2' onclick='anular_salida2(this.form)'>";	
+}
+echo "</div>";
 		
 echo "<div id='divCuerpo'>";
 echo "<center><table class='texto'>";
 echo "<tr><th>&nbsp;</th><th>Nro. Factura</th><th>Fecha/hora<br>Registro Salida</th><th>Tipo de Salida</th>
-	<th>Cliente</th><th>Razon Social</th><th>NIT</th><th>Observaciones</th><th>&nbsp;</th><th>&nbsp;</th><th>&nbsp;</th></tr>";
+	<th>Cliente</th><th>Razon Social</th><th>NIT</th><th>Observaciones</th><th>&nbsp;</th><th>&nbsp;</th></tr>";
 	
 echo "<input type='hidden' name='global_almacen' value='$global_almacen' id='global_almacen'>";
 
@@ -354,7 +394,7 @@ if($txtnroingreso!="")
 if($fecha1!="" && $fecha2!="")
    {$consulta = $consulta."AND '$fecha1'<=s.fecha AND s.fecha<='$fecha2' ";
    }
-$consulta = $consulta."ORDER BY s.fecha desc, s.nro_correlativo DESC limit 0, 50 ";
+$consulta = $consulta."ORDER BY s.fecha desc, s.nro_correlativo DESC limit 0, 100 ";
 
 //
 $resp = mysql_query($consulta);
@@ -399,15 +439,20 @@ while ($dat = mysql_fetch_array($resp)) {
     echo "<td>$nombre_tiposalida</td>";
     echo "<td>&nbsp;$nombreCliente</td><td>&nbsp;$razonSocial</td><td>&nbsp;$nitCli</td><td>&nbsp;$obs_salida</td>";
     $url_notaremision = "navegador_detallesalidamuestras.php?codigo_salida=$codigo";    
-    echo "<td bgcolor='$color_fondo'><a href='javascript:llamar_preparado(this.form, $estado_preparado, $codigo)'>
+    
+	/*echo "<td bgcolor='$color_fondo'><a href='javascript:llamar_preparado(this.form, $estado_preparado, $codigo)'>
 		<img src='imagenes/icon_detail.png' width='30' border='0' title='Detalle'></a></td>";
+	*/
 	if($codTipoDoc==1){
 		echo "<td  bgcolor='$color_fondo'><a href='formatoFactura.php?codVenta=$codigo' target='_BLANK'><img src='imagenes/factura1.jpg' width='30' border='0' title='Factura Formato Pequeño'></a></td>";
-	}else{
-		echo "<td  bgcolor='$color_fondo'><a href='formatoNotaRemision.php?codVenta=$codigo' target='_BLANK'><img src='imagenes/factura1.jpg' width='30' border='0' title='Factura Formato Pequeño'></a></td>";
+		echo "<td  bgcolor='$color_fondo'><a href='formatoFacturaExtendido.php?codVenta=$codigo' target='_BLANK'><img src='imagenes/factura1.jpg' width='30' border='0' title='Factura Extendida'></a></td>";
+	}
+	else{
+		echo "<td  bgcolor='$color_fondo'><a href='formatoNotaRemisionOficial.php?codVenta=$codigo' target='_BLANK'><img src='imagenes/factura1.jpg' width='30' border='0' title='Factura Formato Pequeño'></a></td>";
 	}
 	
-	echo "<td  bgcolor='$color_fondo'><a href='notaSalida.php?codVenta=$codigo' target='_BLANK'><img src='imagenes/factura1.jpg' width='30' border='0' title='Factura Formato Grande'></a></td>";
+	/*echo "<td  bgcolor='$color_fondo'><a href='notaSalida.php?codVenta=$codigo' target='_BLANK'><img src='imagenes/factura1.jpg' width='30' border='0' title='Factura Formato Grande'></a></td>";*/
+	
 	echo "</tr>";
 }
 echo "</table></center><br>";
@@ -416,9 +461,13 @@ echo "</div>";
 echo "<div class='divBotones'>
 		<input type='button' value='Registrar' name='adicionar' class='boton' onclick='enviar_nav()'>
         <input type='button' value='Editar' class='boton' onclick='editar_salida(this.form)'>
-		<input type='button' value='Buscar' class='boton' onclick='ShowBuscar()'></td>		
-		<input type='button' value='Anular' class='boton2' onclick='anular_salida(this.form)'>
-    </div>";
+		<input type='button' value='Buscar' class='boton' onclick='ShowBuscar()'></td>";	
+if($anulacionCodigo==1){
+	echo "<input type='button' value='Anular' class='boton2' onclick='anular_salida(this.form)'>";
+}else{
+	echo "<input type='button' value='Anular' class='boton2' onclick='anular_salida2(this.form)'>";	
+}
+    echo "</div>";
 	
 echo "</form>";
 

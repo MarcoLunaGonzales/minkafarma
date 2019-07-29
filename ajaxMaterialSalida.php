@@ -11,12 +11,12 @@ require("conexion.inc");
 
 <table border="0" align="center" width="100%"  class="texto" id="data<?php echo $num?>" >
 <tr bgcolor="#FFFFFF">
-
-<td width="50%" align="center">
+<td>
 	<a href="javascript:buscarMaterial(form1, <?php echo $num;?>)"><img src='imagenes/buscar2.png' title="Buscar Producto" width="30"></a>
-
+</td>
+<td width="50%" align="center">
 	<input type="hidden" name="materiales<?php echo $num;?>" id="materiales<?php echo $num;?>" value="0">
-	<input type="text" id="cod_material<?php echo $num;?>" name="cod_material<?php echo $num;?>" onChange="" size="40" readonly>
+	<div id="cod_material<?php echo $num;?>" class='textomedianonegro'>-</div>
 </td>
 
 <td width="20%" align="center">

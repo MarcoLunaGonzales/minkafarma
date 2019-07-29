@@ -12,10 +12,9 @@ $clienteBusqueda=$_GET['clienteBusqueda'];
 $fechaIniBusqueda=formateaFechaVista($fechaIniBusqueda);
 $fechaFinBusqueda=formateaFechaVista($fechaFinBusqueda);
 
-echo "<center><table border='1' class='texto' cellspacing='0' width='100%'>";
-echo "<tr><th>&nbsp;</th><th>Numero Salida</th><th>Fecha/hora<br>Registro Salida</th><th>Tipo de Salida</th>
-	<th>Cliente</th><th>Observaciones</th><th>&nbsp;</th><th>&nbsp;</th><th>&nbsp;</th></tr>";
-	
+echo "<center><table class='texto' cellspacing='0' width='100%'>";
+echo "<tr><th>&nbsp;</th><th>Nro. Factura</th><th>Fecha/hora<br>Registro Salida</th><th>Tipo de Salida</th>
+	<th>Cliente</th><th>Razon Social</th><th>NIT</th><th>Observaciones</th><th>&nbsp;</th><th>&nbsp;</th></tr>";	
 //
 $consulta = "
 	SELECT s.cod_salida_almacenes, s.fecha, s.hora_salida, ts.nombre_tiposalida, 
@@ -59,65 +58,45 @@ while ($dat = mysql_fetch_array($resp)) {
     $cod_almacen_destino = $dat[9];
 	$nombreCliente=$dat[10];
 	$codTipoDoc=$dat[11];
-
+	$razonSocial=$dat[12];
+	$nitCli=$dat[13];
+	
     echo "<input type='hidden' name='fecha_salida$nro_correlativo' value='$fecha_salida_mostrar'>";
-    $estado_preparado = 0;
-    if ($estado_almacen == 0) {
-        $color_fondo = "";
-        $chk = "<input type='checkbox' name='codigo' value='$codigo'>";
-    }
-    //salida despachada
-    if ($estado_almacen == 1) {
-        $color_fondo = "#bbbbbb";
-        $chk = "&nbsp;";
-    }
-    //salida recepcionada
-    if ($estado_almacen == 2) {
-        $color_fondo = "#33ccff";
-        $chk = "&nbsp;";
-    }
-    if ($cod_almacen_destino == $global_almacen) {
-        $color_fondo = "#66ff99";
-        $chk = "<input type='checkbox' name='codigo' value='$codigo'>";
-    }
-    if ($estado_almacen == 3) {
-        $color_fondo = "#ffff99";
-        $chk = "<input type='checkbox' name='codigo' value='$codigo'>";
-        $estado_preparado = 1;
-    }
-    if ($estado_almacen == 4) {
-        $color_fondo = "#ff8080";
-        $chk = "<input type='checkbox' name='codigo' value='$codigo'>";
-        $estado_preparado = 1;
-    }   
-    if ($estado_almacen == 0) {
-        $color_fondo = "#FFFFFF";
-        $chk = "<input type='checkbox' name='codigo' value='$codigo'>";
-        $estado_preparado = 1;
-    }
-    
-    if ($salida_anulada == 1) {
-        $color_fondo = "#4C0B5F";
-        $chk = "&nbsp;";
-    }
+	
+	$sqlEstadoColor="select color from estados_salida where cod_estado='$estado_almacen'";
+	$respEstadoColor=mysql_query($sqlEstadoColor);
+	$numFilasEstado=mysql_num_rows($respEstadoColor);
+	if($numFilasEstado>0){
+		$color_fondo=mysql_result($respEstadoColor,0,0);
+	}else{
+		$color_fondo="#ffffff";
+	}
+	$chk = "<input type='checkbox' name='codigo' value='$codigo'>";
+
+	
     echo "<input type='hidden' name='estado_preparado' value='$estado_preparado'>";
     //echo "<tr><td><input type='checkbox' name='codigo' value='$codigo'></td><td align='center'>$fecha_salida_mostrar</td><td>$nombre_tiposalida</td><td>$nombre_ciudad</td><td>$nombre_almacen</td><td>$nombre_funcionario</td><td>&nbsp;$obs_salida</td><td>$txt_detalle</td></tr>";
-    echo "<tr bgcolor='$color_fondo'>";
+    echo "<tr>";
     echo "<td align='center'>&nbsp;$chk</td>";
     echo "<td align='center'>$nro_correlativo</td>";
     echo "<td align='center'>$fecha_salida_mostrar $hora_salida</td>";
     echo "<td>$nombre_tiposalida</td>";
-    echo "<td>&nbsp;$nombreCliente</td><td>&nbsp;$obs_salida</td>";
+    echo "<td>&nbsp;$nombreCliente</td><td>&nbsp;$razonSocial</td><td>&nbsp;$nitCli</td><td>&nbsp;$obs_salida</td>";
     $url_notaremision = "navegador_detallesalidamuestras.php?codigo_salida=$codigo";    
-    echo "<td><a href='javascript:llamar_preparado(this.form, $estado_preparado, $codigo)'>
-		<img src='imagenes/detalles.png' border='0' alt='Ver Detalles de la Salida Interna'></a></td>";
+    
+	/*echo "<td bgcolor='$color_fondo'><a href='javascript:llamar_preparado(this.form, $estado_preparado, $codigo)'>
+		<img src='imagenes/icon_detail.png' width='30' border='0' title='Detalle'></a></td>";
+	*/
 	if($codTipoDoc==1){
-		echo "<td><a href='formatoFactura.php?codVenta=$codigo' target='_BLANK'>Ver F.P.</a></td>";
-	}else{
-		echo "<td><a href='formatoNotaRemision.php?codVenta=$codigo' target='_BLANK'>Ver F.P.</a></td>";
+		echo "<td  bgcolor='$color_fondo'><a href='formatoFactura.php?codVenta=$codigo' target='_BLANK'><img src='imagenes/factura1.jpg' width='30' border='0' title='Factura Formato Pequeño'></a></td>";
+		echo "<td  bgcolor='$color_fondo'><a href='formatoFacturaExtendido.php?codVenta=$codigo' target='_BLANK'><img src='imagenes/factura1.jpg' width='30' border='0' title='Factura Extendida'></a></td>";
+	}
+	else{
+		echo "<td  bgcolor='$color_fondo'><a href='formatoNotaRemisionOficial.php?codVenta=$codigo' target='_BLANK'><img src='imagenes/factura1.jpg' width='30' border='0' title='Factura Formato Pequeño'></a></td>";
 	}
 	
-	echo "<td><a href='notaSalida.php?codVenta=$codigo' target='_BLANK'>Imp. Formato</a></td>";
+	/*echo "<td  bgcolor='$color_fondo'><a href='notaSalida.php?codVenta=$codigo' target='_BLANK'><img src='imagenes/factura1.jpg' width='30' border='0' title='Factura Formato Grande'></a></td>";*/
+	
 	echo "</tr>";
 }
 echo "</table></center><br>";

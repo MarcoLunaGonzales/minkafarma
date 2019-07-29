@@ -36,9 +36,19 @@ if ($num_filas != 0) {
 	setcookie("globalGestion", $globalGestion);
 	
 	if($cod_cargo==1000){
-		header("location:index_administracion.html");
-	}else{
+		header("location:indexGerencia.php");
+	}
+	if($cod_cargo==1010){
+		header("location:indexAdmin.php");
+	}
+	if($cod_cargo==1002){
 		header("location:indexAlmacenReg.php");
+	}
+	if($cod_cargo==1016 || $cod_cargo==1017 || $cod_cargo==1018){
+		header("location:indexSecond.php");
+	}
+	if($cod_cargo==1018){
+		header("location:indexConta.php");
 	}
 	
 

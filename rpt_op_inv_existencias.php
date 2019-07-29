@@ -1,14 +1,14 @@
 <?php
 echo "<script language='JavaScript'>
 		function envia_formulario(f)
-		{	var rpt_territorio, rpt_almacen, tipo_item, rpt_ver, rpt_fecha;
+		{	var rpt_territorio, rpt_almacen, tipo_item, rpt_ver, rpt_fecha, rpt_ordenar;
 			rpt_territorio=f.rpt_territorio.value;
 			rpt_almacen=f.rpt_almacen.value;
 			rpt_ver=f.rpt_ver.value;
 			rpt_fecha=f.rpt_fecha.value;
+			rpt_ordenar=f.rpt_ordenar.value;
 			var j=0;
-
-			window.open('rpt_inv_existencias.php?rpt_territorio='+rpt_territorio+'&rpt_almacen='+rpt_almacen+'&rpt_ver='+rpt_ver+'&rpt_fecha='+rpt_fecha+'','','scrollbars=yes,status=no,toolbar=no,directories=no,menubar=no,resizable=yes,width=1000,height=800');
+			window.open('rpt_inv_existencias.php?rpt_territorio='+rpt_territorio+'&rpt_almacen='+rpt_almacen+'&rpt_ver='+rpt_ver+'&rpt_fecha='+rpt_fecha+'&rpt_ordenar='+rpt_ordenar,'','scrollbars=yes,status=no,toolbar=no,directories=no,menubar=no,resizable=yes,width=1000,height=800');
 
 			return(true);
 		}
@@ -88,8 +88,13 @@ echo"<form method='post' action=''>";
     		echo"  </TD>";
 	echo "</tr>";
 
+	echo "<tr><th align='left'>Ordenar Por:</th>";
+	echo "<td><select name='rpt_ordenar' class='texto'>";
+	echo "<option value='1'>Producto</option>";
+	echo "<option value='2'>Linea y Producto</option>";
+	echo "</tr>";
+	
 	echo"\n </table><br>";
-	require('home_almacen.php');
 	echo "<center><input type='button' name='reporte' value='Ver Reporte' onClick='envia_formulario(this.form)' class='boton'>
 	</center><br>";
 	echo"</form>";

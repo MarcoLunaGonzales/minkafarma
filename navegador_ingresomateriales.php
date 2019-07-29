@@ -156,23 +156,51 @@ function anular_ingreso(f)
         }
     }
 }
+
+function anular_ingreso2(f)
+{   var i;
+    var j=0;
+    var j_cod_registro;
+    var fecha_registro;
+    for(i=0;i<=f.length-1;i++)
+    {   if(f.elements[i].type=='checkbox')
+        {   if(f.elements[i].checked==true)
+            {   j_cod_registro=f.elements[i].value;
+                fecha_registro=f.elements[i-1].value;
+                j=j+1;
+            }
+        }
+    }
+    if(j>1)
+    {   alert('Debe seleccionar solamente un registro para anularlo.');
+    }
+    else
+    {   if(j==0)
+        {   alert('Debe seleccionar un registro para anularlo.');
+        }
+        else{
+			if(confirm('Esta seguro de anular?')){
+                    location.href='anular_ingreso.php?codigo_registro='+j_cod_registro+'';
+			};
+        }
+    }
+}
+
         </script>
     </head>
     <body>
 
 <?php
-
-$txtnroingreso = $_GET["txtnroingreso"];
-$fecha1 = $_GET["fecha1"];
-$fecha2 = $_GET["fecha2"];
-
-$txtnroingreso = str_replace("'", "''", $txtnroingreso);
-$fecha1 = str_replace("'", "''", $fecha1);
-$fecha2 = str_replace("'", "''", $fecha2);
-
  
 echo "<form method='post' action='navegador_ingresomateriales.php'>";
 echo "<input type='hidden' name='fecha_sistema' value='$fecha_sistema'>";
+
+//SACAMOS LA CONFIGURACION PARA LA ANULACION
+$anulacionCodigo=1;
+$sqlConf="select valor_configuracion from configuraciones where id_configuracion=6";
+$respConf=mysql_query($sqlConf);
+$anulacionCodigo=mysql_result($respConf,0,0);
+
 
 $consulta = "
     SELECT i.cod_ingreso_almacen, i.fecha, i.hora_ingreso, ti.nombre_tipoingreso, i.observaciones, i.nota_entrega, i.nro_correlativo, i.ingreso_anulado,
@@ -180,14 +208,6 @@ $consulta = "
     FROM ingreso_almacenes i, tipos_ingreso ti
     WHERE i.cod_tipoingreso=ti.cod_tipoingreso
     AND i.cod_almacen='$global_almacen'";
-	
-if($txtnroingreso!="")
-   {$consulta = $consulta."AND i.nro_correlativo='$txtnroingreso' ";
-   }
-if($fecha1!="" && $fecha2!="")
-   {$consulta = $consulta."AND '$fecha1'<=i.fecha AND i.fecha<='$fecha2' ";
-   }
-
    $consulta = $consulta."ORDER BY i.nro_correlativo DESC limit 0, 50 ";
 //echo "MAT:$sql";
 $resp = mysql_query($consulta);
@@ -195,10 +215,14 @@ echo "<h1>Ingreso de Materiales</h1>";
 
 echo "<table border='1' cellspacing='0' class='textomini'><tr><th>Leyenda:</th><th>Ingresos Anulados</th><td bgcolor='#ff8080' width='10%'></td><th>Ingresos con movimiento</th><td bgcolor='#ffff99' width='10%'></td><th>Ingresos sin movimiento</th><td bgcolor='' width='10%'>&nbsp;</td></tr></table><br>";
 
-echo "<div class='divBotones'><input type='button' value='Registrar Ingreso' name='adicionar' class='boton' onclick='enviar_nav()'>
-<input type='button' value='Editar Ingreso' class='boton' onclick='editar_ingreso(this.form)'>
-<input type='button' value='Anular Ingreso' name='adicionar' class='boton2' onclick='anular_ingreso(this.form)'>
-<td><input type='button' value='Buscar' class='boton' onclick='ShowBuscar()'></div>";
+//<input type='button' value='Editar Ingreso' class='boton' onclick='editar_ingreso(this.form)'>
+echo "<div class='divBotones'><input type='button' value='Registrar Ingreso' name='adicionar' class='boton' onclick='enviar_nav()'>";
+if($anulacionCodigo==1){
+	echo "<input type='button' value='Anular Ingreso' name='adicionar' class='boton2' onclick='anular_ingreso(this.form)'>";	
+}else{
+	echo "<input type='button' value='Anular Ingreso' name='adicionar' class='boton2' onclick='anular_ingreso2(this.form)'>";
+}
+echo"<td><input type='button' value='Buscar' class='boton' onclick='ShowBuscar()'></div>";
 
 echo "<div id='divCuerpo'>";
 echo "<br><center><table class='texto'>";
@@ -243,10 +267,15 @@ while ($dat = mysql_fetch_array($resp)) {
 echo "</table></center><br>";
 echo "</div>";
 
-echo "<div class='divBotones'><input type='button' value='Registrar Ingreso' name='adicionar' class='boton' onclick='enviar_nav()'>
-<input type='button' value='Editar Ingreso' class='boton' onclick='editar_ingreso(this.form)'>
-<input type='button' value='Anular Ingreso' name='adicionar' class='boton2' onclick='anular_ingreso(this.form)'>
-<td><input type='button' value='Buscar' class='boton' onclick='ShowBuscar()'></div>";
+//<input type='button' value='Editar Ingreso' class='boton' onclick='editar_ingreso(this.form)'>
+echo "<div class='divBotones'><input type='button' value='Registrar Ingreso' name='adicionar' class='boton' onclick='enviar_nav()'>";
+if($anulacionCodigo==1){
+	echo "<input type='button' value='Anular Ingreso' name='adicionar' class='boton2' onclick='anular_ingreso(this.form)'>";	
+}else{
+	echo "<input type='button' value='Anular Ingreso' name='adicionar' class='boton2' onclick='anular_ingreso2(this.form)'>";
+}
+
+echo "<input type='button' value='Buscar' class='boton' onclick='ShowBuscar()'></div>";
 echo "</form>";
 ?>
 

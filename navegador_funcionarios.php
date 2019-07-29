@@ -9,7 +9,7 @@ echo "<script language='Javascript'>
                 function enviar_nav(cod_ciudad)
                 {       location.href='registro_funcionarios.php?cod_ciudad='+cod_ciudad;
                 }
-                function eliminar_nav(f)
+                function eliminar_nav(f, cod_ciudad)
                 {
                         var i;
                         var j=0;
@@ -28,9 +28,9 @@ echo "<script language='Javascript'>
                         }
                         else
                         {
-                                if(confirm('Esta seguro de eliminar los datos ya que con ello se perdera toda la información historica del funcionario.'))
+                                if(confirm('Esta seguro de eliminar los datos ya que con ello se perdera toda la informacion historica del funcionario.'))
                                 {
-                                        location.href='eliminar_funcionario.php?datos='+datos+'&cod_ciudad=$cod_ciudad';
+                                        location.href='eliminar_funcionario.php?datos='+datos+'&cod_ciudad='+cod_ciudad;
                                 }
                                 else
                                 {
@@ -97,7 +97,8 @@ echo "<script language='Javascript'>
 
         echo "<center><table class='texto'>";
 		echo "<tr><th>&nbsp;</th><th>&nbsp;</th><th>Cargo</th><th>Nombre</th>
-				<th>Correo Electrónico</th><th>Celular</th></tr>";
+				<th>E-mail</th><th>Celular</th><th>Alta en sistema</th>
+				<th>Dar Alta</th><th>Restablecer Clave</th></tr>";
         $indice_tabla=1;
 	while($dat=mysql_fetch_array($resp))
     {
@@ -115,12 +116,40 @@ echo "<script language='Javascript'>
 		$ciudad=$dat[10];
 		$estado=$dat[11];
 
+		$sql_alta_sistema="select * from usuarios_sistema where codigo_funcionario='$codigo'";
+		$resp_alta_sistema=mysql_query($sql_alta_sistema);
+		$filas_alta=mysql_num_rows($resp_alta_sistema);
+		if($estado==0)
+		{	$alta_sistema="<img src='imagenes/no2.png' width='40'>";
+				$dar_alta="-";
+				$restablecer="-";
+				$agenciasFuncionario="-";
+		}
+		if($estado==1)
+		{	if($filas_alta==0)
+				{
+						$alta_sistema="<img src='imagenes/no.png' width='40'>";  
+						$dar_alta="<a href='alta_funcionario_sistema.php?codigo_funcionario=$codigo&cod_territorio=$cod_ciudad'>
+						<img src='imagenes/go2.png' width='40'></a>";
+				}
+				else
+				{
+						$alta_sistema="<img src='imagenes/si.png' width='40'>";
+						$dar_alta="-";
+						$restablecer="<a href='restablecer_contrasena.php?codigo_funcionario=$codigo&cod_territorio=$cod_ciudad'>
+						<img src='imagenes/go2.png' width='40'></a>";
+				}
+		}
+
 	   
 
 		echo "<tr bgcolor='$fondo_fila'><td align='center'>$indice_tabla</td>
 			<td align='center'><input type='checkbox' name='cod_contacto' value='$codigo'></td>
 				<td>&nbsp;$cargo</td><td>$nombre_f</td>
-			<td align='left'>&nbsp;$email</td><td align='left'>&nbsp;$cel</td>";
+			<td align='left'>&nbsp;$email</td><td align='left'>&nbsp;$cel</td>
+			<td align='center'>$alta_sistema</td>
+			<td align='center'>$dar_alta</td>
+			<td align='center'>$restablecer</td></tr>";
 		$indice_tabla++;
 	}
 		
@@ -129,7 +158,7 @@ echo "<script language='Javascript'>
         echo "<div class='divBotones'>
 		<input type='button' value='Adicionar' name='adicionar' class='boton' onclick='enviar_nav($cod_ciudad)'>
 		<input type='button' value='Editar' name='Editar' class='boton' onclick='editar_nav(this.form, $cod_ciudad)'>
-		<input type='button' value='Eliminar' name='eliminar' class='boton2' onclick='eliminar_nav(this.form)'>
+		<input type='button' value='Eliminar' name='eliminar' class='boton2' onclick='eliminar_nav(this.form, $cod_ciudad)'>
 		</div>";
 		
         echo "</form>";

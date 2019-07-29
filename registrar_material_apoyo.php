@@ -36,9 +36,7 @@
 				j++;
 			}
 		}
-		f.arrayAccionTerapeutica.value=codAccionTerapeutica;
-		
-		f.submit();
+		f.arrayAccionTerapeutica.value=codAccionTerapeutica;		
 	}
 
 </script>
@@ -73,7 +71,7 @@ where p.cod_proveedor=pl.cod_proveedor and pl.estado=1 order by 2;";
 $resp1=mysql_query($sql1);
 echo "<td>
 <div class='container'>
-		<div class='col-md-4'>
+		<div class='col-md-6'>
 		<select name='codLinea' id='codLinea' class='tokenize-limit-demo2'>
 		<option value=''></option>";
 		while($dat1=mysql_fetch_array($resp1))
@@ -172,6 +170,20 @@ echo "</select>
 	</div>
 </td>";
 echo "</tr>";
+
+
+echo "<tr><th>Producto Controlado</th>";
+echo "<td>
+		<input type='radio' name='producto_controlado' value='0' checked>NO
+        <input type='radio' name='producto_controlado' value='1'>SI
+</td>";
+echo "</tr>";
+
+echo "<tr><th align='left'>Precio de Venta</th>";
+echo "<td align='left'>
+	<input type='number' class='texto' name='precio_producto' id='precio_producto' step='0.01'>
+	</td></tr>";
+
 ?>	
 
 	<script>
@@ -186,7 +198,7 @@ echo "</tr>";
 echo "</table></center>";
 echo "<input type='hidden' name='arrayAccionTerapeutica' id='arrayAccionTerapeutica'>";
 echo "<div class='divBotones'>
-<input type='button' class='boton' value='Guardar' onClick='validar(this.form)'>
+<input type='submit' class='boton' value='Guardar' onClick='return validar(this.form)'>
 <input type='button' class='boton2' value='Cancelar' onClick='location.href=\"navegador_material.php\"'>
 </div>";
 echo "</form>";

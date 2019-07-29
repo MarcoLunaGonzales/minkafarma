@@ -55,11 +55,13 @@
 <?php
 require("conexion.inc");
 require('estilos.inc');
+require('funciones.php');
+
 
 $codProducto=$_GET['cod_material'];
 
 $sqlEdit="select m.codigo_material, m.descripcion_material, m.estado, m.cod_linea_proveedor, m.cod_forma_far, m.cod_empaque, 
-	m.cantidad_presentacion, m.principio_activo, m.cod_tipoventa from material_apoyo m where m.codigo_material='$codProducto'";
+	m.cantidad_presentacion, m.principio_activo, m.cod_tipoventa, m.producto_controlado from material_apoyo m where m.codigo_material='$codProducto'";
 $respEdit=mysql_query($sqlEdit);
 while($datEdit=mysql_fetch_array($respEdit)){
 	$nombreProductoX=$datEdit[1];
@@ -69,6 +71,18 @@ while($datEdit=mysql_fetch_array($respEdit)){
 	$cantidadPresentacionX=$datEdit[6];
 	$principioActivoX=$datEdit[7];
 	$codTipoVentaX=$datEdit[8];
+	$productoControlado=$datEdit[9];
+}
+
+$sqlPrecio="select p.`precio` from `precios` p where p.`cod_precio`=1 and p.`codigo_material`='$codProducto'";
+$respPrecio=mysql_query($sqlPrecio);
+$numFilas=mysql_num_rows($respPrecio);
+if($numFilas>=1){
+	$precio1=mysql_result($respPrecio,0,0);
+	$precio1=redondear2($precio1);
+}else{
+	$precio1=0;
+	$precio1=redondear2($precio1);
 }
 
 echo "<form action='guarda_editarproducto.php' method='post' name='form1'>";
@@ -213,6 +227,26 @@ echo "</select>
 	</div>
 </td>";
 echo "</tr>";
+
+echo "<tr><th>Producto Controlado</th>";
+if($productoControlado==0){
+	echo "<td>
+			<input type='radio' name='producto_controlado' value='0' checked>NO
+			<input type='radio' name='producto_controlado' value='1'>SI
+	</td>";	
+}else{
+	echo "<td>
+			<input type='radio' name='producto_controlado' value='0' checked>NO
+			<input type='radio' name='producto_controlado' value='1' checked>SI
+	</td>";
+}
+echo "</tr>";
+
+echo "<tr><th align='left'>Precio de Venta</th>";
+echo "<td align='left'>
+	<input type='number' class='texto' name='precio_producto' id='precio_producto' value='$precio1' step='0.01'>
+	</td></tr>";
+
 ?>	
 
 	<script>

@@ -32,13 +32,12 @@ $tipo_pago=$_POST['tipo_pago'];
 $proveedor=$_POST['proveedor'];
 $nro_factura=$_POST['nro_factura'];
 $observaciones=$_POST['observaciones'];
-$totalVenta=$_POST['totalOC'];
-
 $fecha_real=date("Y-m-d");
-
+$descuentoTotal=$_POST['descuentoTotal'];
+$totalCompraSD=$_POST['totalCompraSD'];
 
 $consulta="insert into orden_compra 
-	values($codigo,$nro_correlativo,$proveedor,'$fecha_real','$observaciones',1,$tipo_pago,$nro_factura,'$totalOC', '0',1,'',0,0,0)";
+	values($codigo,$nro_correlativo,$proveedor,'$fecha_real','$observaciones',1,$tipo_pago,$nro_factura,'$totalCompraSD','0',1,'',0,'$descuentoTotal',0)";
 
 $sql_inserta = mysql_query($consulta);
 echo "$sql_inserta";

@@ -12,11 +12,13 @@ require("conexion.inc");
 <table border="0" align="center" width="100%"  class="texto" id="data<?php echo $num?>" >
 <tr bgcolor="#FFFFFF">
 
-<td width="40%" align="center">
+<td width="5%" align="center">
 	<a href="javascript:buscarMaterial(form1, <?php echo $num;?>)"><img src='imagenes/buscar2.png' title="Buscar Producto" width="30"></a>
+</td>
 
+<td width="35%" align="center">
 	<input type="hidden" name="materiales<?php echo $num;?>" id="materiales<?php echo $num;?>" value="0">
-	<input type="text" id="cod_material<?php echo $num;?>" name="cod_material<?php echo $num;?>" size="40" required onKeyPress="return false;">
+	<div id="cod_material<?php echo $num;?>" class='textomedianonegro'>-</div>
 </td>
 
 <td width="10%" align="center">
@@ -26,22 +28,22 @@ require("conexion.inc");
 </td>
 
 <td align="center" width="10%">
-	<input class="inputnumber" type="number" value="" min="1" id="cantidad_unitaria<?php echo $num;?>" onKeyUp='calculaMontoMaterial(<?php echo $num;?>);' name="cantidad_unitaria<?php echo $num;?>" required> 
+	<input class="inputnumber" type="number" value="" min="1" id="cantidad_unitaria<?php echo $num;?>" onKeyUp='calculaMontoMaterial(<?php echo $num;?>);' name="cantidad_unitaria<?php echo $num;?>" onChange='calculaMontoMaterial(<?php echo $num;?>);' required> 
 </td>
 
 
 <td align="center" width="10%">
 	<div id='idprecio<?php echo $num;?>'>
-		<input class="inputnumber" type="number" value="0" id="precio_unitario<?php echo $num;?>" name="precio_unitario<?php echo $num;?>" onKeyUp='calculaMontoMaterial(<?php echo $num;?>);' step="0.01" required>
+		<input class="inputnumber" type="number" min="1" value="0" id="precio_unitario<?php echo $num;?>" name="precio_unitario<?php echo $num;?>" onKeyUp='calculaMontoMaterial(<?php echo $num;?>);' onChange='calculaMontoMaterial(<?php echo $num;?>);' step="0.01" required>
 	</div>
 </td>
 
 <td align="center" width="10%">
-	<input class="inputnumber" type="number" value="0" id="descuentoProducto<?php echo $num;?>" name="descuentoProducto<?php echo $num;?>" onKeyUp='calculaMontoMaterial(<?php echo $num;?>);' value="0" step="0.01" required>
+	<input class="inputnumber" type="number" value="0" id="descuentoProducto<?php echo $num;?>" name="descuentoProducto<?php echo $num;?>" onKeyUp='calculaMontoMaterial(<?php echo $num;?>);' onChange='calculaMontoMaterial(<?php echo $num;?>);'  value="0" step="0.01" readonly>
 </td>
 
 <td align="center" width="10%">
-	<input class="inputnumber" type="number" value="0" id="montoMaterial<?php echo $num;?>" name="montoMaterial<?php echo $num;?>" value="0"  step="0.01"  required onkeypress="return false;"> 
+	<input class="inputnumber" type="number" value="0" id="montoMaterial<?php echo $num;?>" name="montoMaterial<?php echo $num;?>" value="0"  step="0.01"  required readonly> 
 </td>
 
 <td align="center"  width="10%" ><input class="boton2peque" type="button" value="-" onclick="menos(<?php echo $num;?>)" /></td>

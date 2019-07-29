@@ -177,28 +177,19 @@ font-family: sans-serif, Arial;
 
 
 a:link {
-	font-family: Verdana, Arial;
-	font-size: 12pt;
-	color:#BF360C;
+	color: #585858;
 	text-decoration: none;
 }
-
 a:visited {
-	font-family: Verdana, Arial;
-	font-size: 12pt;
-	color:#BF360C;
+	color: #585858;
 	text-decoration: none;
 }
-a:hover {
-	font-family: Verdana, Arial;
-	font-size: 14pt;
-	color:#004D40;
+a:hover {	
+	color: #585858;
 	text-decoration: underline;
 }
 a:active {
-	font-family: Verdana, Arial;
-	font-size: 14pt;
-	color:#b71c1c;
+	color: #585858;
 	text-decoration: none;
 }
 .textotit {
@@ -218,7 +209,12 @@ a:active {
 }
 .textograndenegro {
 	font-family: Verdana;
-	font-size: 14pt;
+	font-size: 12pt;
+	color: #585858;
+}
+.textomedianonegro {
+	font-family: Verdana;
+	font-size: 12pt;
 	color: #585858;
 }
 .textogranderojo {
@@ -332,4 +328,7 @@ a:active {
 }
 .inputnumber{
   width: 6em;
+}
+.inputnumberpequeno{
+  width: 4em;
 }

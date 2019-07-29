@@ -43,7 +43,7 @@ function listaMateriales(f){
 	var nombreItem=f.itemNombreMaterial.value;
 	contenedor = document.getElementById('divListaMateriales');
 	ajax=nuevoAjax();
-	ajax.open("GET", "ajaxListaMateriales.php?codTipo="+codTipo+"&nombreItem="+nombreItem,true);
+	ajax.open("GET", "ajaxListaMaterialesIngreso.php?codTipo="+codTipo+"&nombreItem="+nombreItem,true);
 	ajax.onreadystatechange=function() {
 		if (ajax.readyState==4) {
 			contenedor.innerHTML = ajax.responseText;
@@ -63,7 +63,7 @@ function setMateriales(f, cod, nombreMat){
 	var numRegistro=f.materialActivo.value;
 	
 	document.getElementById('material'+numRegistro).value=cod;
-	document.getElementById('cod_material'+numRegistro).value=nombreMat;
+	document.getElementById('cod_material'+numRegistro).innerHTML=nombreMat;
 	
 	document.getElementById('divRecuadroExt').style.visibility='hidden';
 	document.getElementById('divProfileData').style.visibility='hidden';
@@ -93,32 +93,27 @@ function totalesMonto(){
 	var precioTotal=0;
 	var montoTotal=0;
     for(var ii=1;ii<=num;ii++){
-	 	var cant=document.getElementById("cantidad_unitaria"+ii).value;
-		var precio=document.getElementById("precio"+ii).value;
-		montoTotal=montoTotal+(cant*precio);
+		if(document.getElementById('material'+ii)!=null){
+			var precio=document.getElementById("precio"+ii).value;
+			montoTotal=montoTotal+parseFloat(precio);
+		}
 	}
 	montoTotal=Math.round(montoTotal*100)/100;
 	
     document.getElementById("totalCompra").value=montoTotal;
 	var descuentoTotal=document.getElementById("descuentoTotal").value;
-	var totalSD=montoTotal-(montoTotal*(descuentoTotal/100));
+	var totalSD=montoTotal-descuentoTotal;
 	document.getElementById("totalCompraSD").value=totalSD;
 	
 }
 function enviar_form(f)
 {   f.submit();
 }
-function fun13(cadIdOrg,cadIdDes)
-{   var num=document.getElementById(cadIdOrg).value;
-    num=(100-13)*num/100;
-    document.getElementById(cadIdDes).value=num;
-}
 
-	num=0;
+num=0;
+function mas(obj) {
 
-	function mas(obj) {
-
-  		num++;
+		num++;
 		fi = document.getElementById('fiel');
 		contenedor = document.createElement('div');
 		contenedor.id = 'div'+num;  
@@ -131,72 +126,57 @@ function fun13(cadIdOrg,cadIdDes)
 		ajax.onreadystatechange=function(){
 			if (ajax.readyState==4) {
 				div_material.innerHTML=ajax.responseText;
-		    }
-	    }		
+				buscarMaterial(form1, num);
+			}
+		}		
 		ajax.send(null);
-	}	
-		
-	function menos(numero) {
-		 num=parseInt(num)-1;
-		 fi = document.getElementById('fiel');
-  		 fi.removeChild(document.getElementById('div'+numero));
-			
- 		 calcularTotal();
-		 
+	
+}	
+	
+function menos(numero) {
+	if(numero==num){
+		num=parseInt(num)-1;
 	}
+	//num=parseInt(num)-1;
+	fi = document.getElementById('fiel');
+	fi.removeChild(document.getElementById('div'+numero));		
+}
 
-function validar(f)
-{   var cantidadItems=num;
+function pressEnter(e, f){
+	tecla = (document.all) ? e.keyCode : e.which;
+	if (tecla==13){
+		document.getElementById('itemNombreMaterial').focus();
+		listaMateriales(f);
+		return false;
+	}
+}
+
+function validar(f){   
 	f.cantidad_material.value=num;
-	//alert(num);
+	var cantidadItems=num;
+	
 	if(cantidadItems>0){
-		var nroFactura=document.getElementById("nro_factura").value;
 		var item="";
 		var cantidad="";
 		var precioBruto="";
 		var precioNeto="";
-
-		if(nroFactura==""){
-			alert("La Factura no puede ir vacia."); return(false);
-		}
 		
 		for(var i=1; i<=cantidadItems; i++){
-			item=parseFloat(document.getElementById("material"+i).value);
-			cantidad=parseFloat(document.getElementById("cantidad_unitaria"+i).value);
-			precioBruto=parseFloat(document.getElementById("precio"+i).value);
-			precioNeto=parseFloat(document.getElementById("neto"+i).value);
-			
+			item=parseFloat(document.getElementById("material"+i).value);			
 			if(item==0){
 				alert("Debe escoger un item en la fila "+i);
 				return(false);
 			}
-			if(cantidad==0){
-				alert("La cantidad no puede ser 0 ni vacia. Fila "+i);
-				return(false);
-			}
-
-			totales();
 			return(true);
-		}		
+		}
+		
 	}else{
-		alert("La OC debe tener al menos 1 item.");
+		alert("El ingreso debe tener al menos 1 item.");
 		return(false);
 	}
-	
-}
-function totales(){
-	var subtotal=0;
-    for(var ii=1;ii<=num;ii++){
-	 	var monto=document.getElementById("neto"+ii).value;
-		subtotal=subtotal+parseFloat(monto);
-    }
-	subtotal=Math.round(subtotal*100)/100;
-	
-    document.getElementById("totalOC").value=subtotal;
-	//alert(subtotal);
 }
 
-	</script>
+</script>
 <?php
 
 require("conexion.inc");
@@ -240,7 +220,7 @@ while($dat1=mysql_fetch_array($resp1))
 }
 echo "</select></td>";
 
-echo "<td align='center'><input type='text' class='texto' name='nro_factura' id='nro_factura' size='10' value='0'></td>";
+echo "<td align='center'><input type='text' class='texto' name='nro_factura' id='nro_factura' size='10' value='0' required></td>";
 
 $sql1="select cod_tipopago, nombre_tipopago from tipos_pago order by cod_tipopago";
 $resp1=mysql_query($sql1);
@@ -267,7 +247,7 @@ echo "</table><br>";
 			<table align="center"class="text" cellSpacing="1" cellPadding="2" width="100%" border="0" id="data0" style="border:#ccc 1px solid;">
 				<tr>
 					<td align="center" colspan="6">
-						<input class="boton" type="button" value="Nuevo Item (+)" onclick="mas(this)" accesskey="N"/>
+						<input class="boton" type="button" value="Nuevo Item (+)" onclick="mas(this)" accesskey="A"/>
 					</td>
 				</tr>
 				<tr>
@@ -276,28 +256,26 @@ echo "</table><br>";
 					</td>				
 				</tr>				
 				<tr class="titulo_tabla" align="center">
-					<td width="40%" align="center">Producto</td>
+					<td width="5%" align="center">&nbsp;</td>
+					<td width="35%" align="center">Producto</td>
 					<td width="10%" align="center">Cantidad</td>
 					<td width="10%" align="center">Lote</td>
 					<td width="10%" align="center">Vencimiento</td>
 					<td width="10%" align="center">Precio </td>
-					<td width="10%" align="center">Precio Neto</td>
 					<td width="10%" align="center">&nbsp;</td>
 				</tr>
-				
-
 			</table>
 		</fieldset>
 		
 		<table align="center"class="text" cellSpacing="1" cellPadding="2" width="100%" border="0" id="data0" style="border:#ccc 1px solid;">
 			<tr>
-				<td align='right'>Total Compra</td><td align='right'><input type='text' name='totalCompra' id='totalCompra' value='0' size='3'></td>
+				<td align='right'>Total Compra</td><td align='right'><input type='number' name='totalCompra' id='totalCompra' value='0' size='3' readonly></td>
 			</tr>
 			<tr>
-				<td align='right'>Descuento</td><td align='right'><input type='text' name='descuentoTotal' id='descuentoTotal' value='0' size='3' onKeyUp='totalesMonto();' ></td>
+				<td align='right'>Descuento</td><td align='right'><input type='number' name='descuentoTotal' id='descuentoTotal' value='0' size='3' onKeyUp='totalesMonto();' required></td>
 			</tr>
 			<tr>
-				<td align='right'>Total</td><td align='right'><input type='text' name='totalCompraSD' id='totalCompraSD' value='0' size='3'></td>
+				<td align='right'>Total</td><td align='right'><input type='number' name='totalCompraSD' id='totalCompraSD' value='0' size='3' readonly></td>
 			</tr>
 		</table>
 
@@ -314,15 +292,15 @@ echo "</div>";
 
 
 
-<div id="divRecuadroExt" style="background-color:#666; position:absolute; width:800px; height: 400px; top:30px; left:150px; visibility: hidden; opacity: .70; -moz-opacity: .70; filter:alpha(opacity=70); -webkit-border-radius: 20px; -moz-border-radius: 20px; z-index:2;">
+<div id="divRecuadroExt" style="background-color:#666; position:absolute; width:800px; height: 500px; top:30px; left:150px; visibility: hidden; opacity: .70; -moz-opacity: .70; filter:alpha(opacity=70); -webkit-border-radius: 20px; -moz-border-radius: 20px; z-index:2;">
 </div>
 
-<div id="divProfileData" style="background-color:#FFF; width:750px; height:350px; position:absolute; top:50px; left:170px; -webkit-border-radius: 20px; 	-moz-border-radius: 20px; visibility: hidden; z-index:2;">
-  	<div id="divProfileDetail" style="visibility:hidden; text-align:center">
+<div id="divProfileData" style="background-color:#FFF; width:750px; height:450px; position:absolute; top:50px; left:170px; -webkit-border-radius: 20px; 	-moz-border-radius: 20px; visibility: hidden; z-index:2;">
+  	<div id="divProfileDetail" style="visibility:hidden; text-align:center; height:445px; overflow-y: scroll;">
 		<table align='center' class="texto">
 			<tr><th>Linea</th><th>Material</th><th>&nbsp;</th></tr>
 			<tr>
-			<td><select name='itemTipoMaterial' id="itemTipoMaterial">
+			<td><select name='itemTipoMaterial' id="itemTipoMaterial" class="textogranderojo" style="width:300px">
 			<?php
 			$sqlTipo="select pl.cod_linea_proveedor, CONCAT(p.nombre_proveedor,' - ',pl.nombre_linea_proveedor) from proveedores p, proveedores_lineas pl 
 			where p.cod_proveedor=pl.cod_proveedor and pl.estado=1 order by 2;";
@@ -337,10 +315,10 @@ echo "</div>";
 			</select>
 			</td>
 			<td>
-				<input type='text' name='itemNombreMaterial' id="itemNombreMaterial">
+				<input type='text' name='itemNombreMaterial' id="itemNombreMaterial" class="textogranderojo"  onkeypress="return pressEnter(event, this.form);">
 			</td>
 			<td>
-				<input type='button' value='Buscar' onClick="listaMateriales(this.form)">
+				<input type='button' class='boton' value='Buscar' onClick="listaMateriales(this.form)">
 			</td>
 			</tr>
 			
@@ -352,9 +330,6 @@ echo "</div>";
 </div>
 <input type='hidden' name='materialActivo' value="0">
 <input type='hidden' name='cantidad_material' value="0">
-<input type='hidden' name='totalOC' id="totalOC" value="0">
-
-
 
 </form>
 </body>
