@@ -1,5 +1,39 @@
 <?php
 
+function obtenerValorConfiguracion($id){
+	require("conexion.inc");
+	$sql = "SELECT valor_configuracion from configuraciones c where id_configuracion=$id";
+	$resp=mysql_query($sql);
+	$codigo=0;
+	while ($dat = mysql_fetch_array($resp)) {
+	  $codigo=$dat['valor_configuracion'];
+	}
+	return($codigo);
+}
+
+function generarCodigoAprobacion($codigo){
+	//
+	$nroDigitos = strlen("".$codigo);
+	$nroDigitos--;//total digitos
+	//
+	$cadAux = strrev($codigo);
+	$ultimoCar="".$cadAux[0];//ultimo digito
+	//
+	$cadAux = "".$codigo;
+	$primerCar="".$cadAux[0];//primer digito
+	//
+	$acumulador=0;
+	$cadAux="".$codigo;//echo "_$cadAux<br>";
+	for($i=0;$i<=$nroDigitos;$i++)
+	   {$acumulador+=$cadAux[$i];//echo "_$cadAux[$i]-----$i";
+	   }
+	$acumulador=$acumulador+100;//suma de digitos mas 100
+	//
+	//clave generada
+	$claveGenerada="".$nroDigitos.$ultimoCar.$primerCar.$acumulador;	
+	return $claveGenerada;
+}
+
 function formatNumberInt($valor) { 
    $float_redondeado=number_format($valor, 0); 
    return $float_redondeado; 
@@ -49,6 +83,20 @@ function obtenerCodigo($sql)
 			$codigo = $codigo+1;
 	}
 	return($codigo);
+}
+
+
+function margenLinea($item){
+	require("conexion.inc");
+	$fechaActual=date("Y-m-d");
+
+	$sql="select p.margen_precio from material_apoyo m, proveedores_lineas p where 
+		p.cod_linea_proveedor=m.cod_linea_proveedor and m.codigo_material=$item;";
+	$resp=mysql_query($sql);
+	$dat=mysql_fetch_array($resp);
+	$margen=0;
+	$margen=$dat[0];
+	return($margen);
 }
 
 

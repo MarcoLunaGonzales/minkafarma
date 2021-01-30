@@ -1,5 +1,6 @@
 <?php
 require("conexion.inc");
+require("funciones.php");
 require("estilos_almacenes.inc");
 
 $global_almacen=$_COOKIE["global_almacen"];
@@ -55,9 +56,16 @@ $sql="update facturas_venta set cod_estado=2 where cod_venta='$codigo_registro'"
 $resp=mysql_query($sql);
 
 
-echo "<script language='Javascript'>
+//SACAMOS LA VARIABLE PARA ENVIAR EL CORREO O NO SI ES 1 ENVIAMOS CORREO DESPUES DE LA TRANSACCION
+$banderaCorreo=obtenerValorConfiguracion(8);
+if($banderaCorreo==1){
+	header("location:sendEmailVenta.php?codigo=$codigo_registro&evento=2&tipodoc=1");
+}else{
+	echo "<script language='Javascript'>
 		alert('El registro fue anulado.');
 		location.href='navegadorVentas.php';
-		</script>";
+		</script>";	
+}
+
 
 ?>

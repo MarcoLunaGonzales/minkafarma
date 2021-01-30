@@ -2,10 +2,11 @@
 require("conexion.inc");
 require('function_formatofecha.php');
 require("estilos_almacenes.inc");
+require("funciones.php");
+
 ?>
 <html>
     <head>
-        <title>Busqueda</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link href="lib/externos/jquery/jquery-ui/completo/jquery-ui-1.8.9.custom.css" rel="stylesheet" type="text/css"/>
         <link href="lib/css/paneles.css" rel="stylesheet" type="text/css"/>
@@ -233,6 +234,11 @@ while ($dat = mysql_fetch_array($resp)) {
     $codigo = $dat[0];
     $fecha_ingreso = $dat[1];
     $fecha_ingreso_mostrar = "$fecha_ingreso[8]$fecha_ingreso[9]-$fecha_ingreso[5]$fecha_ingreso[6]-$fecha_ingreso[0]$fecha_ingreso[1]$fecha_ingreso[2]$fecha_ingreso[3]";
+	
+	$anio_ingreso=intval("$fecha_ingreso[0]$fecha_ingreso[1]$fecha_ingreso[2]$fecha_ingreso[3]");
+	$globalGestionActual=intval($_COOKIE["globalGestion"]);
+
+	//echo "anioingreso: ".$anio_ingreso." globalGestion: ".$globalGestionActual."-";
     $hora_ingreso = $dat[2];
     $nombre_tipoingreso = $dat[3];
     $obs_ingreso = $dat[4];
@@ -240,6 +246,7 @@ while ($dat = mysql_fetch_array($resp)) {
     $nro_correlativo = $dat[6];
     $anulado = $dat[7];
 	$proveedor=$dat[8];
+
 
     echo "<input type='hidden' name='fecha_ingreso$nro_correlativo' value='$fecha_ingreso_mostrar'>";
     $sql_verifica_movimiento = "select s.cod_salida_almacenes from salida_almacenes s, salida_detalle_ingreso sdi
@@ -254,12 +261,15 @@ while ($dat = mysql_fetch_array($resp)) {
         $color_fondo = "#ff8080";
         $chkbox = "";
     }
-    if ($num_filas_movimiento == 0 and $anulado == 0) {
+    if ($num_filas_movimiento == 0 && $anulado == 0) {
         $color_fondo = "";
         $chkbox = "<input type='checkbox' name='codigo' value='$codigo'>";
     }
+	if ($anio_ingreso != $globalGestionActual) {
+        $chkbox = "";
+    }
     echo "<tr bgcolor='$color_fondo'><td align='center'>$chkbox</td><td align='center'>$nro_correlativo</td><td align='center'>&nbsp;$nota_entrega</td>
-	<td align='center'>$fecha_ingreso_mostrar $hora_ingreso</td><td>$nombre_tipoingreso</td>
+	<td align='center'>$fecha_ingreso_mostrar $hora_ingreso $anio_ingreso $globalGestionActual</td><td>$nombre_tipoingreso</td>
 	<td>&nbsp;$proveedor</td>
 	<td>&nbsp;$obs_ingreso</td><td align='center'>
 	<a target='_BLANK' href='navegador_detalleingresomateriales.php?codigo_ingreso=$codigo'><img src='imagenes/icon_detail.png' border='0' width='30' heigth='30' alt='Ver Detalles del Ingreso'></a></td></tr>";

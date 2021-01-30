@@ -1,6 +1,5 @@
 <html>
     <head>
-        <title>Busqueda</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link href="lib/externos/jquery/jquery-ui/completo/jquery-ui-1.8.9.custom.css" rel="stylesheet" type="text/css"/>
         <link href="lib/css/paneles.css" rel="stylesheet" type="text/css"/>
@@ -417,6 +416,9 @@ while ($dat = mysql_fetch_array($resp)) {
 	$razonSocial=$dat[12];
 	$nitCli=$dat[13];
 	
+	$anio_salida=intval("$fecha_salida[0]$fecha_salida[1]$fecha_salida[2]$fecha_salida[3]");
+	$globalGestionActual=intval($_COOKIE["globalGestion"]);
+	
     echo "<input type='hidden' name='fecha_salida$nro_correlativo' value='$fecha_salida_mostrar'>";
 	
 	$sqlEstadoColor="select color from estados_salida where cod_estado='$estado_almacen'";
@@ -426,9 +428,12 @@ while ($dat = mysql_fetch_array($resp)) {
 		$color_fondo=mysql_result($respEstadoColor,0,0);
 	}else{
 		$color_fondo="#ffffff";
-	}
+	}	
 	$chk = "<input type='checkbox' name='codigo' value='$codigo'>";
 
+	if ($anio_salida != $globalGestionActual) {
+        $chk = "";
+    }
 	
     echo "<input type='hidden' name='estado_preparado' value='$estado_preparado'>";
     //echo "<tr><td><input type='checkbox' name='codigo' value='$codigo'></td><td align='center'>$fecha_salida_mostrar</td><td>$nombre_tiposalida</td><td>$nombre_ciudad</td><td>$nombre_almacen</td><td>$nombre_funcionario</td><td>&nbsp;$obs_salida</td><td>$txt_detalle</td></tr>";

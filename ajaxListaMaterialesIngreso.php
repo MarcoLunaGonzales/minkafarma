@@ -36,8 +36,10 @@ $itemsNoUtilizar="0";
 			$linea=$dat[3];
 			
 			$stockProducto=stockProducto($globalAlmacen, $codigo);
+			$precioProducto=precioProducto($codigo);
+			$margenLinea=margenLinea($codigo);
 			
-			echo "<tr><td>$linea</td><td><div class='textograndenegro'><a href='javascript:setMateriales(form1, $codigo, \"$nombre\", $cantidadPresentacion)'>$nombre</a></div></td><td><div class='textograndenegro'>$stockProducto</div></td></tr>";
+			echo "<tr><td>$linea</td><td><div class='textograndenegro'><a href='javascript:setMateriales(form1, $codigo, \"$nombre\", $cantidadPresentacion, $precioProducto, $margenLinea)'>$nombre</a></div></td><td><div class='textograndenegro'>$stockProducto</div></td></tr>";
 		}
 	}else{
 		echo "<tr><td colspan='3'>Sin Resultados en la busqueda.</td></tr>";

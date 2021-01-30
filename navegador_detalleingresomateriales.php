@@ -3,11 +3,10 @@
 	require('estilos_almacenes_central_sincab.php');
 	require("funciones.php");
 	echo "<form method='post' action=''>";
+
 	$sql="select i.cod_ingreso_almacen, i.fecha, ti.nombre_tipoingreso, i.observaciones, i.nro_correlativo 
 	FROM ingreso_almacenes i, tipos_ingreso ti
 	where i.cod_tipoingreso=ti.cod_tipoingreso and i.cod_almacen='$global_almacen' and i.cod_ingreso_almacen='$codigo_ingreso'";
-	
-	//echo $sql;
 	
 	$resp=mysql_query($sql);
 	echo "<center><table border='0' class='textotit'><tr><th>Detalle de Ingreso</th></tr></table></center><br>";

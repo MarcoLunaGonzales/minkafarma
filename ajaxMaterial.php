@@ -18,9 +18,9 @@ $fechaActual=date("Y-m-d");
 	<a href="javascript:buscarMaterial(form1, <?php echo $num;?>)" accesskey="B"><img src='imagenes/buscar2.png' title="Buscar Producto" width="30"></a>
 </td>
 
-<td width="35%" align="center">
+<td width="25%" align="center">
 <input type="hidden" name="material<?php echo $num;?>" id="material<?php echo $num;?>" value="0">
-<div id="cod_material<?php echo $num;?>" class='textograndenegro'>-</div>
+<div id="cod_material<?php echo $num;?>" class='textomedianorojo'>-</div>
 </td>
 
 <td align="center" width="10%">
@@ -36,7 +36,14 @@ $fechaActual=date("Y-m-d");
 </td>
 
 <td align="center" width="10%">
-<input type="number" class="inputnumber" value="0" id="precio<?php echo $num;?>" name="precio<?php echo $num;?>" size="5" min="0" step="0.01" onKeyUp='totalesMonto(<?php echo $num;?>);' onChange='totalesMonto(<?php echo $num;?>);' required>
+<input type="number" class="inputnumber" value="0" id="precio<?php echo $num;?>" name="precio<?php echo $num;?>" size="5" min="0" step="0.01" onKeyUp='calculaPrecioCliente(this,<?php echo $num;?>);' onChange='calculaPrecioCliente(this,<?php echo $num;?>);' required>
+</td>
+
+<td align="center" width="10%">
+<input type="number" class="inputnumber" value="0" id="preciocliente<?php echo $num;?>" name="preciocliente<?php echo $num;?>" size="4" min="0" step="0.01" required>
+</br>
+<div id="divpreciocliente<?php echo $num;?>" class="textopequenorojo">-</div>
+<input type="hidden" name="margenlinea<?php echo $num;?>" id="margenlinea<?php echo $num;?>" value="0">
 </td>
 
 <td align="center" width="20%">

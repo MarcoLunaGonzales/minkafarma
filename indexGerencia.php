@@ -24,7 +24,7 @@ include("datosUsuario.php");
 <div id="page">
 	<div class="header">
 		<a href="#menu"><span></span></a>
-		TuFarma - ECOFARMA
+		TuFarma - <?=$nombreEmpresa;?>
 		<div style="position:absolute; width:95%; height:50px; text-align:right; top:0px; font-size: 9px; font-weight: bold; color: #fff;">
 			[<? echo $fechaSistemaSesion?>][<? echo $horaSistemaSesion;?>]			
 		<div>

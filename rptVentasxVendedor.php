@@ -38,6 +38,7 @@ where s.`cod_salida_almacenes` = sd.`cod_salida_almacen` and
                            where a.`cod_ciudad` = '$rpt_territorio'
       ) and 
       s.`cod_chofer`=f.`codigo_funcionario` group by f.`codigo_funcionario`";		
+echo $sql;
 $resp=mysql_query($sql);
 
 echo "<br><table align='center' class='texto' width='100%'>

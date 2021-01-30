@@ -9,7 +9,21 @@ function funcionInicio(){
 	document.getElementById('nitCliente').focus();
 }
 
-
+function number_format(amount, decimals) {
+    amount += ''; // por si pasan un numero en vez de un string
+    amount = parseFloat(amount.replace(/[^0-9\.-]/g, '')); // elimino cualquier cosa que no sea numero o punto
+    decimals = decimals || 0; // por si la variable no fue fue pasada
+    // si no es un numero o es igual a cero retorno el mismo cero
+    if (isNaN(amount) || amount === 0) 
+        return parseFloat(0).toFixed(decimals);
+    // si es mayor o menor que cero retorno el valor formateado como numero
+    amount = '' + amount.toFixed(decimals);
+    var amount_parts = amount.split('.'),
+        regexp = /(\d+)(\d{3})/;
+    while (regexp.test(amount_parts[0]))
+        amount_parts[0] = amount_parts[0].replace(regexp, '$1' + ',' + '$2');
+    return amount_parts.join('.');
+}
 function nuevoAjax()
 {	var xmlhttp=false;
 	try {
@@ -168,6 +182,15 @@ function aplicarDescuento(f){
 	descuento=Math.round(descuento*100)/100;
 	
 	document.getElementById("totalFinal").value=parseFloat(total)-parseFloat(descuento);
+	
+}
+function verCambio(f){
+	var totalFinal=document.getElementById("totalFinal").value;
+	var totalEfectivo=document.getElementById("totalEfectivo").value;
+	var totalCambio=totalEfectivo-totalFinal;
+	totalCambio=number_format(totalCambio,2);
+	
+	document.getElementById("totalCambio").value=totalCambio;
 	
 }
 function buscarMaterial(f, numMaterial){
@@ -551,7 +574,12 @@ if($tipoDocDefault==2){
 		<tr>
 			<td align='right' width='90%'>Monto Final</td><td><input type='number' name='totalFinal' id='totalFinal' readonly></td>
 		</tr>
-
+		<tr>
+			<td align='right' width='90%'>Efectivo</td><td><input type='number' name='totalEfectivo' id='totalEfectivo' value='0' onChange='verCambio(form1);' onKeyUp='verCambio(form1);'></td>
+		</tr>
+		<tr>
+			<td align='right' width='90%'>Cambio</td><td><input type='number' name='totalCambio' id='totalCambio' value='0' min='0' readonly></td>
+		</tr>
 	</table>
 
 

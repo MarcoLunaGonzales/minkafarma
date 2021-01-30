@@ -33,7 +33,7 @@ if ($num_filas != 0) {
 	$global_almacen=$dat_almacen[0];
 
 	setcookie("global_almacen",$global_almacen);
-	setcookie("globalGestion", $globalGestion);
+	setcookie("globalGestion", $nombreG);
 	
 	if($cod_cargo==1000){
 		header("location:indexGerencia.php");
