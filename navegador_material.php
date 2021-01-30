@@ -58,7 +58,7 @@ echo "<script language='Javascript'>
 				}
 				else
 				{
-					location.href='editar_material_apoyo.php?cod_material='+j_ciclo+'';
+					location.href='editar_material_apoyo.php?cod_material='+j_ciclo+'&pagina_retorno=0';
 				}
 			}
 		}

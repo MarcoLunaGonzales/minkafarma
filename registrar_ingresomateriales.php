@@ -9,6 +9,23 @@ require("estilos_almacenes.inc");
         <script type="text/javascript" src="lib/externos/jquery/jquery-1.4.4.min.js"></script>
         <script type="text/javascript" src="dlcalendar.js"></script>
         <script type='text/javascript' language='javascript'>
+
+function number_format(amount, decimals) {
+    amount += ''; // por si pasan un numero en vez de un string
+    amount = parseFloat(amount.replace(/[^0-9\.-]/g, '')); // elimino cualquier cosa que no sea numero o punto
+    decimals = decimals || 0; // por si la variable no fue fue pasada
+    // si no es un numero o es igual a cero retorno el mismo cero
+    if (isNaN(amount) || amount === 0) 
+        return parseFloat(0).toFixed(decimals);
+    // si es mayor o menor que cero retorno el valor formateado como numero
+    amount = '' + amount.toFixed(decimals);
+    var amount_parts = amount.split('.'),
+        regexp = /(\d+)(\d{3})/;
+    while (regexp.test(amount_parts[0]))
+        amount_parts[0] = amount_parts[0].replace(regexp, '$1' + ',' + '$2');
+    return amount_parts.join('.');
+}
+
 function nuevoAjax()
 {	var xmlhttp=false;
 	try {
@@ -57,6 +74,17 @@ function listaMateriales(f){
 	ajax.send(null)
 }
 
+function buscarMaterialLinea(f, numMaterial){
+	f.materialActivo.value=numMaterial;
+	document.getElementById('divRecuadroExt').style.visibility='visible';
+	document.getElementById('divProfileData').style.visibility='visible';
+	document.getElementById('divProfileDetail').style.visibility='visible';
+	document.getElementById('divboton').style.visibility='visible';
+	document.getElementById('divListaMateriales').innerHTML='';
+	document.getElementById('itemNombreMaterial').value='';	
+	document.getElementById('itemNombreMaterial').focus();	
+}
+
 function buscarMaterial(f, numMaterial){
 	f.materialActivo.value=numMaterial;
 	document.getElementById('divRecuadroExt').style.visibility='visible';
@@ -66,13 +94,15 @@ function buscarMaterial(f, numMaterial){
 	document.getElementById('divListaMateriales').innerHTML='';
 	document.getElementById('itemNombreMaterial').value='';	
 	document.getElementById('itemNombreMaterial').focus();	
-	
 }
-function setMateriales(f, cod, nombreMat){
+function setMateriales(f, cod, nombreMat, cantidadpresentacion, precio, margenlinea){
 	var numRegistro=f.materialActivo.value;
 	
 	document.getElementById('material'+numRegistro).value=cod;
 	document.getElementById('cod_material'+numRegistro).innerHTML=nombreMat;
+	document.getElementById('divpreciocliente'+numRegistro).innerHTML=number_format(precio,2);
+	document.getElementById('margenlinea'+numRegistro).value=margenlinea;
+	
 	
 	document.getElementById('divRecuadroExt').style.visibility='hidden';
 	document.getElementById('divProfileData').style.visibility='hidden';
@@ -102,6 +132,28 @@ function fun13(cadIdOrg,cadIdDes)
 
 	num=0;
 
+	function modalMasLinea(form){
+		buscarMaterialLinea(form1,0);
+	}
+	function masLinea(obj) {
+		var banderaItems0=0;
+		console.log("bandera: "+banderaItems0);
+		var codLineaProveedor=form1.itemTipoMaterial.value;
+		//alert(codLineaProveedor);
+		if(banderaItems0==0){
+			num++;
+			div_material_linea=document.getElementById("divMaterialLinea");			
+			ajax=nuevoAjax();
+			ajax.open("GET","ajaxMaterialLineaIngreso.php?codigo="+num+"&cod_linea_proveedor="+codLineaProveedor,true);
+			ajax.onreadystatechange=function(){
+				if (ajax.readyState==4) {
+					div_material_linea.innerHTML=ajax.responseText;
+				}
+			}		
+			ajax.send(null);
+		}
+		Hidden();
+	}	
 	function mas(obj) {
 		var banderaItems0=0;
 		for(var j=1; j<=num; j++){
@@ -150,6 +202,18 @@ function pressEnter(e, f){
 		listaMateriales(f);
 		return false;
 	}
+}
+function calculaPrecioCliente(preciocompra, index){
+	var costo=preciocompra.value;
+	var margen=document.getElementById('margenlinea'+index).value;
+	var cantidad=document.getElementById('cantidad_unitaria'+index).value;
+	var costounitario=costo/cantidad;
+	console.log("costoUnitario: "+costounitario);
+	var preciocliente=costounitario+(costounitario*(margen/100));
+	preciocliente=redondear(preciocliente,1);
+	preciocliente=number_format(preciocliente,2);
+	document.getElementById('preciocliente'+index).value=preciocliente;
+	totalesMonto();
 }
 
 function totalesMonto(){
@@ -203,6 +267,10 @@ function checkSubmit() {
     return true;
 }
 
+function redondear(value, precision) {
+    var multiplier = Math.pow(10, precision || 0);
+    return Math.round(value * multiplier) / multiplier;
+}
 	</script>
 <?php
 
@@ -247,14 +315,17 @@ echo "<td align='center'><input type='number' class='texto' name='nro_factura' v
 
 echo "<tr><th>Proveedor</th>";
 echo "<th colspan='3'>Observaciones</th></tr>";
-$sql1="select cod_proveedor, nombre_proveedor from proveedores order by 2";
+$sql1="select p.cod_proveedor, concat(p.nombre_proveedor,' ',pl.nombre_linea_proveedor), pl.margen_precio from proveedores p, proveedores_lineas pl 
+			where p.cod_proveedor=pl.cod_proveedor and pl.estado=1 order by 2";
 $resp1=mysql_query($sql1);
-echo "<tr><td align='center'><select name='proveedor' id='proveedor' class='texto'>";
-echo "<option value='0'>-</option>";
+echo "<tr><td align='center'><select name='proveedor' id='proveedor' class='texto' required>";
+echo "<option value=''>-</option>";
 while($dat1=mysql_fetch_array($resp1))
 {   $codigo=$dat1[0];
     $nombre=$dat1[1];
-    echo "<option value='$codigo'>$nombre</option>";
+	$margenPrecio=$dat1[2];
+	
+    echo "<option value='$codigo'>$nombre  -  ($margenPrecio%)</option>";
 }
 echo "</select></td>";
 echo "<td colspan='4' align='center'><input type='text' class='texto' name='observaciones' value='$observaciones' size='100'></td></tr>";
@@ -264,7 +335,8 @@ echo "</table><br>";
 			<table align="center"class="text" cellSpacing="1" cellPadding="2" width="100%" border="0" id="data0" style="border:#ccc 1px solid;">
 				<tr>
 					<td align="center" colspan="6">
-						<input class="boton" type="button" value="Nuevo Item (+)" onclick="mas(this)" accesskey="A"/>
+						<input class="boton" type="button" value="Nuevo Item (+)" onclick="mas(this)" accesskey="A"/>&nbsp;&nbsp;&nbsp;
+						<input class="boton" type="button" value="Agregar por Linea (+)" onclick="modalMasLinea(this)" accesskey="B"/>
 					</td>
 				</tr>
 				<tr>
@@ -274,16 +346,20 @@ echo "</table><br>";
 				</tr>				
 				<tr class="titulo_tabla" align="center">
 					<td width="5%" align="center">&nbsp;</td>
-					<td width="35%" align="center">Producto</td>
+					<td width="25%" align="center">Producto</td>
 					<td width="10%" align="center">Cantidad</td>
 					<!--td width="10%" align="center">Lote</td-->
 					<td width="10%" align="center">Vencimiento</td>
-					<td width="10%" align="center">Precio Compra</td>
-					<td width="20%" align="center">Ubicacion</td>
+					<td width="10%" align="center">PrecioDistribuidor(Total_item)</td>
+					<td width="10%" align="center">PrecioClienteFinal</td>
+					<!--td width="20%" align="center">Ubicacion</td-->
 					<td width="10%" align="center">&nbsp;</td>
 				</tr>
 			</table>
 		</fieldset>
+
+		<div id="divMaterialLinea"></div>
+		
 		<table align="center"class="text" cellSpacing="1" cellPadding="2" width="100%" border="0" id="data0" style="border:#ccc 1px solid;">
 			<tr>
 				<td align='right'>Total Compra</td><td align='right'><input type='number' name='totalCompra' id='totalCompra' value='0' size='3' readonly></td>
@@ -311,31 +387,34 @@ echo "<script type='text/javascript' language='javascript'  src='dlcalendar.js'>
 
 
 
-<div id="divRecuadroExt" style="background-color:#666; position:absolute; width:800px; height: 500px; top:30px; left:150px; visibility: hidden; opacity: .70; -moz-opacity: .70; filter:alpha(opacity=70); -webkit-border-radius: 20px; -moz-border-radius: 20px; z-index:2;">
+<div id="divRecuadroExt" style="background-color:#666; position:absolute; width:850px; height: 500px; top:30px; left:150px; visibility: hidden; opacity: .70; -moz-opacity: .70; filter:alpha(opacity=70); -webkit-border-radius: 20px; -moz-border-radius: 20px; z-index:2;">
 </div>
 
 <div id="divboton" style="position: absolute; top:20px; left:920px;visibility:hidden; text-align:center; z-index:3">
 	<a href="javascript:Hidden();"><img src="imagenes/cerrar4.png" height="45px" width="45px"></a>
 </div>
 
-<div id="divProfileData" style="background-color:#FFF; width:750px; height:450px; position:absolute; top:50px; left:170px; -webkit-border-radius: 20px; 	-moz-border-radius: 20px; visibility: hidden; z-index:2;">
+<div id="divProfileData" style="background-color:#FFF; width:800px; height:450px; position:absolute; top:50px; left:170px; -webkit-border-radius: 20px; 	-moz-border-radius: 20px; visibility: hidden; z-index:2;">
   	<div id="divProfileDetail" style="visibility:hidden; text-align:center; height:445px; overflow-y: scroll;">
 		<table align='center' class="texto">
 			<tr><th>Linea</th><th>Material</th><th>&nbsp;</th></tr>
 			<tr>
-			<td><select name='itemTipoMaterial' id="itemTipoMaterial" class="textogranderojo" style="width:300px">
+			<td><select name='itemTipoMaterial' id="itemTipoMaterial" class="textomedianorojo" style="width:300px">
+			
 			<?php
-			$sqlTipo="select pl.cod_linea_proveedor, CONCAT(p.nombre_proveedor,' - ',pl.nombre_linea_proveedor) from proveedores p, proveedores_lineas pl 
+			$sqlTipo="select pl.cod_linea_proveedor, CONCAT(p.nombre_proveedor,' - ',pl.nombre_linea_proveedor), pl.margen_precio from proveedores p, proveedores_lineas pl 
 			where p.cod_proveedor=pl.cod_proveedor and pl.estado=1 order by 2;";
 			$respTipo=mysql_query($sqlTipo);
 			echo "<option value='0'>--</option>";
 			while($datTipo=mysql_fetch_array($respTipo)){
 				$codTipoMat=$datTipo[0];
 				$nombreTipoMat=$datTipo[1];
+				$margenPrecio=$datTipo[2];
+				
 				echo "<option value=$codTipoMat>$nombreTipoMat</option>";
 			}
 			?>
-			</select>
+			</select><input type="button" class="boton2peque" onclick="javascript:masLinea(this.form);" value="BL">
 			</td>
 			<td>
 				<input type='text' name='itemNombreMaterial' id="itemNombreMaterial" class="textogranderojo"  onkeypress="return pressEnter(event, this.form);">

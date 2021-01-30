@@ -38,7 +38,7 @@ if($tipo_reporte==0)
 	where s.cod_tiposalida=ts.cod_tiposalida and s.cod_almacen='$global_almacen' 
 	and a.cod_almacen=s.cod_almacen and 
 	s.fecha>='$fecha_iniconsulta' and s.fecha<='$fecha_finconsulta' 
-	and s.tipo_salida='$tipo_salida' order by s.nro_correlativo";
+	and s.cod_tiposalida='$tipo_salida' order by s.nro_correlativo";
 	if($tipo_salida=="")
 	{	$sql="select s.cod_salida_almacenes, s.fecha, ts.nombre_tiposalida, 
 		(select c.descripcion from ciudades c where c.cod_ciudad=s.territorio_destino)territorio_destino, 
@@ -50,6 +50,9 @@ if($tipo_reporte==0)
 		s.fecha>='$fecha_iniconsulta' and s.fecha<='$fecha_finconsulta' 
 		order by s.nro_correlativo";
 	}
+	
+	//	echo $sql;
+
 	$resp=mysql_query($sql);
 	echo "<center><br><table class='texto'>";
 	echo "<tr><th>Nro.</th><th>Fecha</th><th>Tipo de Salida</th><th>Territorio<br>Destino</th><th>Almacen Destino</th><th>Cliente</th><th>Observaciones</th><th>Estado</th><th>Detalle</th></tr>";
@@ -83,7 +86,7 @@ if($tipo_reporte==0)
 
 		//aqui sacamos el detalle
 		$detalle_salida="";
-		$detalle_salida.="<table border='1' class='texto' cellspacing='0' width='100%' align='center'>";
+		$detalle_salida.="<table border='0' class='texto' cellspacing='0' width='100%' align='center'>";
 		$detalle_salida.="<tr><th>&nbsp;</th><th width='80%'>Material</th><th width='20%'>Cantidad</th></tr>";
 		$sql_detalle="select s.cod_material, s.cantidad_unitaria from salida_detalle_almacenes s
 		where s.cod_salida_almacen='$codigo'";

@@ -92,16 +92,21 @@ function ajaxBuscarItems(f){
 	
 	echo "<h1>Reporte de Productos Proximos a Vencer</h1>";
 	
-	$sql="select m.descripcion_material, DATE_FORMAT(id.fecha_vencimiento, '%d/%m/%Y'), id.cantidad_restante, id.fecha_vencimiento from material_apoyo m, ingreso_detalle_almacenes id, ingreso_almacenes i
+	$sql="select m.descripcion_material, DATE_FORMAT(id.fecha_vencimiento, '%d/%m/%Y'), id.cantidad_restante, id.fecha_vencimiento, 
+	(select pl.nombre_linea_proveedor from proveedores_lineas pl where pl.cod_linea_proveedor=m.cod_linea_proveedor) as linea, 
+	(select p.nombre_proveedor from proveedores_lineas pl, proveedores p where p.cod_proveedor=pl.cod_proveedor and pl.cod_linea_proveedor=m.cod_linea_proveedor) as proveedor 
+	from material_apoyo m, ingreso_detalle_almacenes id, ingreso_almacenes i
 		where i.cod_ingreso_almacen=id.cod_ingreso_almacen and id.cod_material=m.codigo_material and 
 		i.ingreso_anulado=0 and id.fecha_vencimiento<='$fechaFin' and id.cantidad_restante>0 
-		order by 2,1";
+		order by id.fecha_vencimiento";
 		
 	$resp=mysql_query($sql);
 	
 	echo "<center><table class='texto'>";
 	echo "<tr>
 	<th>#</th>
+	<th>Distribuidor</th>
+	<th>Linea</th>
 	<th>Material</th>
 	<th>Fecha</th>
 	<th>Cantidad</th>
@@ -113,16 +118,23 @@ function ajaxBuscarItems(f){
 		$fechaVencimiento=$dat[1];
 		$cantidadUnitaria=$dat[2];
 		$fechaVencimientoSF=$dat[3];
+		$lineaProveedor=$dat[4];
+		$distribuidor=$dat[5];
+		
 		
 		//echo $fechaVencimientoSF." ".$fechaActual;
 		
 		if($fechaVencimientoSF<=$fechaActual){
 			echo "<td align='center'><div class='textogranderojo'>$indice</div></td>";
+			echo "<td align='left'><div class='textogranderojo'>$distribuidor</div></td>";
+			echo "<td align='left'><div class='textogranderojo'>$lineaProveedor</div></td>";
 			echo "<td align='left'><div class='textogranderojo'>$nombreMaterial</div></td>";
 			echo "<td align='center'><div class='textogranderojo'>$fechaVencimiento</div></td>";
 			echo "<td align='center'><div class='textogranderojo'>$cantidadUnitaria</div></td>";
 		}else{
 			echo "<td align='center'>$indice</td>";
+			echo "<td align='left'>$distribuidor</td>";
+			echo "<td align='left'>$lineaProveedor</td>";
 			echo "<td align='left'>$nombreMaterial</td>";
 			echo "<td align='center'>$fechaVencimiento</td>";
 			echo "<td align='center'>$cantidadUnitaria</td>";

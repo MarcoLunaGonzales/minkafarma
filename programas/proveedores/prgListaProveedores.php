@@ -8,7 +8,7 @@ echo "<center>";
 echo "<h1>Distribuidores</h1>";
 echo "<table class='texto'>";
 echo "<tr>";
-echo "<th>&nbsp;</th><th>Nombre</th><th>Direccion</th><th>Telefono 1</th><th>Telefono 2</th><th>Contacto</th><th>Lineas</th>";
+echo "<th>&nbsp;</th><th>Nombre</th><th>Direccion</th><th>Telefono 1</th><th>Telefono 2</th><th>Contacto</th><th>Detalle Lineas</th><th>Ver Lineas</th>";
 echo "</tr>";
 $consulta="
     SELECT p.cod_proveedor, p.nombre_proveedor, p.direccion, p.telefono1, p.telefono2, p.contacto
@@ -25,9 +25,21 @@ while($reg=mysql_fetch_array($rs))
     $telefono1 = $reg["telefono1"];
     $telefono2 = $reg["telefono2"];
     $contacto  = $reg["contacto"];
+	
+	$consultaDet="select p.nombre_linea_proveedor
+	from proveedores_lineas p where p.cod_proveedor=$codProv and estado=1 order by 1";
+	//echo $consultaDet;
+	$rsDet=mysql_query($consultaDet);
+	$txtLineas="";
+	while($regDet=mysql_fetch_array($rsDet)){
+		$txtLineas.="".$regDet[0].", ";
+	}
+	
     echo "<tr>";
     echo "<td><input type='checkbox' id='idchk$cont' value='$codProv' ></td><td>$nomProv</td><td>$direccion</td><td>$telefono1</td>
-	<td>$telefono2</td><td>$contacto</td>";
+	<td>$telefono2</td><td>$contacto</td>
+	<td>$txtLineas</td>";
+	
     echo "<td><a href='navegadorLineasDistribuidores.php?codProveedor=$codProv'><img src='../../imagenes/detalle.png' width='40' title='Ver Lineas'></a></td>";
 	echo "</tr>";
    }

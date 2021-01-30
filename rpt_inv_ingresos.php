@@ -4,6 +4,8 @@ require('conexion.inc');
 require('function_formatofecha.php');
 require('funciones.php');
 
+$rptItem=$_GET['rpt_item'];
+
 $fecha_reporte=date("d/m/Y");
 $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
 $sql_tipo_ingreso="select nombre_tipoingreso from tipos_ingreso where cod_tipoingreso='$tipo_ingreso'";
@@ -16,25 +18,38 @@ if($tipo_ingreso!="")
 else
 {	$nombre_tipoingresomostrar="Todos los tipos de Ingreso";
 }
+
+	$detalle_ingreso.="<table border=0 cellspacing='0' align='center' class='textomini' width='100%'>";
+	$detalle_ingreso.="<tr><th width='70%'>Material</th><th width='30%'>Cantidad</th></tr></table>";
+
 	echo "<h1>Reporte Ingresos Almacen</h1>
 	<h1>$nombre_tipoingresomostrar Fecha inicio: <strong>$fecha_ini</strong> Fecha final: <strong>$fecha_fin</strong><br>$txt_reporte</h1>";
 
 	//desde esta parte viene el reporte en si
-	$fecha_iniconsulta=cambia_formatofecha($fecha_ini);
-	$fecha_finconsulta=cambia_formatofecha($fecha_fin);
-	$sql="select i.cod_ingreso_almacen, i.fecha, ti.nombre_tipoingreso, i.observaciones, i.nota_entrega, i.nro_correlativo, i.ingreso_anulado
-	FROM ingreso_almacenes i, tipos_ingreso ti
-	where i.cod_tipoingreso=ti.cod_tipoingreso and i.cod_almacen='$rpt_almacen' and i.fecha>='$fecha_iniconsulta' and i.fecha<='$fecha_finconsulta' and i.cod_tipoingreso='$tipo_ingreso' and i.ingreso_anulado=0 
-	order by i.nro_correlativo";
-	if($tipo_ingreso=='')
-	{	$sql="select i.cod_ingreso_almacen, i.fecha, ti.nombre_tipoingreso, i.observaciones, i.nota_entrega, i.nro_correlativo, i.ingreso_anulado
-		FROM ingreso_almacenes i, tipos_ingreso ti
-		where i.cod_tipoingreso=ti.cod_tipoingreso and i.cod_almacen='$rpt_almacen' and i.fecha>='$fecha_iniconsulta' 
-		and i.fecha<='$fecha_finconsulta' and i.ingreso_anulado=0 order by i.nro_correlativo";
+	//$fecha_iniconsulta=cambia_formatofecha($fecha_ini);
+	//$fecha_finconsulta=cambia_formatofecha($fecha_fin);
+	
+	$fecha_iniconsulta=$fecha_ini;
+	$fecha_finconsulta=$fecha_fin;
+	
+	
+	$sql="select i.cod_ingreso_almacen, i.fecha, ti.nombre_tipoingreso, i.observaciones, i.nota_entrega, i.nro_correlativo, i.ingreso_anulado, i.nro_factura_proveedor, 
+	(select p.nombre_proveedor from proveedores p where p.cod_proveedor=i.cod_proveedor)as proveedor
+	FROM ingreso_almacenes i, tipos_ingreso ti, ingreso_detalle_almacenes id
+	where i.cod_ingreso_almacen=id.cod_ingreso_almacen and i.cod_tipoingreso=ti.cod_tipoingreso and i.cod_almacen='$rpt_almacen' and i.fecha>='$fecha_iniconsulta' and i.fecha<='$fecha_finconsulta' and i.ingreso_anulado=0";
+	if($tipo_ingreso!='')
+	{	$sql.=" and i.cod_tipoingreso='$tipo_ingreso' ";
 	}
+	if($rptItem!=""){
+		$sql.=" and id.cod_material in ($rptItem) ";
+	}
+	$sql.="order by i.nro_correlativo";
+	
+	//echo $sql;
+	
 	$resp=mysql_query($sql);
 	echo "<center><br><table class='texto' width='100%'>";
-	echo "<tr class='textomini'><th>Nro.</th><th>Nota de Entrega</th><th>Fecha</th><th>Tipo de Ingreso</th><th>Observaciones</th><th>Estado</th><th>&nbsp;</th></tr>";
+	echo "<tr class='textomini'><th>Nro. Ingreso</th><th>Proveedor</th><th>Nro. Factura</th><th>Fecha</th><th>Tipo de Ingreso</th><th>Observaciones</th><th>Estado</th><th>$detalle_ingreso</th></tr>";
 	while($dat=mysql_fetch_array($resp))
 	{
 		$codigo=$dat[0];
@@ -45,6 +60,9 @@ else
 		$nota_entrega=$dat[4];
 		$nro_correlativo=$dat[5];
 		$anulado=$dat[6];
+		$nroFacturaProv=$dat[7];
+		$nombreProveedor=$dat[8];
+		
 		echo "<input type='hidden' name='fecha_ingreso$nro_correlativo' value='$fecha_ingreso_mostrar'>";
 		$bandera=0;
 		$sql_verifica_movimiento="select s.cod_salida_almacenes from salida_almacenes s, salida_detalle_ingreso sdi
@@ -62,12 +80,13 @@ else
 		}
 		//desde esta parte sacamos el detalle del ingreso
 		$sql_detalle="select i.cod_material, i.cantidad_unitaria from ingreso_detalle_almacenes i
-		where i.cod_ingreso_almacen='$codigo'";
+		where i.cod_ingreso_almacen='$codigo' and i.cod_material in ($rptItem)";
 		$resp_detalle=mysql_query($sql_detalle);
 		$bandera=0;
 		$detalle_ingreso="";
-		$detalle_ingreso.="<table border=1 cellspacing='0' align='center' class='textomini' width='100%'>";
-		$detalle_ingreso.="<tr><th width='70%'>Material</th><th width='30%'>Cantidad</th></tr>";
+		$detalle_ingreso.="<table border=0 cellspacing='0' align='center' class='textomini' width='100%'>";
+		//$detalle_ingreso.="<tr><th width='70%'>Material</th><th width='30%'>Cantidad</th></tr>";
+		
 		$numFilas=mysql_num_rows($resp_detalle);
 		if($numFilas>0){
 			while($dat_detalle=mysql_fetch_array($resp_detalle))
@@ -84,15 +103,19 @@ else
 				$dat_nombre_material=mysql_fetch_array($resp_nombre_material);
 				$nombre_material=$dat_nombre_material[0];
 				$presentacion=$dat_nombre_material[1];
-				$detalle_ingreso.="<tr><td>$nombre_material $presentacion</td><td align='center'>$cantidad_unitaria</td></tr>";
+				$detalle_ingreso.="<tr><td width='70%'>$nombre_material $presentacion</td><td align='center'  width='30%'>$cantidad_unitaria</td></tr>";
 			}
 		}
 		$detalle_ingreso.="</table>";
 		if($rpt_linea==0)
-		{	echo "<tr bgcolor='$color_fondo'><td align='center'>$nro_correlativo</td><td align='center'>&nbsp;$nota_entrega</td><td align='center'>$fecha_ingreso_mostrar</td><td>$nombre_tipoingreso</td><td>&nbsp;$obs_ingreso</td><td>&nbsp;$estado_ingreso</td><td align='center'>$detalle_ingreso</td></tr>";
+		{	echo "<tr bgcolor='$color_fondo'>
+			<td align='center'>$nro_correlativo</td><td align='left'>$nombreProveedor</td><td align='center'>$nroFacturaProv</td>
+			<td align='center'>$fecha_ingreso_mostrar</td><td>$nombre_tipoingreso</td><td>&nbsp;$obs_ingreso</td><td>&nbsp;$estado_ingreso</td><td align='center'>$detalle_ingreso</td></tr>";
 		}
 		if($rpt_linea!=0 and $bandera==1)
-		{	echo "<tr bgcolor='$color_fondo'><td align='center'>$nro_correlativo</td><td align='center'>&nbsp;$nota_entrega</td><td align='center'>$fecha_ingreso_mostrar</td><td>$nombre_tipoingreso</td><td>&nbsp;$obs_ingreso</td><td>&nbsp;$estado_ingreso</td><td align='center'>$detalle_ingreso</td></tr>";
+		{	echo "<tr bgcolor='$color_fondo'><td align='center'>$nro_correlativo</td>
+			<td align='left'>$nombreProveedor</td><td align='center'>$nroFacturaProv</td>
+			<td align='center'>$fecha_ingreso_mostrar</td><td>$nombre_tipoingreso</td><td>&nbsp;$obs_ingreso</td><td>&nbsp;$estado_ingreso</td><td align='center'>$detalle_ingreso</td></tr>";
 		}
 	}
 	echo "</table></center><br>";

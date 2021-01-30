@@ -319,6 +319,10 @@ while ($dat = mysql_fetch_array($resp)) {
     $cod_almacen_destino = $dat[9];
 	$nombreCliente=$dat[10];
 	$codTipoDoc=$dat[11];
+	
+	$anio_salida=intval("$fecha_salida[0]$fecha_salida[1]$fecha_salida[2]$fecha_salida[3]");
+	$globalGestionActual=intval($_COOKIE["globalGestion"]);
+	
     echo "<input type='hidden' name='fecha_salida$nro_correlativo' value='$fecha_salida_mostrar'>";
     $estado_preparado = 0;
     if ($estado_almacen == 0) {
@@ -350,12 +354,14 @@ while ($dat = mysql_fetch_array($resp)) {
         $chk = "<input type='checkbox' name='codigo' value='$codigo'>";
         $estado_preparado = 1;
     }
-
-	
     if ($salida_anulada == 1) {
         $color_fondo = "#ff8080";
         $chk = "&nbsp;";
     }
+	if ($anio_salida != $globalGestionActual) {
+        $chk = "";
+    }
+	
     echo "<input type='hidden' name='estado_preparado' value='$estado_preparado'>";
     //echo "<tr><td><input type='checkbox' name='codigo' value='$codigo'></td><td align='center'>$fecha_salida_mostrar</td><td>$nombre_tiposalida</td><td>$nombre_ciudad</td><td>$nombre_almacen</td><td>$nombre_funcionario</td><td>&nbsp;$obs_salida</td><td>$txt_detalle</td></tr>";
     echo "<tr bgcolor='$color_fondo'>";

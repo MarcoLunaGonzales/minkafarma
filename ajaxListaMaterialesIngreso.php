@@ -24,6 +24,7 @@ $itemsNoUtilizar="0";
 		$sql=$sql. " and cod_linea_proveedor = '$codTipo' ";
 	}
 	$sql=$sql." order by 2";
+	//echo $sql;
 	$resp=mysql_query($sql);
 
 	$numFilas=mysql_num_rows($resp);
@@ -36,8 +37,13 @@ $itemsNoUtilizar="0";
 			$linea=$dat[3];
 			
 			$stockProducto=stockProducto($globalAlmacen, $codigo);
+			$precioProducto=precioProducto($codigo);
+			if($precioProducto==""){
+				$precioProducto=0;
+			}
+			$margenLinea=margenLinea($codigo);
 			
-			echo "<tr><td>$linea</td><td><div class='textograndenegro'><a href='javascript:setMateriales(form1, $codigo, \"$nombre\", $cantidadPresentacion)'>$nombre</a></div></td><td><div class='textograndenegro'>$stockProducto</div></td></tr>";
+			echo "<tr><td>$linea</td><td><div class='textograndenegro'><a href='javascript:setMateriales(form1, $codigo, \"$nombre\", $cantidadPresentacion, $precioProducto, $margenLinea)'>$nombre</a></div></td><td><div class='textograndenegro'>$stockProducto</div></td></tr>";
 		}
 	}else{
 		echo "<tr><td colspan='3'>Sin Resultados en la busqueda.</td></tr>";

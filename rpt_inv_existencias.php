@@ -38,17 +38,22 @@ $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
 		$resp_item=mysql_query($sql_item);
 		
 		if($rptOrdenar==1){
-			echo "<br><table border=0 align='center' class='texto' width='70%'>
+			echo "<br><table border=0 align='center' class='textomediano' width='70%'>
+			<thead>
 			<tr><th>&nbsp;</th><th>Codigo</th><th>Material</th>
-			<th>CantidadPresentacion</th><th>Cajas</th><th>Unidades</th></tr>";
+			<th>CantidadPresentacion</th><th>Cajas</th><th>Unidades</th></tr>
+			</thead>";
 		}else{
-			echo "<br><table border=0 align='center' class='texto' width='70%'>
+			echo "<br><table border=0 align='center' class='textomediano' width='70%'>
+			<thead>
 			<tr><th>&nbsp;</th><th>Codigo</th><th>Linea Proveedor</th><th>Material</th>
-			<th>CantidadPresentacion</th><th>Cajas</th><th>Unidades</th></tr>";
+			<th>CantidadPresentacion</th><th>Cajas</th><th>Unidades</th></tr>
+			</thead>";
 		}
 
 		
 		$indice=1;
+		$cadena_mostrar="<tbody>";
 		while($datos_item=mysql_fetch_array($resp_item))
 		{	$codigo_item=$datos_item[0];
 			$nombre_item=$datos_item[1];
@@ -120,6 +125,7 @@ $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
 				$indice++;
 			}
 		}
+		$cadena_mostrar.="</tbody>";
 		echo "</table>";
 		
 				include("imprimirInc.php");

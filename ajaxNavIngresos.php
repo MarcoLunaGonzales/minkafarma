@@ -49,6 +49,9 @@ while ($dat = mysql_fetch_array($resp)) {
     $nro_correlativo = $dat[6];
     $anulado = $dat[7];
 	$proveedor=$dat[8];
+	
+	$anio_ingreso=intval("$fecha_ingreso[0]$fecha_ingreso[1]$fecha_ingreso[2]$fecha_ingreso[3]");
+	$globalGestionActual=intval($_COOKIE["globalGestion"]);
 
     echo "<input type='hidden' name='fecha_ingreso$nro_correlativo' value='$fecha_ingreso_mostrar'>";
     $sql_verifica_movimiento = "select s.cod_salida_almacenes from salida_almacenes s, salida_detalle_ingreso sdi
@@ -66,6 +69,10 @@ while ($dat = mysql_fetch_array($resp)) {
     if ($num_filas_movimiento == 0 and $anulado == 0) {
         $color_fondo = "";
         $chkbox = "<input type='checkbox' name='codigo' value='$codigo'>";
+    }
+	
+	if ($anio_ingreso != $globalGestionActual) {
+        $chkbox = "";
     }
     echo "<tr bgcolor='$color_fondo'><td align='center'>$chkbox</td><td align='center'>$nro_correlativo</td><td align='center'>&nbsp;$nota_entrega</td>
 	<td align='center'>$fecha_ingreso_mostrar $hora_ingreso</td><td>$nombre_tipoingreso</td>

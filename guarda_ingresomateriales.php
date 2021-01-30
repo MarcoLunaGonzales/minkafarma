@@ -5,7 +5,7 @@ require("estilos_almacenes.inc");
 require("funcionRecalculoCostos.php");
 require("funciones.php");
 
-//HABILITAMOS LA BANDERA DE VENCIDOS PARA SACAR SOLO VENCIDOS
+//HABILITAMOS LA BANDERA DE VENCIDOS PARA ACTUALIZAR EL PRECIO
 $banderaPrecioUpd=0;
 $sqlConf="select valor_configuracion from configuraciones where id_configuracion=7";
 $respConf=mysql_query($sqlConf);
@@ -66,11 +66,13 @@ if($sql_inserta==1){
 			
 			$consulta="insert into ingreso_detalle_almacenes(cod_ingreso_almacen, cod_material, cantidad_unitaria, cantidad_restante, lote, fecha_vencimiento, 
 			precio_bruto, costo_almacen, costo_actualizado, costo_actualizado_final, costo_promedio, precio_neto, cod_ubicacionestante, cod_ubicacionfila) 
-			values($codigo,'$cod_material',$cantidad,$cantidad,'$lote','$fechaVencimiento',$precioUnitario,$precioUnitario,$costo,$costo,$costo,$costo,$ubicacionEstante,$ubicacionFila)";
+			values($codigo,'$cod_material',$cantidad,$cantidad,'$lote','$fechaVencimiento',$precioUnitario,$precioUnitario,$costo,$costo,$costo,$costo,'$ubicacionEstante','$ubicacionFila')";
 			//echo "bbb:$consulta";
 			$sql_inserta2 = mysql_query($consulta);
 			
-			$sqlMargen="select p.margen_precio from material_apoyo m, proveedores_lineas p
+			
+			
+			/*$sqlMargen="select p.margen_precio from material_apoyo m, proveedores_lineas p
 				where m.cod_linea_proveedor=p.cod_linea_proveedor and m.codigo_material='$cod_material'";
 			$respMargen=mysql_query($sqlMargen);
 			$numFilasMargen=mysql_num_rows($respMargen);
@@ -79,7 +81,8 @@ if($sql_inserta==1){
 				$porcentajeMargen=mysql_result($respMargen,0,0);			
 			}		
 			$precioItem=$costo+($costo*($porcentajeMargen/100));
-		
+			*/
+			$precioItem=$_POST["preciocliente$i"];
 			
 			if($banderaPrecioUpd==1){
 				//SACAMOS EL ULTIMO PRECIO REGISTRADO
@@ -97,7 +100,7 @@ if($sql_inserta==1){
 					$sqlPrecios="insert into precios (codigo_material, cod_precio, precio) values('$cod_material','1','$precioItem')";
 					$respPrecios=mysql_query($sqlPrecios);
 				}else{
-					if($precioItem>$precioActual){
+					if($precioItem!=$precioActual){
 						$sqlPrecios="update precios set precio='$precioItem' where codigo_material='$cod_material' and cod_precio=1";
 						$respPrecios=mysql_query($sqlPrecios);
 					}
@@ -110,6 +113,7 @@ if($sql_inserta==1){
 		
 
 	}
+	
 	echo "<script language='Javascript'>
 		alert('Los datos fueron insertados correctamente.');
 		location.href='navegador_ingresomateriales.php';

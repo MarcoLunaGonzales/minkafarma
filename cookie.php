@@ -9,6 +9,7 @@ $sql = "
     SELECT f.cod_cargo, f.cod_ciudad
     FROM funcionarios f, usuarios_sistema u
     WHERE u.codigo_funcionario=f.codigo_funcionario AND u.codigo_funcionario='$usuario' AND u.contrasena='$contrasena' ";
+//echo $sql;
 $resp = mysql_query($sql);
 $num_filas = mysql_num_rows($resp);
 if ($num_filas != 0) {
@@ -33,7 +34,7 @@ if ($num_filas != 0) {
 	$global_almacen=$dat_almacen[0];
 
 	setcookie("global_almacen",$global_almacen);
-	setcookie("globalGestion", $globalGestion);
+	setcookie("globalGestion", $nombreG);
 	
 	if($cod_cargo==1000){
 		header("location:indexGerencia.php");

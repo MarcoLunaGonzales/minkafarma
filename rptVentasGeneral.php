@@ -9,8 +9,8 @@ $fecha_fin=$_GET['fecha_fin'];
 
 
 //desde esta parte viene el reporte en si
-$fecha_iniconsulta=cambia_formatofecha($fecha_ini);
-$fecha_finconsulta=cambia_formatofecha($fecha_fin);
+$fecha_iniconsulta=($fecha_ini);
+$fecha_finconsulta=($fecha_fin);
 
 $rpt_territorio=$_GET['rpt_territorio'];
 
@@ -18,11 +18,11 @@ $fecha_reporte=date("d/m/Y");
 
 $nombre_territorio=nombreTerritorio($rpt_territorio);
 
-echo "<table align='center' class='textotit' width='70%'><tr><td align='center'>Reporte Ventas x Documento
+echo "<table align='center' class='textotit' width='70%'><tr><td align='center'>Reporte Ventas x Documento e Item
 	<br>Territorio: $nombre_territorio <br> De: $fecha_ini A: $fecha_fin
 	<br>Fecha Reporte: $fecha_reporte</tr></table>";
 
-$sql="select s.`fecha`,  
+$sql="select concat(s.`fecha`,' ',s.hora_salida)as fecha,  
 	(select c.nombre_cliente from clientes c where c.`cod_cliente`=s.cod_cliente) as cliente, 
 	s.`razon_social`, s.`observaciones`, 
 	(select t.`abreviatura` from `tipos_docs` t where t.`codigo`=s.cod_tipo_doc),
@@ -31,7 +31,7 @@ $sql="select s.`fecha`,
 	s.`cod_almacen` in (select a.`cod_almacen` from `almacenes` a where a.`cod_ciudad`='$rpt_territorio')
 	and s.`fecha` BETWEEN '$fecha_iniconsulta' and '$fecha_finconsulta' ";
 
-$sql.=" order by s.fecha, s.nro_correlativo";
+$sql.=" order by s.fecha, s.hora_salida, s.nro_correlativo";
 
 $resp=mysql_query($sql);
 
@@ -45,7 +45,8 @@ echo "<br><table align='center' class='texto' width='70%'>
 <th>
 	<table width='100%'>
 	<tr>
-		<th width='50%'>Item</th>
+		<th width='50%'>Codigo</th>
+		<th width='50%'>Producto</th>
 		<th width='25%'>Cantidad</th>
 		<th width='25%'>Monto</th>
 	</tr>
@@ -62,19 +63,20 @@ while($datos=mysql_fetch_array($resp)){
 	$datosDoc=$datos[4]."-".$datos[5];
 	$montoVenta=$datos[6];
 	$codSalida=$datos[7];
+	
 	$montoVentaFormat=number_format($montoVenta,2,".",",");
 	
 	$totalVenta=$totalVenta+$montoVenta;
 	
-	$sqlX="select m.`codigo_material`, m.`descripcion_material`, 
-	sum(sd.monto_unitario)montoVenta, sum(sd.cantidad_unitaria), sd.orden_detalle
+	$sqlX="select m.codigo_material, m.`descripcion_material`, 
+	(sum(sd.monto_unitario)-sum(sd.descuento_unitario))montoVenta, sum(sd.cantidad_unitaria), s.descuento, s.monto_total
 	from `salida_almacenes` s, `salida_detalle_almacenes` sd, `material_apoyo` m 
 	where s.`cod_salida_almacenes`=sd.`cod_salida_almacen` and s.`fecha` BETWEEN '$fecha_iniconsulta' and '$fecha_finconsulta'
 	and s.`salida_anulada`=0 and sd.`cod_material`=m.`codigo_material` and
 	s.`cod_almacen` in (select a.`cod_almacen` from `almacenes` a where a.`cod_ciudad`='$rpt_territorio') and 
 	s.cod_salida_almacenes='$codSalida'
-	group by m.`codigo_material`, sd.orden_detalle order by 5 desc";
-	
+	group by m.`codigo_material` order by 2 desc;";
+	//echo $sqlX;
 	$respX=mysql_query($sqlX);
 
 	$tablaDetalle="<table width='100%'>";
@@ -86,21 +88,38 @@ while($datos=mysql_fetch_array($resp)){
 		$montoVenta=$datosX[2];
 		$cantidad=$datosX[3];
 		
+		$descuentoVenta=$datosX[4];
+		$montoNota=$datosX[5];
+				
+		if($descuentoVenta>0){
+			$porcentajeVentaProd=($montoVenta/$montoNota);
+			$descuentoAdiProducto=($descuentoVenta*$porcentajeVentaProd);
+			$montoVenta=$montoVenta-$descuentoAdiProducto;
+		}
+		
 		$montoPtr=number_format($montoVenta,2,".",",");
 		$cantidadFormat=number_format($cantidad,0,".",",");
 		
 		$totalVentaX=$totalVentaX+$montoVenta;
 		$tablaDetalle.="<tr>
+		<td>$codItem</td>
 		<td>$nombreItem</td>
 		<td>$cantidadFormat</td>
 		<td>$montoPtr</td>		
 		</tr>";
 	}
 	$totalPtr=number_format($totalVentaX,2,".",",");
+	if($montoVenta-$totalVentaX>0 || $montoVenta-$totalVentaX<0){
+		$colorObs="#ff0000";
+	}else{
+		$colorObs="#ffffff";
+	}
 	$tablaDetalle.="<tr>
 		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
 		<th>Total:</th>
-		<th>$totalPtr</th>
+		<th bgcolor='$colorObs'>$totalPtr</th>
 	<tr></table>";
 
 	
@@ -120,7 +139,7 @@ echo "<tr>
 	<td>-</td>
 	<td>-</td>
 	<th>Total Reporte</th>
-	<th>$totalVentaFormat</th>
+	<th align='right'>$totalVentaFormat</th>
 </tr>";
 echo "</table></br>";
 

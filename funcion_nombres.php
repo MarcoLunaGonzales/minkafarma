@@ -92,5 +92,11 @@ function nombreProveedor($codigo){
 	return($nombre);
 }
 
+function nombreLineaProveedor($codigo){
+	$sql="select nombre_linea_proveedor from proveedores_lineas where cod_linea_proveedor='$codigo'";
+	$resp=mysql_query($sql);
+	$nombre=mysql_result($resp,0,0);
+	return($nombre);
+}
 
 ?>

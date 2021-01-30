@@ -67,7 +67,7 @@ $nitCliente=mysql_result($respDatosFactura,0,3);
 $razonSocialCliente=mysql_result($respDatosFactura,0,4);
 
 //datos documento
-$sqlDatosVenta="select DATE_FORMAT(s.fecha, '%d/%m/%Y'), t.`nombre`, c.`nombre_cliente`, s.`nro_correlativo`
+$sqlDatosVenta="select DATE_FORMAT(s.fecha, '%d/%m/%Y'), t.`nombre`, c.`nombre_cliente`, s.`nro_correlativo`, s.monto_efectivo, s.monto_cambio, s.descuento
 		from `salida_almacenes` s, `tipos_docs` t, `clientes` c
 		where s.`cod_salida_almacenes`='$codigoVenta' and s.`cod_cliente`=c.`cod_cliente` and
 		s.`cod_tipo_doc`=t.`codigo`";
@@ -77,6 +77,9 @@ while($datDatosVenta=mysql_fetch_array($respDatosVenta)){
 	$nombreTipoDoc=$datDatosVenta[1];
 	$nombreCliente=$datDatosVenta[2];
 	$nroDocVenta=$datDatosVenta[3];
+	$totalEfectivo=$datDatosVenta[4];
+	$totalCambio=$datDatosVenta[5];
+	$montoDescuentoCab=$datDatosVenta[6];	
 }
 
 $y=5;
@@ -108,8 +111,8 @@ $pdf->SetXY(0,$y+45);		$pdf->Cell(0,0,"=========================================
 $pdf->SetXY(15,$y+48);		$pdf->Cell(0,0,"ITEM");
 $pdf->SetXY(50,$y+48);		$pdf->Cell(0,0,"Cant.");
 $pdf->SetXY(58,$y+48);		$pdf->Cell(0,0,"Importe");
-$pdf->SetXY(0,$y+52);		$pdf->Cell(0,0,"=================================================================================",0,0,"C");
 
+$pdf->SetXY(0,$y+52);		$pdf->Cell(0,0,"=================================================================================",0,0,"C");
 
 $sqlDetalle="select m.codigo_material, sum(s.`cantidad_unitaria`), m.`descripcion_material`, s.`precio_unitario`, 
 		sum(s.`descuento_unitario`), sum(s.`monto_unitario`) from `salida_detalle_almacenes` s, `material_apoyo` m where 
@@ -126,6 +129,7 @@ while($datDetalle=mysql_fetch_array($respDetalle)){
 	$cantUnit=$datDetalle[1];
 	$cantUnit=redondear2($cantUnit);
 	$nombreMat=$datDetalle[2];
+	$nombreMat=substr($nombreMat, 0, 40);
 	$precioUnit=$datDetalle[3];
 	$precioUnit=redondear2($precioUnit);
 	$descUnit=$datDetalle[4];
@@ -144,7 +148,9 @@ $yyy=$yyy+5;
 
 
 $pdf->SetXY(42,$y+$yyy);		$pdf->Cell(0,0,"Total Venta:  $montoTotal",0,0);
-$pdf->SetXY(44,$y+$yyy+4);		$pdf->Cell(0,0,"Descuento:  0",0,0);
+$montoDescuentoCabF=redondear2($montoDescuentoCab);
+$pdf->SetXY(44,$y+$yyy+4);		$pdf->Cell(0,0,"Descuento:  $montoDescuentoCabF",0,0);
+$montoTotal=$montoTotal-$montoDescuentoCab;
 $pdf->SetXY(43,$y+$yyy+8);		$pdf->Cell(0,0,"Total Final:  $montoTotal",0,0);
 
 list($montoEntero, $montoDecimal) = explode('.', $montoTotal);
@@ -153,9 +159,15 @@ if($montoDecimal==""){
 }
 $txtMonto=NumeroALetras::convertir($montoEntero);
 $pdf->SetXY(5,$y+$yyy+11);		$pdf->MultiCell(0,3,"Son:  $txtMonto"." ".$montoDecimal."/100 Bolivianos",0,"L");
-$pdf->SetXY(0,$y+$yyy+19);		$pdf->Cell(0,0,"=================================================================================",0,0,"C");		
 
-$yyy=$yyy+10;
+$pdf->SetXY(0,$y+$yyy+15);		$pdf->Cell(0,0,"---------------------------------------------------------------------------------",0,0,"C");
+$pdf->SetXY(47,$y+$yyy+18);		$pdf->Cell(0,0,"Efectivo:     $totalEfectivo",0,0);
+$pdf->SetXY(47,$y+$yyy+21);		$pdf->Cell(0,0,"Cambio:  $totalCambio",0,0);
+
+$pdf->SetXY(0,$y+$yyy+24);		$pdf->Cell(0,0,"=================================================================================",0,0,"C");		
+
+
+$yyy=$yyy+12;
 $pdf->SetXY(5,$y+$yyy+16);		$pdf->Cell(0,0,"CODIGO DE CONTROL: $codigoControl",0,0,"C");
 $pdf->SetXY(5,$y+$yyy+20);		$pdf->Cell(0,0,"FECHA LIMITE DE EMISION: $fechaLimiteEmision",0,0,"C");
 $pdf->SetXY(5,$y+$yyy+23);		$pdf->Cell(0,0,"-------------------------------------------------------------------------------",0,0,"C");

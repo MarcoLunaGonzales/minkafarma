@@ -3,13 +3,28 @@
         <title>Busqueda</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <script type="text/javascript" src="lib/js/xlibPrototipoSimple-v0.1.js"></script>
+		<script type="text/javascript" src="lib/externos/jquery/jquery-1.4.4.min.js"></script>
 		
 <script type='text/javascript' language='javascript'>
 function funcionInicio(){
 	document.getElementById('nitCliente').focus();
 }
 
-
+function number_format(amount, decimals) {
+    amount += ''; // por si pasan un numero en vez de un string
+    amount = parseFloat(amount.replace(/[^0-9\.-]/g, '')); // elimino cualquier cosa que no sea numero o punto
+    decimals = decimals || 0; // por si la variable no fue fue pasada
+    // si no es un numero o es igual a cero retorno el mismo cero
+    if (isNaN(amount) || amount === 0) 
+        return parseFloat(0).toFixed(decimals);
+    // si es mayor o menor que cero retorno el valor formateado como numero
+    amount = '' + amount.toFixed(decimals);
+    var amount_parts = amount.split('.'),
+        regexp = /(\d+)(\d{3})/;
+    while (regexp.test(amount_parts[0]))
+        amount_parts[0] = amount_parts[0].replace(regexp, '$1' + ',' + '$2');
+    return amount_parts.join('.');
+}
 function nuevoAjax()
 {	var xmlhttp=false;
 	try {
@@ -28,13 +43,23 @@ function nuevoAjax()
 }
 
 function listaMateriales(f){
+		var stock=0;
+	if($("#solo_stock").is(":checked")){
+		stock=1;
+	}
 	var contenedor;
 	var codTipo=f.itemTipoMaterial.value;
 	var nombreItem=f.itemNombreMaterial.value;
-	var tipoSalida=(f.tipoSalida.value);
-	
-	contenedor = document.getElementById('divListaMateriales');
+	//var codigoMat=(f.itemCodigoMaterial.value);
 
+	var nomAccion=f.itemAccionMaterialNom.value;
+	var nomPrincipio=f.itemPrincipioMaterialNom.value;
+
+   if(nomAccion==""&&nomPrincipio==""&&nombreItem==""){
+     alert("Debe ingresar un criterio de busqueda"+nombreItem);
+   }else{
+	contenedor = document.getElementById('divListaMateriales');
+    contenedor.innerHTML="<br><br><br><br><br><br><p class='text-muted'style='font-size:50px'>Buscando Producto(s)...</p>";
 	var arrayItemsUtilizados=new Array();	
 	var i=0;
 	for(var j=1; j<=num; j++){
@@ -44,15 +69,27 @@ function listaMateriales(f){
 			i++;
 		}
 	}
-	
 	ajax=nuevoAjax();
-	ajax.open("GET", "ajaxListaMateriales.php?codTipo="+codTipo+"&nombreItem="+nombreItem+"&arrayItemsUtilizados="+arrayItemsUtilizados+"&tipoSalida="+tipoSalida,true);
+	ajax.open("GET", "ajaxListaMateriales.php?codTipo="+codTipo+"&nombreItem="+nombreItem+"&arrayItemsUtilizados="+arrayItemsUtilizados+"&codProv="+codTipo+"&stock="+stock+"&nomAccion="+nomAccion+"&nomPrincipio="+nomPrincipio,true);
 	ajax.onreadystatechange=function() {
-		if (ajax.readyState==4) {
-			contenedor.innerHTML = ajax.responseText
-		}
+		if (ajax.readyState==4) {			
+			contenedor.innerHTML = ajax.responseText;
+			var oRows = document.getElementById('listaMaterialesTabla').getElementsByTagName('tr');
+            var nFilas = oRows.length;					
+			if(parseInt(nFilas)==2){
+				if(ajax.responseText!=""){
+				  document.getElementsByClassName('enlace_ref')[0].click();	
+				}				
+				//$(".enlace_ref").click();
+			}
+			//
+			document.getElementById('itemCodigoMaterial').focus();				
+		}		
 	}
 	ajax.send(null)
+   }
+
+
 }
 
 function ajaxTipoDoc(f){
@@ -168,6 +205,15 @@ function aplicarDescuento(f){
 	descuento=Math.round(descuento*100)/100;
 	
 	document.getElementById("totalFinal").value=parseFloat(total)-parseFloat(descuento);
+	
+}
+function verCambio(f){
+	var totalFinal=document.getElementById("totalFinal").value;
+	var totalEfectivo=document.getElementById("totalEfectivo").value;
+	var totalCambio=totalEfectivo-totalFinal;
+	totalCambio=number_format(totalCambio,2);
+	
+	document.getElementById("totalCambio").value=totalCambio;
 	
 }
 function buscarMaterial(f, numMaterial){
@@ -344,6 +390,15 @@ function checkSubmit() {
     document.getElementById("btsubmit").disabled = true;
     return true;
 }
+
+function limpiarFormularioBusqueda(){
+	$("#itemTipoMaterial").val("0");
+	$("#itemAccionMaterialNom").val("");
+	$("#itemPrincipioMaterialNom").val("");
+	$("#itemNombreMaterial").val("");
+	$("#solo_stock").prop( "checked", true );
+	$("#divListaMateriales").html("");	
+}
 	
 </script>
 
@@ -394,6 +449,7 @@ $anulacionCodigo=mysql_result($respConf,0,0);
 <th>Fecha</th>
 <th>Cliente</th>
 <th>Precio</th>
+<th>Tipo Pago</th>
 </tr>
 <tr>
 <input type="hidden" name="tipoSalida" id="tipoSalida" value="1001">
@@ -481,6 +537,23 @@ while($dat2=mysql_fetch_array($resp2)){
 	</div>
 </td>
 
+<td>
+	<div id='divTipoVenta'>
+		<?php
+			$sql1="select cod_tipopago, nombre_tipopago from tipos_pago order by 1";
+			$resp1=mysql_query($sql1);
+			echo "<select name='tipoVenta' class='texto' id='tipoVenta'>";
+			while($dat=mysql_fetch_array($resp1)){
+				$codigo=$dat[0];
+				$nombre=$dat[1];
+				echo "<option value='$codigo'>$nombre</option>";
+			}
+			echo "</select>";
+			?>
+
+	</div>
+</td>
+
 
 </tr>
 
@@ -496,7 +569,7 @@ if($tipoDocDefault==2){
 <tr>
 	<th>NIT</th>
 	<th colspan="2">Nombre/RazonSocial</th>
-	<th colspan="2">Observaciones</th>
+	<th colspan="3">Observaciones</th>
 </tr>
 <tr>	
 	<td>
@@ -507,12 +580,12 @@ if($tipoDocDefault==2){
 	
 	<td colspan='2'>
 		<div id='divRazonSocial'>
-			<input type='text' name='razonSocial' id='razonSocial' value='<?php echo $razonSocialDefault; ?>' required>
+			<input type='text' name='razonSocial' id='razonSocial' value='<?php echo $razonSocialDefault; ?>' required size='50'>
 		</div>
 	</td>
 
-	<th align='center' colspan="2">
-		<input type='text' class='texto' name='observaciones' value='' size='40' rows="3">
+	<th align='center' colspan="3">
+		<input type='text' class='texto' name='observaciones' value='' size='60' rows="3">
 	</th>
 </tr>
 
@@ -546,12 +619,17 @@ if($tipoDocDefault==2){
 			<td align='right' width='90%'>Monto Nota</td><td><input type='number' name='totalVenta' id='totalVenta' readonly></td>
 		</tr>
 		<tr>
-			<td align='right' width='90%'>Descuento Bs.</td><td><input type='number' name='descuentoVenta' id='descuentoVenta' onChange='aplicarDescuento(form1);' value="0" required></td>
+			<td align='right' width='90%'>Descuento Bs.</td><td><input type='number' name='descuentoVenta' id='descuentoVenta' onKeyUp='aplicarDescuento(form1);' value="0" required></td>
 		</tr>
 		<tr>
 			<td align='right' width='90%'>Monto Final</td><td><input type='number' name='totalFinal' id='totalFinal' readonly></td>
 		</tr>
-
+		<tr>
+			<td align='right' width='90%'>Efectivo</td><td><input type='number' name='totalEfectivo' id='totalEfectivo' value='0' onChange='verCambio(form1);' onKeyUp='verCambio(form1);'></td>
+		</tr>
+		<tr>
+			<td align='right' width='90%'>Cambio</td><td><input type='number' name='totalCambio' id='totalCambio' value='0' min='0' readonly></td>
+		</tr>
 	</table>
 
 
@@ -569,22 +647,24 @@ if($banderaErrorFacturacion==0){
 ?>
 
 
-<div id="divRecuadroExt" style="background-color:#666; position:absolute; width:800px; height: 400px; top:30px; left:150px; visibility: hidden; opacity: .70; -moz-opacity: .70; filter:alpha(opacity=70); -webkit-border-radius: 20px; -moz-border-radius: 20px; z-index:2; overflow: auto;">
+
+<div id="divRecuadroExt" style="background-color:#666; position:absolute; width:1000px; height: 550px; top:30px; left:50px; visibility: hidden; opacity: .70; -moz-opacity: .70; filter:alpha(opacity=70); -webkit-border-radius: 20px; -moz-border-radius: 20px; z-index:2; overflow: auto;">
 </div>
 
-<div id="divboton" style="position: absolute; top:20px; left:920px;visibility:hidden; text-align:center; z-index:3">
+<div id="divboton" style="position: absolute; top:20px; left:1010px;visibility:hidden; text-align:center; z-index:3">
 	<a href="javascript:Hidden();"><img src="imagenes/cerrar4.png" height="45px" width="45px"></a>
 </div>
 
-<div id="divProfileData" style="background-color:#FFF; width:750px; height:350px; position:absolute; top:50px; left:170px; -webkit-border-radius: 20px; 	-moz-border-radius: 20px; visibility: hidden; z-index:2; overflow: auto;">
+<div id="divProfileData" style="background-color:#FFF; width:950px; height:500px; position:absolute; top:50px; left:70px; -webkit-border-radius: 20px; 	-moz-border-radius: 20px; visibility: hidden; z-index:2; overflow: auto;">
   	<div id="divProfileDetail" style="visibility:hidden; text-align:center">
 		<table align='center'>
-			<tr><th>Linea</th><th>Material</th><th>&nbsp;</th></tr>
+			<tr><th>Proveedor</th><th>Acci&oacute;n Terap&eacute;utica</th><th>Principio Activo</th></tr>
 			<tr>
-			<td><select class="textogranderojo" name='itemTipoMaterial' style="width:300px">
+			<td width="30%">
+			<select class="selectpicker col-sm-12" name='itemTipoMaterial' id='itemTipoMaterial' data-live-search='true' data-size='6' data-style='btn btn-default btn-lg ' style="width:300px"> <!-- data-live-search='true' data-size='6' data-style='btn btn-default btn-lg '-->
 			<?php
-			$sqlTipo="select pl.cod_linea_proveedor, CONCAT(p.nombre_proveedor,' - ',pl.nombre_linea_proveedor) from proveedores p, proveedores_lineas pl 
-			where p.cod_proveedor=pl.cod_proveedor and pl.estado=1 order by 2;";
+			$sqlTipo="select p.cod_proveedor,p.nombre_proveedor from proveedores p
+			where p.cod_proveedor>0 order by 2;";
 			$respTipo=mysql_query($sqlTipo);
 			echo "<option value='0'>--</option>";
 			while($datTipo=mysql_fetch_array($respTipo)){
@@ -596,20 +676,43 @@ if($banderaErrorFacturacion==0){
 
 			</select>
 			</td>
-			<td>
-				<input type='text' name='itemNombreMaterial' id='itemNombreMaterial' class="textogranderojo" onkeypress="return pressEnter(event, this.form);">
+			<td width="40%">
+			<input type='text' placeholder='Accion Terapeutica' name='itemAccionMaterialNom' id='itemAccionMaterialNom' class="textogranderojo" onkeypress="return pressEnter(event, this.form);">
+			</td>
+			<td width="30%">
+			<input type='text' placeholder='Principio Activo' name='itemPrincipioMaterialNom' id='itemPrincipioMaterialNom' class="textogranderojo" onkeypress="return pressEnter(event, this.form);">
+			</td>
+			<tr><th>&nbsp;</th><th>Codigo / Producto</th><th>&nbsp;</th></tr>
+	     <tr>
+	     	<td>
+				<div class="custom-control custom-checkbox small float-left">
+                    <input type="checkbox" class="" id="solo_stock" checked="">
+                    <label class="text-dark font-weight-bold" for="solo_stock">&nbsp;&nbsp;&nbsp;Solo Productos con Stock</label>
+         </div>
 			</td>
 			<td>
-				<input type='button' class='boton' value='Buscar' onClick="listaMateriales(this.form)">
+				<div class="row">
+					<div class="col-sm-3"><!--input type='number' placeholder='--' name='itemCodigoMaterial' id='itemCodigoMaterial' class="textogranderojo" onkeypress="return pressEnter(event, this.form);" onkeyup="return pressEnter(event, this.form);"></div-->
+					<div class="col-sm-9"><input type='text' placeholder='Descripción' name='itemNombreMaterial' id='itemNombreMaterial' class="textogranderojo" onkeypress="return pressEnter(event, this.form);"></div>				   
+				</div>
+				
+			</td>	
+					
+			<td align="center">				
+				<input type='button' id="enviar_busqueda" class='boton' value='Buscar Producto' onClick="listaMateriales(this.form)">	
+				<input type='button' id="enviar_busqueda" class='boton2' value='Limpiar' onClick="limpiarFormularioBusqueda();return false;">	
+				<!--a href="#" class="btn btn-warning btn-fab float-right" title="Limpiar Formulario de Busqueda" data-toggle='tooltip' onclick="limpiarFormularioBusqueda();return false;"><i class="material-icons">cleaning_services</i></a-->
 			</td>
-			</tr>
+ 			</tr>
 			
-		</table>
+		</table>		
 		<div id="divListaMateriales">
 		</div>
 	
 	</div>
 </div>
+<div style="height:200px;"></div>
+
 
 <input type='hidden' name='materialActivo' value="0">
 <input type='hidden' name='cantidad_material' value="0">

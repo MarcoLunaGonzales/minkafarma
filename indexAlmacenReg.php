@@ -24,7 +24,7 @@ include("datosUsuario.php");
 <div id="page">
 	<div class="header">
 		<a href="#menu"><span></span></a>
-		TuFarma - Farmacia TuFarma
+		TuFarma - <?=$nombreEmpresa;?>
 		<div style="position:absolute; width:95%; height:50px; text-align:right; top:0px; font-size: 9px; font-weight: bold; color: #fff;">
 			[<? echo $fechaSistemaSesion?>][<? echo $horaSistemaSesion;?>]			
 		<div>
@@ -96,9 +96,9 @@ include("datosUsuario.php");
 					<li><a href="navegadorDolar.php" target="contenedorPrincipal">Cambiar Cotizacion de Dolar</a></li>
 				</ul>	
 			</li-->
-			<li><a href="registrar_salidaventas.php" target="contenedorPrincipal">Vender / Facturar</a></li>
-			<li><a href="navegadorVentas.php" target="contenedorPrincipal">Listado de Ventas</a></li>
-			<li><a href="navegador_ingresomateriales.php" target="contenedorPrincipal">Listado de ingresos</a></li>
+			<li><a href="registrar_ingresomateriales.php" target="contenedorPrincipal">Registrar Ingreso **</a></li>
+			<li><a href="registrar_salidaventas.php" target="contenedorPrincipal">Vender / Facturar **</a></li>
+			<li><a href="listadoProductosStock.php" target="_blank">Listado de Productos **</a></li>
 
 			<li><a href="navegador_etiquetas.php" target="contenedorPrincipal">Impresion de Etiquetas</a></li>
 

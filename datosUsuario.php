@@ -18,6 +18,12 @@
 	$resp_almacen=mysql_query($sql_almacen);
 	$dat_almacen=mysql_fetch_array($resp_almacen);
 	$nombreAlmacenSesion=$dat_almacen[1];
+	
+	
+	$sqlNombreEmpresa="select nombre from datos_empresa where cod_empresa=1";
+	$respNombreEmpresa=mysql_query($sqlNombreEmpresa);
+	$datNombreEmpresa=mysql_fetch_array($respNombreEmpresa);
+	$nombreEmpresa=$datNombreEmpresa[0];
 
 	date_default_timezone_set('America/La_Paz');
 	$fechaSistemaSesion = date( "d-m-Y" );

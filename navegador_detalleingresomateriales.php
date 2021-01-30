@@ -3,17 +3,18 @@
 	require('estilos_almacenes_central_sincab.php');
 	require("funciones.php");
 	echo "<form method='post' action=''>";
-	$sql="select i.cod_ingreso_almacen, i.fecha, ti.nombre_tipoingreso, i.observaciones, i.nro_correlativo 
+
+	$sql="select i.cod_ingreso_almacen, i.fecha, ti.nombre_tipoingreso, i.observaciones, i.nro_correlativo, i.nro_factura_proveedor, 
+	(select p.nombre_proveedor from proveedores p where p.cod_proveedor=i.cod_proveedor)as proveedor
 	FROM ingreso_almacenes i, tipos_ingreso ti
 	where i.cod_tipoingreso=ti.cod_tipoingreso and i.cod_almacen='$global_almacen' and i.cod_ingreso_almacen='$codigo_ingreso'";
-	
-	//echo $sql;
 	
 	$resp=mysql_query($sql);
 	echo "<center><table border='0' class='textotit'><tr><th>Detalle de Ingreso</th></tr></table></center><br>";
 	
 	echo "<table border='0' class='texto' align='center'>";
-	echo "<tr><th>Nro. de Ingreso</th><th>Fecha</th><th>Tipo de Ingreso</th><th>Observaciones</th></tr>";
+	echo "<tr><th>Nro. de Ingreso</th><th>Fecha</th><th>Tipo de Ingreso</th><th>Proveedor</th><th>Nro. Factura</th>
+	<th>Observaciones</th></tr>";
 	$dat=mysql_fetch_array($resp);
 	$codigo=$dat[0];
 	$fecha_ingreso=$dat[1];
@@ -21,7 +22,12 @@
 	$nombre_tipoingreso=$dat[2];
 	$obs_ingreso=$dat[3];
 	$nro_correlativo=$dat[4];
-	echo "<tr><td align='center'>$nro_correlativo</td><td align='center'>$fecha_ingreso_mostrar</td><td>$nombre_tipoingreso</td><td>&nbsp;$obs_ingreso</td></tr>";
+	$nroFacturaProv=$dat[5];
+	$nombreProveedor=$dat[6];
+	
+	echo "<tr><td align='center'>$nro_correlativo</td><td align='center'>$fecha_ingreso_mostrar</td>
+	<td>$nombre_tipoingreso</td><td>$nombreProveedor</td><td>$nroFacturaProv</td>
+	<td>&nbsp;$obs_ingreso</td></tr>";
 	echo "</table>";
 	$sql_detalle="select i.cod_material, i.cantidad_unitaria, i.precio_neto, i.lote, DATE_FORMAT(i.fecha_vencimiento, '%d/%m/%Y'),
 	(select u.nombre from ubicaciones_estantes u where u.codigo=i.cod_ubicacionestante)as estante,
