@@ -37,6 +37,16 @@ $fechaActual=date("Y-m-d");
 
 <td align="center" width="10%">
 <input type="number" class="inputnumber" value="0" id="precio<?php echo $num;?>" name="precio<?php echo $num;?>" size="5" min="0" step="0.01" onKeyUp='calculaPrecioCliente(this,<?php echo $num;?>);' onChange='calculaPrecioCliente(this,<?php echo $num;?>);' required>
+<<<<<<< HEAD
+=======
+</td>
+
+<td align="center" width="10%">
+<input type="number" class="inputnumber" value="0" id="preciocliente<?php echo $num;?>" name="preciocliente<?php echo $num;?>" size="4" min="0" step="0.01" required>
+</br>
+<div id="divpreciocliente<?php echo $num;?>" class="textopequenorojo">-</div>
+<input type="hidden" name="margenlinea<?php echo $num;?>" id="margenlinea<?php echo $num;?>" value="0">
+>>>>>>> 185a9a426d541d2dc50660e67cbe9ccb2bfee8e4
 </td>
 
 <td align="center" width="10%">

@@ -37,7 +37,12 @@ where s.`cod_salida_almacenes` = sd.`cod_salida_almacen` and
                            from `almacenes` a
                            where a.`cod_ciudad` = '$rpt_territorio'
       ) and 
+<<<<<<< HEAD
       s.`cod_chofer`=f.`codigo_funcionario` group by f.`codigo_funcionario`";	
+=======
+      s.`cod_chofer`=f.`codigo_funcionario` group by f.`codigo_funcionario`";		
+echo $sql;
+>>>>>>> 185a9a426d541d2dc50660e67cbe9ccb2bfee8e4
 $resp=mysql_query($sql);
 
 echo "<br><table align='center' class='texto' width='100%'>

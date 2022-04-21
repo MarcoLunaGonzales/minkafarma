@@ -208,7 +208,10 @@ function calculaPrecioCliente(preciocompra, index){
 	var margen=document.getElementById('margenlinea'+index).value;
 	var cantidad=document.getElementById('cantidad_unitaria'+index).value;
 	var costounitario=costo/cantidad;
+<<<<<<< HEAD
 	console.log("costoUnitario: "+costounitario);
+=======
+>>>>>>> 185a9a426d541d2dc50660e67cbe9ccb2bfee8e4
 	var preciocliente=costounitario+(costounitario*(margen/100));
 	preciocliente=redondear(preciocliente,1);
 	preciocliente=number_format(preciocliente,2);
@@ -315,7 +318,11 @@ echo "<td align='center'><input type='number' class='texto' name='nro_factura' v
 
 echo "<tr><th>Proveedor</th>";
 echo "<th colspan='3'>Observaciones</th></tr>";
+<<<<<<< HEAD
 $sql1="select p.cod_proveedor, concat(p.nombre_proveedor,' ',pl.nombre_linea_proveedor), pl.margen_precio from proveedores p, proveedores_lineas pl 
+=======
+$sql1="select p.cod_proveedor, p.nombre_proveedor, pl.margen_precio from proveedores p, proveedores_lineas pl 
+>>>>>>> 185a9a426d541d2dc50660e67cbe9ccb2bfee8e4
 			where p.cod_proveedor=pl.cod_proveedor and pl.estado=1 order by 2";
 $resp1=mysql_query($sql1);
 echo "<tr><td align='center'><select name='proveedor' id='proveedor' class='texto' required>";
@@ -350,9 +357,15 @@ echo "</table><br>";
 					<td width="10%" align="center">Cantidad</td>
 					<!--td width="10%" align="center">Lote</td-->
 					<td width="10%" align="center">Vencimiento</td>
+<<<<<<< HEAD
 					<td width="10%" align="center">PrecioDistribuidor(Total_item)</td>
 					<td width="10%" align="center">PrecioClienteFinal</td>
 					<!--td width="20%" align="center">Ubicacion</td-->
+=======
+					<td width="10%" align="center">CostoItem</td>
+					<td width="10%" align="center">PrecioCliente</td>
+					<td width="20%" align="center">Ubicacion</td>
+>>>>>>> 185a9a426d541d2dc50660e67cbe9ccb2bfee8e4
 					<td width="10%" align="center">&nbsp;</td>
 				</tr>
 			</table>

@@ -93,7 +93,7 @@ echo "<script language='Javascript'>
 		where m.estado='0' order by m.descripcion_material";
 	}
 	
-	//echo $sql;
+	echo $sql;
 	$resp=mysql_query($sql);
 	
 	echo "<table align='center' class='texto'><tr><th>Ver Productos:</th>
