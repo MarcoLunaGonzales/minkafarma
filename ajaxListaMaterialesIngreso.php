@@ -4,7 +4,7 @@
 <tr>
 <th>Linea</th><th>Producto</th><th>Stock</th></tr>
 <?php
-require("conexion.inc");
+require("conexionmysqli.php");
 require("funciones.php");
 $codTipo=$_GET['codTipo'];
 $nombreItem=$_GET['nombreItem'];
@@ -24,11 +24,11 @@ $itemsNoUtilizar="0";
 		$sql=$sql. " and cod_linea_proveedor = '$codTipo' ";
 	}
 	$sql=$sql." order by 2";
-	$resp=mysql_query($sql);
+	$resp=mysqli_query($enlaceCon,$sql);
 
-	$numFilas=mysql_num_rows($resp);
+	$numFilas=mysqli_num_rows($resp);
 	if($numFilas>0){
-		while($dat=mysql_fetch_array($resp)){
+		while($dat=mysqli_fetch_array($resp)){
 			$codigo=$dat[0];
 			$nombre=$dat[1];
 			$nombre=addslashes($nombre);

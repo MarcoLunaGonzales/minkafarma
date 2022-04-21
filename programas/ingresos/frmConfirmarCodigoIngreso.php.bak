@@ -1,0 +1,48 @@
+
+<?php
+require("../../conexionmysqli.php");
+require("../../funciones.php");
+
+$codigo=$_GET["codigo"];
+//
+//echo "ddd:$codigo<br>";
+//
+$sqlFecha="select DAY(i.fecha), MONTH(i.fecha), YEAR(i.fecha), HOUR(i.hora_ingreso), MINUTE(i.hora_ingreso) 
+from ingreso_almacenes i where i.cod_ingreso_almacen=$codigo";
+$respFecha=mysqli_query($sqlFecha);
+
+$dia=mysql_result($respFecha,0,0);
+$mes=mysql_result($respFecha,0,1);
+$ano=mysql_result($respFecha,0,2);
+$hh=mysql_result($respFecha,0,3);
+$mm=mysql_result($respFecha,0,4);
+
+
+//generamos el codigo de confirmacion
+$codigoGenerado=$codigo+$dia+$mes+$ano+$hh+$mm;
+//
+
+//SACAMOS LA VARIABLE PARA ENVIAR EL CORREO O NO SI ES 2 ENVIAMOS CORREO PARA APROBACION
+$banderaCorreo=obtenerValorConfiguracion(8);
+
+if($banderaCorreo==2){
+	$codigoIngreso=$codigo;
+	$codigoGeneradoX=$codigoGenerado;
+	include("../../sendEmailAprobAnulacionIngreso.php");
+}
+
+?>
+<center>
+    <div id='pnlfrmcodigoconfirmacion'>
+        <br>
+        <table class="texto" border="1" cellspacing="0" >
+            <tr><td colspan="2">Introduzca el codigo de confirmacion</td></tr>
+            <tr><td>Codigo:</td><td><input type="text" id="idtxtcodigo" value="<?php echo "$codigoGenerado";?>" readonly ></td></tr>
+            <tr><td>Clave:</td><td><input type="text" id="idtxtclave" value="" ></td></tr>
+        </table>
+        <br>
+    </div>
+</center>
+<?php
+
+?>

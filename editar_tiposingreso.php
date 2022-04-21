@@ -10,10 +10,10 @@ echo "<script language='Javascript'>
 		f.submit();
 	}
 	</script>";
-require("conexion.inc");
+require("conexionmysqli.php");
 require("estilos_administracion.inc");
-$sql=mysql_query("select nombre_tipoingreso, obs_tipoingreso, tipo_almacen from tipos_ingreso where cod_tipoingreso=$codigo_registro");
-$dat=mysql_fetch_array($sql);
+$sql=mysqli_query($enlaceCon,"select nombre_tipoingreso, obs_tipoingreso, tipo_almacen from tipos_ingreso where cod_tipoingreso=$codigo_registro");
+$dat=mysqli_fetch_array($sql);
 $nombre_tipoingreso=$dat[0];
 $obs_tipoingreso=$dat[1];
 $tipo_almacen=$dat[2];

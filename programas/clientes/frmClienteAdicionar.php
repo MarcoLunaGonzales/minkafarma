@@ -1,6 +1,6 @@
 <?php
 
-require("../../conexion.inc");
+require("../../conexionmysqli.php");
 require("../../estilos_almacenes.inc");
 
 
@@ -16,8 +16,8 @@ $nomArea    = "";
 
 $cadComboCiudad = "";
 $consulta="SELECT c.cod_ciudad, c.descripcion FROM ciudades AS c WHERE 1 = 1 ORDER BY c.descripcion ASC";
-$rs=mysql_query($consulta);
-while($reg=mysql_fetch_array($rs))
+$rs=mysqli_query($enlaceCon,$consulta);
+while($reg=mysqli_fetch_array($rs))
    {$codCiudad = $reg["cod_ciudad"];
     $nomCiudad = $reg["descripcion"];
     $cadComboCiudad=$cadComboCiudad."<option value='$codCiudad'>$nomCiudad</option>";
@@ -25,8 +25,8 @@ while($reg=mysql_fetch_array($rs))
 
 $cadTipoPrecio="";
 $consulta1="select t.`codigo`, t.`nombre` from `tipos_precio` t";
-$rs1=mysql_query($consulta1);
-while($reg1=mysql_fetch_array($rs1))
+$rs1=mysqli_query($enlaceCon,$consulta1);
+while($reg1=mysqli_fetch_array($rs1))
    {$codTipo = $reg1["codigo"];
     $nomTipo = $reg1["nombre"];
     $cadTipoPrecio=$cadTipoPrecio."<option value='$codTipo'>$nomTipo</option>";

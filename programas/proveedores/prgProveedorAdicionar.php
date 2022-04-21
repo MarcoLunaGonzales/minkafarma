@@ -1,6 +1,6 @@
 <?php
 
-require("../../conexion.inc");
+require("../../conexionmysqli.php");
 
 $nomPro = $_GET["nompro"];
 $dir = $_GET["dir"];
@@ -18,7 +18,7 @@ $consulta="
 INSERT INTO proveedores (cod_proveedor, nombre_proveedor, direccion, telefono1, telefono2, contacto)
 VALUES ( (SELECT ifnull(max(p.cod_proveedor),0)+1 FROM proveedores p) , '$nomPro', '$dir', '$tel1', '$tel2', '$contacto')
 ";
-$resp=mysql_query($consulta);
+$resp=mysqli_query($enlaceCon,$consulta);
 if($resp) {
     echo "<script type='text/javascript' language='javascript'>alert('Se ha adicionado un nuevo proveedor.');listadoProveedores();</script>";
 } else {

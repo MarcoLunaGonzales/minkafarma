@@ -62,7 +62,7 @@ echo "<script language='Javascript'>
 			}
 		}
 		</script>";
-	require("conexion.inc");
+	require("conexionmysqli.php");
 	require("estilos_almacenes.inc");
 
 	echo "<form method='post' action=''>";
@@ -71,12 +71,12 @@ echo "<script language='Javascript'>
 		from dosificaciones d, estados_dosificacion e, ciudades c
 		where d.cod_estado=e.cod_estado and c.cod_ciudad=d.cod_sucursal and d.cod_estado in (1,2,3)";
 	
-	$resp=mysql_query($sql);
+	$resp=mysqli_query($enlaceCon,$sql);
 	echo "<h1>Registro de Dosificaciones</h1>";
 
 	echo "<center><table class='texto'>";
 	echo "<tr><th>&nbsp;</th><th>Ciudad</th><th>Nro.Autorizacion</th><th>Llave</th><th>Fecha Limite Emision</th><th>Estado</th></tr>";
-	while($dat=mysql_fetch_array($resp))
+	while($dat=mysqli_fetch_array($resp))
 	{
 		$codigo=$dat[0];
 		$nombreCiudad=$dat[1];

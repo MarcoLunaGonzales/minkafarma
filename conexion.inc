@@ -7,8 +7,8 @@ if(!function_exists('register_globals')){
 	register_globals();
 }else{
 }
-$conexion=mysql_connect("localhost","root","4868422Marco");
-$bd=mysql_select_db("carmelita");
+$conexion=mysql_connect("localhost","root","4879531gabriela");
+$bd=mysql_select_db("farmacia");
 
 $sqlX="SET NAMES 'utf8'";
 mysql_query($sqlX);

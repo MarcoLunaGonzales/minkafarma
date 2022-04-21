@@ -1,5 +1,5 @@
 <?php
-require("conexion.inc");
+require("conexionmysqli.php");
 require("estilos.inc");
 
 //recogemos variables
@@ -21,22 +21,22 @@ $sql_inserta="update material_apoyo set descripcion_material='$nombreProducto', 
 cod_forma_far='$codForma', cod_empaque='$codEmpaque', cantidad_presentacion='$cantidadPresentacion', 
 principio_activo='$principioActivo', cod_tipoventa='$codTipoVenta', producto_controlado='$productoControlado' where codigo_material='$codProducto'";
 //echo $sql_inserta;
-$resp_inserta=mysql_query($sql_inserta);
+$resp_inserta=mysqli_query($enlaceCon,$sql_inserta);
 
 $sqlDel="delete from material_accionterapeutica where codigo_material='$codProducto'";
-$respDel=mysql_query($sqlDel);
+$respDel=mysqli_query($enlaceCon,$sqlDel);
 $vectorAccionTer=explode(",",$arrayAccionTerapeutica);
 $n=sizeof($vectorAccionTer);
 for($i=0;$i<$n;$i++){
 	$sql="insert into material_accionterapeutica (codigo_material, cod_accionterapeutica) values('$codProducto','$vectorAccionTer[$i]')";
-	$resp=mysql_query($sql);
+	$resp=mysqli_query($enlaceCon,$sql);
 }
 
 $sqlDel="delete from precios where codigo_material=$codProducto";
-$respDel=mysql_query($sqlDel);
+$respDel=mysqli_query($enlaceCon,$sqlDel);
 
 $sqlInsertPrecio="insert into precios values($codProducto, 1,$precioProducto)";
-$respInsertPrecio=mysql_query($sqlInsertPrecio);
+$respInsertPrecio=mysqli_query($enlaceCon,$sqlInsertPrecio);
 
 if($resp_inserta){
 		echo "<script language='Javascript'>

@@ -82,7 +82,7 @@ function validar(f)
 	</script>
 <?php
 
-require("conexion.inc");
+require("conexionmysqli.php");
 
 require("estilos_almacenes.inc");
 ?>
@@ -94,14 +94,14 @@ require("estilos_almacenes.inc");
 <tr><th>Proveedor</th><th>Fecha Pago</th><th>Observaciones</th></tr>
 <?php
 $sql1="select cod_proveedor, nombre_proveedor from proveedores order by 2";
-$resp1=mysql_query($sql1);
+$resp1=mysqli_query($enlaceCon,$sql1);
 ?>
 <tr>
 <td align='center'>
 <select name='proveedor' id='proveedor' class='texto' onChange="ajaxCargarPagos();">
 	<option value="0">Seleccione una opcion</option>
 <?php
-while($dat1=mysql_fetch_array($resp1))
+while($dat1=mysqli_fetch_array($resp1))
 {   $codigo=$dat1[0];
     $nombre=$dat1[1];
 ?>

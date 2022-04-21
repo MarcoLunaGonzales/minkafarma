@@ -10,7 +10,7 @@ echo "<script language='Javascript'>
 		f.submit();
 	}
 	</script>";
-require("conexion.inc");
+require("conexionmysqli.php");
 require("estilos_administracion.inc");
 echo "<form action='guarda_tiposingreso.php' method='post'>";
 echo "<h1>Registrar Tipo de Ingreso</h1>";

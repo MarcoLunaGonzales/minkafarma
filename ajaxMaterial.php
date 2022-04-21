@@ -50,8 +50,8 @@ $fechaActual=date("Y-m-d");
 <select name="ubicacion_estante<?php echo $num;?>">
 <?php
 	$sql="select codigo, nombre from ubicaciones_estantes where cod_estado=1";
-	$resp=mysql_query($sql);
-	while($dat=mysql_fetch_array($resp)){
+	$resp=mysqli_query($enlaceCon,$sql);
+	while($dat=mysqli_fetch_array($resp)){
 ?>
 	<option value="<?=$dat[0];?>"><?=$dat[1];?></option>
 <?php
@@ -61,8 +61,8 @@ $fechaActual=date("Y-m-d");
 <select name="ubicacion_fila<?php echo $num;?>">
 <?php
 	$sql="select codigo, nombre from ubicaciones_filas where cod_estado=1";
-	$resp=mysql_query($sql);
-	while($dat=mysql_fetch_array($resp)){
+	$resp=mysqli_query($enlaceCon,$sql);
+	while($dat=mysqli_fetch_array($resp)){
 ?>
 	<option value="<?=$dat[0];?>"><?=$dat[1];?></option>
 <?php

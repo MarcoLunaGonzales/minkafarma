@@ -1,6 +1,6 @@
 <?php
 
-require("../../conexion.inc");
+require("../../conexionmysqli.php");
 
 $nombreLinea = $_POST["nombreLinea"];
 $abreviatura = $_POST["abreviatura"];
@@ -17,7 +17,7 @@ update proveedores_lineas set nombre_linea_proveedor='$nombreLinea', abreviatura
 contacto1='$contacto1', contacto2='$contacto2', cod_procedencia='$codProcedencia', margen_precio='$margen'
 where cod_linea_proveedor='$codLinea' and cod_proveedor='$codProveedor'";
 
-$resp=mysql_query($consulta);
+$resp=mysqli_query($enlaceCon,$consulta);
 
 if($resp) {
     echo "<script>

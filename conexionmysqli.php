@@ -8,11 +8,13 @@ if(!function_exists('register_globals')){
 }else{
 }
 
-$enlaceCon=mysqli_connect("localhost","root","4868422Marco","minkafarma3");
+$enlaceCon=mysqli_connect("localhost","root","4879531gabriela","farmacia");
 
 if (mysqli_connect_errno())
 {
 	echo "Error en la conexión: " . mysqli_connect_error();
 }
-mysqli_set_charset($enlaceCon,"utf8");
+
+
+//mysqli_set_charset($enlaceCon,"utf8");
 ?>

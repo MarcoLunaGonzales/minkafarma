@@ -1,5 +1,5 @@
 <?php
-	require("conexion.inc");
+	require("conexionmysqli.php");
 	require("estilos.inc");
 	
 	$datos=$_GET["datos"];
@@ -9,7 +9,7 @@
 	for($i=0;$i<$n;$i++)
 	{
 		$sql="UPDATE acciones_terapeuticas set estado=0 where cod_accionterapeutica=$vector[$i]";
-		$resp=mysql_query($sql);
+		$resp=mysqli_query($enlaceCon,$sql);
 	}
 	echo "<script language='Javascript'>
 			alert('Los datos se procesaron correctamente.');

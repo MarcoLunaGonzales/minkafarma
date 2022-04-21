@@ -8,7 +8,7 @@
 	}
 </script>
 <?php
-require("../../conexionmysqli.inc");
+require("../../conexionmysqli.php");
 
 require("../../estilos_almacenes.inc");
 
@@ -16,7 +16,7 @@ require("../../funcion_nombres.php");
 echo "<link rel='stylesheet' type='text/css' href='../../stilos.css'/>";
 
 $codProveedor=$_GET['codProveedor'];
-$nombreProveedor=nombreProveedor($codProveedor);
+$nombreProveedor=nombreProveedor($codProveedor,$enlaceCon);
 
 ?>
 <form action="guardaLineaDistribuidor.php" method="post">

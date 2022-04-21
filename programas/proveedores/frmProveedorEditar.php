@@ -1,6 +1,6 @@
 <?php
 
-require("../../conexion.inc");
+require("../../conexionmysqli.php");
 require("../../estilos_almacenes.inc");
 
 $codProv   = $_GET["codprov"];
@@ -14,10 +14,10 @@ $consulta="
     FROM proveedores AS p 
     WHERE p.cod_proveedor = $codProv ORDER BY p.nombre_proveedor ASC
 ";
-$rs=mysql_query($consulta);
-$nroregs=mysql_num_rows($rs);
+$rs=mysqli_query($enlaceCon,$consulta);
+$nroregs=mysqli_num_rows($rs);
 if($nroregs==1)
-   {$reg=mysql_fetch_array($rs);
+   {$reg=mysqli_fetch_array($rs);
     //$codProv = $reg["cod_proveedor"];
     $nomProv = $reg["nombre_proveedor"];
     $direccion = $reg["direccion"];

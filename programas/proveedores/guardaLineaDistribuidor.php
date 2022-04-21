@@ -1,6 +1,6 @@
 <?php
 
-require("../../conexion.inc");
+require("../../conexionmysqli.php");
 
 $nombreLinea = $_POST["nombreLinea"];
 $abreviatura = $_POST["abreviatura"];
@@ -11,15 +11,17 @@ $codProcedencia=$_POST["cod_procedencia"];
 $margen=$_POST["margen"];
 
 $sqlCod="select IFNULL(max(p.cod_linea_proveedor),0)+1 from proveedores_lineas p";
-$respCod=mysql_query($sqlCod);
-$codigoNew=mysql_result($respCod,0,0);
+$respCod=mysqli_query($enlaceCon,$sqlCod);
+$datCod=mysqli_fetch_array($respCod);
+$codigoNew=$datCod[0];
+//$codigoNew=mysql_result($respCod,0,0);
 
 $consulta="
 INSERT INTO proveedores_lineas (cod_linea_proveedor, nombre_linea_proveedor, abreviatura_linea_proveedor, contacto1, 
 contacto2, estado, cod_proveedor, cod_procedencia, margen_precio)
 VALUES ($codigoNew, '$nombreLinea', '$abreviatura', '$contacto1', '$contacto2', '1', '$codProveedor','$codProcedencia','$margen')";
 
-$resp=mysql_query($consulta);
+$resp=mysqli_query($enlaceCon,$consulta);
 
 if($resp) {
     echo "<script>

@@ -64,7 +64,7 @@ echo "<script language='Javascript'>
 			}
 		}
 		</script>";
-	require("conexion.inc");
+	require("conexionmysqli.php");
 	require("estilos_almacenes.inc");
 
 	echo "<form method='post' action=''>";
@@ -72,12 +72,12 @@ echo "<script language='Javascript'>
 	from almacenes a, funcionarios f, ciudades c where
 	c.cod_ciudad=a.cod_ciudad and f.codigo_funcionario=a.responsable_almacen
 	order by c.descripcion, a.nombre_almacen";
-	$resp=mysql_query($sql);
+	$resp=mysqli_query($enlaceCon,$sql);
 	echo "<h1>Registro de Almacenes</h1>";
 
 	echo "<center><table class='texto'>";
 	echo "<tr><th>&nbsp;</th><th>Territorio</th><th>Nombre Almacen</th><th>Responsable</th></tr>";
-	while($dat=mysql_fetch_array($resp))
+	while($dat=mysqli_fetch_array($resp))
 	{
 		$codigo=$dat[0];
 		$nombre_ciudad=$dat[1];

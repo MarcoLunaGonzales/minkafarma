@@ -1,6 +1,6 @@
 <?php
 
-require("../../conexion.inc");
+require("../../conexionmysqli.php");
 require("../../estilos_almacenes.inc");
 
 $codCliente = $_GET["codcli"];
@@ -18,10 +18,10 @@ $consulta="
     FROM clientes AS c INNER JOIN ciudades AS a ON c.cod_area_empresa = a.cod_ciudad
     WHERE c.cod_cliente = $codCliente ORDER BY c.nombre_cliente ASC
 ";
-$rs=mysql_query($consulta);
-$nroregs=mysql_num_rows($rs);
+$rs=mysqli_query($enlaceCon,$consulta);
+$nroregs=mysqli_num_rows($rs);
 if($nroregs==1)
-   {$reg=mysql_fetch_array($rs);
+   {$reg=mysqli_fetch_array($rs);
     //$codCliente = $reg["cod_cliente"];
     $nomCliente = $reg["nombre_cliente"];
     $nitCliente = $reg["nit_cliente"];
@@ -32,8 +32,8 @@ if($nroregs==1)
     $nomFactura = $reg["nombre_factura"];
     $nomArea    = $reg["descripcion"];
     $consulta="SELECT c.cod_ciudad, c.descripcion FROM ciudades AS c WHERE 1 = 1 ORDER BY c.descripcion ASC";
-    $rs=mysql_query($consulta);
-    while($reg=mysql_fetch_array($rs))
+    $rs=mysqli_query($enlaceCon,$consulta);
+    while($reg=mysqli_fetch_array($rs))
        {$codCiudad = $reg["cod_ciudad"];
         $nomCiudad = $reg["descripcion"];
         if($codArea==$codCiudad) {

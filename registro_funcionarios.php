@@ -23,7 +23,7 @@
 			f.submit();
 		}
 	</script>";
-	require("conexion.inc");
+	require("conexionmysqli.php");
 	require("estilos.inc");
 	
 	$ciudad_volver=$cod_ciudad;
@@ -50,8 +50,8 @@
 	echo "<td align='center'><input type='text' name='telefono' class='texto'></td>";
 	echo "<td align='center'><input type='text' name='celular' class='texto'></td>";
 	echo "<td align='center'><select name='cargo' class='texto'>";
-			$sql_cargo=mysql_query("select cod_cargo,cargo from cargos order by cargo asc");
-			while($dat_cargo=mysql_fetch_array($sql_cargo))
+			$sql_cargo=mysqli_query($enlaceCon,"select cod_cargo,cargo from cargos order by cargo asc");
+			while($dat_cargo=mysqli_fetch_array($sql_cargo))
 			{	$cod_cargo=$dat_cargo[0];
 				$cargo=$dat_cargo[1];
 				echo "<option value='$cod_cargo'>$cargo</option>";
@@ -62,8 +62,8 @@
 	echo "<tr>";
 	echo "<td align='center'><input type='text' name='email' class='texto'></td>";
 	echo "<td align='center'><select name='agencia' class='texto'>";
-			$sql_agencia=mysql_query("select cod_ciudad,descripcion from ciudades order by descripcion asc");
-			while($dat_agencia=mysql_fetch_array($sql_agencia))
+			$sql_agencia=mysqli_query($enlaceCon,"select cod_ciudad,descripcion from ciudades order by descripcion asc");
+			while($dat_agencia=mysqli_fetch_array($sql_agencia))
 			{	$codciudad=$dat_agencia[0];
 				$descripcion=$dat_agencia[1];
 				if($codciudad==$cod_ciudad)

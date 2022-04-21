@@ -1,12 +1,12 @@
 <?php
 date_default_timezone_set('America/La_Paz');
 echo"<link href='stilos.css' rel='stylesheet' type='text/css'>";  
-require("conexion.inc");
+require("conexionmysqli.php");
 
 $global_agencia=$_COOKIE["global_agencia"];
 $sql_almacen="select cod_almacen, nombre_almacen from almacenes where cod_ciudad='$global_agencia'";
-$resp_almacen=mysql_query($sql_almacen);
-$dat_almacen=mysql_fetch_array($resp_almacen);
+$resp_almacen=mysqli_query($enlaceCon,$sql_almacen);
+$dat_almacen=mysqli_fetch_array($resp_almacen);
 $global_almacen=$dat_almacen[0];
 echo "<input type='hidden' value='$global_almacen' name='global_almacen' id='global_almacen'>";
 $nombre_global_almacen=$dat_almacen[1];
