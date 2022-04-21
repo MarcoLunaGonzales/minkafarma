@@ -110,6 +110,10 @@ include("datosUsuario.php");
 			<li><a href="registrar_salidaventas.php" target="contenedorPrincipal">Vender / Facturar **</a></li>
 			<li><a href="listadoProductosStock.php" target="_blank">Listado de Productos **</a></li>
 
+			<li><a href="rptProductosVencer.php" target="contenedorPrincipal">Productos proximos a Vencer</a></li>
+	
+			<li><a href="navegador_etiquetas.php" target="contenedorPrincipal">Impresion de Etiquetas</a></li>
+
 			<li><span>Reportes</span>
 				<ul>
 					<li><span>Movimiento de Almacen</span>

@@ -224,10 +224,16 @@ function numeroCorrelativo($tipoDoc){
 		//VALIDAMOS QUE LA DOSIFICACION ESTE ACTIVA
 		$sqlValidar="select count(*) from dosificaciones d 
 		where d.cod_sucursal='$globalAgencia' and d.cod_estado=1 and d.fecha_limite_emision>='$fechaActual'";
+<<<<<<< HEAD
 		$respValidar=mysqli_query($enlaceCon,$sqlValidar);
 		$datValidar=mysqli_fetch_array($respValidar);
 			$numFilasValidar=$datValidar[0];
 		//$numFilasValidar=mysql_result($respValidar,0,0);
+=======
+		//echo $sqlValidar;
+		$respValidar=mysql_query($sqlValidar);
+		$numFilasValidar=mysql_result($respValidar,0,0);
+>>>>>>> 8e4f4cb4a65b3bfc4b209513cef4f0b5f2c2ad51
 		
 		if($numFilasValidar==1){
 			$sqlCodDosi="select cod_dosificacion from dosificaciones d 

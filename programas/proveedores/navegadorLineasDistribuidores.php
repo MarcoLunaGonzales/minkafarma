@@ -76,16 +76,23 @@ $nombreProveedor=nombreProveedor($codProveedor,$enlaceCon);
 
 echo "<center>";
 echo "<h1>Lineas de Distribuidor <br> $nombreProveedor</h1>";
+
+
 echo "<table class='texto'>";
 echo "<tr>";
 echo "<th>&nbsp;</th><th>Linea</th><th>Abreviatura</th><th>Procedencia</th><th>Margen de precio</th><th>Contacto 1</th><th>Contacto 2</th>";
-echo "</tr>";
+echo "<th>Ver Productos</th><th>Editar Precios</th></tr>";
 $consulta="select p.cod_linea_proveedor, p.nombre_linea_proveedor, p.abreviatura_linea_proveedor, p.contacto1, 
 	p.contacto2, (select t.nombre_procedencia from tipos_procedencia t where t.cod_procedencia=p.cod_procedencia), 
 	margen_precio
 	from proveedores_lineas p where p.cod_proveedor=$codProveedor and estado=1";
+<<<<<<< HEAD
 
 $rs=mysqli_query($enlaceCon,$consulta);
+=======
+//echo $consulta;
+$rs=mysql_query($consulta);
+>>>>>>> 8e4f4cb4a65b3bfc4b209513cef4f0b5f2c2ad51
 
 $cont=0;
 while($reg=mysqli_fetch_array($rs)){
@@ -100,7 +107,9 @@ while($reg=mysqli_fetch_array($rs)){
     echo "<tr>";
     echo "<td><input type='checkbox' id='$codLinea' value='$codLinea' ></td><td>$nombreLinea</td><td>$abreviatura</td>
 	<td>$procedencia</td><td>$margenPrecio</td>
-	<td>$contacto1</td><td>$contacto2</td>";
+	<td>$contacto1</td><td>$contacto2</td>;
+	<td><a href='../../detalleMaterialLineas.php?linea=$codLinea' target='_BLANK'><img src='../../imagenes/detalle.png' width='40'></a></td>;
+	<td><a href='../../navegador_precios2.php?orden=3&linea=$codLinea' target='_BLANK'><img src='../../imagenes/detalle.png' width='40'></a></td>";
     echo "</tr>";
    }
 echo "</table>";

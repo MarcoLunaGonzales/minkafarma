@@ -44,6 +44,22 @@ function HiddenBuscar(){
 	document.getElementById('divProfileData').style.visibility='hidden';
 	document.getElementById('divProfileDetail').style.visibility='hidden';
 }
+
+	
+function ShowFacturar(codVenta,numCorrelativo){
+	document.getElementById("cod_venta").value=codVenta;
+	document.getElementById("nro_correlativo").value=numCorrelativo;
+	
+	document.getElementById('divRecuadroExt2').style.visibility='visible';
+	document.getElementById('divProfileData2').style.visibility='visible';
+	document.getElementById('divProfileDetail2').style.visibility='visible';
+}
+
+function HiddenFacturar(){
+	document.getElementById('divRecuadroExt2').style.visibility='hidden';
+	document.getElementById('divProfileData2').style.visibility='hidden';
+	document.getElementById('divProfileDetail2').style.visibility='hidden';
+}
 	
 function funOk(codReg,funOkConfirm)
 {   $.get("programas/salidas/frmConfirmarCodigoSalida.php","codigo="+codReg, function(inf1) {
@@ -330,6 +346,14 @@ function enviar_datosdespacho(f)
 function llamar_preparado(f, estado_preparado, codigo_salida)
 {   window.open('navegador_detallesalidamateriales.php?codigo_salida='+codigo_salida,'popup','');
 }
+
+function convertirNR(codFactura){
+	if(confirm('Esta seguro de Anular la Factura y Convertir en NR.')){
+		location.href='convertirNRAnularFac.php?codigo_registro='+codFactura;
+	}else{
+		return(false);
+	}
+}
         </script>
     </head>
     <body>
@@ -375,7 +399,11 @@ echo "</div>";
 echo "<div id='divCuerpo'>";
 echo "<center><table class='texto'>";
 echo "<tr><th>&nbsp;</th><th>Nro. Factura</th><th>Fecha/hora<br>Registro Salida</th><th>Tipo de Salida</th>
-	<th>Cliente</th><th>Razon Social</th><th>NIT</th><th>Observaciones</th><th>&nbsp;</th><th>&nbsp;</th></tr>";
+	<th>Cliente</th><th>Razon Social</th><th>NIT</th><th>Observaciones</th><th>&nbsp;</th><th>&nbsp;</th>";
+if($global_admin_cargo==1){
+    echo "<th>Cambio</th><th>Convertir</th>";
+}
+echo "</tr>";
 	
 echo "<input type='hidden' name='global_almacen' value='$global_almacen' id='global_almacen'>";
 
@@ -450,14 +478,23 @@ while ($dat = mysql_fetch_array($resp)) {
 	*/
 	if($codTipoDoc==1){
 		echo "<td  bgcolor='$color_fondo'><a href='formatoFactura.php?codVenta=$codigo' target='_BLANK'><img src='imagenes/factura1.jpg' width='30' border='0' title='Factura Formato Pequeño'></a></td>";
-		echo "<td  bgcolor='$color_fondo'><a href='formatoFacturaExtendido.php?codVenta=$codigo' target='_BLANK'><img src='imagenes/factura1.jpg' width='30' border='0' title='Factura Extendida'></a></td>";
+		//echo "<td  bgcolor='$color_fondo'><a href='formatoFacturaExtendido.php?codVenta=$codigo' target='_BLANK'><img src='imagenes/factura1.jpg' width='30' border='0' title='Factura Extendida'></a></td>";
 	}
 	else{
 		echo "<td  bgcolor='$color_fondo'><a href='formatoNotaRemisionOficial.php?codVenta=$codigo' target='_BLANK'><img src='imagenes/factura1.jpg' width='30' border='0' title='Factura Formato Pequeño'></a></td>";
 	}
 	
 	/*echo "<td  bgcolor='$color_fondo'><a href='notaSalida.php?codVenta=$codigo' target='_BLANK'><img src='imagenes/factura1.jpg' width='30' border='0' title='Factura Formato Grande'></a></td>";*/
-	
+	if($codTipoDoc==2){
+		echo "<td bgcolor='$color_fondo'>
+		<a href='#' onClick='ShowFacturar($codigo,$nro_correlativo);'>
+		<img src='imagenes/icon_detail.png' width='30' border='0' title='Convertir en Factura'></a></td>";	
+	 }elseif($codTipoDoc==1){
+		echo "<td align='center'>
+		<a href='#' onClick='convertirNR($codigo);'>
+		<img src='imagenes/restaurar2.png' width='20' border='0' title='Convertir en NR y Anular Factura'></a>
+		</td>";
+	 }
 	echo "</tr>";
 }
 echo "</table></center><br>";
@@ -542,6 +579,44 @@ echo "</form>";
 		</center>
 	</div>
 </div>
+
+<div id="divRecuadroExt2" style="background-color:#666; position:absolute; width:800px; height: 350px; top:30px; left:150px; visibility: hidden; opacity: .70; -moz-opacity: .70; filter:alpha(opacity=70); -webkit-border-radius: 20px; -moz-border-radius: 20px; z-index:2;">
+</div>
+<div id="divProfileData2" style="background-color:#FFF; width:750px; height:300px; position:absolute; top:50px; left:170px; -webkit-border-radius: 20px; 	-moz-border-radius: 20px; visibility: hidden; z-index:2;">
+  	<div id="divProfileDetail2" style="visibility:hidden; text-align:center">
+		<h2 align='center' class='texto'>Convertir a Factura</h2>
+		<form name="form1" id="form1" action="convertNRToFactura.php" method="POST">
+		<table align='center' class='texto'>
+			<tr>
+				<input type="hidden" name="cod_venta" id="cod_venta" value="0">
+				<td>Nro.</td>
+				<td>
+				<input type='text' name='nro_correlativo' id="nro_correlativo" class='texto' disabled>
+				</td>
+			</tr>
+			<tr>
+				<td>Razon Social</td>
+				<td>
+				<input type='text' name='razon_social_convertir' id="razon_social_convertir" class='texto' required>
+				</td>
+			</tr>
+			<tr>
+				<td>NIT</td>
+				<td>
+				<input type='number' name='nit_convertir' id="nit_convertir" class='texto' required>
+				</td>
+			</tr>
+		</table>	
+		<center>
+			<input type='submit' value='Convertir' class='boton' >
+			<input type='button' value='Cancelar' class='boton2' onClick="HiddenFacturar()">
+			
+		</center>
+		</form>
+	</div>
+</div>
+
+
 
         <script type='text/javascript' language='javascript'>
         </script>

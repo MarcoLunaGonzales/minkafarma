@@ -127,9 +127,41 @@ function cambiarPrecioIndividual(indice){
 	porcentajeCambiar=porcentajeCambiar/100;
 	var datoNuevo=precio1+(porcentajeCambiar*precio1);
 	main.rows[indice].cells[4].firstChild.value=datoNuevo;
-	
-		
 }
+
+function ShowBuscar(){
+	document.getElementById('divRecuadroExt').style.visibility='visible';
+	document.getElementById('divProfileData').style.visibility='visible';
+	document.getElementById('divProfileDetail').style.visibility='visible';
+}
+
+function HiddenBuscar(){
+	document.getElementById('divRecuadroExt').style.visibility='hidden';
+	document.getElementById('divProfileData').style.visibility='hidden';
+	document.getElementById('divProfileDetail').style.visibility='hidden';
+}		
+
+function ajaxBuscarVentas(f){
+	var fechaIniBusqueda, fechaFinBusqueda, nroCorrelativoBusqueda, verBusqueda, global_almacen;
+	fechaIniBusqueda=document.getElementById("fechaIniBusqueda").value;
+	fechaFinBusqueda=document.getElementById("fechaFinBusqueda").value;
+	nroCorrelativoBusqueda=document.getElementById("nroCorrelativoBusqueda").value;
+	verBusqueda=document.getElementById("verBusqueda").value;
+	global_almacen=document.getElementById("global_almacen").value;
+	var contenedor;
+	contenedor = document.getElementById('divCuerpo');
+	ajax=nuevoAjax();
+
+	ajax.open("GET", "ajaxSalidaTraspasos.php?fechaIniBusqueda="+fechaIniBusqueda+"&fechaFinBusqueda="+fechaFinBusqueda+"&nroCorrelativoBusqueda="+nroCorrelativoBusqueda+"&verBusqueda="+verBusqueda+"&global_almacen="+global_almacen,true);
+	ajax.onreadystatechange=function() {
+		if (ajax.readyState==4) {
+			contenedor.innerHTML = ajax.responseText;
+			HiddenBuscar();
+		}
+	}
+	ajax.send(null)
+}
+
 
 function enviar(f){
 	f.submit();
@@ -139,9 +171,16 @@ function enviar(f){
 	
 	require("estilos.inc");
 	require("funciones.php");
+	require("funcion_nombres.php");
 
 	$globalAlmacen=$_COOKIE['global_almacen'];
 	$ordenLista=$_GET['orden'];
+	
+	$codLineaProveedorX=$_GET['linea'];
+	$nombreLineaProveedorX="";
+	if(isset($codLineaProveedorX)){
+		$nombreLineaProveedorX="Linea: ".nombreLineaProveedor($codLineaProveedorX);
+	}
 	
 	echo "<form method='POST' action='guardarPrecios.php' name='form1'>";
 	
@@ -156,15 +195,26 @@ function enviar(f){
 		where ma.cod_linea_proveedor=p.cod_linea_proveedor order by 2";
 	}
 	
+	if($ordenLista==3){
+		$sql="select codigo_material, descripcion_material, p.nombre_linea_proveedor 
+		from material_apoyo ma, proveedores_lineas p 
+		where ma.cod_linea_proveedor=p.cod_linea_proveedor and p.cod_linea_proveedor='$codLineaProveedorX'
+		order by 2";
+	}
+	
 
 
 	//echo $sql;
 	
+<<<<<<< HEAD
 	$resp=mysqli_query($enlaceCon,$sql);
 	echo "<h1>Registro y Edición de Precios</h1>";
+=======
+	$resp=mysql_query($sql);
+	echo "<h1>Registro y Edición de Precios  $nombreLineaProveedorX</h1>";
+>>>>>>> 8e4f4cb4a65b3bfc4b209513cef4f0b5f2c2ad51
 	
 	echo "<center><table class='texto' id='main'>";
-
 	echo "<tr><th>Material</th>
 	<th>Precio Normal</th>
 	<th>Precio Super Oferta<br><input type='text' size='2' name='valorPrecioB' id='valorPrecioB' value='0'>
@@ -288,3 +338,39 @@ function enviar(f){
 	</div>";*/
 	echo "</form>";
 ?>
+
+
+
+<div id="divRecuadroExt" style="background-color:#666; position:absolute; width:800px; height: 400px; top:30px; left:150px; visibility: hidden; opacity: .70; -moz-opacity: .70; filter:alpha(opacity=70); -webkit-border-radius: 20px; -moz-border-radius: 20px; z-index:2;">
+</div>
+
+<div id="divProfileData" style="background-color:#FFF; width:750px; height:350px; position:absolute; top:50px; left:170px; -webkit-border-radius: 20px; 	-moz-border-radius: 20px; visibility: hidden; z-index:2;">
+  	<div id="divProfileDetail" style="visibility:hidden; text-align:center">
+		<h2 align='center' class='texto'>Filtrar Productos</h2>
+		<table align='center' class='texto'>
+			<tr>
+				<td>Distribuidor</td>
+				<?php
+				
+				?>
+				<td>
+				<input type='text' name='nroCorrelativoBusqueda' id="nroCorrelativoBusqueda" class='texto'>
+				</td>
+			</tr>			
+			<tr>
+				<td>Ver:</td>
+				<td>
+				<select name='verBusqueda' id='verBusqueda' class='texto' >
+					<option value='0'>Todo</option>
+					<option value='1'>No Cancelados</option>
+				</select>
+				</td>
+			</tr>			
+		</table>	
+		<center>
+			<input type='button' value='Buscar' onClick="ajaxBuscarVentas(this.form)">
+			<input type='button' value='Cancelar' onClick="HiddenBuscar()">
+			
+		</center>
+	</div>
+</div>

@@ -45,7 +45,7 @@ else
 	}
 	$sql.="order by i.nro_correlativo";
 	
-	//echo $sql;
+	echo $sql;
 	
 	$resp=mysql_query($sql);
 	echo "<center><br><table class='texto' width='100%'>";

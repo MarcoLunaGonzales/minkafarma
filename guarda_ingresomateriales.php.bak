@@ -100,7 +100,7 @@ if($sql_inserta==1){
 					$sqlPrecios="insert into precios (codigo_material, cod_precio, precio) values('$cod_material','1','$precioItem')";
 					$respPrecios=mysql_query($sqlPrecios);
 				}else{
-					if($precioItem!=$precioActual){
+					if($precioItem>$precioActual){
 						$sqlPrecios="update precios set precio='$precioItem' where codigo_material='$cod_material' and cod_precio=1";
 						$respPrecios=mysql_query($sqlPrecios);
 					}

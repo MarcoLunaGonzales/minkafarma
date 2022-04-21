@@ -27,6 +27,11 @@ $totalFinal=$_POST["totalFinal"];
 $totalEfectivo=$_POST["totalEfectivo"];
 $totalCambio=$_POST["totalCambio"];
 
+<<<<<<< HEAD
+$tipoPago=$_POST["tipoVenta"];
+
+=======
+>>>>>>> 185a9a426d541d2dc50660e67cbe9ccb2bfee8e4
 $totalFinalRedondeado=round($totalFinal);
 
 //VALIDAMOS QUE NO SEA CERO EL VALOR DEL REDONDEADO PARA EL CODIGO DE ControlCode
@@ -106,10 +111,17 @@ if($facturacionActivada==1 && $tipoDoc==1){
 $sql_inserta="INSERT INTO `salida_almacenes`(`cod_salida_almacenes`, `cod_almacen`,`cod_tiposalida`, 
 		`cod_tipo_doc`, `fecha`, `hora_salida`, `territorio_destino`, 
 		`almacen_destino`, `observaciones`, `estado_salida`, `nro_correlativo`, `salida_anulada`, 
+<<<<<<< HEAD
+		`cod_cliente`, `monto_total`, `descuento`, `monto_final`, razon_social, nit, cod_chofer, cod_vehiculo, monto_cancelado, cod_dosificacion, monto_efectivo, monto_cambio, cod_tipopago)
+		values ('$codigo', '$almacenOrigen', '$tipoSalida', '$tipoDoc', '$fecha', '$hora', '0', '$almacenDestino', 
+		'$observaciones', '1', '$nro_correlativo', 0, '$codCliente', '$totalVenta', '$descuentoVenta', '$totalFinal', '$razonSocial', 
+		'$nitCliente', '$usuarioVendedor', '$vehiculo',0,'$cod_dosificacion','$totalEfectivo','$totalCambio','$tipoPago')";
+=======
 		`cod_cliente`, `monto_total`, `descuento`, `monto_final`, razon_social, nit, cod_chofer, cod_vehiculo, monto_cancelado, cod_dosificacion, monto_efectivo, monto_cambio)
 		values ('$codigo', '$almacenOrigen', '$tipoSalida', '$tipoDoc', '$fecha', '$hora', '0', '$almacenDestino', 
 		'$observaciones', '1', '$nro_correlativo', 0, '$codCliente', '$totalVenta', '$descuentoVenta', '$totalFinal', '$razonSocial', 
 		'$nitCliente', '$usuarioVendedor', '$vehiculo',0,'$cod_dosificacion','$totalEfectivo','$totalCambio')";
+>>>>>>> 185a9a426d541d2dc50660e67cbe9ccb2bfee8e4
 $sql_inserta=mysql_query($sql_inserta);
 
 if($sql_inserta==1){
@@ -117,8 +129,7 @@ if($sql_inserta==1){
 	if($facturacionActivada==1){
 		//insertamos la factura
 		$sqlInsertFactura="insert into facturas_venta (cod_dosificacion, cod_sucursal, nro_factura, cod_estado, razon_social, nit, fecha, importe, 
-		codigo_control, cod_venta) values ('$cod_dosificacion','$globalSucursal','$nro_correlativo','1','$razonSocial','$nitCliente','$fecha','$totalFinal',
-		'$code','$codigo')";
+		codigo_control, cod_venta) values ('$cod_dosificacion','$globalSucursal','$nro_correlativo','1','$razonSocial','$nitCliente','$fecha','$totalFinal','$code','$codigo')";
 		$respInsertFactura=mysql_query($sqlInsertFactura);	
 	}
 

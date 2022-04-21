@@ -25,7 +25,6 @@ $itemsNoUtilizar="0";
 	}
 	$sql=$sql." order by 2";
 	$resp=mysqli_query($enlaceCon,$sql);
-
 	$numFilas=mysqli_num_rows($resp);
 	if($numFilas>0){
 		while($dat=mysqli_fetch_array($resp)){
@@ -37,6 +36,9 @@ $itemsNoUtilizar="0";
 			
 			$stockProducto=stockProducto($globalAlmacen, $codigo);
 			$precioProducto=precioProducto($codigo);
+			if($precioProducto==""){
+				$precioProducto=0;
+			}
 			$margenLinea=margenLinea($codigo);
 			
 			echo "<tr><td>$linea</td><td><div class='textograndenegro'><a href='javascript:setMateriales(form1, $codigo, \"$nombre\", $cantidadPresentacion, $precioProducto, $margenLinea)'>$nombre</a></div></td><td><div class='textograndenegro'>$stockProducto</div></td></tr>";

@@ -59,6 +59,8 @@ require('funciones.php');
 
 
 $codProducto=$_GET['cod_material'];
+$paginaRetorno=$_GET['pagina_retorno'];
+
 
 $sqlEdit="select m.codigo_material, m.descripcion_material, m.estado, m.cod_linea_proveedor, m.cod_forma_far, m.cod_empaque, 
 	m.cantidad_presentacion, m.principio_activo, m.cod_tipoventa, m.producto_controlado from material_apoyo m where m.codigo_material='$codProducto'";
@@ -92,6 +94,8 @@ echo "<form action='guarda_editarproducto.php' method='post' name='form1'>";
 echo "<h1>Editar Producto</h1>";
 
 
+echo "<input type='hidden' name='pagina_retorno' id='pagina_retorno' value='$paginaRetorno'>";
+echo "<input type='hidden' name='linea_anterior' id='linea_anterior' value='$codLineaX'>";
 echo "<input type='hidden' name='codProducto' id='codProducto' value='$codProducto'>";
 
 echo "<center><table class='texto'>";

@@ -3,6 +3,8 @@ require("conexionmysqli.php");
 require("estilos.inc");
 
 //recogemos variables
+$paginaRetorno=$_POST['pagina_retorno'];
+
 $codProducto=$_POST['codProducto'];
 $nombreProducto=$_POST['material'];
 $codLinea=$_POST['codLinea'];
@@ -13,6 +15,10 @@ $principioActivo=$_POST['principioActivo'];
 $codTipoVenta=$_POST['codTipoVenta'];
 $productoControlado=$_POST['producto_controlado'];
 $precioProducto=$_POST['precio_producto'];
+
+
+$lineaAnterior=$_POST['linea_anterior'];
+
 
 $arrayAccionTerapeutica=$_POST['arrayAccionTerapeutica'];
 
@@ -39,10 +45,20 @@ $sqlInsertPrecio="insert into precios values($codProducto, 1,$precioProducto)";
 $respInsertPrecio=mysqli_query($enlaceCon,$sqlInsertPrecio);
 
 if($resp_inserta){
-		echo "<script language='Javascript'>
+	
+		if($paginaRetorno==0){
+			echo "<script language='Javascript'>
 			alert('Los datos fueron guardados correctamente.');
 			location.href='navegador_material.php';
-			</script>";
+			</script>";			
+		}else{
+			echo "<script language='Javascript'>
+			alert('Los datos fueron guardados correctamente.');
+			window.parent.location.reload();
+			location.href='detalleMaterialLineas.php?linea=$lineaAnterior';
+			</script>";			
+		}
+
 }else{
 	echo "<script language='Javascript'>
 			alert('ERROR EN LA TRANSACCION. COMUNIQUESE CON EL ADMIN.');
