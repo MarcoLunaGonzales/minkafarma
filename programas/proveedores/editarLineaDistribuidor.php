@@ -19,7 +19,7 @@ echo "<link rel='stylesheet' type='text/css' href='../../stilos.css'/>";
 
 $codLinea=$_GET["codigo_registro"];
 $codProveedor=$_GET['codProveedor'];
-$nombreProveedor=nombreProveedor($codProveedor,$enlaceCon);
+$nombreProveedor=nombreProveedor($enlaceCon,$codProveedor);
 
 $sqlLineas="select cod_linea_proveedor, nombre_linea_proveedor, abreviatura_linea_proveedor, contacto1, contacto2, cod_proveedor, estado, 
 cod_procedencia, margen_precio from proveedores_lineas where cod_linea_proveedor='$codLinea' and cod_proveedor='$codProveedor'";

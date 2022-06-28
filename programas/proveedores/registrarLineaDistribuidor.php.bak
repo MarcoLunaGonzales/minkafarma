@@ -8,7 +8,7 @@
 	}
 </script>
 <?php
-require("../../conexionmysqli.inc");
+require("../../conexionmysqli.php");
 
 require("../../estilos_almacenes.inc");
 

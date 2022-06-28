@@ -6,7 +6,7 @@
 
 	$sqlEmpresa="select nombre, nit, direccion from datos_empresa";
 	$respEmpresa=mysqli_query($enlaceCon,$sqlEmpresa);
-	$datEmpresa=mysqli_fetch_array($respEmpresa);
+	$datEmpresa=mysql_fetch_array($respEmpresa);
 	$nombreEmpresa=$datEmpresa[0];//$nombreEmpresa=mysql_result($respEmpresa,0,0);
 	$$nitEmpresa=$datEmpresa[1];//$nitEmpresa=mysql_result($respEmpresa,0,1);
 	$direccionEmpresa=$datEmpresa[2];//$direccionEmpresa=mysql_result($respEmpresa,0,2);

@@ -66,12 +66,12 @@ $tipoSalidaVencimiento=$datConf[0];//$tipoSalidaVencimiento=mysql_result($respCo
 			$nombre=addslashes($nombre);
 			
 			if($tipoSalida==$tipoSalidaVencimiento){
-				$stockProducto=stockProductoVencido($enlaceCon,$globalAlmacen, $codigo);
+				$stockProducto=stockProductoVencido($globalAlmacen, $codigo);
 			}else{
-				$stockProducto=stockProducto($enlaceCon,$globalAlmacen, $codigo);
+				$stockProducto=stockProducto($globalAlmacen, $codigo);
 			}
 			
-			$ubicacionProducto=ubicacionProducto($enlaceCon,$globalAlmacen, $codigo);
+			$ubicacionProducto=ubicacionProducto($globalAlmacen, $codigo);
 			
 			$consulta="select p.`precio` from precios p where p.`codigo_material`='$codigo' and p.`cod_precio`='1'";
 			$rs=mysqli_query($enlaceCon,$consulta);

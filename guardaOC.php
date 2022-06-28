@@ -6,7 +6,7 @@ require("estilos_almacenes.inc");
 $sql = "select cod_orden from orden_compra order by cod_orden desc";
 $resp = mysqli_query($enlaceCon,$sql);
 $dat = mysqli_fetch_array($resp);
-$num_filas = mysql_num_rows($resp);
+$num_filas = mysqli_num_rows($resp);
 if ($num_filas == 0) {
     $codigo = 1;
 } else {

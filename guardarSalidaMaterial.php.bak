@@ -156,11 +156,11 @@ if($sql_inserta==1){
 	//ACTUALIZAMOS EL PRECIO CON EL DETALLE
 	$sqlUpdMonto="update salida_almacenes set monto_total='$montoTotalVentaDetalle', monto_final='$montoTotalConDescuento' 
 				where cod_salida_almacenes='$codigo'";
-	$respUpdMonto=mysqli_query($enlaceCon,$sqlUpdMonto);
+	$respUpdMonto=mysql_query($sqlUpdMonto);
 	if($facturacionActivada==1){
 		$sqlUpdMonto="update facturas_venta set importe='$montoTotalConDescuento' 
 					where cod_venta='$codigo'";
-		$respUpdMonto=mysqli_query($enlaceCon,$sqlUpdMonto);
+		$respUpdMonto=mysql_query($sqlUpdMonto);
 	}
 	
 	

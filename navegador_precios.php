@@ -205,15 +205,11 @@ function enviar(f){
 
 
 	//echo $sql;
-	
-<<<<<<< HEAD
+
 	$resp=mysqli_query($enlaceCon,$sql);
-	echo "<h1>Registro y Edición de Precios</h1>";
-=======
-	$resp=mysql_query($sql);
-	echo "<h1>Registro y Edición de Precios  $nombreLineaProveedorX</h1>";
->>>>>>> 8e4f4cb4a65b3bfc4b209513cef4f0b5f2c2ad51
-	
+
+
+	echo "<h1>Registro y Edición de Precios  $nombreLineaProveedorX</h1>";	
 	echo "<center><table class='texto' id='main'>";
 	echo "<tr><th>Material</th>
 	<th>Precio Normal</th>

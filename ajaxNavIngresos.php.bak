@@ -56,8 +56,8 @@ while ($dat = mysqli_fetch_array($resp)) {
     echo "<input type='hidden' name='fecha_ingreso$nro_correlativo' value='$fecha_ingreso_mostrar'>";
     $sql_verifica_movimiento = "select s.cod_salida_almacenes from salida_almacenes s, salida_detalle_ingreso sdi
                 where s.cod_salida_almacenes=sdi.cod_salida_almacen and s.salida_anulada=0 and sdi.cod_ingreso_almacen='$codigo'";
-    $resp_verifica_movimiento = mysqli_query($enlaceCon,$sql_verifica_movimiento);
-    $num_filas_movimiento = mysqli_num_rows($resp_verifica_movimiento);
+    $resp_verifica_movimiento = mysql_query($sql_verifica_movimiento);
+    $num_filas_movimiento = mysql_num_rows($resp_verifica_movimiento);
     if ($num_filas_movimiento != 0) {
         $color_fondo = "#ffff99";
         $chkbox = "<input type='checkbox' name='codigo' value='$codigo'>";

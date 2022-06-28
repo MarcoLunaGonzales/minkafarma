@@ -29,9 +29,9 @@ while($reg=mysqli_fetch_array($rs))
 	$consultaDet="select p.nombre_linea_proveedor
 	from proveedores_lineas p where p.cod_proveedor=$codProv and estado=1 order by 1";
 	//echo $consultaDet;
-	$rsDet=mysql_query($consultaDet);
+	$rsDet=mysqli_query($enlaceCon,$consultaDet);
 	$txtLineas="";
-	while($regDet=mysql_fetch_array($rsDet)){
+	while($regDet=mysqli_fetch_array($rsDet)){
 		$txtLineas.="".$regDet[0].", ";
 	}
 	

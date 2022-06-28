@@ -125,7 +125,7 @@ function recalculaCostos($enlaceCon,$codigoItem, $rpt_almacen){
 			from ingreso_almacenes i, ingreso_detalle_almacenes id, tipos_ingreso ti
 			where i.cod_tipoingreso=ti.cod_tipoingreso and i.cod_ingreso_almacen=id.cod_ingreso_almacen and i.cod_almacen='$rpt_almacen' and
 			i.ingreso_anulado=0 and id.cod_material='$codigoItem' and i.fecha='$fecha_consulta'";
-			$resp_ingresos=mysqli_query($enlaceCon,$sql_ingresos);
+			$resp_ingresos=mysqli_query($sql_ingresos);
 			while($dat_ingresos=mysqli_fetch_array($resp_ingresos))
 			{	$nro_ingreso=$dat_ingresos[0];
 				$cantidad_ingreso=$dat_ingresos[1];

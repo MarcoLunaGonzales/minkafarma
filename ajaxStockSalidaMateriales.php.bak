@@ -6,9 +6,9 @@ $codAlmacen = $_GET["codalm"];
 $indice = $_GET["indice"];
 
 //
-require("conexionmysqli.php");
+require("conexion.inc");
 
-$stockProducto=stockProducto($enlaceCon,$codAlmacen, $codMaterial);
+$stockProducto=stockProducto($codAlmacen, $codMaterial);
 
 echo "<input type='text' id='stock$indice' name='stock$indice' value='$stockProducto' readonly size='4'>";
 //echo "$cadRespuesta -> ".rand(0, 10);

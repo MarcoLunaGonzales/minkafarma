@@ -2,7 +2,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"-->
 <?php 
 
-require("conexion.inc");
+require("conexionmysqli.php");
 $num=$_GET['codigo'];
 $codLineaProveedor=$_GET['cod_linea_proveedor'];
 
@@ -12,9 +12,9 @@ $fechaActual=date("Y-m-d");
 $sqlLinea="SELECT m.codigo_material, m.descripcion_material, m.cantidad_presentacion 
 from material_apoyo m where m.cod_linea_proveedor='$codLineaProveedor' order by m.descripcion_material";
 //echo $sqlLinea;
-$respLinea=mysql_query($sqlLinea);
+$respLinea=mysqli_query($enlaceCon,$sqlLinea);
 
-while($datLinea=mysql_fetch_array($respLinea)){
+while($datLinea=mysqli_fetch_array($respLinea)){
 	$codigoMaterialX=$datLinea[0];
 	$descMaterialX=$datLinea[1];
 	$cantPresX=$datLinea[2];
@@ -74,8 +74,8 @@ while($datLinea=mysql_fetch_array($respLinea)){
 <select name="ubicacion_fila<?php echo $num;?>">
 <?php
 	$sql="select codigo, nombre from ubicaciones_filas where cod_estado=1";
-	$resp=mysql_query($sql);
-	while($dat=mysql_fetch_array($resp)){
+	$resp=mysqli_query($enlaceCon,$sql);
+	while($dat=mysqli_fetch_array($resp)){
 ?>
 	<option value="<?=$dat[0];?>"><?=$dat[1];?></option>
 <?php

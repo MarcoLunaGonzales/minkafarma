@@ -180,7 +180,7 @@ function enviar(f){
 	where p.cod_proveedor=pl.cod_proveedor and pl.estado=1 order by 2;";
 	$respTipo=mysqli_query($enlaceCon,$sqlTipo);
 	echo "<option value='0'>--</option>";
-	while($datTipo=mysql_fetch_array($respTipo)){
+	while($datTipo=mysqli_fetch_array($respTipo)){
 		$codTipoMat=$datTipo[0];
 		$nombreTipoMat=$datTipo[1];
 		echo "<option value=$codTipoMat>$nombreTipoMat</option>";

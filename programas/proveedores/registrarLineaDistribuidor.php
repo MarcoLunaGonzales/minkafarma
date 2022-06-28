@@ -16,7 +16,7 @@ require("../../funcion_nombres.php");
 echo "<link rel='stylesheet' type='text/css' href='../../stilos.css'/>";
 
 $codProveedor=$_GET['codProveedor'];
-$nombreProveedor=nombreProveedor($codProveedor,$enlaceCon);
+$nombreProveedor=nombreProveedor($enlaceCon,$codProveedor);
 
 ?>
 <form action="guardaLineaDistribuidor.php" method="post">

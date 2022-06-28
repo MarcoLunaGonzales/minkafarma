@@ -72,7 +72,7 @@ require("../../funcion_nombres.php");
 echo "<link rel='stylesheet' type='text/css' href='../../stilos.css'/>";
 
 $codProveedor=$_GET['codProveedor'];
-$nombreProveedor=nombreProveedor($codProveedor,$enlaceCon);
+$nombreProveedor=nombreProveedor($enlaceCon,$codProveedor,$enlaceCon);
 
 echo "<center>";
 echo "<h1>Lineas de Distribuidor <br> $nombreProveedor</h1>";
@@ -86,13 +86,9 @@ $consulta="select p.cod_linea_proveedor, p.nombre_linea_proveedor, p.abreviatura
 	p.contacto2, (select t.nombre_procedencia from tipos_procedencia t where t.cod_procedencia=p.cod_procedencia), 
 	margen_precio
 	from proveedores_lineas p where p.cod_proveedor=$codProveedor and estado=1";
-<<<<<<< HEAD
+
 
 $rs=mysqli_query($enlaceCon,$consulta);
-=======
-//echo $consulta;
-$rs=mysql_query($consulta);
->>>>>>> 8e4f4cb4a65b3bfc4b209513cef4f0b5f2c2ad51
 
 $cont=0;
 while($reg=mysqli_fetch_array($rs)){

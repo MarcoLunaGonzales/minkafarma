@@ -1,6 +1,6 @@
 <?php
 
-require("conexion.inc");
+require("conexionmysqli.php");
 require("estilos_almacenes.inc");
 require("funcionRecalculoCostos.php");
 require("funciones.php");
@@ -8,17 +8,23 @@ require("funciones.php");
 //HABILITAMOS LA BANDERA DE VENCIDOS PARA ACTUALIZAR EL PRECIO
 $banderaPrecioUpd=0;
 $sqlConf="select valor_configuracion from configuraciones where id_configuracion=7";
-$respConf=mysql_query($sqlConf);
-$banderaPrecioUpd=mysql_result($respConf,0,0);
+$respConf=mysqli_query($enlaceCon,$sqlConf);
+$datConf = mysqli_fetch_array($respConf);
+$banderaPrecioUpd=$datConf[0];
+//$banderaPrecioUpd=mysql_result($respConf,0,0);
 
 
 $sql = "select IFNULL(MAX(cod_ingreso_almacen)+1,1) from ingreso_almacenes order by cod_ingreso_almacen desc";
-$resp = mysql_query($sql);
-$codigo=mysql_result($resp,0,0);
+$resp = mysqli_query($enlaceCon,$sql);
+$dat = mysqli_fetch_array($resp);
+$codigo=$dat[0];
+//$codigo=mysql_result($resp,0,0);
 
 $sql = "select IFNULL(MAX(nro_correlativo)+1,1) from ingreso_almacenes where cod_almacen='$global_almacen' order by cod_ingreso_almacen desc";
-$resp = mysql_query($sql);
-$nro_correlativo=mysql_result($resp,0,0);
+$resp = mysqli_query($enlaceCon,$sql);
+$dat = mysqli_fetch_array($resp);
+$nro_correlativo=$dat[0];
+//$nro_correlativo=mysql_result($resp,0,0);
 
 $hora_sistema = date("H:i:s");
 
@@ -39,7 +45,7 @@ nota_entrega,nro_correlativo,ingreso_anulado,cod_tipo_compra,cod_orden_compra,nr
 cod_proveedor,created_by,modified_by,created_date,modified_date) 
 values($codigo,$global_almacen,$tipo_ingreso,'$fecha_real','$hora_sistema','$observaciones','0','$nota_entrega','$nro_correlativo',0,0,0,$nro_factura,0,0,'$proveedor','$createdBy','0','$createdDate','')";
 
-$sql_inserta = mysql_query($consulta);
+$sql_inserta = mysqli_query($enlaceCon,$consulta);
 //echo "aaaa:$consulta";
 
 if($sql_inserta==1){
@@ -68,7 +74,7 @@ if($sql_inserta==1){
 			precio_bruto, costo_almacen, costo_actualizado, costo_actualizado_final, costo_promedio, precio_neto, cod_ubicacionestante, cod_ubicacionfila) 
 			values($codigo,'$cod_material',$cantidad,$cantidad,'$lote','$fechaVencimiento',$precioUnitario,$precioUnitario,$costo,$costo,$costo,$costo,'$ubicacionEstante','$ubicacionFila')";
 			//echo "bbb:$consulta";
-			$sql_inserta2 = mysql_query($consulta);
+			$sql_inserta2 = mysqli_query($enlaceCon,$consulta);
 			
 			
 			
@@ -87,42 +93,44 @@ if($sql_inserta==1){
 			if($banderaPrecioUpd==1){
 				//SACAMOS EL ULTIMO PRECIO REGISTRADO
 				$sqlPrecioActual="select precio from precios where codigo_material='$cod_material' and cod_precio=1";
-				$respPrecioActual=mysql_query($sqlPrecioActual);
-				$numFilasPrecios=mysql_num_rows($respPrecioActual);
+				$respPrecioActual=mysqli_query($enlaceCon,$sqlPrecioActual);
+				$numFilasPrecios=mysqli_num_rows($respPrecioActual);
 				$precioActual=0;
 				if($numFilasPrecios>0){
-					$precioActual=mysql_result($respPrecioActual,0,0);
+					$datPrecioActual = mysqli_fetch_array($respPrecioActual);
+					$precioActual=$dat[0];
+					//$precioActual=mysql_result($respPrecioActual,0,0);
 				}
 				
 				//echo "precio +margen: ".$precioItem." precio actual: ".$precioActual;
 				//SI NO EXISTE EL PRECIO LO INSERTA CASO CONTRARIO VERIFICA QUE EL PRECIO DEL INGRESO SEA MAYOR AL ACTUAL PARA HACER EL UPDATE
 				if($numFilasPrecios==0){
 					$sqlPrecios="insert into precios (codigo_material, cod_precio, precio) values('$cod_material','1','$precioItem')";
-					$respPrecios=mysql_query($sqlPrecios);
+					$respPrecios=mysqli_query($enlaceCon,$sqlPrecios);
 				}else{
-					if($precioItem>$precioActual){
+					if($precioItem!=$precioActual){
 						$sqlPrecios="update precios set precio='$precioItem' where codigo_material='$cod_material' and cod_precio=1";
-						$respPrecios=mysql_query($sqlPrecios);
+						$respPrecios=mysqli_query($enlaceCon,$sqlPrecios);
 					}
 				}				
 			}
 			
-			$aa=recalculaCostos($cod_material, $global_almacen);
+			$aa=recalculaCostos($enlaceCon,$cod_material, $global_almacen);
 			
 		}
 		
 
 	}
 	
-	echo "<script language='Javascript'>
+	/*echo "<script language='Javascript'>
 		alert('Los datos fueron insertados correctamente.');
 		location.href='navegador_ingresomateriales.php';
-		</script>";		
+		</script>";	*/
 }else{
-	echo "<script language='Javascript'>
+	/*echo "<script language='Javascript'>
 		alert('EXISTIO UN ERROR EN LA TRANSACCION, POR FAVOR CONTACTE CON EL ADMINISTRADOR.');
 		location.href='navegador_ingresomateriales.php';
-		</script>";		
+		</script>";	*/	
 }
 
 ?>

@@ -1,7 +1,7 @@
 <?php
 
-function obtenerValorConfiguracion($id){
-	require("conexionmysqli.php");
+function obtenerValorConfiguracion($enlaceCon,$id){
+	//require("conexionmysqli.php");
 	$sql = "SELECT valor_configuracion from configuraciones c where id_configuracion=$id";
 	$resp=mysqli_query($enlaceCon,$sql);
 	$codigo=0;
@@ -70,8 +70,8 @@ function UltimoDiaMes($cadena_fecha)
 	return($fechaNuevaX);
 }
 
-function obtenerCodigo($sql)
-{	require("conexionmysqli.php");
+function obtenerCodigo($enlaceCon,$sql)
+{	//require("conexionmysqli.php");
 	$resp=mysqli_query($enlaceCon,$sql);
 	$nro_filas_sql = mysqli_num_rows($resp);
 	if($nro_filas_sql==0){
@@ -86,8 +86,8 @@ function obtenerCodigo($sql)
 }
 
 
-function margenLinea($item){
-	require("conexionmysqli.php");
+function margenLinea($enlaceCon,$item){
+	//require("conexionmysqli.php");
 	$fechaActual=date("Y-m-d");
 
 	$sql="select p.margen_precio from material_apoyo m, proveedores_lineas p where 
@@ -100,8 +100,8 @@ function margenLinea($item){
 }
 
 
-function precioProducto($item){
-	require("conexionmysqli.php");
+function precioProducto($enlaceCon,$item){
+	//require("conexionmysqli.php");
 	$fechaActual=date("Y-m-d");
 
 	$sql="SELECT p.`precio` from precios p where p.`codigo_material`='$item' and p.`cod_precio`='1'";
@@ -113,9 +113,8 @@ function precioProducto($item){
 }
 
 
-function ubicacionProducto($almacen, $item){
-	//
-	require("conexionmysqli.php");
+function ubicacionProducto($enlaceCon,$almacen, $item){
+	//require("conexionmysqli.php");
 	$fechaActual=date("Y-m-d");
 
 	$sql_ingresos="select 
@@ -132,9 +131,8 @@ function ubicacionProducto($almacen, $item){
 	
 }
 
-function stockProducto($almacen, $item){
-	//
-	require("conexionmysqli.php");
+function stockProducto($enlaceCon,$almacen, $item){
+	//	require("conexionmysqli.php");
 	$fechaActual=date("Y-m-d");
 
 	$sql_ingresos="select sum(id.cantidad_unitaria) from ingreso_almacenes i, ingreso_detalle_almacenes id
@@ -153,9 +151,8 @@ function stockProducto($almacen, $item){
 	return($stock2);
 }
 
-function stockProductoVencido($almacen, $item){
-	//
-	require("conexionmysqli.php");
+function stockProductoVencido($enlaceCon,$almacen, $item){
+	//require("conexionmysqli.php");
 	$fechaActual=date("Y-m-d");
 
 	$sql_ingresos="select sum(id.cantidad_restante) from ingreso_almacenes i, ingreso_detalle_almacenes id where i.cod_ingreso_almacen=id.cod_ingreso_almacen and i.cod_almacen='$almacen' and i.ingreso_anulado=0 and id.fecha_vencimiento<'$fechaActual' and id.cod_material='$item'";
@@ -166,9 +163,8 @@ function stockProductoVencido($almacen, $item){
 	return($stock2);
 }
 
-function stockMaterialesEdit($almacen, $item, $cantidad){
-	//
-	require("conexionmysqli.php");
+function stockMaterialesEdit($enlaceCon,$almacen, $item, $cantidad){
+	//	require("conexionmysqli.php");
 	$cadRespuesta="";
 	$consulta="
 	    SELECT SUM(id.cantidad_restante) as total
@@ -184,7 +180,7 @@ function stockMaterialesEdit($almacen, $item, $cantidad){
 	$cadRespuesta=redondear2($cadRespuesta);
 	return($cadRespuesta);
 }
-function restauraCantidades($codigo_registro){
+function restauraCantidades($enlaceCon,$codigo_registro){
 	$sql_detalle="select cod_ingreso_almacen, material, cantidad_unitaria
 				from salida_detalle_ingreso
 				where cod_salida_almacen='$codigo_registro'";
@@ -207,8 +203,8 @@ function restauraCantidades($codigo_registro){
 	}
 	return(1);
 }
-function numeroCorrelativo($tipoDoc){
-	require("conexionmysqli.php");
+function numeroCorrelativo($enlaceCon,$tipoDoc){
+	//require("conexionmysqli.php");
 	$banderaErrorFacturacion=0;
 	//SACAMOS LA CONFIGURACION PARA CONOCER SI LA FACTURACION ESTA ACTIVADA
 	$sqlConf="select valor_configuracion from configuraciones where id_configuracion=3";
@@ -224,17 +220,12 @@ function numeroCorrelativo($tipoDoc){
 		//VALIDAMOS QUE LA DOSIFICACION ESTE ACTIVA
 		$sqlValidar="select count(*) from dosificaciones d 
 		where d.cod_sucursal='$globalAgencia' and d.cod_estado=1 and d.fecha_limite_emision>='$fechaActual'";
-<<<<<<< HEAD
+
 		$respValidar=mysqli_query($enlaceCon,$sqlValidar);
 		$datValidar=mysqli_fetch_array($respValidar);
 			$numFilasValidar=$datValidar[0];
 		//$numFilasValidar=mysql_result($respValidar,0,0);
-=======
-		//echo $sqlValidar;
-		$respValidar=mysql_query($sqlValidar);
-		$numFilasValidar=mysql_result($respValidar,0,0);
->>>>>>> 8e4f4cb4a65b3bfc4b209513cef4f0b5f2c2ad51
-		
+
 		if($numFilasValidar==1){
 			$sqlCodDosi="select cod_dosificacion from dosificaciones d 
 			where d.cod_sucursal='$globalAgencia' and d.cod_estado=1";

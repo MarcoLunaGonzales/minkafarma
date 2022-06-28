@@ -57,7 +57,7 @@ if($sql_inserta==1){
 		
 		//echo "bbb:$consulta";
 		
-		$sql_inserta2 = mysql_query($consulta);
+		$sql_inserta2 = mysqli_query($enlaceCon,$consulta);
 	}
 }
 

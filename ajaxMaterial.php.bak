@@ -46,7 +46,7 @@ $fechaActual=date("Y-m-d");
 <input type="hidden" name="margenlinea<?php echo $num;?>" id="margenlinea<?php echo $num;?>" value="0">
 </td>
 
-<td align="center" width="20%">
+<!--td align="center" width="20%">
 <select name="ubicacion_estante<?php echo $num;?>">
 <?php
 	$sql="select codigo, nombre from ubicaciones_estantes where cod_estado=1";
@@ -62,14 +62,14 @@ $fechaActual=date("Y-m-d");
 <?php
 	$sql="select codigo, nombre from ubicaciones_filas where cod_estado=1";
 	$resp=mysqli_query($enlaceCon,$sql);
-	while($dat=mysql_fetch_array($resp)){
+	while($dat=mysqli_fetch_array($resp)){
 ?>
 	<option value="<?=$dat[0];?>"><?=$dat[1];?></option>
 <?php
 	}
 ?>
 </select>
-</td>
+</td-->
 
 <td align="center"  width="10%" ><input class="boton2peque" type="button" value="(-)" onclick="menos(<?php echo $num;?>)" size="5"/></td>
 
