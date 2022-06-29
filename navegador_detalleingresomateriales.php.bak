@@ -4,8 +4,9 @@
 	require("funciones.php");
 	echo "<form method='post' action=''>";
 
-	$sql="select i.cod_ingreso_almacen, i.fecha, ti.nombre_tipoingreso, i.observaciones, i.nro_correlativo, i.nro_factura_proveedor
-	FROM ingreso_almacenes i, tipos_ingreso ti, (select p.nombre_proveedor from proveedores p where p.cod_proveedor=i.cod_proveedor)as proveedor
+	$sql="select i.cod_ingreso_almacen, i.fecha, ti.nombre_tipoingreso, i.observaciones, i.nro_correlativo, i.nro_factura_proveedor, 
+	(select p.nombre_proveedor from proveedores p where p.cod_proveedor=i.cod_proveedor)as proveedor
+	FROM ingreso_almacenes i, tipos_ingreso ti
 	where i.cod_tipoingreso=ti.cod_tipoingreso and i.cod_almacen='$global_almacen' and i.cod_ingreso_almacen='$codigo_ingreso'";
 	
 	$resp=mysql_query($sql);
@@ -35,7 +36,7 @@
 	where i.cod_ingreso_almacen='$codigo' and m.codigo_material=i.cod_material";
 	$resp_detalle=mysql_query($sql_detalle);
 	echo "<br><table border=0 class='texto' align='center'>";
-	echo "<tr><th>&nbsp;</th><th>Material</th><th>Cantidad</th><th>Lote</th><th>Fecha Vencimiento</th><th>Ubicacion</th><th>Precio Compra(Bs.)</th><th>Total(Bs.)</th></tr>";
+	echo "<tr><th>&nbsp;</th><th>Codigo</th><th>Material</th><th>Cantidad</th><th>Lote</th><th>Fecha Vencimiento</th><th>Ubicacion</th><th>Precio Compra(Bs.)</th><th>Total(Bs.)</th></tr>";
 	$indice=1;
 	while($dat_detalle=mysql_fetch_array($resp_detalle))
 	{	$cod_material=$dat_detalle[0];

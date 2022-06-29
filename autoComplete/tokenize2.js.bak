@@ -72,7 +72,7 @@
     Tokenize2.DEFAULTS = {
         tokensMaxItems: 0,
         tokensAllowCustom: false,
-        dropdownMaxItems: 20,
+        dropdownMaxItems: 10,
         searchMinLength: 0,
         searchFromStart: true,
         searchHighlight: true,

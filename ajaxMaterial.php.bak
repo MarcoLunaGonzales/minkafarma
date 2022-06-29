@@ -46,6 +46,13 @@ $fechaActual=date("Y-m-d");
 <input type="hidden" name="margenlinea<?php echo $num;?>" id="margenlinea<?php echo $num;?>" value="0">
 </td>
 
+<td align="center" width="10%">
+<input type="number" class="inputnumber" value="0" id="preciocliente<?php echo $num;?>" name="preciocliente<?php echo $num;?>" size="4" min="0" step="0.01" required>
+</br>
+<div id="divpreciocliente<?php echo $num;?>" class="textopequenorojo">-</div>
+<input type="hidden" name="margenlinea<?php echo $num;?>" id="margenlinea<?php echo $num;?>" value="0">
+</td>
+
 <!--td align="center" width="20%">
 <select name="ubicacion_estante<?php echo $num;?>">
 <?php

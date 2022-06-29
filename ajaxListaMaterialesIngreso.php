@@ -38,12 +38,11 @@ $itemsNoUtilizar="0";
 			
 			$stockProducto=stockProducto($globalAlmacen, $codigo);
 			$precioProducto=precioProducto($codigo);
-<<<<<<< HEAD
+
 			if($precioProducto==""){
 				$precioProducto=0;
 			}
-=======
->>>>>>> 185a9a426d541d2dc50660e67cbe9ccb2bfee8e4
+
 			$margenLinea=margenLinea($codigo);
 			
 			echo "<tr><td>$linea</td><td><div class='textograndenegro'><a href='javascript:setMateriales(form1, $codigo, \"$nombre\", $cantidadPresentacion, $precioProducto, $margenLinea)'>$nombre</a></div></td><td><div class='textograndenegro'>$stockProducto</div></td></tr>";

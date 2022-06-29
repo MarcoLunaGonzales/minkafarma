@@ -6,7 +6,7 @@
 	<link type="text/css" rel="stylesheet" href="menuLibs/css/demo.css" />
 	<link type="text/css" rel="stylesheet" href="menuLibs/dist/jquery.mmenu.css" />
 
-	<script type="text/javascript" src="lib/js/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
 	<script type="text/javascript" src="menuLibs/dist/jquery.mmenu.js"></script>
 	<script type="text/javascript">
 		$(function() {

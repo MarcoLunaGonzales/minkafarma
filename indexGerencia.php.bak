@@ -6,7 +6,7 @@
 	<link type="text/css" rel="stylesheet" href="menuLibs/css/demo.css" />
 	<link type="text/css" rel="stylesheet" href="menuLibs/dist/jquery.mmenu.css" />
 
-	<script type="text/javascript" src="lib/js/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
 	<script type="text/javascript" src="menuLibs/dist/jquery.mmenu.js"></script>
 	<script type="text/javascript">
 		$(function() {
@@ -45,32 +45,36 @@ include("datosUsuario.php");
 				<ul>
 					<li><a href="programas/proveedores/inicioProveedores.php" target="contenedorPrincipal">Distribuidores</a></li>
 					<li><a href="navegador_material.php" target="contenedorPrincipal">Productos</a></li>
-					<!--li><a href="navegador_funcionarios1.php" target="contenedorPrincipal">Funcionarios</a></li-->
+					<li><a href="navegador_funcionarios1.php" target="contenedorPrincipal">Funcionarios</a></li>
 					<li><a href="programas/clientes/inicioClientes.php" target="contenedorPrincipal">Clientes</a></li>
 					<!--li><a href="navegador_vehiculos.php" target="contenedorPrincipal">Vehiculos</a></li-->
-					<!--li><span>Gestion de Almacenes</span>
+					<li><span>Gestion de Almacenes</span>
 					<ul>
 						<li><a href="navegador_almacenes.php" target="contenedorPrincipal">Almacenes</a></li>
 						<li><a href="navegador_tiposingreso.php" target="contenedorPrincipal">Tipos de Ingreso</a></li>
 						<li><a href="navegador_tipossalida.php" target="contenedorPrincipal">Tipos de Salida</a></li>
 						</ul>	
-					</li-->
+					</li>
 
 					<li><span>Materiales y Precios</span>
 					<ul>
-						<li><a href="navegadorPrecios.php" target="contenedorPrincipal">Precios</a></li>
-						<li><a href="navegadorUbicaciones.php" target="contenedorPrincipal">Ubicaciones</a></li>
-						<!--li><a href="navegador_precios.php?orden=1" target="contenedorPrincipal">Precios (Orden Alfabetico)</a></li-->
-						<!--li><a href="navegador_precios.php?orden=2" target="contenedorPrincipal">Precios (Por Linea Proveedor)</a></li-->					
+						<li><a href="navegador_empaques.php" target="contenedorPrincipal">Empaques</a></li>
+						<li><a href="navegador_formasfar.php" target="contenedorPrincipal">Formas Farmaceuticas</a></li>
+						<li><a href="navegador_accionester.php" target="contenedorPrincipal">Acciones Terapeuticas</a></li>
+						<li><a href="navegador_precios.php?orden=1" target="contenedorPrincipal">Precios (Orden Alfabetico)</a></li>
+						<li><a href="navegador_precios.php?orden=2" target="contenedorPrincipal">Precios (Por Linea Proveedor)</a></li>		
+						<li><a href="navegadorUbicaciones.php" target="contenedorPrincipal">Ubicaciones</a></li>						
 					</ul>
 				</li>
-				<!--li><a href="navegador_dosificaciones.php" target="contenedorPrincipal">Dosificaciones de Facturas</a></li-->
+					<li><a href="navegador_dosificaciones.php" target="contenedorPrincipal">Dosificaciones de Facturas</a></li>
 					
 				</ul>	
 			</li>
 			<li><span>Ordenes de Compra</span>
 				<ul>
 					<li><a href="navegador_ordenCompra.php" target="contenedorPrincipal">Registro de O.C.</a></li>
+					<!--li><a href="registrarOCTerceros.php" target="contenedorPrincipal">Registro de O.C. de Terceros</a></li-->
+					<!--li><a href="navegadorIngresosOC.php" target="contenedorPrincipal">Generar OC a traves de Ingreso</a></li-->
 					<li><a href="navegador_pagos.php" target="contenedorPrincipal">Registro de Pagos</a></li>
 				</ul>	
 			</li>
@@ -82,8 +86,14 @@ include("datosUsuario.php");
 			</li>
 			<li><span>Salidas</span>
 				<ul>
-					<li><a href="navegador_salidamateriales.php" target="contenedorPrincipal">Listado de Salidas</a></li>
+					<li><a href="navegador_salidamateriales.php" target="contenedorPrincipal">Listado de Traspasos</a></li>
 					<li><a href="navegadorVentas.php" target="contenedorPrincipal">Listado de Ventas</a></li>
+				</ul>	
+			</li>
+			<li><span>Marcados de Personal</span>
+				<ul>
+					<li><a href="registrar_marcado.php" target="contenedorPrincipal">Registro de Marcados</a></li>
+					<li><a href="rptOpMarcados.php" target="contenedorPrincipal">Reporte de Marcados</a></li>
 				</ul>	
 			</li>
 			<!--li><span>Listado de Cobranzas</span>
@@ -100,6 +110,8 @@ include("datosUsuario.php");
 			<li><a href="registrar_salidaventas.php" target="contenedorPrincipal">Vender / Facturar **</a></li>
 			<li><a href="listadoProductosStock.php" target="_blank">Listado de Productos **</a></li>
 
+			<li><a href="rptProductosVencer.php" target="contenedorPrincipal">Productos proximos a Vencer</a></li>
+	
 			<li><a href="navegador_etiquetas.php" target="contenedorPrincipal">Impresion de Etiquetas</a></li>
 
 			<li><span>Reportes</span>
@@ -112,15 +124,9 @@ include("datosUsuario.php");
 							<li><a href="rpt_op_inv_salidas.php" target="contenedorPrincipal">Salidas</a></li>
 							<li><a href="rptPrecios.php" target="contenedorPrincipal">Precios</a></li>
 							<li><a href="rptProductosVencer.php" target="contenedorPrincipal">Productos proximos a Vencer</a></li>
-							
 							<!--li><a href="rptOCPagar.php" target="contenedorPrincipal">OC por Pagar</a></li-->
 						</ul>
-					</li>
-					<li><span>Ordenes de Compra</span>
-						<ul>							
-							<li><a href="rptOCPagar.php" target="contenedorPrincipal">OC por Pagar</a></li>
-						</ul>
-					</li>					
+					</li>	
 					<!--li><span>Costos</span>
 						<ul>
 							<li><a href="rptOpKardexCostos.php" target="contenedorPrincipal">Kardex de Movimiento Precio Promedio</a></li>
@@ -141,8 +147,8 @@ include("datosUsuario.php");
 					<li><span>Reportes Contables</span>
 						<ul>
 							<li><a href="rptOpLibroVentas.php" target="contenedorPrincipal">Libro de Ventas</a></li>
-							<!--li><a href="" target="contenedorPrincipal">Libro de Compras</a></li>
-							<li><a href="rptOpKardexCliente.php" target="contenedorPrincipal">Kardex x Cliente</a></li-->
+							<li><a href="" target="contenedorPrincipal">Libro de Compras</a></li>
+							<!--li><a href="rptOpKardexCliente.php" target="contenedorPrincipal">Kardex x Cliente</a></li-->
 						</ul>	
 					</li>
 					<!--li><span>Utilidades</span>

@@ -4,8 +4,12 @@
 	require("funciones.php");
 	echo "<form method='post' action=''>";
 
+<<<<<<< HEAD
 	$sql="select i.cod_ingreso_almacen, i.fecha, ti.nombre_tipoingreso, i.observaciones, i.nro_correlativo, i.nro_factura_proveedor, 
 	(select p.nombre_proveedor from proveedores p where p.cod_proveedor=i.cod_proveedor)as proveedor
+=======
+	$sql="select i.cod_ingreso_almacen, i.fecha, ti.nombre_tipoingreso, i.observaciones, i.nro_correlativo 
+>>>>>>> 185a9a426d541d2dc50660e67cbe9ccb2bfee8e4
 	FROM ingreso_almacenes i, tipos_ingreso ti
 	where i.cod_tipoingreso=ti.cod_tipoingreso and i.cod_almacen='$global_almacen' and i.cod_ingreso_almacen='$codigo_ingreso'";
 	
@@ -36,7 +40,7 @@
 	where i.cod_ingreso_almacen='$codigo' and m.codigo_material=i.cod_material";
 	$resp_detalle=mysql_query($sql_detalle);
 	echo "<br><table border=0 class='texto' align='center'>";
-	echo "<tr><th>&nbsp;</th><th>Codigo</th><th>Material</th><th>Cantidad</th><th>Lote</th><th>Fecha Vencimiento</th><th>Ubicacion</th><th>Precio Compra(Bs.)</th><th>Total(Bs.)</th></tr>";
+	echo "<tr><th>&nbsp;</th><th>Material</th><th>Cantidad</th><th>Lote</th><th>Fecha Vencimiento</th><th>Ubicacion</th><th>Precio Compra(Bs.)</th><th>Total(Bs.)</th></tr>";
 	$indice=1;
 	while($dat_detalle=mysql_fetch_array($resp_detalle))
 	{	$cod_material=$dat_detalle[0];
@@ -54,10 +58,7 @@
 		$resp_nombre_material=mysql_query($sql_nombre_material);
 		$dat_nombre_material=mysql_fetch_array($resp_nombre_material);
 		$nombre_material=$dat_nombre_material[0];
-		echo "<tr>
-		<td align='center'>$indice</td>
-		<td align='center'>$cod_material</td>
-		<td>$nombre_material</td><td align='center'>$cantidad_unitaria</td>
+		echo "<tr><td align='center'>$indice</td><td>$nombre_material</td><td align='center'>$cantidad_unitaria</td>
 		<td align='center'>$loteProducto</td>
 		<td align='center'>$fechaVenc</td>
 		<td align='center'>$estante - $fila</td>

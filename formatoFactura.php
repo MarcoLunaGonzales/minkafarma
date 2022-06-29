@@ -67,11 +67,7 @@ $nitCliente=mysql_result($respDatosFactura,0,3);
 $razonSocialCliente=mysql_result($respDatosFactura,0,4);
 
 //datos documento
-<<<<<<< HEAD
 $sqlDatosVenta="select DATE_FORMAT(s.fecha, '%d/%m/%Y'), t.`nombre`, c.`nombre_cliente`, s.`nro_correlativo`, s.monto_efectivo, s.monto_cambio, s.descuento
-=======
-$sqlDatosVenta="select DATE_FORMAT(s.fecha, '%d/%m/%Y'), t.`nombre`, c.`nombre_cliente`, s.`nro_correlativo`, s.monto_efectivo, s.monto_cambio
->>>>>>> 185a9a426d541d2dc50660e67cbe9ccb2bfee8e4
 		from `salida_almacenes` s, `tipos_docs` t, `clientes` c
 		where s.`cod_salida_almacenes`='$codigoVenta' and s.`cod_cliente`=c.`cod_cliente` and
 		s.`cod_tipo_doc`=t.`codigo`";
@@ -83,11 +79,7 @@ while($datDatosVenta=mysql_fetch_array($respDatosVenta)){
 	$nroDocVenta=$datDatosVenta[3];
 	$totalEfectivo=$datDatosVenta[4];
 	$totalCambio=$datDatosVenta[5];
-<<<<<<< HEAD
 	$montoDescuentoCab=$datDatosVenta[6];	
-=======
-	
->>>>>>> 185a9a426d541d2dc50660e67cbe9ccb2bfee8e4
 }
 
 $y=5;
