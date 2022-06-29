@@ -1,5 +1,5 @@
 <?php
-require("conexion.inc");
+require("conexionmysqli.php");
 // require("estilos_administracion.inc");
 
 function validar_clave($clave,&$error_clave){
@@ -37,7 +37,7 @@ if (validar_clave($contrasena, $error_encontrado)){
 	
 	$txtUpd="UPDATE usuarios_sistema set contrasena='$contrasena'
 	where codigo_funcionario='$codigo_funcionario'";
-	$sql_update=mysql_query($txtUpd);
+	$sql_update=mysqli_query($enlaceCon,$txtUpd);
 	
 	echo "<script language='Javascript'>
 	alert('Los datos fueron modificados correctamente.');

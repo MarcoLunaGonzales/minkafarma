@@ -4,7 +4,7 @@
 <tr>
 <th>Linea</th><th>Producto</th><th>Stock</th></tr>
 <?php
-require("conexion.inc");
+require("conexionmysqli.php");
 require("funciones.php");
 $codTipo=$_GET['codTipo'];
 $nombreItem=$_GET['nombreItem'];
@@ -24,26 +24,22 @@ $itemsNoUtilizar="0";
 		$sql=$sql. " and cod_linea_proveedor = '$codTipo' ";
 	}
 	$sql=$sql." order by 2";
-	//echo $sql;
-	$resp=mysql_query($sql);
-
-	$numFilas=mysql_num_rows($resp);
+	$resp=mysqli_query($enlaceCon,$sql);
+	$numFilas=mysqli_num_rows($resp);
 	if($numFilas>0){
-		while($dat=mysql_fetch_array($resp)){
+		while($dat=mysqli_fetch_array($resp)){
 			$codigo=$dat[0];
 			$nombre=$dat[1];
 			$nombre=addslashes($nombre);
 			$cantidadPresentacion=$dat[2];
 			$linea=$dat[3];
 			
-			$stockProducto=stockProducto($globalAlmacen, $codigo);
-			$precioProducto=precioProducto($codigo);
-
+			$stockProducto=stockProducto($enlaceCon,$globalAlmacen, $codigo);
+			$precioProducto=precioProducto($enlaceCon,$codigo);
 			if($precioProducto==""){
 				$precioProducto=0;
 			}
-
-			$margenLinea=margenLinea($codigo);
+			$margenLinea=margenLinea($enlaceCon,$codigo);
 			
 			echo "<tr><td>$linea</td><td><div class='textograndenegro'><a href='javascript:setMateriales(form1, $codigo, \"$nombre\", $cantidadPresentacion, $precioProducto, $margenLinea)'>$nombre</a></div></td><td><div class='textograndenegro'>$stockProducto</div></td></tr>";
 		}

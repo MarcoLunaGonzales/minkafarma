@@ -1,6 +1,6 @@
 <?php
 
-require("conexion.inc");
+require("conexionmysqli.php");
 require('function_formatofecha.php');
 
 ?>
@@ -111,7 +111,7 @@ $consulta = "select o.`nro_orden`, p.`nombre_proveedor`,
 	from `orden_compra` o, `proveedores` p where o.`cod_proveedor`=p.`cod_proveedor` 
 	ORDER BY o.nro_orden DESC limit 0, 50 ";
 	
-$resp = mysql_query($consulta);
+$resp = mysqli_query($enlaceCon,$consulta);
 echo "<h1>Ordenes de Compra</h1>";
 
 echo "<table border='1' cellspacing='0' class='textomini'><tr><th>Leyenda:</th>
@@ -128,7 +128,7 @@ require('home_almacen.php');
 	echo "<br><center><table class='texto'>";
 echo "<tr><th>&nbsp;</th><th>Nro. OC</th><th>Proveedor</th><th>Tipo de Pago</th><th>Fecha</th><th>Observaciones</th>
 <th>Estado</th><th>Nro Documento</th><th>Monto OC Bs.</th><th>&nbsp;</th></tr>";
-while ($dat = mysql_fetch_array($resp)) {
+while ($dat = mysqli_fetch_array($resp)) {
     $nroOC = $dat[0];
     $nombreProveedor = $dat[1];
 	$nombrePago=$dat[2];

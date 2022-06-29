@@ -1,12 +1,12 @@
 <?php
 
-require("conexion.inc");
+require("conexionmysqli.php");
 require("estilos_almacenes.inc");
 
 $sql = "select cod_orden from orden_compra order by cod_orden desc";
-$resp = mysql_query($sql);
-$dat = mysql_fetch_array($resp);
-$num_filas = mysql_num_rows($resp);
+$resp = mysqli_query($enlaceCon,$sql);
+$dat = mysqli_fetch_array($resp);
+$num_filas = mysqli_num_rows($resp);
 if ($num_filas == 0) {
     $codigo = 1;
 } else {
@@ -15,9 +15,9 @@ if ($num_filas == 0) {
 }
 
 $sql = "select nro_orden from orden_compra order by 1 desc";
-$resp = mysql_query($sql);
-$dat = mysql_fetch_array($resp);
-$num_filas = mysql_num_rows($resp);
+$resp = mysqli_query($enlaceCon,$sql);
+$dat = mysqli_fetch_array($resp);
+$num_filas = mysqli_num_rows($resp);
 if ($num_filas == 0) {
     $nro_correlativo = 1;
 } else {
@@ -39,7 +39,7 @@ $totalCompraSD=$_POST['totalCompraSD'];
 $consulta="insert into orden_compra 
 	values($codigo,$nro_correlativo,$proveedor,'$fecha_real','$observaciones',1,$tipo_pago,$nro_factura,'$totalCompraSD','0',1,'',0,'$descuentoTotal',0)";
 
-$sql_inserta = mysql_query($consulta);
+$sql_inserta = mysqli_query($enlaceCon,$consulta);
 echo "$sql_inserta";
 
 if($sql_inserta==1){
@@ -57,7 +57,7 @@ if($sql_inserta==1){
 		
 		//echo "bbb:$consulta";
 		
-		$sql_inserta2 = mysql_query($consulta);
+		$sql_inserta2 = mysqli_query($enlaceCon,$consulta);
 	}
 }
 

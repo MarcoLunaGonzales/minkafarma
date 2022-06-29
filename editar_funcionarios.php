@@ -1,5 +1,5 @@
 <?php
-	require("conexion.inc");
+	require("conexionmysqli.php");
 	require("estilos.inc");
 
 	echo "<script language='Javascript'>
@@ -24,8 +24,8 @@
 	
 	//sacamos los datos
 	$sql="select * from funcionarios where codigo_funcionario='$j_funcionario'";
-	$resp=mysql_query($sql);
-	while($dat=mysql_fetch_array($resp))
+	$resp=mysqli_query($enlaceCon,$sql);
+	while($dat=mysqli_fetch_array($resp))
 	{	$codigo=$dat[0];
 		$cargo=$dat[1];
 		$paterno=$dat[2];
@@ -65,8 +65,8 @@
 	echo "<td align='center'><input type='text' name='telefono' class='texto' value='$telefono'></td>";
 	echo "<td align='center'><input type='text' name='celular' class='texto' value='$celular'></td>";
 	echo "<td align='center'><select name='cargo' class='texto'>";
-			$sql_cargo=mysql_query("select cod_cargo,cargo from cargos order by cargo asc");
-			while($dat_cargo=mysql_fetch_array($sql_cargo))
+			$sql_cargo=mysqli_query($enlaceCon,"select cod_cargo,cargo from cargos order by cargo asc");
+			while($dat_cargo=mysqli_fetch_array($sql_cargo))
 			{	$cod_cargo=$dat_cargo[0];
 				$cargodes=$dat_cargo[1];
 				if($cargo==$cod_cargo)
@@ -82,8 +82,8 @@
 	echo "<tr>";
 	echo "<td align='center'><input type='text' name='email' class='texto' value='$email'></td>";
 	echo "<td align='center'><select name='agencia' class='texto'>";
-			$sql_agencia=mysql_query("select cod_ciudad,descripcion from ciudades order by descripcion asc");
-			while($dat_agencia=mysql_fetch_array($sql_agencia))
+			$sql_agencia=mysqli_query($enlaceCon,"select cod_ciudad,descripcion from ciudades order by descripcion asc");
+			while($dat_agencia=mysqli_fetch_array($sql_agencia))
 			{	$cod_ciudad=$dat_agencia[0];
 				$descripcion=$dat_agencia[1];
 				if($agencia==$cod_ciudad)

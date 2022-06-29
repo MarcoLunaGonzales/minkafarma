@@ -53,7 +53,7 @@
     <link href="autoComplete/demo.css" rel="stylesheet" />
 </head>
 <?php
-require("conexion.inc");
+require("conexionmysqli.php");
 require('estilos.inc');
 require('funciones.php');
 
@@ -64,8 +64,8 @@ $paginaRetorno=$_GET['pagina_retorno'];
 
 $sqlEdit="select m.codigo_material, m.descripcion_material, m.estado, m.cod_linea_proveedor, m.cod_forma_far, m.cod_empaque, 
 	m.cantidad_presentacion, m.principio_activo, m.cod_tipoventa, m.producto_controlado from material_apoyo m where m.codigo_material='$codProducto'";
-$respEdit=mysql_query($sqlEdit);
-while($datEdit=mysql_fetch_array($respEdit)){
+$respEdit=mysqli_query($enlaceCon,$sqlEdit);
+while($datEdit=mysqli_fetch_array($respEdit)){
 	$nombreProductoX=$datEdit[1];
 	$codLineaX=$datEdit[3];
 	$codFormaX=$datEdit[4];
@@ -77,10 +77,12 @@ while($datEdit=mysql_fetch_array($respEdit)){
 }
 
 $sqlPrecio="select p.`precio` from `precios` p where p.`cod_precio`=1 and p.`codigo_material`='$codProducto'";
-$respPrecio=mysql_query($sqlPrecio);
-$numFilas=mysql_num_rows($respPrecio);
+$respPrecio=mysqli_query($enlaceCon,$sqlPrecio);
+$numFilas=mysqli_num_rows($respPrecio);
 if($numFilas>=1){
-	$precio1=mysql_result($respPrecio,0,0);
+	$datPrecio=mysqli_fetch_array($respPrecio);
+	$precio1=$datPrecio[0];
+	//$precio1=mysql_result($respPrecio,0,0);
 	$precio1=redondear2($precio1);
 }else{
 	$precio1=0;
@@ -105,13 +107,13 @@ echo "<td align='left'>
 echo "<tr><th align='left'>Linea</th>";
 $sql1="select pl.cod_linea_proveedor, CONCAT(p.nombre_proveedor,' - ',pl.nombre_linea_proveedor) from proveedores p, proveedores_lineas pl 
 where p.cod_proveedor=pl.cod_proveedor and pl.estado=1 order by 2;";
-$resp1=mysql_query($sql1);
+$resp1=mysqli_query($enlaceCon,$sql1);
 echo "<td>
 <div class='container'>
 		<div class='col-md-4'>
 		<select name='codLinea' id='codLinea' class='tokenize-limit-demo2'>
 		<option value=''></option>";
-		while($dat1=mysql_fetch_array($resp1))
+		while($dat1=mysqli_fetch_array($resp1))
 		{	$codLinea=$dat1[0];
 			$nombreLinea=$dat1[1];
 			if($codLinea==$codLineaX){
@@ -129,13 +131,13 @@ echo "</tr>";
 echo "<tr><th>Forma Farmaceutica</th>";
 $sql1="select f.cod_forma_far, f.nombre_forma_far from formas_farmaceuticas f 
 where f.estado=1 order by 2;";
-$resp1=mysql_query($sql1);
+$resp1=mysqli_query($enlaceCon,$sql1);
 echo "<td>
 <div class='container'>
 		<div class='col-md-4'>
 			<select name='codForma' id='codForma' class='tokenize-limit-demo2'>
 			<option value=''></option>";
-			while($dat1=mysql_fetch_array($resp1))
+			while($dat1=mysqli_fetch_array($resp1))
 			{	$codForma=$dat1[0];
 				$nombreForma=$dat1[1];
 				if($codForma==$codFormaX){
@@ -152,13 +154,13 @@ echo "</tr>";
 
 echo "<tr><th>Empaque</th>";
 $sql1="select e.cod_empaque, e.nombre_empaque from empaques e where e.estado=1 order by 2;";
-$resp1=mysql_query($sql1);
+$resp1=mysqli_query($enlaceCon,$sql1);
 echo "<td>
 	<div class='container'>
 		<div class='col-md-4'>
 			<select name='codEmpaque' id='codEmpaque' class='tokenize-limit-demo2'>
 				<option value=''></option>";
-			while($dat1=mysql_fetch_array($resp1))
+			while($dat1=mysqli_fetch_array($resp1))
 			{	$codEmpaque=$dat1[0];
 				$nombreEmpaque=$dat1[1];
 				if($codEmpaque==$codEmpaqueX){
@@ -183,13 +185,13 @@ echo "<tr><th>Principio Activo</th>
 
 echo "<tr><th>Tipo Venta</th>";
 $sql1="select t.cod_tipoventa, t.nombre_tipoventa from tipos_venta t where t.estado=1;";
-$resp1=mysql_query($sql1);
+$resp1=mysqli_query($enlaceCon,$sql1);
 echo "<td>
 	<div class='container'>
 		<div class='col-md-4'>
 			<select name='codTipoVenta' id='codTipoVenta' class='tokenize-limit-demo2'>
 			<option value=''></option>";
-			while($dat1=mysql_fetch_array($resp1))
+			while($dat1=mysqli_fetch_array($resp1))
 			{	$codTipoVenta=$dat1[0];
 				$nombreTipoVenta=$dat1[1];
 				if($codTipoVenta==$codTipoVentaX){
@@ -207,19 +209,21 @@ echo "</tr>";
 
 echo "<tr><th>Accion Terapeutica</th>";
 $sql1="select l.cod_accionterapeutica as value, l.nombre_accionterapeutica as texto from acciones_terapeuticas l;";
-$resp1=mysql_query($sql1);
+$resp1=mysqli_query($enlaceCon,$sql1);
 echo "<td>
 	<div class='container'>
 		<div class='col-md-6'>
 			<select name='codAccionTerapeutica' id='codAccionTerapeutica' class='tokenize-sample-demo1' multiple>
 			<option value=''></option>";
-			while($dat1=mysql_fetch_array($resp1))
+			while($dat1=mysqli_fetch_array($resp1))
 			{	$codigo=$dat1[0];
 				$nombre=$dat1[1];
 				$sqlRevisa="select count(*) from material_accionterapeutica m where m.cod_accionterapeutica='$codigo' and 
 				m.codigo_material='$codProducto'";
-				$respRevisa=mysql_query($sqlRevisa);
-				$numRevisa=mysql_result($respRevisa,0,0);
+				$respRevisa=mysqli_query($enlaceCon,$sqlRevisa);
+				$datRevisa=mysqli_fetch_array($respRevisa);
+				$numRevisa=$datRevisa[0];
+				//$numRevisa=mysql_result($respRevisa,0,0);
 				if($numRevisa>0){
 					echo "<option value='$codigo' selected>$nombre</option>";
 				}else{

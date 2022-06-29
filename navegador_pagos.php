@@ -75,7 +75,7 @@ function anular_ingreso(f)
     <body>
 <?php
 
-require("conexion.inc");
+require("conexionmysqli.php");
 require('function_formatofecha.php');
 require("estilos_almacenes.inc");
 require('home_almacen.php');
@@ -97,9 +97,9 @@ echo "<table border='1' cellspacing='0' class='textomini'><tr><th>Leyenda:</th><
 	(select pr.nombre_proveedor from proveedores pr where pr.cod_proveedor=p.cod_proveedor), p.cod_estado 
 	from pagos_oc p order by cod_pago desc";
 	
-	$resp = mysql_query($consulta);
+	$resp = mysqli_query($enlaceCon,$consulta);
 
-	while ($dat = mysql_fetch_array($resp)) {
+	while ($dat = mysqli_fetch_array($resp)) {
 		$codPago = $dat[0];
 		$fechaPago= $dat[1];
 		$nroDoc=$dat[2];

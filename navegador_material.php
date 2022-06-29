@@ -70,7 +70,7 @@ echo "<script language='Javascript'>
 		}
 		</script>";
 		
-	require("conexion.inc");
+	require("conexionmysqli.php");
 	require('estilos.inc');
 	
 	echo "<h1>Registro de Producto</h1>";
@@ -93,8 +93,8 @@ echo "<script language='Javascript'>
 		where m.estado='0' order by m.descripcion_material";
 	}
 	
-	echo $sql;
-	$resp=mysql_query($sql);
+	//echo $sql;
+	$resp=mysqli_query($enlaceCon,$sql);
 	
 	echo "<table align='center' class='texto'><tr><th>Ver Productos:</th>
 	<th><select name='vista' class='texto' onChange='cambiar_vista(this, this.form)'>";
@@ -118,7 +118,7 @@ echo "<script language='Javascript'>
 		<th>Accion Terapeutica</th></tr>";
 	
 	$indice_tabla=1;
-	while($dat=mysql_fetch_array($resp))
+	while($dat=mysqli_fetch_array($resp))
 	{
 		$codigo=$dat[0];
 		$nombreProd=$dat[1];
@@ -134,8 +134,9 @@ echo "<script language='Javascript'>
 		$sqlAccion="select a.nombre_accionterapeutica from acciones_terapeuticas a, material_accionterapeutica m
 			where m.cod_accionterapeutica=a.cod_accionterapeutica and 
 			m.codigo_material='$codigo'";
-		$respAccion=mysql_query($sqlAccion);
-		while($datAccion=mysql_fetch_array($respAccion)){
+		$respAccion=mysqli_query($enlaceCon,$sqlAccion);
+		while($datAccion=mysqli_fetch_array($respAccion)){
+		//while($datAccion=i($respAccion)){
 			$nombreAccionTerX=$datAccion[0];
 			$txtAccionTerapeutica=$txtAccionTerapeutica." - ".$nombreAccionTerX;
 		}

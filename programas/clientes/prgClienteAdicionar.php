@@ -1,6 +1,6 @@
 <?php
 
-require("../../conexion.inc");
+require("../../conexionmysqli.php");
 
 $nomCli = $_GET["nomcli"];
 $nit = $_GET["nit"];
@@ -23,7 +23,7 @@ $consulta="
 INSERT INTO clientes (cod_cliente, nombre_cliente, nit_cliente, dir_cliente, telf1_cliente, email_cliente, cod_area_empresa, nombre_factura, cod_tipo_precio)
 VALUES ( (SELECT ifnull(max(c.cod_cliente),0)+1 FROM clientes c) , '$nomCli', '$nit', '$dir', '$tel1', '$mail', $area, '$fact', '$tipoPrecio')
 ";
-$resp=mysql_query($consulta);
+$resp=mysqli_query($enlaceCon,$consulta);
 if($resp) {
     echo "<script type='text/javascript' language='javascript'>alert('Se ha adicionado un nuevo cliente.');listadoClientes();</script>";
 } else {

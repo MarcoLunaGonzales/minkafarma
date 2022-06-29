@@ -4,7 +4,7 @@
 <tr>
 <th>Producto</th><th>Linea</th><th>Principio Activo</th><th>Accion Terapeutica</th><th>Stock</th><th>Precio</th></tr>
 <?php
-require("conexion.inc");
+require("conexionmysqli.php");
 require("funciones.php");
 
 $codTipo=$_GET['codTipo'];
@@ -19,8 +19,9 @@ $fechaActual=date("Y-m-d");
 
 //SACAMOS LA CONFIGURACION PARA LA SALIDA POR VENCIMIENTO
 $sqlConf="select valor_configuracion from configuraciones where id_configuracion=5";
-$respConf=mysql_query($sqlConf);
-$tipoSalidaVencimiento=mysql_result($respConf,0,0);
+$respConf=mysqli_query($enlaceCon,$sqlConf);
+$datConf=mysqli_fetch_array($respConf);
+$tipoSalidaVencimiento=$datConf[0];//$tipoSalidaVencimiento=mysql_result($respConf,0,0);
 
 	$sql="select m.codigo_material, m.descripcion_material,
 	(select concat(p.nombre_proveedor,' ',pl.abreviatura_linea_proveedor)
@@ -51,11 +52,11 @@ $tipoSalidaVencimiento=mysql_result($respConf,0,0);
 	
 	//echo $sql;
 	
-	$resp=mysql_query($sql);
+	$resp=mysqli_query($enlaceCon,$sql);
 
-	$numFilas=mysql_num_rows($resp);
+	$numFilas=mysqli_num_rows($resp);
 	if($numFilas>0){
-		while($dat=mysql_fetch_array($resp)){
+		while($dat=mysqli_fetch_array($resp)){
 			$codigo=$dat[0];
 			$nombre=$dat[1];
 			$linea=$dat[2];
@@ -65,16 +66,16 @@ $tipoSalidaVencimiento=mysql_result($respConf,0,0);
 			$nombre=addslashes($nombre);
 			
 			if($tipoSalida==$tipoSalidaVencimiento){
-				$stockProducto=stockProductoVencido($globalAlmacen, $codigo);
+				$stockProducto=stockProductoVencido($enlaceCon,$globalAlmacen, $codigo);
 			}else{
-				$stockProducto=stockProducto($globalAlmacen, $codigo);
+				$stockProducto=stockProducto($enlaceCon,$globalAlmacen, $codigo);
 			}
 			
-			$ubicacionProducto=ubicacionProducto($globalAlmacen, $codigo);
+			$ubicacionProducto=ubicacionProducto($enlaceCon,$globalAlmacen, $codigo);
 			
 			$consulta="select p.`precio` from precios p where p.`codigo_material`='$codigo' and p.`cod_precio`='1'";
-			$rs=mysql_query($consulta);
-			$registro=mysql_fetch_array($rs);
+			$rs=mysqli_query($enlaceCon,$consulta);
+			$registro=mysqli_fetch_array($rs);
 			$precioProducto=$registro[0];
 			if($precioProducto=="")
 			{   $precioProducto=0;

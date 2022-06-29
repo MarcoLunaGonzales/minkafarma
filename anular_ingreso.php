@@ -1,9 +1,9 @@
 <?php
-require("conexion.inc");
+require("conexionmysqli.php");
 require("funciones.php");
 
 $sql="update ingreso_almacenes set ingreso_anulado=1 where cod_ingreso_almacen='$codigo_registro'";
-$resp=mysql_query($sql);
+$resp=mysqli_query($enlaceCon,$sql);
 
 //SACAMOS LA VARIABLE PARA ENVIAR EL CORREO O NO SI ES 1 ENVIAMOS CORREO DESPUES DE LA TRANSACCION
 $banderaCorreo=obtenerValorConfiguracion(8);

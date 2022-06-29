@@ -1,5 +1,5 @@
 <?php
-require("conexion.inc");
+require("conexionmysqli.php");
 require("estilos.inc");
 
 //recogemos variables
@@ -16,25 +16,31 @@ $precioProducto=$_POST['precio_producto'];
 
 
 $sql="select IFNULL((max(codigo_material)+1),1) as codigo  from material_apoyo m";
-$resp=mysql_query($sql);
-$codigo=mysql_result($resp,0,0);
+$resp=mysqli_query($enlaceCon,$sql);
+$dat=mysqli_fetch_array($resp);
+$codigo=$dat[0];
+//echo $codigo;
+//$codigo=mysql_result($resp,0,0);
 
 $sql_inserta="insert into material_apoyo(codigo_material, descripcion_material, estado, cod_linea_proveedor, cod_forma_far, cod_empaque,
 cantidad_presentacion, principio_activo, cod_tipoventa, producto_controlado) values ($codigo,'$nombreProducto','1','$codLinea','$codForma','$codEmpaque',
 '$cantidadPresentacion','$principioActivo','$codTipoVenta','$productoControlado')";
-$resp_inserta=mysql_query($sql_inserta);
+//echo $sql_inserta;
+$resp_inserta=mysqli_query($enlaceCon,$sql_inserta);
 
 $vectorAccionTer=explode(",",$arrayAccionTerapeutica);
 $n=sizeof($vectorAccionTer);
+//echo $n;
 for($i=0;$i<$n;$i++){
 	$sql="insert into material_accionterapeutica (codigo_material, cod_accionterapeutica) values('$codigo','$vectorAccionTer[$i]')";
-	$resp=mysql_query($sql);
+	//echo $sql."<br>";
+	$resp=mysqli_query($enlaceCon,$sql);
 }
 
 $sqlDel="delete from precios where codigo_material=$codigo";
-$respDel=mysql_query($sqlDel);
+$respDel=mysqli_query($enlaceCon,$sqlDel);
 $sqlInsertPrecio="insert into precios values('$codigo', 1,'$precioProducto')";
-$respInsertPrecio=mysql_query($sqlInsertPrecio);
+$respInsertPrecio=mysqli_query($enlaceCon,$sqlInsertPrecio);
 
 
 if($resp_inserta){

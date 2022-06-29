@@ -1,5 +1,6 @@
 <?php
 ini_set('post_max_size','100M');
+require('conexionmysqli.php');
 ?>
 
 <script language='Javascript'>
@@ -166,10 +167,8 @@ function enviar(f){
 	f.submit();
 }
 </script>
-
 <?php
-
-	require("conexion.inc");
+	
 	require("estilos.inc");
 	require("funciones.php");
 	require("funcion_nombres.php");
@@ -206,10 +205,11 @@ function enviar(f){
 
 
 	//echo $sql;
-	
-	$resp=mysql_query($sql);
-	echo "<h1>Registro y Edición de Precios  $nombreLineaProveedorX</h1>";
-	
+
+	$resp=mysqli_query($enlaceCon,$sql);
+
+
+	echo "<h1>Registro y Edición de Precios  $nombreLineaProveedorX</h1>";	
 	echo "<center><table class='texto' id='main'>";
 	echo "<tr><th>Material</th>
 	<th>Precio Normal</th>
@@ -222,7 +222,7 @@ function enviar(f){
 	<th>-</th>
 	</tr>";
 	$indice=1;
-	while($dat=mysql_fetch_array($resp))
+	while($dat=mysqli_fetch_array($resp))
 	{
 		$codigo=$dat[0];
 		$nombreMaterial=$dat[1];
@@ -230,10 +230,13 @@ function enviar(f){
 
 
 		$sqlPrecio="select p.`precio` from `precios` p where p.`cod_precio`=1 and p.`codigo_material`=$codigo";
-		$respPrecio=mysql_query($sqlPrecio);
-		$numFilas=mysql_num_rows($respPrecio);
+		$respPrecio=mysqli_query($enlaceCon,$sqlPrecio);
+		$numFilas=mysqli_num_rows($respPrecio);
 		if($numFilas==1){
-			$precio1=mysql_result($respPrecio,0,0);
+			
+			$datPrecio=mysqli_fetch_array($respPrecio);
+			$precio1=$datPrecio[0];
+			//$precio1=mysql_result($respPrecio,0,0);
 			$precio1=redondear2($precio1);
 		}else{
 			$precio1=0;
@@ -241,10 +244,12 @@ function enviar(f){
 		}
 
 		$sqlPrecio="select p.`precio` from `precios` p where p.`cod_precio`=2 and p.`codigo_material`=$codigo";
-		$respPrecio=mysql_query($sqlPrecio);
-		$numFilas=mysql_num_rows($respPrecio);
+		$respPrecio=mysqli_query($enlaceCon,$sqlPrecio);
+		$numFilas=mysqli_num_rows($respPrecio);
 		if($numFilas==1){
-			$precio2=mysql_result($respPrecio,0,0);
+			$datPrecio=mysqli_fetch_array($respPrecio);
+			$precio2=$datPrecio[0];
+			//$precio2=mysql_result($respPrecio,0,0);
 			$precio2=redondear2($precio2);
 		}else{
 			$precio2=0;
@@ -252,10 +257,12 @@ function enviar(f){
 		}
 
 		$sqlPrecio="select p.`precio` from `precios` p where p.`cod_precio`=3 and p.`codigo_material`=$codigo";
-		$respPrecio=mysql_query($sqlPrecio);
-		$numFilas=mysql_num_rows($respPrecio);
+		$respPrecio=mysqli_query($enlaceCon,$sqlPrecio);
+		$numFilas=mysqli_num_rows($respPrecio);
 		if($numFilas==1){
-			$precio3=mysql_result($respPrecio,0,0);
+			$datPrecio=mysqli_fetch_array($respPrecio);
+			$precio3=$datPrecio[0];
+			//$precio3=mysql_result($respPrecio,0,0);
 			$precio3=redondear2($precio3);
 		}else{
 			$precio3=0;
@@ -263,10 +270,12 @@ function enviar(f){
 		}
 
 		$sqlPrecio="select p.`precio` from `precios` p where p.`cod_precio`=4 and p.`codigo_material`=$codigo";
-		$respPrecio=mysql_query($sqlPrecio);
-		$numFilas=mysql_num_rows($respPrecio);
+		$respPrecio=mysqli_query($enlaceCon,$sqlPrecio);
+		$numFilas=mysqli_num_rows($respPrecio);
 		if($numFilas==1){
-			$precio4=mysql_result($respPrecio,0,0);
+			$datPrecio=mysqli_fetch_array($respPrecio);
+			$precio4=$datPrecio[0];
+			//$precio4=mysqli_result($respPrecio,0,0);
 			$precio4=redondear2($precio4);
 		}else{
 			$precio4=0;
@@ -276,22 +285,27 @@ function enviar(f){
 		$sqlUltimaCompra="select id.precio_neto from ingreso_almacenes i, ingreso_detalle_almacenes id
 			where id.cod_ingreso_almacen=i.cod_ingreso_almacen and i.ingreso_anulado=0 and 
 		i.cod_almacen='$globalAlmacen' and id.cod_material='$codigo' order by i.fecha desc limit 0,1";
-		$respUltimaCompra=mysql_query($sqlUltimaCompra);
-		$numFilasUltimaCompra=mysql_num_rows($respUltimaCompra);
+		$respUltimaCompra=mysqli_query($enlaceCon,$sqlUltimaCompra);
+		$numFilasUltimaCompra=mysqli_num_rows($respUltimaCompra);
 		$precioBase=0;
 		if($numFilasUltimaCompra>0){
-			$precioBase=mysql_result($respUltimaCompra,0,0);
+			$datUltimaCompra=mysqli_fetch_array($respUltimaCompra);
+			$precioBase=$datUltimaCompra[0];
+			//$precioBase=mysql_result($respUltimaCompra,0,0);
 		}
 		$precioBase=redondear2($precioBase);
 		
 		$sqlMargen="select p.margen_precio from material_apoyo m, proveedores_lineas p
 			where m.cod_linea_proveedor=p.cod_linea_proveedor and m.codigo_material='$codigo'";
-		$respMargen=mysql_query($sqlMargen);
-		$numFilasMargen=mysql_num_rows($respMargen);
+		$respMargen=mysqli_query($enlaceCon,$sqlMargen);
+		$numFilasMargen=mysqli_num_rows($respMargen);
 		$porcentajeMargen=0;
 
 		if($numFilasMargen>0){
-			$porcentajeMargen=mysql_result($respMargen,0,0);			
+			$datMargen=mysqli_fetch_array($respMargen);
+			$porcentajeMargen=$datMargen[0];
+
+			//$porcentajeMargen=mysql_result($respMargen,0,0);			
 		}
 		
 		$precioConMargen=$precioBase+($precioBase*($porcentajeMargen/100));

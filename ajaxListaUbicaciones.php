@@ -1,5 +1,5 @@
 <?php
-	require("conexion.inc");
+	require("conexionmysqli.php");
 	require("estilos.inc");
 	require("funciones.php");
 
@@ -22,7 +22,7 @@
 	}
 	$sql.=" order by 3,2";	
 	
-	$resp1=mysql_query($sql);
+	$resp1=mysqli_query($enlaceCon,$sql);
 	
 	echo "<center><table class='texto' id='main'>";
 
@@ -33,7 +33,7 @@
 	echo "</tr>";
 	
 	$indice=1;
-	while($dat=mysql_fetch_array($resp1))
+	while($dat=mysqli_fetch_array($resp1))
 	{
 		$codigo=$dat[0];
 		$nombreMaterial=$dat[1];
@@ -50,11 +50,11 @@
 		echo "<input type='hidden' name='item_$indice' id='item_$indice' value='$codigo'>";
 		echo "<input type='hidden' name='ingreso_$indice' id='ingreso_$indice' value='$codIngreso'>";
 		$sqlE="select codigo, nombre from ubicaciones_estantes where cod_estado=1";
-		$respE=mysql_query($sqlE);
+		$respE=mysqli_query($enlaceCon,$sqlE);
 		echo "<td align='center'>
 		<select name='estante_$indice' id='estante_$indice'>";
-		$respE=mysql_query($sqlE);
-			while($datE=mysql_fetch_array($respE)){
+		$respE=mysqli_query($enlaceCon,$sqlE);
+			while($datE=mysqli_fetch_array($respE)){
 				if($datE[0]==$codEstante){
 					echo "<option value='$datE[0]' selected>$datE[1]</option>";					
 				}else{
@@ -64,11 +64,11 @@
 		echo "</select></td>";
 		
 		$sqlU="select codigo, nombre from ubicaciones_filas where cod_estado=1";
-		$respU=mysql_query($sqlU);
+		$respU=mysqli_query($enlaceCon,$sqlU);
 		echo "<td align='center'>		
 		<select name='fila_$indice' id='fila_$indice'>";
-		$respU=mysql_query($sqlU);
-		while($datU=mysql_fetch_array($respU)){
+		$respU=mysqli_query($enlaceCon,$sqlU);
+		while($datU=mysqli_fetch_array($respU)){
 			if($datU[0]==$codFila){
 				echo "<option value='$datU[0]' selected>$datU[1]</option>";				
 			}else{

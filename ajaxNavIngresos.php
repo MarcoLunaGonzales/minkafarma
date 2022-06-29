@@ -1,5 +1,5 @@
 <?php
-require("conexion.inc");
+require("conexionmysqli.php");
 require("funciones.php");
 
 $fechaIniBusqueda=$_GET['fechaIniBusqueda'];
@@ -36,9 +36,9 @@ if($provBusqueda!=0){
 $consulta = $consulta."ORDER BY i.nro_correlativo DESC";
 
 //
-$resp = mysql_query($consulta);
+$resp = mysqli_query($enlaceCon,$consulta);
 	
-while ($dat = mysql_fetch_array($resp)) {
+while ($dat = mysqli_fetch_array($resp)) {
     $codigo = $dat[0];
     $fecha_ingreso = $dat[1];
     $fecha_ingreso_mostrar = "$fecha_ingreso[8]$fecha_ingreso[9]-$fecha_ingreso[5]$fecha_ingreso[6]-$fecha_ingreso[0]$fecha_ingreso[1]$fecha_ingreso[2]$fecha_ingreso[3]";
@@ -56,8 +56,8 @@ while ($dat = mysql_fetch_array($resp)) {
     echo "<input type='hidden' name='fecha_ingreso$nro_correlativo' value='$fecha_ingreso_mostrar'>";
     $sql_verifica_movimiento = "select s.cod_salida_almacenes from salida_almacenes s, salida_detalle_ingreso sdi
                 where s.cod_salida_almacenes=sdi.cod_salida_almacen and s.salida_anulada=0 and sdi.cod_ingreso_almacen='$codigo'";
-    $resp_verifica_movimiento = mysql_query($sql_verifica_movimiento);
-    $num_filas_movimiento = mysql_num_rows($resp_verifica_movimiento);
+    $resp_verifica_movimiento = mysqli_query($enlaceCon,$sql_verifica_movimiento);
+    $num_filas_movimiento = mysqli_num_rows($resp_verifica_movimiento);
     if ($num_filas_movimiento != 0) {
         $color_fondo = "#ffff99";
         $chkbox = "<input type='checkbox' name='codigo' value='$codigo'>";

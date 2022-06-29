@@ -1,5 +1,5 @@
 <?php	
-	require("conexion.inc");
+	require("conexionmysqli.php");
 	require('estilos.inc');
 	require('funciones.php');
 	
@@ -17,7 +17,7 @@
 		from material_apoyo m
 		where m.estado='1' and cod_linea_proveedor=$lineaDistribuidor order by m.descripcion_material";	
 	//echo $sql;
-	$resp=mysql_query($sql);
+	$resp=mysqli_query($enlaceCon,$sql);
 	
 	echo "</th></tr></table><br>";
 		
@@ -27,7 +27,7 @@
 		<th>Accion Terapeutica</th><th>Stock</th><th>&nbsp;</th></tr>";
 	
 	$indice_tabla=1;
-	while($dat=mysql_fetch_array($resp))
+	while($dat=mysqli_fetch_array($resp))
 	{
 		$codigo=$dat[0];
 		$nombreProd=$dat[1];
@@ -39,7 +39,7 @@
 		$cantPresentacion=$dat[7];
 		$principioActivo=$dat[8];
 		
-		$stockProducto=stockProducto($globalAlmacen, $codigo);
+		$stockProducto=stockProducto($enlaceCon,$globalAlmacen, $codigo);
 		if($stockProducto>0){
 			$stockProducto="<b class='textograndenegro' style='color:#C70039'>".$stockProducto."</b>";
 		}
@@ -48,8 +48,8 @@
 		$sqlAccion="select a.nombre_accionterapeutica from acciones_terapeuticas a, material_accionterapeutica m
 			where m.cod_accionterapeutica=a.cod_accionterapeutica and 
 			m.codigo_material='$codigo'";
-		$respAccion=mysql_query($sqlAccion);
-		while($datAccion=mysql_fetch_array($respAccion)){
+		$respAccion=mysqli_query($enlaceCon,$sqlAccion);
+		while($datAccion=mysqli_fetch_array($respAccion)){
 			$nombreAccionTerX=$datAccion[0];
 			$txtAccionTerapeutica=$txtAccionTerapeutica." - ".$nombreAccionTerX;
 		}

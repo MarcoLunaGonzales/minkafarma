@@ -1,6 +1,6 @@
 <?php
 
-require("../../conexion.inc");
+require("../../conexionmysqli.php");
 require("../../estilos_almacenes.inc");
 
 
@@ -23,9 +23,9 @@ $consulta="
     FROM clientes AS c INNER JOIN ciudades AS a ON c.cod_area_empresa = a.cod_ciudad 
     WHERE 1 = 1 ORDER BY c.nombre_cliente ASC
 ";
-$rs=mysql_query($consulta);
+$rs=mysqli_query($enlaceCon,$consulta);
 $cont=0;
-while($reg=mysql_fetch_array($rs))
+while($reg=mysqli_fetch_array($rs))
    {$cont++;
     $codCliente = $reg["cod_cliente"];
     $nomCliente = $reg["nombre_cliente"];

@@ -70,7 +70,11 @@ echo "<script language='Javascript'>
 		}
 		</script>";
 		
+<<<<<<< HEAD
+	require("conexionmysqli.php");
+=======
 	require("conexion.inc");
+>>>>>>> 8e4f4cb4a65b3bfc4b209513cef4f0b5f2c2ad51
 	require('estilos.inc');
 	
 	echo "<h1>Registro de Producto</h1>";
@@ -94,7 +98,11 @@ echo "<script language='Javascript'>
 	}
 	
 	//echo $sql;
+<<<<<<< HEAD
+	$resp=mysqli_query($enlaceCon,$sql);
+=======
 	$resp=mysql_query($sql);
+>>>>>>> 8e4f4cb4a65b3bfc4b209513cef4f0b5f2c2ad51
 	
 	echo "<table align='center' class='texto'><tr><th>Ver Productos:</th>
 	<th><select name='vista' class='texto' onChange='cambiar_vista(this, this.form)'>";
@@ -118,7 +126,11 @@ echo "<script language='Javascript'>
 		<th>Accion Terapeutica</th></tr>";
 	
 	$indice_tabla=1;
+<<<<<<< HEAD
+	while($dat=mysqli_fetch_array($resp))
+=======
 	while($dat=mysql_fetch_array($resp))
+>>>>>>> 8e4f4cb4a65b3bfc4b209513cef4f0b5f2c2ad51
 	{
 		$codigo=$dat[0];
 		$nombreProd=$dat[1];
@@ -134,8 +146,14 @@ echo "<script language='Javascript'>
 		$sqlAccion="select a.nombre_accionterapeutica from acciones_terapeuticas a, material_accionterapeutica m
 			where m.cod_accionterapeutica=a.cod_accionterapeutica and 
 			m.codigo_material='$codigo'";
+<<<<<<< HEAD
+		$respAccion=mysqli_query($enlaceCon,$sqlAccion);
+		while($datAccion=mysqli_fetch_array($respAccion)){
+		//while($datAccion=i($respAccion)){
+=======
 		$respAccion=mysql_query($sqlAccion);
 		while($datAccion=mysql_fetch_array($respAccion)){
+>>>>>>> 8e4f4cb4a65b3bfc4b209513cef4f0b5f2c2ad51
 			$nombreAccionTerX=$datAccion[0];
 			$txtAccionTerapeutica=$txtAccionTerapeutica." - ".$nombreAccionTerX;
 		}

@@ -20,10 +20,10 @@ echo "<script language='Javascript'>
 		f.submit();
 	}
 	</script>";
-require("conexion.inc");
+require("conexionmysqli.php");
 require("estilos.inc");
-	$sql_cab=mysql_query("select paterno, materno, nombres from funcionarios where codigo_funcionario='$codigo_funcionario'");
-	$dat_cab=mysql_fetch_array($sql_cab);
+	$sql_cab=mysqli_query($enlaceCon,"select paterno, materno, nombres from funcionarios where codigo_funcionario='$codigo_funcionario'");
+	$dat_cab=mysqli_fetch_array($sql_cab);
 	$nombre_funcionario="$dat_cab[2] $dat_cab[0] $dat_cab[1]";
 echo "<form action='guarda_alta_sistema.php' method='get'>";
 echo "<h1>Alta en Sistema<br>Funcionario: $nombre_funcionario</h1>";

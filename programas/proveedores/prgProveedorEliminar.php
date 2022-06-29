@@ -1,10 +1,10 @@
 <?php
 
-require("../../conexion.inc");
+require("../../conexionmysqli.php");
 
 $codPro = $_GET["codpro"];
 $consulta="DELETE FROM proveedores WHERE cod_proveedor in ($codPro) ";
-$resp=mysql_query($consulta);
+$resp=mysqli_query($enlaceCon,$consulta);
 if($resp) {
     echo "<script type='text/javascript' language='javascript'>alert('Se ha eliminado el proveedor.');listadoProveedores();</script>";
 } else {

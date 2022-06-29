@@ -66,13 +66,13 @@
 <form>
 <?php
 
-require("../../conexion.inc");
+require("../../conexionmysqli.php");
 require("../../estilos_almacenes.inc");
 require("../../funcion_nombres.php");
 echo "<link rel='stylesheet' type='text/css' href='../../stilos.css'/>";
 
 $codProveedor=$_GET['codProveedor'];
-$nombreProveedor=nombreProveedor($codProveedor);
+$nombreProveedor=nombreProveedor($enlaceCon,$codProveedor,$enlaceCon);
 
 echo "<center>";
 echo "<h1>Lineas de Distribuidor <br> $nombreProveedor</h1>";
@@ -86,11 +86,12 @@ $consulta="select p.cod_linea_proveedor, p.nombre_linea_proveedor, p.abreviatura
 	p.contacto2, (select t.nombre_procedencia from tipos_procedencia t where t.cod_procedencia=p.cod_procedencia), 
 	margen_precio
 	from proveedores_lineas p where p.cod_proveedor=$codProveedor and estado=1";
-//echo $consulta;
-$rs=mysql_query($consulta);
+
+
+$rs=mysqli_query($enlaceCon,$consulta);
 
 $cont=0;
-while($reg=mysql_fetch_array($rs)){
+while($reg=mysqli_fetch_array($rs)){
 	$cont++;
     $codLinea = $reg["cod_linea_proveedor"];
     $nombreLinea = $reg["nombre_linea_proveedor"];

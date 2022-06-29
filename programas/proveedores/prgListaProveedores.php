@@ -1,6 +1,6 @@
 <?php
 
-require("../../conexion.inc");
+require("../../conexionmysqli.php");
 require("../../estilos_almacenes.inc");
 
 echo "<center>";
@@ -15,9 +15,9 @@ $consulta="
     FROM proveedores AS p 
     WHERE 1 = 1 ORDER BY p.nombre_proveedor ASC
 ";
-$rs=mysql_query($consulta);
+$rs=mysqli_query($enlaceCon,$consulta);//se actualizo la conexion
 $cont=0;
-while($reg=mysql_fetch_array($rs))
+while($reg=mysqli_fetch_array($rs))
    {$cont++;
     $codProv = $reg["cod_proveedor"];
     $nomProv = $reg["nombre_proveedor"];
@@ -29,9 +29,9 @@ while($reg=mysql_fetch_array($rs))
 	$consultaDet="select p.nombre_linea_proveedor
 	from proveedores_lineas p where p.cod_proveedor=$codProv and estado=1 order by 1";
 	//echo $consultaDet;
-	$rsDet=mysql_query($consultaDet);
+	$rsDet=mysqli_query($enlaceCon,$consultaDet);
 	$txtLineas="";
-	while($regDet=mysql_fetch_array($rsDet)){
+	while($regDet=mysqli_fetch_array($rsDet)){
 		$txtLineas.="".$regDet[0].", ";
 	}
 	

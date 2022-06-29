@@ -263,15 +263,15 @@ function validar(f)
 		
 <?php
 echo "<body>";
-require("conexion.inc");
+require("conexionmysqli.php");
 require("estilos_almacenes.inc");
 if($fecha=="")
 {   $fecha=date("d/m/Y");
 }
 $sql="select nro_correlativo from salida_almacenes where cod_almacen='$global_almacen' order by cod_salida_almacenes desc";
-$resp=mysql_query($sql);
-$dat=mysql_fetch_array($resp);
-$num_filas=mysql_num_rows($resp);
+$resp=mysqli_query($enlaceCon,$sql);
+$dat=mysqli_fetch_array($resp);
+$num_filas=mysqli_num_rows($resp);
 if($num_filas==0)
 {   $codigo=1;
 }
@@ -291,8 +291,8 @@ else
 		<option value="0">--------</option>
 <?php
 	$sqlTipo="select cod_tiposalida, nombre_tiposalida from tipos_salida where cod_tiposalida<>1001 order by 2";
-	$respTipo=mysql_query($sqlTipo);
-	while($datTipo=mysql_fetch_array($respTipo)){
+	$respTipo=mysqli_query($enlaceCon,$sqlTipo);
+	while($datTipo=mysqli_fetch_array($respTipo)){
 		$codigo=$datTipo[0];
 		$nombre=$datTipo[1];
 ?>
@@ -321,8 +321,8 @@ else
 	<select name='almacen' id='almacen' class='texto'>
 <?php
 	$sql3="select cod_almacen, nombre_almacen from almacenes where cod_almacen<>'$global_almacen' order by nombre_almacen";
-	$resp3=mysql_query($sql3);
-	while($dat3=mysql_fetch_array($resp3)){
+	$resp3=mysqli_query($enlaceCon,$sql3);
+	while($dat3=mysqli_fetch_array($resp3)){
 		$cod_almacen=$dat3[0];
 		$nombre_almacen="$dat3[1] $dat3[2] $dat3[3]";
 ?>
@@ -390,9 +390,9 @@ echo "<script type='text/javascript' language='javascript'  src='dlcalendar.js'>
 			<?php
 			$sqlTipo="select pl.cod_linea_proveedor, CONCAT(p.nombre_proveedor,' - ',pl.nombre_linea_proveedor) from proveedores p, proveedores_lineas pl 
 			where p.cod_proveedor=pl.cod_proveedor and pl.estado=1 order by 2;";
-			$respTipo=mysql_query($sqlTipo);
+			$respTipo=mysqli_query($enlaceCon,$sqlTipo);
 			echo "<option value='0'>--</option>";
-			while($datTipo=mysql_fetch_array($respTipo)){
+			while($datTipo=mysqli_fetch_array($respTipo)){
 				$codTipoMat=$datTipo[0];
 				$nombreTipoMat=$datTipo[1];
 				echo "<option value=$codTipoMat>$nombreTipoMat</option>";

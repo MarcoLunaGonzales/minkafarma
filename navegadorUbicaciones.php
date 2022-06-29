@@ -1,4 +1,5 @@
 <?php
+require('conexionmysqli.php');
 ini_set('post_max_size','100M');
 ?>
 
@@ -159,7 +160,6 @@ function enviar(f){
 
 <?php
 
-	require("conexion.inc");
 	require("estilos.inc");
 	require("funciones.php");
 
@@ -178,9 +178,9 @@ function enviar(f){
 	
 	$sqlTipo="select pl.cod_linea_proveedor, CONCAT(p.nombre_proveedor,' - ',pl.nombre_linea_proveedor) from proveedores p, proveedores_lineas pl 
 	where p.cod_proveedor=pl.cod_proveedor and pl.estado=1 order by 2;";
-	$respTipo=mysql_query($sqlTipo);
+	$respTipo=mysqli_query($enlaceCon,$sqlTipo);
 	echo "<option value='0'>--</option>";
-	while($datTipo=mysql_fetch_array($respTipo)){
+	while($datTipo=mysqli_fetch_array($respTipo)){
 		$codTipoMat=$datTipo[0];
 		$nombreTipoMat=$datTipo[1];
 		echo "<option value=$codTipoMat>$nombreTipoMat</option>";

@@ -1,6 +1,6 @@
 
 <?php
-require("../../conexion.inc");
+require("../../conexionmysqli.php");
 require("../../funciones.php");
 
 $codigo=$_GET["codigo"];
@@ -9,7 +9,8 @@ $codigo=$_GET["codigo"];
 //
 $sqlFecha="select DAY(i.fecha), MONTH(i.fecha), YEAR(i.fecha), HOUR(i.hora_ingreso), MINUTE(i.hora_ingreso) 
 from ingreso_almacenes i where i.cod_ingreso_almacen=$codigo";
-$respFecha=mysql_query($sqlFecha);
+$respFecha=mysqli_query($enlaceCon,$sqlFecha);
+
 $dia=mysql_result($respFecha,0,0);
 $mes=mysql_result($respFecha,0,1);
 $ano=mysql_result($respFecha,0,2);

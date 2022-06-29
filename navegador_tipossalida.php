@@ -64,12 +64,12 @@ echo "<script language='Javascript'>
 			}
 		}
 		</script>";
-	require("conexion.inc");
+	require("conexionmysqli.php");
 	require("estilos_administracion.inc");
 
 	echo "<form method='post' action=''>";
 	$sql="select cod_tiposalida, nombre_tiposalida, obs_tiposalida, tipo_almacen from tipos_salida order by nombre_tiposalida";
-	$resp=mysql_query($sql);
+	$resp=mysqli_query($enlaceCon,$sql);
 	
 	echo "<h1>Registro de Tipos de Salida</h1>";
 	
@@ -81,7 +81,7 @@ echo "<script language='Javascript'>
 	
 	echo "<center><table class='texto'>";
 	echo "<tr><th>&nbsp;</th><th>Nombre de Tipo de Salida</th><th>Glosa</th><th>Tipo Almacen</th></tr>";
-	while($dat=mysql_fetch_array($resp))
+	while($dat=mysqli_fetch_array($resp))
 	{
 		$codigo=$dat[0];
 		$tipo_ingreso=$dat[1];

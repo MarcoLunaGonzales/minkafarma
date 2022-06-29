@@ -1,5 +1,5 @@
 <?php
-require("conexion.inc");
+require("conexionmysqli.php");
 require("estilos.inc");
 
 //recogemos variables
@@ -13,7 +13,7 @@ $fechaActual=date("Y-m-d");
 $sql_inserta="insert into dosificaciones(fecha_dosificacion, cod_sucursal, nro_autorizacion, llave_dosificacion, 
 fecha_limite_emision, cod_estado) values ('$fechaActual','$codSucursal','$nroAutorizacion','$llaveDosificacion','$fechaLimiteEmision','2')";
 //echo $sql_inserta;
-$resp_inserta=mysql_query($sql_inserta);
+$resp_inserta=mysqli_query($enlaceCon,$sql_inserta);
 
 if($resp_inserta){
 		echo "<script language='Javascript'>

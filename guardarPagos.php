@@ -1,5 +1,5 @@
 <?php
-require("conexion.inc");
+require("conexionmysqli.php");
 require("estilos_almacenes.inc");
 
 
@@ -14,9 +14,9 @@ $observaciones=$_POST["observaciones"];
 for($i=1;$i<=$nroFilas;$i++)
 {   	
 	$sql="SELECT cod_pago FROM pagos_oc ORDER BY cod_pago DESC";
-	$resp=mysql_query($sql);
-	$dat=mysql_fetch_array($resp);
-	$num_filas=mysql_num_rows($resp);
+	$resp=mysqli_query($enlaceCon,$sql);
+	$dat=mysqli_fetch_array($resp);
+	$num_filas=mysqli_num_rows($resp);
 	if($num_filas==0)
 	{   $codigo=1;
 	}
@@ -38,10 +38,10 @@ for($i=1;$i<=$nroFilas;$i++)
 			values ('$codigo', '$codOC', '$fecha', '$nroDoc', '$observaciones', '$montoPago', '$proveedor', 1)";
 	
 		//echo $sql_inserta;
-		$sql_inserta=mysql_query($sql_inserta);
+		$sql_inserta=mysqli_query($enlaceCon,$sql_inserta);
 		//actualizamos la tabla ordenes de compra
 		$sqlUpd="update orden_compra set monto_cancelado=monto_cancelado+$montoPago where cod_orden='$codOC'";
-		$respUpd=mysql_query($sqlUpd);
+		$respUpd=mysqli_query($enlaceCon,$sqlUpd);
 
 	}	
 	//echo $i;

@@ -20,12 +20,12 @@ echo "<script language='Javascript'>
 		f.submit();
 	}
 	</script>";
-require("conexion.inc");
+require("conexionmysqli.php");
 require("estilos_administracion.inc");
 	$txtCab="select f.paterno, f.materno, f.nombres from funcionarios f, usuarios_sistema u 
 		where f.codigo_funcionario='$codigo_funcionario' and f.codigo_funcionario=u.codigo_funcionario";
-	$sql_cab=mysql_query($txtCab);
-	$dat_cab=mysql_fetch_array($sql_cab);
+	$sql_cab=mysqli_query($enlaceCon,$txtCab);
+	$dat_cab=mysqli_fetch_array($sql_cab);
 	$nombre_funcionario="$dat_cab[2] $dat_cab[0] $dat_cab[1]";
 	
 echo "<form action='guarda_restablecer_contrasena.php' method='get'>";

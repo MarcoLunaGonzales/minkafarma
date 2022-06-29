@@ -7,7 +7,7 @@
 </script>
 
 <?php
-require("conexion.inc");
+require("conexionmysqli.php");
 require('estilos.inc');
 
 echo "<form action='guarda_dosificaciones.php' method='post' name='form1'>";
@@ -19,11 +19,11 @@ echo "<center><table class='texto'>";
 	
 echo "<tr><th>Sucursal</th>";
 $sql1="select cod_ciudad, descripcion from ciudades order by 2;";
-$resp1=mysql_query($sql1);
+$resp1=mysqli_query($enlaceCon,$sql1);
 echo "<td>
 			<select name='cod_sucursal' id='cod_sucursal' required>
 			<option value=''></option>";
-			while($dat1=mysql_fetch_array($resp1))
+			while($dat1=mysqli_fetch_array($resp1))
 			{	$codCiudad=$dat1[0];
 				$nombreCiudad=$dat1[1];
 				echo "<option value='$codCiudad'>$nombreCiudad</option>";

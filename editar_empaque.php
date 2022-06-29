@@ -1,12 +1,12 @@
 <?php
 
-require("conexion.inc");
+require("conexionmysqli.php");
 require("estilos.inc");
 
 $codigo_registro=$_GET["codigo_registro"];
 
-$sql=mysql_query("select cod_empaque, nombre_empaque from empaques where cod_empaque=$codigo_registro");
-$dat=mysql_fetch_array($sql);
+$sql=mysqli_query($enlaceCon,"select cod_empaque, nombre_empaque from empaques where cod_empaque=$codigo_registro");
+$dat=mysqli_fetch_array($sql);
 $nombre=$dat[1];
 
 echo "<form action='saveEditEmpaque.php' method='post'>";

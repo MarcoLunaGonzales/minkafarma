@@ -2,7 +2,7 @@
 
 ini_set('post_max_size','100M');
 
-require("conexion.inc");
+require("conexionmysqli.php");
 require("estilos.inc");
 
 

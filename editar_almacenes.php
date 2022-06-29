@@ -10,10 +10,10 @@ echo "<script language='Javascript'>
 		f.submit();
 	}
 	</script>";
-require("conexion.inc");
+require("conexionmysqli.php");
 require("estilos.inc");
-$sql=mysql_query("select * from almacenes where cod_almacen=$codigo_registro");
-$dat=mysql_fetch_array($sql);
+$sql=mysqli_query($enlaceCon,"select * from almacenes where cod_almacen=$codigo_registro");
+$dat=mysqli_fetch_array($sql);
 $ciudad=$dat[1];
 $nombre_almacen=$dat[2];
 $codigo_responsable=$dat[3];
@@ -25,9 +25,9 @@ echo "<tr><th>Nombre Almacen</th><th>Territorio</th><th>Responsable</th></tr>";
 echo "<input type='hidden' name='codigo' value='$codigo_registro'>";
 echo "<tr><td align='center'><input type='text' class='texto' name='nombre_almacen' value='$nombre_almacen' size='40' onKeyUp='javascript:this.value=this.value.toUpperCase();'></td>";
 $sql1="select * from ciudades order by descripcion";
-$resp1=mysql_query($sql1);
+$resp1=mysqli_query($enlaceCon,$sql1);
 echo "<td><select name='territorio' class='texto'>";
-while($dat1=mysql_fetch_array($resp1))
+while($dat1=mysqli_fetch_array($resp1))
 {	$cod_ciudad=$dat1[0];
 	$nombre_ciudad=$dat1[1];
 	if($cod_ciudad==$ciudad)
@@ -39,9 +39,9 @@ while($dat1=mysql_fetch_array($resp1))
 }
 echo "</select></td>";
 $sql2="select codigo_funcionario, paterno, materno, nombres from funcionarios where cod_cargo=1016 order by paterno, materno";
-$resp2=mysql_query($sql2);
+$resp2=mysqli_query($enlaceCon,$sql2);
 echo "<td><select name='responsable' class='texto'>";
-while($dat2=mysql_fetch_array($resp2))
+while($dat2=mysqli_fetch_array($resp2))
 {	$cod_funcionario=$dat2[0];
 	$nombre_funcionario="$dat2[1] $dat2[2] $dat2[3]";
 	if($cod_funcionario==$codigo_responsable)
