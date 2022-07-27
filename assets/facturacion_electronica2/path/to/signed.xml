@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+    <SignedInfo>
+      <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+      <SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
+      <Reference URI="">
+        <Transforms>
+          <Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+          <Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments"/>
+        </Transforms>
+        <DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+        <DigestValue>YzhiZjg2YWNjMmRlNzM5NzExMzc4ZWU5NjIyNDJmYmY2MjRjZGYwYmU3OTE3YjVhZDNjZDliMmI3Y2JhYTYyYg==</DigestValue>
+      </Reference>
+    </SignedInfo><SignatureValue/><KeyInfo/><Object/><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+  <ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+    <ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
+  <ds:Reference><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>a//GrUogC6Ca/TnCLzMoz39Pw2yi6CDwGBbdkOf5w5Y=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue>7Qe3LEo5b4h1CpgTaprSNG/0WDK8PQfwJl2j0+lRZ1GJsF8tDe6tF3moNcv/6xaWbVXbyj23vktsClLOc4qrz5FmTW/nvfVWNaNb+ahAiA+LQy6zaYV/KtGOyqx/Mne13oqjsQFWEBt668X2cDnRKVel5e/e9zqAFGKcr0T30Z7qlbSYrTl2KKSoifdoP2IY9vE5rnmH7lqDDRHiZ0uA6sMMmTUF894vCO3WyUzYlwYln3qRMJJcRgXaliwkzbjd8IBs5yLNhyshgVtiBhNZ9nOnao2jCqEhf3iOsiObudFb/M/cVq3fW8NRFaE8Zko1hBYBL5IqpoCxpQzHhyRj4g==</ds:SignatureValue>
+<ds:KeyInfo><ds:X509Data><ds:X509Certificate>-----BEGIN CERTIFICATE REQUEST-----
+MIIDVzCCAj8CAQAwggEQMRkwFwYDVQQDDBBGUkVDSU8gUk9EUklHVUVaMTAwLgYD
+VQQKDCdDT1JQT1JBQ0lPTiBCT0xJVklBTkEgREUgRkFSTUFDSUFTIFMuQS4xHDAa
+BgNVBAsME1JFUFJFU0VOVEFOVEUgTEVHQUwxHDAaBgNVBAwME1JFUFJFU0VOVEFO
+VEUgTEVHQUwxCzAJBgNVBAYTAkJPMQswCQYDVQQuEwJDSTEUMBIGBysGAQEBAQAM
+BzQ0MTU0OTExEjAQBgoJkiaJk/IsZAEsDAIyMDETMBEGA1UEBRMKMTAyMjAzOTAy
+NzEsMCoGCSqGSIb3DQEJARYdcmluZGFAZmFybWFjaWFzYm9saXZpYS5jb20uYm8w
+ggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDzYTB28L4rt+jvWs64UEA8
+v3G7eGNmzvHApD//9K1SkBFzt1aZO8XP/wej1aihB8mG8IKR0Vvom/9HyardBlZg
+uzAF3KPxJ7D/2qRaWciwjrVXtfn1hgl94fGOwFa6xmxZIPU29otS9FCvfDBs9LCm
+/bVm+ShM1g+N+3EpFDwNl1TulU1LqHNx00Sw+90eIDMJVroQnhsyalgExMDLaz+Z
+SQMre46ldEbi7pEDXR/sRlqLsqAxCkraCSYGiepky/0Sji8fbBBED/cb5dsDfDsM
+j/Kewxn+maBpwBZGDu4QVzmKoa4mB1Hq2bEFOO5Dk7aY7KludMGC68/lRRhrrdrB
+AgMBAAGgADANBgkqhkiG9w0BAQUFAAOCAQEAvwIlFx5AfeZlsf4z0xkcT8cxq/XF
+twP5JVgLvTGYrUBw7MW5v6mIDBWP4uSUt16AsqHnPaCflBdGa+0Oalo3lQyToMvS
+xGQK4rYDDdXrYgw3naxth57KYK/40WrqX5gbl0HbTR8R3fewZuwcyJThiWDkZhAm
+8Pz9BZhKgeeuJGKnInJpAQeAkfN/xhHwZWDKLi5Zzj47+kNhQ1Zy4+RAowQ5MXHi
+em4oXmzL2mLeO1WBsIKSar+zD/eWB98svjmzHhO+KsWzr5bhsvDA7Untgt8zzByd
+tMUGboHfbvcXz8U3Xsq54OpypsCZOLHuJnLavHtq0P5IvQF/AZG4Glo/fg==
+-----END CERTIFICATE REQUEST-----
+</ds:X509Certificate></ds:X509Data></ds:KeyInfo></ds:Signature></Signature>

@@ -1,0 +1,57 @@
+
+.div-center{
+        margin: 0 auto !important; /* Added */
+        float: none !important; /* Added */
+        margin-bottom: 10px !important; /* Added */
+}
+.bg-principal{
+    background: #16B490;
+    color:#fff;
+}
+.btn-warning{
+	background: #E8A900 !important;
+}
+body{background: #fff;} .filter-option{padding-top: 5px !important;padding-left: 5px !important;padding-right: 5px !important;}.dropdown-toggle::after{margin-right: -20px !important;}.modal-backdrop.show {opacity: .0;filter: alpha(opacity=0);}
+.div-loading{
+  padding-top: 400px;
+}
+.cargar{
+  position: fixed;
+  right:0px;
+  top:5px;
+  width: 200px;
+  height: 40px;
+  z-index: 9999;
+  background: url('../../imagenes/farmacias_bolivia_loop.gif') 50% 50% no-repeat;
+  background-size: 50% 100%;
+  opacity: .95;
+}
+.cargar-ajax{
+  position: fixed;
+  left:0px;
+  top:0px;
+  width: 100%;
+  height: 100vh;
+  z-index: 9999;
+  background: url('../../imagenes/loading3.gif') 50% 50% no-repeat rgba(255, 255, 255,0.9); 
+  opacity: .95;
+}
+
+.cargar-ajax div h4::before{
+  color: #2CEEBC !important;
+  font-weight: negrita;
+  content: "TuAdmin : ";
+}
+
+            .btn-info{
+              background:#00ac99 !important;
+            }
+            .btn-info:hover{
+              background:#e6992b !important;
+            }
+            .btn-warning{
+              background:#e6992b !important;
+            }
+            .btn-warning:hover{
+              background:#1d2a76 !important;
+            }

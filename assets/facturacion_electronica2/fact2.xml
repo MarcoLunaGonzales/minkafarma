@@ -1,0 +1,84 @@
+<facturaElectronicaCompraVenta xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="facturaElectronicaCompraVenta.xsd">
+  <cabecera>
+  	<nitEmisor>1022039027</nitEmisor>
+	<razonSocialEmisor>CORPORACION BOLIVIANA DE FARMACIAS S.A.</razonSocialEmisor>
+	<municipio>La Paz</municipio>
+	<telefono>2311190</telefono>
+	<numeroFactura>1</numeroFactura>
+	<cuf>45EE45807306260BD85060B3DC07ECB7F0C39E06A62C34CAA0B546D74</cuf>
+	<cufd>BQcKhQ25VQ0JBNzTg3RjNCRTk4QTY=QjlyWlBQVERXVUFFFNEUwNkEzNkY4N</cufd>
+	<codigoSucursal>0</codigoSucursal>
+	<direccion>Landaeta 1721</direccion>
+	<codigoPuntoVenta>0</codigoPuntoVenta>
+	<fechaEmision>2022-03-18T15:25:38.000</fechaEmision>
+	<nombreRazonSocial>RAZON SOCIAL PRUEBA</nombreRazonSocial>
+	<codigoTipoDocumentoIdentidad>1</codigoTipoDocumentoIdentidad>
+	<numeroDocumento>9957352</numeroDocumento>
+	<complemento xsi:nil="true"></complemento>
+	<codigoCliente>9957352</codigoCliente>
+	<codigoMetodoPago>1</codigoMetodoPago>
+	<numeroTarjeta xsi:nil="true"></numeroTarjeta>
+	<montoTotal>10.12</montoTotal>
+	<montoTotalSujetoIva>10.12</montoTotalSujetoIva>
+	<codigoMoneda>1</codigoMoneda>
+	<tipoCambio>1</tipoCambio>
+	<montoTotalMoneda>10.12</montoTotalMoneda>
+	<montoGiftCard>0</montoGiftCard>
+	<descuentoAdicional>0</descuentoAdicional>
+	<codigoExcepcion xsi:nil="true"></codigoExcepcion>
+	<cafc xsi:nil="true"></cafc>
+	<leyenda>Ley N° 453: Tienes derecho a recibir información sobre las características y contenidos de los servicios que utilices.
+	</leyenda>
+	<usuario>u_cobofar</usuario>
+	<codigoDocumentoSector>1</codigoDocumentoSector>
+ </cabecera>
+	<detalle>
+		<actividadEconomica>451010</actividadEconomica>
+		<codigoProductoSin>49111</codigoProductoSin>
+		<codigoProducto>40</codigoProducto>
+		<descripcion>Antigripal LCH</descripcion>
+		<cantidad>4</cantidad>
+		<unidadMedida>1</unidadMedida>
+		<precioUnitario>2.53</precioUnitario>
+		<montoDescuento>10</montoDescuento>
+		<subTotal>10.12</subTotal>
+		<numeroSerie xsi:nil="true"></numeroSerie>
+		<numeroImei xsi:nil="true"></numeroImei>
+ </detalle><Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+    <SignedInfo>
+      <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" />
+      <SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256" />
+      <Reference URI="">
+        <Transforms>
+          <Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" />
+          <Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments" />
+        </Transforms>
+        <DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" />
+        <DigestValue>NGQxODA5Yjg4NzA5YTM5MTBiNTU0NWIyNDMzYjQwZTRkYmQ0ZGY3NDJkYTU0Y2RlNzcxYzM1Y2YzM2UyMzI4Mg==</DigestValue>
+      </Reference>
+    </SignedInfo><SignatureValue>
+</SignatureValue>
+    <KeyInfo>
+      <X509Data>
+        <X509Certificate>MIIDVzCCAj8CAQAwggEQMRkwFwYDVQQDDBBGUkVDSU8gUk9EUklHVUVaMTAwLgYD
+VQQKDCdDT1JQT1JBQ0lPTiBCT0xJVklBTkEgREUgRkFSTUFDSUFTIFMuQS4xHDAa
+BgNVBAsME1JFUFJFU0VOVEFOVEUgTEVHQUwxHDAaBgNVBAwME1JFUFJFU0VOVEFO
+VEUgTEVHQUwxCzAJBgNVBAYTAkJPMQswCQYDVQQuEwJDSTEUMBIGBysGAQEBAQAM
+BzQ0MTU0OTExEjAQBgoJkiaJk/IsZAEsDAIyMDETMBEGA1UEBRMKMTAyMjAzOTAy
+NzEsMCoGCSqGSIb3DQEJARYdcmluZGFAZmFybWFjaWFzYm9saXZpYS5jb20uYm8w
+ggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDzYTB28L4rt+jvWs64UEA8
+v3G7eGNmzvHApD//9K1SkBFzt1aZO8XP/wej1aihB8mG8IKR0Vvom/9HyardBlZg
+uzAF3KPxJ7D/2qRaWciwjrVXtfn1hgl94fGOwFa6xmxZIPU29otS9FCvfDBs9LCm
+/bVm+ShM1g+N+3EpFDwNl1TulU1LqHNx00Sw+90eIDMJVroQnhsyalgExMDLaz+Z
+SQMre46ldEbi7pEDXR/sRlqLsqAxCkraCSYGiepky/0Sji8fbBBED/cb5dsDfDsM
+j/Kewxn+maBpwBZGDu4QVzmKoa4mB1Hq2bEFOO5Dk7aY7KludMGC68/lRRhrrdrB
+AgMBAAGgADANBgkqhkiG9w0BAQUFAAOCAQEAvwIlFx5AfeZlsf4z0xkcT8cxq/XF
+twP5JVgLvTGYrUBw7MW5v6mIDBWP4uSUt16AsqHnPaCflBdGa+0Oalo3lQyToMvS
+xGQK4rYDDdXrYgw3naxth57KYK/40WrqX5gbl0HbTR8R3fewZuwcyJThiWDkZhAm
+8Pz9BZhKgeeuJGKnInJpAQeAkfN/xhHwZWDKLi5Zzj47+kNhQ1Zy4+RAowQ5MXHi
+em4oXmzL2mLeO1WBsIKSar+zD/eWB98svjmzHhO+KsWzr5bhsvDA7Untgt8zzByd
+tMUGboHfbvcXz8U3Xsq54OpypsCZOLHuJnLavHtq0P5IvQF/AZG4Glo/fg==
+        </X509Certificate>
+      </X509Data>
+    </KeyInfo>
+</Signature></facturaElectronicaCompraVenta>

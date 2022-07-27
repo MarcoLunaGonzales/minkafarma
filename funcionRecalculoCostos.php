@@ -2,12 +2,9 @@
 require('function_formatofecha.php');
 require('function_comparafechas.php');
 
-function recalculaCostos($enlaceCon,$codigoItem, $rpt_almacen){
-
-	
-
-	$fecha_iniconsulta="2005-01-01";
-	$fecha_finconsulta="2020-12-31";
+function recalculaCostos($enlaceCon,$codigoItem,$rpt_almacen){
+	$fecha_iniconsulta="2000-01-01";
+	$fecha_finconsulta="2030-12-31";
 
 	$sqlMateriales="select m.`codigo_material`, m.`descripcion_material` from `material_apoyo` m where m.`codigo_material` in ($codigoItem)";
 	$respMateriales=mysqli_query($enlaceCon,$sqlMateriales);
@@ -45,7 +42,9 @@ function recalculaCostos($enlaceCon,$codigoItem, $rpt_almacen){
 			$respCostoAnterior=mysqli_query($enlaceCon,$sqlCostoAnterior);
 			$nroFilasCostoAnterior=mysqli_num_rows($respCostoAnterior);
 			if($nroFilasCostoAnterior==1){
-				$costoUnitarioAnteriorItem=mysql_result($respCostoAnterior,0,0);
+				$datCostoAnterior=mysqli_fetch_array($respCostoAnterior);
+				$costoUnitarioAnteriorItem=$datCostoAnterior[0];
+				//$costoUnitarioAnteriorItem=mysql_result($respCostoAnterior,0,0);
 			}else{
 				$costoUnitarioAnteriorItem=0;
 			}
@@ -83,6 +82,8 @@ function recalculaCostos($enlaceCon,$codigoItem, $rpt_almacen){
 		while($ii<=$i and $jj<=$j)
 		{	$fecha_ingresos=$vector_fechas_ingresos[$ii];
 			$fecha_salidas=$vector_fechas_salidas[$jj];
+			//echo "resultado".$fecha_ingresos."-".$fecha_salidas;
+			//echo "resultado de comparaFechas".compara_fechas($fecha_ingresos,$fecha_salidas);
 			if(compara_fechas($fecha_ingresos,$fecha_salidas)<0)
 			{	$vector_final_fechas[$zz]=$fecha_ingresos;
 				$ii++;
@@ -138,7 +139,7 @@ function recalculaCostos($enlaceCon,$codigoItem, $rpt_almacen){
 				$suma_ingresos=$suma_ingresos+$cantidad_ingreso;
 				$cantidad_kardex=$cantidad_kardex+$cantidad_ingreso;
 				
-				if($codTipoIngreso!=1002){
+				if($codTipoIngreso!=1030){
 					$valorNetoIngreso=$precioNetoIngreso*$cantidad_ingreso;	
 					$nuevoCostoPromedio=($valorNetoIngreso+$valor_kardex)/$cantidad_kardex;
 					
@@ -150,7 +151,7 @@ function recalculaCostos($enlaceCon,$codigoItem, $rpt_almacen){
 						cod_ingreso_almacen='$codIngresoAlmacen' and cod_material='$codigoItem'";
 					$respUpdCosto=mysqli_query($enlaceCon,$sqlUpdCosto);
 				}
-				if($codTipoIngreso==1002){
+				if($codTipoIngreso==1030){
 					$valorNetoIngreso=$nuevoCostoPromedio*$cantidad_ingreso;	
 					$sqlUpdCosto="update ingreso_detalle_almacenes set costo_promedio='$nuevoCostoPromedio' where 
 						cod_ingreso_almacen='$codIngresoAlmacen' and cod_material='$codigoItem'";
@@ -183,7 +184,7 @@ function recalculaCostos($enlaceCon,$codigoItem, $rpt_almacen){
 					cod_salida_almacen='$cod_salida' and cod_material='$codigoItem'"; 
 				$respUpd=mysqli_query($enlaceCon,$sqlUpd);
 				
-				if($codTipoSalida==1002){
+				if($codTipoSalida==1030){
 					//costeamos el ingreso 
 					$sqlIngCambioItem="select i.`cod_ingreso_almacen` from `ingreso_almacenes` i where i.`cod_salida_almacen`=$cod_salida";
 					$respIngCambioItem=mysqli_query($enlaceCon,$sqlIngCambioItem);
@@ -191,7 +192,7 @@ function recalculaCostos($enlaceCon,$codigoItem, $rpt_almacen){
 					if($nroFilasIngCambioItem==1){
 						$datIngCambioItem=mysqli_fetch_array($respIngCambioItem);
 						$codIngresoCambio=$datIngCambioItem[0];
-						//$codIngresoCambio=mysql_result($respIngCambioItem,0,0);
+						//codIngresoCambio=mysql_result($respIngCambioItem,0,0);
 						$sqlUpdCosto="update ingreso_detalle_almacenes set costo_almacen='$nuevoCostoPromedio' where
 							cod_ingreso_almacen='$codIngresoCambio'";
 						$respUpdCosto=mysqli_query($enlaceCon,$sqlUpdCosto);

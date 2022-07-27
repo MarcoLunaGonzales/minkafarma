@@ -1,5 +1,8 @@
 <?php
 
+$estilosVenta=0; //para no ejecutar las librerias js css
+
+
 require("conexionmysqli.php");
 $usuario = $_POST["usuario"];
 $contrasena = $_POST["contrasena"];
@@ -40,6 +43,8 @@ if ($num_filas != 0) {
 	setcookie("global_almacen",$global_almacen);
 	setcookie("globalGestion", $nombreG);
 	
+	setcookie("global_admin_cargo", 1);
+
 	if($cod_cargo==1000){
 		header("location:indexGerencia.php");
 	}

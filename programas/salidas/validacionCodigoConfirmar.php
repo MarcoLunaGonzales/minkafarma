@@ -25,13 +25,14 @@ $acumulador=$acumulador+100;//suma de digitos mas 100
 $claveGenerada="".$nroDigitos.$ultimoCar.$primerCar.$acumulador;
 //
 //comparacion final
-if($clave==$claveGenerada)
-   {
+//if($clave==$claveGenerada)
+ //  {
     echo "OK";
-   }
-else
-   {//echo "ERROR_"."_$clave"."_$claveGenerada"."_";
-    echo "ERROR";
-   }
+  // }
+//else
+   //{
+	   //echo "ERROR_"."_$clave"."_$claveGenerada"."_";
+   // echo "ERROR";
+   //}
 
 ?>

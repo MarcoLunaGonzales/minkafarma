@@ -1,3 +1,80 @@
+
+
+.div-center{
+        margin: 0 auto !important; /* Added */
+        float: none !important; /* Added */
+        margin-bottom: 10px !important; /* Added */
+}
+.codigo-barras{
+    padding-left: 20px;
+    width: 80%;
+    height:50px;
+}
+.codigo-barras-sm{
+    width: 200px;
+    height:30px;
+}
+
+.pie-div{
+  position: fixed;
+  width: 100%;
+  bottom: 0px;
+  background-color: #fff;
+  background:#EBEBE7;
+  padding-bottom:10px;
+  padding-top:10px; 
+}
+.pie-montos{
+    width: 70%;
+    float: right;
+}
+
+.mensaje-codigo-barras{
+    position: absolute;
+    right:0;
+    top:150px;
+    font: bold 90% monospace;
+    padding-top: 0px;
+    padding-right: 20px;
+    background:#fff;
+    color: #616463;
+    font-size: 16px;
+    text-align: center;
+    font-weight: bold;
+}
+.form-codigo-barras{
+   float: left;
+   width: 300px;
+   height: 40px;
+   font-size: 18px;
+   text-align: center;
+   
+   border-radius: 2px;
+   border: 2px solid #1B8150;
+   color:#070707;
+   background: #F6F8F7;
+   outline: none;
+}
+.form-codigo-barras:focus,.form-codigo-barras:active,.form-codigo-barras:hover{
+   border: 2px solid #255932 !important;
+}
+
+.form-codigo-barras-sm{
+   width: 190px;
+   height: 25px;
+   font-size: 14px;
+   text-align: center;
+   border-radius: 2px;
+   
+   border: 2px solid #1B8150;
+   color:#070707;
+   background: #F6F8F7;
+   outline: none;
+}
+.form-codigo-barras-sm:focus,.form-codigo-barras-sm:active,.form-codigo-barras-sm:hover{
+   border: 2px solid #255932 !important;
+}
+
 input[data-readonly] {
   pointer-events: none;
 }
@@ -10,8 +87,8 @@ h1 {
     -webkit-margin-start: 0px;
     -webkit-margin-end: 0px;
     font-family: Verdana;
-	color: #585858;
-	text-align: center;
+    color: #585858;
+    text-align: center;
 }
 
 h2 {
@@ -22,16 +99,16 @@ h2 {
     -webkit-margin-start: 0px;
     -webkit-margin-end: 0px;
     font-family: Verdana;
-	color: #585858;
-	text-align: center;
+    color: #585858;
+    text-align: center;
 }
 
 table {
     *border-collapse: collapse; /* IE7 and lower */
     border-spacing: 0;
     width: 85%;    
-	font-family: Verdana, sans-serif, Arial;
-	font-size:9pt;
+    font-family: Verdana, sans-serif, Arial;
+    font-size:9pt;
 }
 
 .zebra td, .zebra th {
@@ -103,21 +180,21 @@ table {
 
 /*.texto {
 font-family: sans-serif, Arial;
-	font-size: 8pt;
-	color:#000000;
+    font-size: 8pt;
+    color:#000000;
 
 }*/
 .textoMsj {
-	font-family: sans-serif, Arial;
-	font-size: 13pt;
-	color:#5F7BA9;
+    font-family: sans-serif, Arial;
+    font-size: 13pt;
+    color:#5F7BA9;
 
 }
 /*.textotabla{
-	font-family: sans-serif, Arial;
-	font-size: 10pt;
-	color: #5F7BA9;
-	background: #EAF7FD
+    font-family: sans-serif, Arial;
+    font-size: 10pt;
+    color: #5F7BA9;
+    background: #EAF7FD
 }*/
 .texto td, .texto th {
     padding: 10px;
@@ -189,86 +266,91 @@ font-family: sans-serif, Arial;
 
 
 a:link {
-	font-family: Verdana, Arial;
-	font-size: 12pt;
-	color:#BF360C;
-	text-decoration: none;
+    font-family: Verdana, Arial;
+    font-size: 12pt;
+    color:#BF360C;
+    text-decoration: none;
 }
 
 a:visited {
-	font-family: Verdana, Arial;
-	font-size: 12pt;
-	color:#BF360C;
-	text-decoration: none;
+    font-family: Verdana, Arial;
+    font-size: 12pt;
+    color:#BF360C;
+    text-decoration: none;
 }
 a:hover {
-	font-family: Verdana, Arial;
-	font-size: 12pt;
-	color:#004D40;
-	text-decoration: underline;
+    font-family: Verdana, Arial;
+    font-size: 12pt;
+    color:#004D40;
+    text-decoration: underline;
 }
 a:active {
-	font-family: Verdana, Arial;
-	font-size: 12pt;
-	color:#b71c1c;
-	text-decoration: none;
+    font-family: Verdana, Arial;
+    font-size: 12pt;
+    color:#b71c1c;
+    text-decoration: none;
 }
 .textotit {
-	font-family: Verdana;
-	font-size: 14pt;
-	color: #585858;
+    font-family: Verdana;
+    font-size: 14pt;
+    color: #585858;
 }
 .textomediano{
-	font-family: sans-serif, Arial;
-	font-size: 8pt;
-	color: #000000;
+    font-family: sans-serif, Arial;
+    font-size: 8pt;
+    color: #000000;
 }
 .textomediano td, .textomediano th {
     padding: 2px;
     border-bottom: 1px solid #000000;    
-	border-right: 1px solid #000000;    
+    border-right: 1px solid #000000;    
 }
 .textomini {
-	font-family: sans-serif, Arial;
-	font-size: 7pt;
-	color: #000000;
+    font-family: sans-serif, Arial;
+    font-size: 7pt;
+    color: #000000;
 }
 .textosupermini {
-	font-family: sans-serif, Arial;
-	font-size: 6pt;
-	color: #000000;
+    font-family: sans-serif, Arial;
+    font-size: 6pt;
+    color: #000000;
 }
 .textograndenegro {
-	font-family: Verdana;
-	font-size: 12pt;
-	color: #585858;
+    font-family: Verdana;
+    font-size: 12pt;
+    color: #585858;
 }
 .textomedianonegro {
-	font-family: Verdana;
-	font-size: 12pt;
-	color: #585858;
+    font-family: Verdana;
+    font-size: 12pt;
+    color: #585858;
+}
+.textosmallnegro {
+    font-family: Verdana;
+    font-size: 16px;
+    color: #585858;
 }
 .textogranderojo {
-	font-family: Verdana;
-	font-size: 17pt;
-	color: #CD5C5C;
+    font-family: Verdana;
+    font-size: 17pt;
+    color: #CD5C5C;
 }
 
 .textomedianorojo {
-	font-family: Verdana;
-	font-size: 14pt;
-	color: #CD5C5C;
+    font-family: Verdana;
+    font-size: 14pt;
+    color: #CD5C5C;
 }
 .boton
 {
-	text-decoration: none;
+    text-decoration: none;
     padding: 10px;
     font-weight: 600;
     font-size: 12px;
     color: #ffffff;
-    background-color: #0097A7;
+    background-color: #E7A802;
     border-radius: 3px;
-    border: 2px solid #0097A7;
+    border: 2px solid #E7A802;
 }
 .boton:hover{
     color: #000000;
@@ -276,7 +358,7 @@ a:active {
   }
 .boton2
 {
-	text-decoration: none;
+    text-decoration: none;
     padding: 10px;
     font-weight: 600;
     font-size: 12px;
@@ -289,10 +371,118 @@ a:active {
     color: #000000;
     background-color: #ffffff;
   }
+  .boton-verde
+{
+    text-decoration: none !important;
+    padding: 10px !important;
+    font-weight: 600 !important;
+    font-size: 12px !important;
+    color: #ffffff !important;
+    background-color: #1EB11E !important;
+    border-radius: 3px !important;
+    border: 2px solid #1EB11E !important;
+}
+.boton-verde:hover{
+    color: #000000 !important;
+    background-color: #ffffff !important;
+  }
 
+  .boton-rojo
+{
+    text-decoration: none !important;
+    padding: 10px !important;
+    font-weight: 600 !important;
+    font-size: 12px !important;
+    color: #ffffff !important;
+    background-color: #E73024 !important;
+    border-radius: 3px !important;
+    border: 2px solid #E73024 !important;
+}
+.boton-rojo:hover{
+    color: #000000 !important;
+    background-color: #ffffff !important;
+  }
+ 
+ .boton-azul
+{
+    text-decoration: none !important;
+    padding: 10px !important;
+    font-weight: 600 !important;
+    font-size: 12px !important;
+    color: #ffffff !important;
+    background-color: #248CE7 !important;
+    border-radius: 3px !important;
+    border: 2px solid #248CE7 !important;
+}
+.boton-azul:hover{
+    color: #000000 !important;
+    background-color: #ffffff !important;
+  }
+
+   .boton-plomo
+{
+    text-decoration: none !important;
+    padding: 10px !important;
+    font-weight: 0 !important;
+    font-size: 12px !important;
+    color: #ffffff !important;
+    background-color: #88898A !important;
+    border-radius: 3px !important;
+    border: 2px solid #88898A !important;
+}
+.boton-plomo:hover{
+    color: #000000 !important;
+    background-color: #ffffff !important;
+  }
+
+   .boton-plomo-osc
+{
+    text-decoration: none !important;
+    padding: 10px !important;
+    font-weight: 0 !important;
+    font-size: 12px !important;
+    color: #ffffff !important;
+    background-color: #48A487 !important;
+    border-radius: 3px !important;
+    border: 2px solid #48A487 !important;
+}
+.boton-plomo-osc:hover{
+    color: #000000 !important;
+    background-color: #ffffff !important;
+  }
+
+  .input-archivo {
+ width: 0.1px;
+ height: 0.1px;
+ opacity: 0;
+ overflow: hidden;
+ position: absolute;
+ z-index: -1;
+ }
+
+ .label-archivo {
+ font-size: 13px;
+ display: inline-block;
+ cursor: pointer;
+ text-transform: uppercase;
+ text-align: center;
+ }
+
+.float-right{
+    float: right;
+}
+.float-left{
+    float: left;
+}
+.contenedor{
+    width: 92%;
+}
+.d-none{
+    display: none;
+}
 .boton2peque
 {
-	text-decoration: none;
+    text-decoration: none;
     padding: 5px;
     font-weight: 600;
     font-size: 12px;
@@ -321,41 +511,41 @@ a:active {
     background-repeat:  no-repeat;
 }
 .subtotal {
-	font-family: Verdana, Helvetica, sans-serif;
-	font-size: 10px;
-	font-weight: bold;
-	color: #000000;
-	line-height: 15px;
-	background-color: #dddddd;
+    font-family: Verdana, Helvetica, sans-serif;
+    font-size: 10px;
+    font-weight: bold;
+    color: #000000;
+    line-height: 15px;
+    background-color: #dddddd;
 }
 .total {
-	font-family: Verdana, Helvetica, sans-serif;
-	font-size: 10px;
-	font-weight: bold;
-	color: #000000;
-	line-height: 15px;
-	background-color: #99ccff;
+    font-family: Verdana, Helvetica, sans-serif;
+    font-size: 10px;
+    font-weight: bold;
+    color: #000000;
+    line-height: 15px;
+    background-color: #99ccff;
 }
 .divBotones{
-	width: 600px;
-	height: 40px;
-	align: left;
-	border: 2px;
-	margin-left: 150px;
-	padding: 20px;
+    width: 600px;
+    height: 40px;
+    align: left;
+    border: 2px;
+    margin-left: 150px;
+    padding: 20px;
 }
 
 #i_div0_0 a, #i_txt0_0 {
-	color: #000;
-	font: "Times New Roman";
-	text-decoration: none
+    color: #000;
+    font: "Times New Roman";
+    text-decoration: none
 }
 #i_div0_0 a:hover {
-	color: #999495;
+    color: #999495;
 }
 #i_txt0_0 {
-	font-weight: bold;
-	font-size: 11px;
+    font-weight: bold;
+    font-size: 11px;
 }
 .inputnumber{
   width: 6em;

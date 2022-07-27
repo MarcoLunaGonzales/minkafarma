@@ -17,6 +17,8 @@ $nomPrincipio=$_GET['nomPrincipio'];
 
 $fechaActual=date("Y-m-d");
 
+$indexFila=0;
+
 //SACAMOS LA CONFIGURACION PARA LA SALIDA POR VENCIMIENTO
 $sqlConf="select valor_configuracion from configuraciones where id_configuracion=5";
 $respConf=mysqli_query($enlaceCon,$sqlConf);

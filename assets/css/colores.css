@@ -1,0 +1,42 @@
+--primary-color: #1d2a76;
+    --second-color: #00ac99;
+    --third-color: #febd00;
+    --fourth-color: #d20d1d;
+    --fifth-color: #e6992b;
+    --sixth-color: #828282;
+
+
+
+
+
+
+    
+    /*  */
+    --blue: var(--primary-color);
+    --indigo: #6610f2;
+    --purple: #6f42c1;
+    --pink: #e83e8c;
+    --red: var(--fifth-color);
+    --orange: #FF9E2D;
+    --yellow: var(--third-color);
+    --green: #28a745;
+    --teal: #20c997;
+    --cyan: #17a2b8;
+    --white: #ffffff;
+    --gray: #6c757d;
+    --gray-dark: #343a40;
+    --primary: #234969;
+    --secondary: #6c757d;
+    --success: #28a745;
+    --info: #17a2b8;
+    --warning: var(--third-color);
+    --danger: var(--fifth-color);
+    --light: #f8f9fa;
+    --dark: #343a40;
+    --breakpoint-xs: 0;
+    --breakpoint-sm: 576px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 992px;
+    --breakpoint-xl: 1200px;
+    --font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
