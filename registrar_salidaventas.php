@@ -717,6 +717,8 @@ function buscarMaterial(f, numMaterial){
 	
 	document.getElementById('divListaMateriales').innerHTML='';
 	document.getElementById('itemNombreMaterial').value='';	
+	document.getElementById('itemAccionMaterialNom').value='';	
+	document.getElementById('itemPrincipioMaterialNom').value='';	
 	document.getElementById('itemNombreMaterial').focus();	
 	
 }
@@ -1296,6 +1298,27 @@ function editarDatosCliente() {
   	}
   }
 }
+function cambiarNotaRemision(){
+	if($("#boton_nota_remision").length>0){
+		var tipo=$("#tipoDoc").val();
+		if(tipo==2){
+			$("#tipoDoc").val(1);
+			$("#boton_nota_remision").addClass("boton-plomo");
+			if($("#boton_nota_remision").hasClass("boton-plomo-osc")){
+              $("#boton_nota_remision").removeClass("boton-plomo-osc");  
+			}
+		}else{
+			$("#tipoDoc").val(2);
+			$("#boton_nota_remision").addClass("boton-plomo-osc");
+			if($("#boton_nota_remision").hasClass("boton-plomo")){
+              $("#boton_nota_remision").removeClass("boton-plomo");  
+			}
+		}
+		$("#nitCliente").val(123);
+		$("#razonSocial").val("Sin Nombre");
+		ajaxNroDoc(form1);
+	}
+}
 </script>
 
 		
@@ -1695,7 +1718,7 @@ while($dat2=mysqli_fetch_array($resp2)){
 
 
 <div class="pie-div">
-	<div class='float-right' style="padding-right:15px;"><a href='#' class='boton-plomo' style="width:10px !important;height:10px !important;font-size:10px !important;" id="boton_nota_remision" onclick="cambiarNotaRemision()">F</a></div>
+	<div class='float-right' style="padding-right:15px;"><a href='#' class='boton-plomo' style="width:10px !important;height:10px !important;font-size:10px !important;" id="boton_nota_remision" onclick="cambiarNotaRemision()">NR</a></div>
 	<table class="pie-montos">
       <tr>
         <td>

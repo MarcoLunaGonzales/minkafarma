@@ -29,7 +29,7 @@ $fechaHoraActual=date('Y-m-d\TH:i:s.v', time());
                       </thead>
                       <tbody>
                         <?php
-                        $sql="SELECT codigo,codigoActividad,codigoDocumentoSector,tipoDocumentoSector from siat_sincronizarListaActividadesDocumentoSector order by codigo;";
+                        $sql="SELECT codigo,codigoActividad,codigoDocumentoSector,tipoDocumentoSector from siat_sincronizarlistaactividadesdocumentosector order by codigo;";
                         $resp=mysqli_query($enlaceCon,$sql);
                         while($dat=mysqli_fetch_array($resp)){
                           $codigo=$dat[0];

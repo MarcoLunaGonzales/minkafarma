@@ -1,4 +1,6 @@
 <?php
+	require("conexionmysqli.php");
+	require("estilos_almacenes.inc");
 
 echo "<script language='Javascript'>
 		function enviar_nav()
@@ -64,13 +66,17 @@ echo "<script language='Javascript'>
 			}
 		}
 		</script>";
-	require("conexionmysqli.php");
-	require("estilos_almacenes.inc");
 
 	echo "<form method='post' action=''>";
 	$sql="select e.cod_forma_far, e.nombre_forma_far from formas_farmaceuticas e where e.estado=1 order by 2";
 	$resp=mysqli_query($enlaceCon,$sql);
 	echo "<h1>Formas Farmaceuticas</h1>";
+
+	echo "<div class='divBotones'>
+	<input type='button' value='Adicionar' name='adicionar' class='boton' onclick='enviar_nav()'>
+	<input type='button' value='Editar' name='Editar' class='boton' onclick='editar_nav(this.form)'>
+	<input type='button' value='Eliminar' name='eliminar' class='boton2' onclick='eliminar_nav(this.form)'>
+	</div>";
 
 	echo "<center><table class='texto'>";
 	echo "<tr><th>&nbsp;</th><th>Nombre</th></tr>";
@@ -83,7 +89,7 @@ echo "<script language='Javascript'>
 		<td>$nombre</td>
 		</tr>";
 	}
-	echo "</table></center><br>";
+	echo "</table></center>";
 	
 	echo "<div class='divBotones'>
 	<input type='button' value='Adicionar' name='adicionar' class='boton' onclick='enviar_nav()'>

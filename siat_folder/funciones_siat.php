@@ -166,7 +166,7 @@ function obtenerCantidadPuntosVenta($codTipo){
     }
 
     $abiertos=0;
-    $sql="SELECT count(*) from siat_PuntoVenta";
+    $sql="SELECT count(*) from siat_puntoventa";
     $resp=mysqli_query($enlaceCon,$sql);
     while($row=mysqli_fetch_array($resp)){ 
       $abiertos=$row[0];

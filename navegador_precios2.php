@@ -1,5 +1,10 @@
 <?php
 ini_set('post_max_size','100M');
+	require("conexionmysqli.php");
+	require("estilos.inc");
+	require("funciones.php");
+	require("funcion_nombres.php");
+
 ?>
 
 <script language='Javascript'>
@@ -94,10 +99,6 @@ function enviar(f){
 
 <?php
 
-	require("conexionmysqli.php");
-	require("estilos.inc");
-	require("funciones.php");
-	require("funcion_nombres.php");
 
 	$globalAlmacen=$_COOKIE['global_almacen'];
 	$ordenLista=$_GET['orden'];

@@ -186,5 +186,13 @@ function nombreFuncionarioReal($enlaceCon,$codigo)
 	mysqli_close($enlaceCon);
 	return($nombre);
 }
+function nombreLineaProveedor($enlaceCon,$codigo){
+	$sql="select nombre_linea_proveedor from proveedores_lineas where cod_linea_proveedor='$codigo'";
+	$resp=mysqli_query($enlaceCon,$sql);
+	$dat=mysqli_fetch_array($resp);
+	$nombre=$dat[0];
+	//$nombre=mysql_result($resp,0,0);
+	return($nombre);
+}
 
 ?>

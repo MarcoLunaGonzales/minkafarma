@@ -2,7 +2,7 @@
 namespace SinticBolivia\SBFramework\Modules\Invoices\Classes\Siat;
 class conexionSiatUrl 
 {
-	//pruebas
+	// pruebas
 	const endpoint 	= 'https://pilotosiatservicios.impuestos.gob.bo/v2/ServicioFacturacionComputarizada';
 	const wsdl 		= 'https://pilotosiatservicios.impuestos.gob.bo/v2/ServicioFacturacionComputarizada?wsdl';
 	const wsdlSincronizacion = 'https://pilotosiatservicios.impuestos.gob.bo/v2/FacturacionSincronizacion?wsdl';

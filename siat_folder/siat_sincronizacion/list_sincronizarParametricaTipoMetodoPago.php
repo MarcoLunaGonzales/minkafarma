@@ -28,7 +28,7 @@ $fechaHoraActual=date('Y-m-d\TH:i:s.v', time());
                       </thead>
                       <tbody>
                         <?php
-                        $sql="SELECT codigo,codigoClasificador,descripcion from siat_sincronizarParametricaTipoMetodoPago order by codigo;";
+                        $sql="SELECT codigo,codigoClasificador,descripcion from siat_sincronizarparametricatipometodopago order by codigo;";
                         $resp=mysqli_query($enlaceCon,$sql);
                         while($dat=mysqli_fetch_array($resp)){
                           $codigo=$dat[0];

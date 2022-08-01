@@ -69,10 +69,10 @@ class PuntoVentaTest
 			if((int)$codigoPuntoVentaNuevo>0){
 
 				require dirname(__DIR__). SB_DS ."../../conexionmysqli2.inc";
-				$sqlDelete="DELETE FROM siat_PuntoVenta where cod_ciudad=".$ciudad;				
+				$sqlDelete="DELETE FROM siat_puntoventa where cod_ciudad=".$ciudad;				
 
 				mysqli_query($enlaceCon,$sqlDelete);
-				$sqlInsert="INSERT INTO siat_PuntoVenta (cod_ciudad,codigoPuntoVenta) VALUES ('$ciudad','$codigoPuntoVentaNuevo')";
+				$sqlInsert="INSERT INTO siat_puntoventa (cod_ciudad,codigoPuntoVenta) VALUES ('$ciudad','$codigoPuntoVentaNuevo')";
 				//echo $sqlInsert;
 				mysqli_query($enlaceCon,$sqlInsert);
 
@@ -117,7 +117,7 @@ class PuntoVentaTest
 			}
 
 			require dirname(__DIR__). SB_DS ."../../conexionmysqli2.inc";
-			$sqlDelete="DELETE FROM siat_PuntoVenta where cod_ciudad=".$ciudad;	
+			$sqlDelete="DELETE FROM siat_puntoventa where cod_ciudad=".$ciudad;	
 			mysqli_query($enlaceCon,$sqlDelete);				
 				
 		}

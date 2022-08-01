@@ -65,61 +65,11 @@ include("datosUsuario.php");
 	
 		<nav id="menu">
 		<div id="panel-menu">
+		
 		<ul>
-			<li><span>Datos Generales</span>
-				<ul>
-					<li><a href="programas/proveedores/inicioProveedores.php" target="contenedorPrincipal">Proveedores</a></li>
-					<li><span>Gestion de Productos</span>
-						<ul>
-							<!--li><a href="navegador_tiposmaterial.php" target="contenedorPrincipal">Tipos de Producto</a></li-->
-							<li><a href="grupos/list.php" target="contenedorPrincipal">Grupos</a></li>
-							<li><a href="marcas/list.php" target="contenedorPrincipal">Marcas</a></li>
-							<li><a href="navegador_material.php?vista=0&vista_ordenar=0&grupo=0" target="contenedorPrincipal">Productos</a></li>
-							<li><a href="tipos_precio/list.php" target="contenedorPrincipal">Precios y Descuentos</a></li>
-							<!--li><a href="navegador_precios.php?orden=1" target="contenedorPrincipal">Precios (Orden Alfabetico)</a></li>
-							<li><a href="navegador_precios.php?orden=2" target="contenedorPrincipal">Precios (Por Linea Proveedor)</a></li>			
-							<li><a href="navegador_precios.php?orden=3" target="contenedorPrincipal">Precios (Por Grupo)</a></li-->			
-						</ul>
-					</li>
-					<li><a href="navegador_funcionarios1.php" target="contenedorPrincipal">Funcionarios</a></li>
-					<li><a href="programas/clientes/inicioClientes.php" target="contenedorPrincipal">Clientes</a></li>
-					<li><a href="navegador_dosificaciones.php" target="contenedorPrincipal">Dosificaciones de Facturas</a></li>
-					<!--li><a href="navegador_vehiculos.php" target="contenedorPrincipal">Vehiculos</a></li-->
-					<li><span>Gestion de Almacenes</span>
-						<ul>
-							<li><a href="navegador_almacenes.php" target="contenedorPrincipal">Almacenes</a></li>
-							<li><a href="navegador_tiposingreso.php" target="contenedorPrincipal">Tipos de Ingreso</a></li>
-							<li><a href="navegador_tipossalida.php" target="contenedorPrincipal">Tipos de Salida</a></li>
-							
-						</ul>	
-					</li>		
-					<li><span>SIAT</span>
-						<ul>
-							<li><a href="siat_folder/siat_facturacion_offline/facturas_sincafc_list.php" target="contenedorPrincipal">Facturas Off-line</a></li>
-							<li><a href="siat_folder/siat_facturacion_offline/facturas_cafc_list.php" target="contenedorPrincipal">Facturas Off-line CAFC</a></li>
-							<li><a href="siat_folder/siat_sincronizacion/index.php" target="contenedorPrincipal">Sincronización</a></li>
-							<li><a href="siat_folder/siat_puntos_venta/index.php" target="contenedorPrincipal">Puntos Venta</a></li>
-							<li><a href="siat_folder/siat_cuis_cufd/index.php" target="contenedorPrincipal">Generación CUIS y CUFD</a></li>
-							
-						</ul>	
-					</li>							
-				</ul>	
-			</li>
-
-			<!--li><span>Ordenes de Compra</span>
-				<ul>
-					<li><a href="navegador_ordenCompra.php" target="contenedorPrincipal">Registro de O.C.</a></li>
-					<li><a href="registrarOCTerceros.php" target="contenedorPrincipal">Registro de O.C. de Terceros</a></li>
-					<li><a href="navegadorIngresosOC.php" target="contenedorPrincipal">Generar OC a traves de Ingreso</a></li>
-					<li><a href="navegador_pagos.php" target="contenedorPrincipal">Registro de Pagos</a></li>
-				</ul>	
-			</li-->
-			<li><a href="navegador_preingreso.php" target="contenedorPrincipal">Pre - Ingresos</a></li>
 			<li><span>Ingresos</span>
 				<ul>
 					<li><a href="navegador_ingresomateriales.php" target="contenedorPrincipal">Ingreso de Productos</a></li>
-					<li><a href="navegador_ingresotransito.php" target="contenedorPrincipal">Ingreso de Productos en Transito</a></li>
-					<!--li><a href="navegadorLiquidacionIngresos.php" target="contenedorPrincipal">Liquidacion de Ingresos</a></li-->
 				</ul>	
 			</li>
 			<li><span>Salidas</span>
@@ -129,17 +79,18 @@ include("datosUsuario.php");
 					<li><a href="registrar_salidaventas_manuales.php" target="_blank">Factura Manual de Contigencia</a></li>
 				</ul>	
 			</li>
-			<!--li><span>Listado de Cobranzas</span>
+			<li><a href="registrar_salidaventas.php" target="_blank">Vender / Facturar</a></li>
+
+			<li><span>SIAT</span>
 				<ul>
-					<li><a href="navegadorCobranzas.php" target="contenedorPrincipal">Listado de Cobranzas</a></li>
+					<li><a href="siat_folder/siat_facturacion_offline/facturas_sincafc_list.php" target="contenedorPrincipal">Facturas Off-line</a></li>
+					<li><a href="siat_folder/siat_facturacion_offline/facturas_cafc_list.php" target="contenedorPrincipal">Facturas Off-line CAFC</a></li>
+					<li><a href="siat_folder/siat_sincronizacion/index.php" target="contenedorPrincipal">Sincronización</a></li>
+					<li><a href="siat_folder/siat_puntos_venta/index.php" target="contenedorPrincipal">Puntos Venta</a></li>
+					<li><a href="siat_folder/siat_cuis_cufd/index.php" target="contenedorPrincipal">Generación CUIS y CUFD</a></li>
+					
 				</ul>	
-			</li-->
-			<!--li><span>Configuracion</span>
-				<ul>
-					<li><a href="navegadorDolar.php" target="contenedorPrincipal">Cambiar Cotizacion de Dolar</a></li>
-				</ul>	
-			</li-->
-						<li><a href="registrar_salidaventas.php" target="_blank">Vender / Facturar</a></li>
+			</li>
 
 			<li><span>Reportes</span>
 				<ul>
@@ -189,20 +140,9 @@ include("datosUsuario.php");
 							<li><a href="rptOpUtilidadesDocItem.php" target="contenedorPrincipal">Utilidades x Documento e Item</a></li>
 						</ul>	
 					</li>
-					<!--li><span>Cobranzas</span>
-						<ul>
-							<li><a href="rptOpCobranzas.php" target="contenedorPrincipal">Cobranzas</a></li>
-							<li><a href="rptOpCuentasCobrar.php" target="contenedorPrincipal">Cuentas por Cobrar</a></li>
-						</ul>	
-					</li-->
 				</ul>
 			</li>
-			<li><a href="rptOpArqueoDiario.php?variableAdmin=1" target="contenedorPrincipal" >Arqueo de Caja</a></li>
-			<li><a href="registrar_cotizacion_dolar.php" target="contenedorPrincipal"><span>Cotización Dolar</span></a>	
-			</li>
-			<li><a href="cambiar_almacen_trabajo.php" target="contenedorPrincipal"><span>Cambiar Almacen Trabajo</span></a>	
-			</li>	
-</div>			
+		</div>			
 	</nav>
 </div>
 <script src="dist/mmenu.polyfills.js"></script>

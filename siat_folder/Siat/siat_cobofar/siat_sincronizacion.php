@@ -89,11 +89,11 @@ class SyncTest
 					}
 					// $lista=$res->RespuestaListaActividades;
 					// print_r($lista);
-					$sqlDelete="DELETE FROM siat_sincronizarActividades";
+					$sqlDelete="DELETE FROM siat_sincronizaractividades";
 					mysqli_query($enlaceCon,$sqlDelete);
 					foreach ($lista as $li) {
 						if(isset($li->codigoCaeb) && isset($li->descripcion)){
-							$sqlInsert="INSERT INTO siat_sincronizarActividades (codigoCaeb,descripcion,tipoActividad,created_at) VALUES ('$li->codigoCaeb','$li->descripcion','$li->tipoActividad',NOW())";
+							$sqlInsert="INSERT INTO siat_sincronizaractividades (codigoCaeb,descripcion,tipoActividad,created_at) VALUES ('$li->codigoCaeb','$li->descripcion','$li->tipoActividad',NOW())";
 						}
 						// echo $sqlInsert;
 						mysqli_query($enlaceCon,$sqlInsert);
@@ -101,106 +101,106 @@ class SyncTest
 				break;
 				case 'sincronizarListaActividadesDocumentoSector':
 					$lista=$res->RespuestaListaActividadesDocumentoSector->listaActividadesDocumentoSector;
-					$sqlDelete="DELETE FROM siat_sincronizarListaActividadesDocumentoSector";
+					$sqlDelete="DELETE FROM siat_sincronizarlistaactividadesdocumentosector";
 					mysqli_query($enlaceCon,$sqlDelete);
 					foreach ($lista as $li) {
-						$sqlInsert="INSERT INTO siat_sincronizarListaActividadesDocumentoSector (codigoActividad,codigoDocumentoSector,tipoDocumentoSector,created_at) VALUES ('$li->codigoActividad','$li->codigoDocumentoSector','$li->tipoDocumentoSector',NOW())";
+						$sqlInsert="INSERT INTO siat_sincronizarlistaactividadesdocumentosector (codigoActividad,codigoDocumentoSector,tipoDocumentoSector,created_at) VALUES ('$li->codigoActividad','$li->codigoDocumentoSector','$li->tipoDocumentoSector',NOW())";
 						mysqli_query($enlaceCon,$sqlInsert);
 					}
 				break;
 				case 'sincronizarListaLeyendasFactura':
 					$lista=$res->RespuestaListaParametricasLeyendas->listaLeyendas;
-					$sqlDelete="DELETE FROM siat_sincronizarListaLeyendasFactura where estado!=1 or estado is null ";
+					$sqlDelete="DELETE FROM siat_sincronizarlistaleyendasfactura where estado!=1 or estado is null ";
 					mysqli_query($enlaceCon,$sqlDelete);
 					foreach ($lista as $li) {
-						$sqlVeri="select IFNULL(codigo,0) from siat_sincronizarListaLeyendasFactura where codigoActividad='$li->codigoActividad' and descripcionLeyenda='$li->descripcionLeyenda' limit 1";
+						$sqlVeri="select IFNULL(codigo,0) from siat_sincronizarlistaleyendasfactura where codigoActividad='$li->codigoActividad' and descripcionLeyenda='$li->descripcionLeyenda' limit 1";
 						$respVeri=mysqli_query($enlaceCon,$sqlVeri);
 						$estadoVeri=mysqli_result($respVeri,0,0);	
 						if($estadoVeri==0){
-							$sqlInsert="INSERT INTO siat_sincronizarListaLeyendasFactura (codigoActividad,descripcionLeyenda,created_at) VALUES ('$li->codigoActividad','$li->descripcionLeyenda',NOW())";
+							$sqlInsert="INSERT INTO siat_sincronizarlistaleyendasfactura (codigoActividad,descripcionLeyenda,created_at,estado) VALUES ('$li->codigoActividad','$li->descripcionLeyenda',NOW(),1)";
 							mysqli_query($enlaceCon,$sqlInsert);							
 						}
 					}
 				break;
 				case 'sincronizarListaMensajesServicios':
 					$lista=$res->RespuestaListaParametricas->listaCodigos;
-					$sqlDelete="DELETE FROM siat_sincronizarListaMensajesServicios";
+					$sqlDelete="DELETE FROM siat_sincronizarlistamensajesservicios";
 					mysqli_query($enlaceCon,$sqlDelete);
 					foreach ($lista as $li) {
-						$sqlInsert="INSERT INTO siat_sincronizarListaMensajesServicios (codigoClasificador,descripcion,created_at) VALUES ('$li->codigoClasificador','$li->descripcion',NOW())";
+						$sqlInsert="INSERT INTO siat_sincronizarlistamensajesservicios (codigoClasificador,descripcion,created_at) VALUES ('$li->codigoClasificador','$li->descripcion',NOW())";
 						mysqli_query($enlaceCon,$sqlInsert);
 					}
 				break;
 				case 'sincronizarListaProductosServicios':
 					$lista=$res->RespuestaListaProductos->listaCodigos;
-					$sqlDelete="DELETE FROM siat_sincronizarListaProductosServicios";
+					$sqlDelete="DELETE FROM siat_sincronizarlistaproductosservicios";
 					mysqli_query($enlaceCon,$sqlDelete);
 					foreach ($lista as $li) {
-						$sqlInsert="INSERT INTO siat_sincronizarListaProductosServicios (codigoActividad,codigoProducto,descripcionProducto,created_at) VALUES ('$li->codigoActividad','$li->codigoProducto','$li->descripcionProducto',NOW())";
+						$sqlInsert="INSERT INTO siat_sincronizarlistaproductosservicios (codigoActividad,codigoProducto,descripcionProducto,created_at) VALUES ('$li->codigoActividad','$li->codigoProducto','$li->descripcionProducto',NOW())";
 						mysqli_query($enlaceCon,$sqlInsert);
 					}
 				break;
 				case 'sincronizarParametricaEventosSignificativos':
 					$lista=$res->RespuestaListaParametricas->listaCodigos;
-					$sqlDelete="DELETE FROM siat_sincronizarParametricaEventosSignificativos";
+					$sqlDelete="DELETE FROM siat_sincronizarparametricaeventossignificativos";
 					mysqli_query($enlaceCon,$sqlDelete);
 					foreach ($lista as $li) {
-						$sqlInsert="INSERT INTO siat_sincronizarParametricaEventosSignificativos (codigoClasificador,descripcion,created_at) VALUES ('$li->codigoClasificador','$li->descripcion',NOW())";
+						$sqlInsert="INSERT INTO siat_sincronizarparametricaeventossignificativos (codigoClasificador,descripcion,created_at) VALUES ('$li->codigoClasificador','$li->descripcion',NOW())";
 						mysqli_query($enlaceCon,$sqlInsert);
 					}
 				break;
 				case 'sincronizarParametricaMotivoAnulacion':
 					$lista=$res->RespuestaListaParametricas->listaCodigos;
-					$sqlDelete="DELETE FROM siat_sincronizarParametricaMotivoAnulacion";
+					$sqlDelete="DELETE FROM siat_sincronizarparametricamotivoanulacion";
 					mysqli_query($enlaceCon,$sqlDelete);
 					foreach ($lista as $li) {
-						$sqlInsert="INSERT INTO siat_sincronizarParametricaMotivoAnulacion (codigoClasificador,descripcion,created_at) VALUES ('$li->codigoClasificador','$li->descripcion',NOW())";
+						$sqlInsert="INSERT INTO siat_sincronizarparametricamotivoanulacion (codigoClasificador,descripcion,created_at) VALUES ('$li->codigoClasificador','$li->descripcion',NOW())";
 						mysqli_query($enlaceCon,$sqlInsert);
 					}
 				break;
 				case 'sincronizarParametricaTipoDocumentoIdentidad':
 					$lista=$res->RespuestaListaParametricas->listaCodigos;
-					$sqlDelete="DELETE FROM siat_sincronizarParametricaTipoDocumentoIdentidad";
+					$sqlDelete="DELETE FROM siat_sincronizarparametricatipodocumentoidentidad";
 					mysqli_query($enlaceCon,$sqlDelete);
 					foreach ($lista as $li) {
-						$sqlInsert="INSERT INTO siat_sincronizarParametricaTipoDocumentoIdentidad (codigoClasificador,descripcion,created_at) VALUES ('$li->codigoClasificador','$li->descripcion',NOW())";
+						$sqlInsert="INSERT INTO siat_sincronizarparametricatipodocumentoidentidad (codigoClasificador,descripcion,created_at) VALUES ('$li->codigoClasificador','$li->descripcion',NOW())";
 						mysqli_query($enlaceCon,$sqlInsert);
 					}
 				break;
 				case 'sincronizarParametricaTipoDocumentoSector':
 					$lista=$res->RespuestaListaParametricas->listaCodigos;
-					$sqlDelete="DELETE FROM siat_sincronizarParametricaTipoDocumentoSector";
+					$sqlDelete="DELETE FROM siat_sincronizarparametricatipodocumentosector";
 					mysqli_query($enlaceCon,$sqlDelete);
 					foreach ($lista as $li) {
-						$sqlInsert="INSERT INTO siat_sincronizarParametricaTipoDocumentoSector (codigoClasificador,descripcion,created_at) VALUES ('$li->codigoClasificador','$li->descripcion',NOW())";
+						$sqlInsert="INSERT INTO siat_sincronizarparametricatipodocumentosector (codigoClasificador,descripcion,created_at) VALUES ('$li->codigoClasificador','$li->descripcion',NOW())";
 						mysqli_query($enlaceCon,$sqlInsert);
 					}
 				break;
 				case 'sincronizarParametricaTipoEmision':
 					$lista=$res->RespuestaListaParametricas->listaCodigos;
-					$sqlDelete="DELETE FROM siat_sincronizarParametricaTipoEmision";
+					$sqlDelete="DELETE FROM siat_sincronizarparametricatipoemision";
 					mysqli_query($enlaceCon,$sqlDelete);
 					foreach ($lista as $li) {
-						$sqlInsert="INSERT INTO siat_sincronizarParametricaTipoEmision (codigoClasificador,descripcion,created_at) VALUES ('$li->codigoClasificador','$li->descripcion',NOW())";
+						$sqlInsert="INSERT INTO siat_sincronizarparametricatipoemision (codigoClasificador,descripcion,created_at) VALUES ('$li->codigoClasificador','$li->descripcion',NOW())";
 						mysqli_query($enlaceCon,$sqlInsert);
 					}
 				break;
 				case 'sincronizarParametricaTipoMetodoPago':
 					$lista=$res->RespuestaListaParametricas->listaCodigos;
-					$sqlDelete="DELETE FROM siat_sincronizarParametricaTipoMetodoPago";
+					$sqlDelete="DELETE FROM siat_sincronizarparametricatipometodopago";
 					mysqli_query($enlaceCon,$sqlDelete);
 					foreach ($lista as $li) {
-						$sqlInsert="INSERT INTO siat_sincronizarParametricaTipoMetodoPago (codigoClasificador,descripcion,created_at) VALUES ('$li->codigoClasificador','$li->descripcion',NOW())";
+						$sqlInsert="INSERT INTO siat_sincronizarparametricatipometodopago (codigoClasificador,descripcion,created_at) VALUES ('$li->codigoClasificador','$li->descripcion',NOW())";
 						mysqli_query($enlaceCon,$sqlInsert);
 					}
 				break;
 				case 'sincronizarParametricaTipoMoneda':
 					//$lista=$res->RespuestaListaParametricas->listaCodigos;
 					$lista=$res->listaCodigos;
-					$sqlDelete="DELETE FROM siat_sincronizarParametricaTipoMoneda";
+					$sqlDelete="DELETE FROM siat_sincronizarparametricatipomoneda";
 					mysqli_query($enlaceCon,$sqlDelete);
 					foreach ($lista as $li) {
-						$sqlInsert="INSERT INTO siat_sincronizarParametricaTipoMoneda (codigoClasificador,descripcion,created_at) VALUES ('$li->codigoClasificador','$li->descripcion',NOW())";
+						$sqlInsert="INSERT INTO siat_sincronizarparametricatipomoneda (codigoClasificador,descripcion,created_at) VALUES ('$li->codigoClasificador','$li->descripcion',NOW())";
 						mysqli_query($enlaceCon,$sqlInsert);
 					}
 				break;				

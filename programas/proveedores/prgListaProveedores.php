@@ -3,10 +3,13 @@
 require("../../conexionmysqli.php");
 require("../../estilos_almacenes.inc");
 
-echo "<center>";
+echo "<h2 align='center'>Distribuidores</h2>";
 
-echo "<h1>Distribuidores</h1>";
-echo "<table class='texto'>";
+echo "<div class='divBotones'><input class='boton' type='button' value='Adicionar' onclick='javascript:frmAdicionar();'>
+<input class='boton' type='button' value='Editar' onclick='javascript:frmModificar();'>
+<input class='boton2' type='button' value='Eliminar' onclick='javascript:frmEliminar();'></div>";
+echo "<br>";
+echo "<center><table class='texto'>";
 echo "<tr>";
 echo "<th>&nbsp;</th><th>Nombre</th><th>Direccion</th><th>Telefono 1</th><th>Telefono 2</th><th>Contacto</th><th>Detalle Lineas</th><th>Ver Lineas</th>";
 echo "</tr>";

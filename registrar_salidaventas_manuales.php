@@ -226,11 +226,25 @@ function nuevoAjax()
 }
 
 function listaMateriales(f){
+		var stock=0;
+	if($("#solo_stock").is(":checked")){
+		stock=1;
+	}
+	/*TIPO DE SALIDA VENTA*/
+	var tipoSalida=1001;
 	var contenedor;
 	var codTipo=f.itemTipoMaterial.value;
 	var nombreItem=f.itemNombreMaterial.value;
-	contenedor = document.getElementById('divListaMateriales');
+	//var codigoMat=(f.itemCodigoMaterial.value);
 
+	var nomAccion=f.itemAccionMaterialNom.value;
+	var nomPrincipio=f.itemPrincipioMaterialNom.value;
+
+   if(nomAccion==""&&nomPrincipio==""&&nombreItem==""){
+     alert("Debe ingresar un criterio de busqueda"+nombreItem);
+   }else{
+	contenedor = document.getElementById('divListaMateriales');
+    contenedor.innerHTML="<br><br><br><br><br><br><p class='text-muted'style='font-size:50px'>Buscando Producto(s)...</p>";
 	var arrayItemsUtilizados=new Array();	
 	var i=0;
 	for(var j=1; j<=num; j++){
@@ -240,15 +254,25 @@ function listaMateriales(f){
 			i++;
 		}
 	}
-	
 	ajax=nuevoAjax();
-	ajax.open("GET", "ajaxListaMateriales.php?codTipo="+codTipo+"&nombreItem="+nombreItem+"&arrayItemsUtilizados="+arrayItemsUtilizados,true);
+	ajax.open("GET", "ajaxListaMateriales.php?tipoSalida="+tipoSalida+"&codTipo="+codTipo+"&nombreItem="+nombreItem+"&arrayItemsUtilizados="+arrayItemsUtilizados+"&codProv="+codTipo+"&stock="+stock+"&nomAccion="+nomAccion+"&nomPrincipio="+nomPrincipio,true);
 	ajax.onreadystatechange=function() {
-		if (ajax.readyState==4) {
-			contenedor.innerHTML = ajax.responseText
-		}
+		if (ajax.readyState==4) {			
+			contenedor.innerHTML = ajax.responseText;
+			/*var oRows = document.getElementById('listaMaterialesTabla').getElementsByTagName('tr');
+            var nFilas = oRows.length;					
+			if(parseInt(nFilas)==2){
+				if(ajax.responseText!=""){
+				  document.getElementsByClassName('enlace_ref')[0].click();	
+				}				
+				//$(".enlace_ref").click();
+			}
+			//
+			document.getElementById('itemCodigoMaterial').focus();				*/
+		}		
 	}
 	ajax.send(null)
+   }
 }
 
 function ajaxTipoDoc(f){
@@ -1670,23 +1694,25 @@ while($dat2=mysqli_fetch_array($resp2)){
 </fieldset>
 
 
-<div id="divRecuadroExt" style="background-color:#666; position:absolute; width:800px; height: 400px; top:30px; left:150px; visibility: hidden; opacity: .70; -moz-opacity: .70; filter:alpha(opacity=70); -webkit-border-radius: 20px; -moz-border-radius: 20px; z-index:2; overflow: auto;">
+<!--AQUI ESTA EL MODAL PARA LA BUSQUEDA DE PRODUCTOS-->
+<div id="divRecuadroExt" style="background-color:#666; position:absolute; width:1000px; height: 550px; top:30px; left:50px; visibility: hidden; opacity: .70; -moz-opacity: .70; filter:alpha(opacity=70); -webkit-border-radius: 20px; -moz-border-radius: 20px; z-index:2; overflow: auto;">
 </div>
 
-<div id="divboton" style="position: absolute; top:20px; left:920px;visibility:hidden; text-align:center; z-index:3">
+<div id="divboton" style="position: absolute; top:20px; left:1010px;visibility:hidden; text-align:center; z-index:3">
 	<a href="javascript:Hidden();"><img src="imagenes/cerrar4.png" height="45px" width="45px"></a>
 </div>
 
-<div id="divProfileData" style="background-color:#FFF; width:750px; height:350px; position:absolute; top:50px; left:170px; -webkit-border-radius: 20px; 	-moz-border-radius: 20px; visibility: hidden; z-index:2; overflow: auto;">
+<div id="divProfileData" style="background-color:#FFF; width:950px; height:500px; position:absolute; top:50px; left:70px; -webkit-border-radius: 20px; 	-moz-border-radius: 20px; visibility: hidden; z-index:2; overflow: auto;">
   	<div id="divProfileDetail" style="visibility:hidden; text-align:center">
 		<table align='center'>
-			<tr><th>Grupo</th><th>Material</th><th>&nbsp;</th></tr>
+			<tr><th>Proveedor</th><th>Acci&oacute;n Terap&eacute;utica</th><th>Principio Activo</th></tr>
 			<tr>
-			<td><select class="textogranderojo" name='itemTipoMaterial' style="width:300px">
+			<td width="30%">
+			<select class="selectpicker col-sm-12" name='itemTipoMaterial' id='itemTipoMaterial' data-live-search='true' data-size='6' data-style='btn btn-default btn-lg ' style="width:300px"> <!-- data-live-search='true' data-size='6' data-style='btn btn-default btn-lg '-->
 			<?php
-			$sqlTipo="select g.codigo, g.nombre from grupos g
-			where g.estado=1 order by 2;";
-			$respTipo=mysqli_query($enlaceCon,$sqlTipo);
+			$sqlTipo="select p.cod_proveedor,p.nombre_proveedor from proveedores p
+			where p.cod_proveedor>0 order by 2;";
+			$respTipo=mysqli_query($enlaceCon, $sqlTipo);
 			echo "<option value='0'>--</option>";
 			while($datTipo=mysqli_fetch_array($respTipo)){
 				$codTipoMat=$datTipo[0];
@@ -1697,21 +1723,43 @@ while($dat2=mysqli_fetch_array($resp2)){
 
 			</select>
 			</td>
-			<td>
-				<input type='text' name='itemNombreMaterial' id='itemNombreMaterial' class="textogranderojo" onkeypress="return pressEnter(event, this.form);">
+			<td width="40%">
+			<input type='text' placeholder='Accion Terapeutica' name='itemAccionMaterialNom' id='itemAccionMaterialNom' class="textogranderojo" onkeypress="return pressEnter(event, this.form);">
+			</td>
+			<td width="30%">
+			<input type='text' placeholder='Principio Activo' name='itemPrincipioMaterialNom' id='itemPrincipioMaterialNom' class="textogranderojo" onkeypress="return pressEnter(event, this.form);">
+			</td>
+			<tr><th>&nbsp;</th><th>Codigo / Producto</th><th>&nbsp;</th></tr>
+	     <tr>
+	     	<td>
+				<div class="custom-control custom-checkbox small float-left">
+                    <input type="checkbox" class="" id="solo_stock" checked="">
+                    <label class="text-dark font-weight-bold" for="solo_stock">&nbsp;&nbsp;&nbsp;Solo Productos con Stock</label>
+         </div>
 			</td>
 			<td>
-				<input type='button' class='boton' value='Buscar' onClick="listaMateriales(this.form)">
+				<div class="row">
+					<div class="col-sm-3"><!--input type='number' placeholder='--' name='itemCodigoMaterial' id='itemCodigoMaterial' class="textogranderojo" onkeypress="return pressEnter(event, this.form);" onkeyup="return pressEnter(event, this.form);"></div-->
+					<div class="col-sm-9"><input type='text' placeholder='Descripción' name='itemNombreMaterial' id='itemNombreMaterial' class="textogranderojo" onkeypress="return pressEnter(event, this.form);"></div>				   
+				</div>
+				
+			</td>	
+					
+			<td align="center">				
+				<input type='button' id="enviar_busqueda" class='boton' value='Buscar Producto' onClick="listaMateriales(this.form)">	
+				<input type='button' id="enviar_busqueda" class='boton2' value='Limpiar' onClick="limpiarFormularioBusqueda();return false;">	
+				<!--a href="#" class="btn btn-warning btn-fab float-right" title="Limpiar Formulario de Busqueda" data-toggle='tooltip' onclick="limpiarFormularioBusqueda();return false;"><i class="material-icons">cleaning_services</i></a-->
 			</td>
-			</tr>
+ 			</tr>
 			
-		</table>
+		</table>		
 		<div id="divListaMateriales">
 		</div>
 	
 	</div>
 </div>
 <div style="height:200px;"></div>
+
 
 <div class="pie-div">
 	<div class='float-right' style="padding-right:15px;"><a href='#' class='boton-plomo' style="width:10px !important;height:10px !important;font-size:10px !important;" id="boton_nota_remision" onclick="cambiarNotaRemision()">F</a></div>

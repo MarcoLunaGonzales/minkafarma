@@ -1,5 +1,7 @@
 <?php
-
+require("conexionmysqli.php");
+require('estilos.inc');
+	
 echo "<script language='Javascript'>
 		function enviar_nav()
 		{	location.href='registrar_material_apoyo.php';
@@ -70,12 +72,15 @@ echo "<script language='Javascript'>
 		}
 		</script>";
 		
-	require("conexionmysqli.php");
-	require('estilos.inc');
 	
 	echo "<h1>Registro de Producto</h1>";
-
 	echo "<form method='post' action=''>";
+
+	//$vista=0;
+	if(!isset($_GET['vista'])){
+		$vista=0;
+	}
+
 	$sql="select m.codigo_material, m.descripcion_material, m.estado, 
 		(select e.nombre_empaque from empaques e where e.cod_empaque=m.cod_empaque), 
 		(select f.nombre_forma_far from formas_farmaceuticas f where f.cod_forma_far=m.cod_forma_far), 

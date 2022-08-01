@@ -1,7 +1,3 @@
-<?php
-require("../../conexionmysqli.inc");
-require("../../estilos_almacenes.inc");
-?>
 <script type="text/javascript">
  function activar_input_salida_almacen(index){
   var check=document.getElementById("factura_seleccionada"+index);
@@ -14,6 +10,8 @@ require("../../estilos_almacenes.inc");
 </script>
 
 <?php //ESTADO FINALIZADO
+require("../../conexionmysqli.inc");
+require("../../estilos_almacenes.inc");
 
 if(isset($_GET['rpt_territorio'])){
   $rpt_territorio=$_GET['rpt_territorio'];
@@ -30,7 +28,7 @@ if(isset($_GET['rpt_territorio'])){
         <div class="card">
           <div class="card-header card-header-icon">
             <div class="card-icon bg-blanco">
-              <img class="" width="40" height="40" src="../../imagenes/icon_detail.png">
+              <img class="" width="40" height="40" src="../../imagenes/icon_farma.png">
             </div>
             <h4 class="card-title text-center">FACTURAS EMISION OFFLINE <br></h4>            
             <div class="row">
@@ -43,16 +41,14 @@ if(isset($_GET['rpt_territorio'])){
               <label class="col-sm-1 col-form-label">Motivo </label>
               <div class="col-sm-4">
                 <div class="form-group">
-                    <select id="cod_motivo" name="cod_motivo" class="selectpicker form-control" data-style="btn btn-primary" data-show-subtext="true" data-live-search="true" required="true">
+                    <select id="cod_motivo" name="cod_motivo" class="selectpicker form-control " data-style="btn btn-primary" data-show-subtext="true" data-live-search="true" required="true">
                     <?php
-                    $sql="select codigo,descripcion from siat_tipos_evento where cod_estadoreferencial=1 and bandera=1";
+                    $sql="select codigo,descripcion from  siat_tipos_evento where cod_estadoreferencial=1 and bandera=1";
                       $resp=mysqli_query($enlaceCon,$sql);
                       while($row=mysqli_fetch_array($resp)){ 
-                      ?>
-                      <option value="<?=$row["codigo"];?>"><?=$row["descripcion"];?></option>
-                      <?php 
-                      } 
-                      ?> 
+                     ?>
+                      <option  value="<?=$row["codigo"];?>"><?=$row["descripcion"];?></option>
+                    <?php } ?> 
                     </select>
                 </div>
               </div>

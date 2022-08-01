@@ -1,4 +1,7 @@
 <?php
+require("conexionmysqli.inc");
+require("estilos_almacenes.inc");
+
 echo "<script language='JavaScript'>
 		function envia_formulario(f)
 		{	var rpt_territorio, rpt_almacen, tipo_salida,fecha_ini, fecha_fin, tipo_item, rpt_linea,tipo_reporte;
@@ -21,13 +24,8 @@ echo "<script language='JavaScript'>
 			return(true);
 		}
 		</script>";
-require("conexion.inc");
-if($global_tipoalmacen==1)
-{	require("estilos_almacenes_central.inc");
-}
-else
-{	require("estilos_almacenes.inc");
-}$fecha_rptdefault=date("d/m/Y");
+
+$fecha_rptdefault=date("d/m/Y");
 echo "<table align='center' class='textotit'><tr><th>Reporte Diferencias entre Kardex y Existencias</th></tr></table><br>";
 echo"<form method='post' action=''>";
 	echo"\n<table class='texto' border='1' align='center' cellSpacing='0' width='30%'>\n";
@@ -38,9 +36,9 @@ echo"<form method='post' action=''>";
 	else
 	{	$sql="select cod_ciudad, descripcion from ciudades where cod_ciudad='$global_agencia' order by descripcion";
 	}
-	$resp=mysql_query($sql);
+	$resp=mysqli_query($enlaceCon,$sql);
 	echo "<option value=''></option>";
-	while($dat=mysql_fetch_array($resp))
+	while($dat=mysqli_fetch_array($resp))
 	{	$codigo_ciudad=$dat[0];
 		$nombre_ciudad=$dat[1];
 		if($rpt_territorio==$codigo_ciudad)
@@ -53,8 +51,8 @@ echo"<form method='post' action=''>";
 	echo "</select></td></tr>";
 	echo "<tr><th align='left'>Almacen</th><td><select name='rpt_almacen' class='texto'>";
 	$sql="select cod_almacen, nombre_almacen from almacenes where cod_ciudad='$rpt_territorio'";
-	$resp=mysql_query($sql);
-	while($dat=mysql_fetch_array($resp))
+	$resp=mysqli_query($enlaceCon,$sql);
+	while($dat=mysqli_fetch_array($resp))
 	{	$codigo_almacen=$dat[0];
 		$nombre_almacen=$dat[1];
 		if($rpt_almacen==$codigo_almacen)

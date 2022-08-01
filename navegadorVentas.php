@@ -449,7 +449,7 @@ if(!isset($fecha_sistema)){
 echo "<form method='post' action=''>";
 echo "<input type='hidden' name='fecha_sistema' value='$fecha_sistema'>";
 //$global_admin_cargo
-echo "<h1>Listado de Ventas</h1>";
+echo "<h1>Listado de Ventas &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='navegadorVentas2.php'><img src='imagenes/go2.png' width='15'></a></h1>";
 echo "<table class='texto' cellspacing='0' width='90%'>
 <tr><th>Leyenda:</th>
 <th>Ventas Registradas</th><td bgcolor='#f9e79f' width='5%'></td>
@@ -482,7 +482,8 @@ $consulta = "
     (select c.nombre_cliente from clientes c where c.cod_cliente = s.cod_cliente), s.cod_tipo_doc, razon_social, nit,
     (select t.nombre_tipopago from tipos_pago t where t.cod_tipopago=s.cod_tipopago)as tipopago,siat_estado_facturacion
     FROM salida_almacenes s, tipos_salida ts 
-    WHERE s.cod_tiposalida = ts.cod_tiposalida AND s.cod_almacen = '$global_almacen' and s.cod_tiposalida=1001 ";
+    WHERE s.cod_tiposalida = ts.cod_tiposalida AND s.cod_almacen = '$global_almacen' and s.cod_tiposalida=1001 
+    and s.cod_tipo_doc in (1,4)";
 
 if($txtnroingreso!="")
    {$consulta = $consulta."AND s.nro_correlativo='$txtnroingreso' ";

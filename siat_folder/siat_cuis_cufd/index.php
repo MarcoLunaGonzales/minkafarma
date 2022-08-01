@@ -89,7 +89,7 @@ function sincronizarCufdCuis(){
                       </thead>
                       <tbody>
                            <?php
-                        $sql="SELECT c.cod_ciudad,c.nombre_ciudad,c.direccion,c.cod_impuestos,(SELECT codigoPuntoVenta from siat_PuntoVenta where cod_ciudad=c.cod_ciudad)as codigoPuntoVenta,(SELECT cuis FROM siat_cuis where cod_gestion='$anioActual' and cod_ciudad=c.cod_ciudad and estado=1 limit 1)cuis,(SELECT cufd FROM siat_cufd where fecha='$fechaActual' and cod_ciudad=c.cod_ciudad and estado=1 limit 1)cufd  from ciudades c where c.cod_impuestos>=0 having codigoPuntoVenta>0 order by c.cod_ciudad;";
+                        $sql="SELECT c.cod_ciudad,c.nombre_ciudad,c.direccion,c.cod_impuestos,(SELECT codigoPuntoVenta from siat_puntoventa where cod_ciudad=c.cod_ciudad)as codigoPuntoVenta,(SELECT cuis FROM siat_cuis where cod_gestion='$anioActual' and cod_ciudad=c.cod_ciudad and estado=1 limit 1)cuis,(SELECT cufd FROM siat_cufd where fecha='$fechaActual' and cod_ciudad=c.cod_ciudad and estado=1 limit 1)cufd  from ciudades c where c.cod_impuestos>=0 having codigoPuntoVenta>0 order by c.cod_ciudad;";
                         //echo $sql;
                         $resp=mysqli_query($enlaceCon,$sql);
                         while($dat=mysqli_fetch_array($resp)){

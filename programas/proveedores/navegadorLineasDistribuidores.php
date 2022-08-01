@@ -1,3 +1,10 @@
+<?php
+require("../../conexionmysqli.php");
+require("../../estilos_almacenes.inc");
+require("../../funcion_nombres.php");
+echo "<link rel='stylesheet' type='text/css' href='../../stilos.css'/>";
+
+?>
 <script language='Javascript'>
 		function enviar_nav(codProveedor)
 		{	location.href='registrarLineaDistribuidor.php?codProveedor='+codProveedor;
@@ -66,18 +73,19 @@
 <form>
 <?php
 
-require("../../conexionmysqli.php");
-require("../../estilos_almacenes.inc");
-require("../../funcion_nombres.php");
-echo "<link rel='stylesheet' type='text/css' href='../../stilos.css'/>";
 
 $codProveedor=$_GET['codProveedor'];
 $nombreProveedor=nombreProveedor($enlaceCon,$codProveedor,$enlaceCon);
 
+echo "<h2>Lineas de Distribuidor <br> $nombreProveedor</h2>";
+
+echo "<div class='divBotones'><input class='boton' type='button' value='Adicionar' onClick='enviar_nav($codProveedor);'>
+<input class='boton' type='button' value='Editar' onClick='editar_nav(this.form, $codProveedor);'>
+<input class='boton2' type='button' value='Eliminar' onClick='eliminar_nav(this.form, $codProveedor)'>
+<input class='boton2' type='button' value='Cancelar' onClick='location.href=(\"inicioProveedores.php\");'>
+</div>";
+
 echo "<center>";
-echo "<h1>Lineas de Distribuidor <br> $nombreProveedor</h1>";
-
-
 echo "<table class='texto'>";
 echo "<tr>";
 echo "<th>&nbsp;</th><th>Linea</th><th>Abreviatura</th><th>Procedencia</th><th>Margen de precio</th><th>Contacto 1</th><th>Contacto 2</th>";

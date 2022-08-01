@@ -4,7 +4,7 @@ require "../funciones_siat.php";
 require "../../conexionmysqli.php";
 
 $ciudad=$_GET['cod_ciudad'];
-$sql="select c.cod_impuestos,(SELECT codigoPuntoVenta from siat_PuntoVenta where cod_ciudad=c.cod_ciudad)as codigoPuntoVenta from ciudades c where c.cod_ciudad='$ciudad'";
+$sql="select c.cod_impuestos,(SELECT codigoPuntoVenta from siat_puntoventa where cod_ciudad=c.cod_ciudad)as codigoPuntoVenta from ciudades c where c.cod_ciudad='$ciudad'";
 $resp=mysqli_query($enlaceCon,$sql);
 $dat=mysqli_fetch_array($resp);
 $cod_impuestos=$dat[0];

@@ -50,6 +50,9 @@ include("datosUsuario.php");
 	
 	
 	<nav id="menu">
+
+		<div id="panel-menu">
+
 		<ul>
 			<li><span>Datos Generales</span>
 				<ul>
@@ -98,6 +101,8 @@ include("datosUsuario.php");
 				<ul>
 					<li><a href="navegador_salidamateriales.php" target="contenedorPrincipal">Listado de Traspasos</a></li>
 					<li><a href="navegadorVentas.php" target="contenedorPrincipal">Listado de Ventas</a></li>
+					<li><a href="registrar_salidaventas_manuales.php" target="_blank">Factura Manual de Contigencia</a></li>
+
 				</ul>	
 			</li>
 			<li><span>Marcados de Personal</span>
@@ -116,24 +121,11 @@ include("datosUsuario.php");
 					
 				</ul>	
 			</li>	
-			<!--li><span>Listado de Cobranzas</span>
-				<ul>
-					<li><a href="navegadorCobranzas.php" target="contenedorPrincipal">Listado de Cobranzas</a></li>
-				</ul>	
-			</li-->
-			<!--li><span>Configuracion</span>
-				<ul>
-					<li><a href="navegadorDolar.php" target="contenedorPrincipal">Cambiar Cotizacion de Dolar</a></li>
-				</ul>	
-			</li-->
 			<li><a href="registrar_ingresomateriales.php" target="contenedorPrincipal">Registrar Ingreso **</a></li>
-			<li><a href="registrar_salidaventas.php" target="contenedorPrincipal">Vender / Facturar **</a></li>
+			<li><a href="registrar_salidaventas.php" target="_blank">Vender / Facturar **</a></li>
 			<li><a href="listadoProductosStock.php" target="_blank">Listado de Productos **</a></li>
-
 			<li><a href="rptProductosVencer.php" target="contenedorPrincipal">Productos proximos a Vencer</a></li>
-	
 			<li><a href="navegador_etiquetas.php" target="contenedorPrincipal">Impresion de Etiquetas</a></li>
-
 			<li><span>Reportes</span>
 				<ul>
 					<li><span>Movimiento de Almacen</span>
@@ -184,7 +176,10 @@ include("datosUsuario.php");
 						</ul>	
 					</li-->
 				</ul>
-			</li>			
+			</li>	
+		</ul>
+		
+		</div>		
 	</nav>
 </div>
 
