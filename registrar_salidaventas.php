@@ -338,9 +338,9 @@ function ajaxPrecioItem(indice){
 	ajax.onreadystatechange=function() {
 		if (ajax.readyState==4) {
 			var respuesta=ajax.responseText.split("#####");
-			contenedor.innerHTML = respuesta[0];
-      document.getElementById("descuentoProducto"+indice).value=(respuesta[1]*parseFloat(cantidadUnitaria)); 
-			calculaMontoMaterial(indice);
+				contenedor.innerHTML = respuesta[0];				
+				document.getElementById("descuentoProducto"+indice).value=(respuesta[1]*parseFloat(cantidadUnitaria)); 
+	    calculaMontoMaterial(indice);
 		}
 	}
 	ajax.send(null);
@@ -518,6 +518,9 @@ function calculaMontoMaterial(indice){
 
 	console.log("entro calcular monto material");
 	var cantidadUnitaria=document.getElementById("cantidad_unitaria"+indice).value;
+	if(cantidadUnitaria==""){
+		cantidadUnitaria=0;
+	}
 	var precioUnitario=document.getElementById("precio_unitario"+indice).value;
 	var descuentoUnitario=document.getElementById("descuentoProducto"+indice).value;
 
@@ -1025,6 +1028,31 @@ function validar(f, ventaDebajoCosto){
 		alert("El ingreso debe tener al menos 1 item.");
 		return(false);
 	}
+	Swal.fire({
+        title: '¿Esta seguro de Realizar la Venta?',
+        text: "Se procederá con el guardado del documento",
+         type: 'info',
+        showCancelButton: true,
+        confirmButtonClass: 'btn btn-info',
+        cancelButtonClass: 'btn btn-default',
+        confirmButtonText: tituloBoton,
+        cancelButtonText: 'Cancelar',
+        buttonsStyling: false
+       }).then((result) => {
+          if (result.value) {
+          	//document.getElementById("confirmacion_guardado").value=1;
+          	//$("#confirmacion_guardado").val(1);
+            //$('#guardarSalidaVenta').submit();  
+            alert("enviando....");
+          } else if (result.dismiss === Swal.DismissReason.cancel) {
+            return(false);
+          }
+    });
+
+   if(1==1){
+   	alert("parando");
+   	return(false);
+   }
 }
 
 function checkSubmit() {
@@ -1042,7 +1070,7 @@ $(document).ready(function() {
         return false;
       }else{
       	document.getElementById("btsubmit").value = "Enviando...";
-        document.getElementById("btsubmit").disabled = true;
+				document.getElementById("btsubmit").disabled = true;        				
       }     
     });
 });
@@ -1541,7 +1569,7 @@ while($dat2=mysqli_fetch_array($resp2)){
 	</td>	
 	<td colspan="2">
 		<div id='divRazonSocial'>
-          <input type='text' name='razonSocial' id='razonSocial' value='<?php echo $razonSocialDefault; ?>' class="form-control" required placeholder="Ingrese la razon social" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();"  onchange='ajaxNitCliente(this.form);' pattern='[A-Z a-z 0-9 Ññ.-&]+'>          
+          <input type='text' name='razonSocial' id='razonSocial' value='<?php echo $razonSocialDefault; ?>' class="form-control" required placeholder="Ingrese la razon social" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();"  onchange='ajaxNitCliente(this.form);' pattern='[A-Za-z0-9Ññ.& ]+'>          
         </div>
         <span class="input-group-btn" style="position:absolute;width:10px !important;">
             <a href="#" onclick="ajaxVerificarNitCliente(); return false;" class="btn btn-info btn-sm" style="position:absolute;right: 100%;"><i class="material-icons">refresh</i> Verificar Nit</a>
@@ -1780,9 +1808,10 @@ while($dat2=mysqli_fetch_array($resp2)){
 <?php
 
 if($banderaErrorFacturacion==0){
-	echo "<div class='divBotones'>
-	        <input type='submit' class='boton' value='Guardar' id='btsubmit' name='btsubmit' onClick='return validar(this.form, $ventaDebajoCosto)'>
-					<input type='button' class='boton2' value='Cancelar' onClick='location.href=\"navegador_ingresomateriales.php\"';>
+	echo "<div class='divBotones2'>
+	        <input type='submit' class='boton' value='Guardar Venta' id='btsubmit' name='btsubmit' onClick='return validar(this.form, $ventaDebajoCosto)'>
+					
+					<!--input type='button' class='boton2' value='Cancelar' onClick='location.href=\"navegador_ingresomateriales.php\"';-->
 					
 					<a href='#' class='btn btn-default btn-sm btn-fab' style='background:#96079D' onclick='mostrarRegistroConTarjeta(); return false;' id='boton_tarjeta' title='AGREGAR TARJETA DE CREDITO' data-toggle='tooltip'><i class='material-icons'>credit_card</i></a>
 

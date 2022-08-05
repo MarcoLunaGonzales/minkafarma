@@ -1,6 +1,9 @@
 <?php
 
-require("../../conexionmysqli.php");
+require("../../conexionmysqli2.inc");
+ error_reporting(E_ALL);
+ ini_set('display_errors', '1');
+
 
 $nombreLinea = $_POST["nombreLinea"];
 $abreviatura = $_POST["abreviatura"];

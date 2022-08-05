@@ -206,9 +206,9 @@ function stockProducto($enlaceCon,$almacen, $item){
 	//
 	//require("conexion.inc");
 	$fechaActual=date("Y-m-d");
-	$fechaInicioSistema="2020-11-19 00:00:00";
+	$fechaInicioSistema="2000-11-19 00:00:00";
 	
-	$sql_ingresos="select sum(id.cantidad_unitaria) from ingreso_almacenes i, ingreso_detalle_almacenes id
+		   $sql_ingresos="select sum(id.cantidad_unitaria) from ingreso_almacenes i, ingreso_detalle_almacenes id
 			where i.cod_ingreso_almacen=id.cod_ingreso_almacen and i.fecha between '$fechaInicioSistema' and '$fechaActual' and i.cod_almacen='$almacen'
 			and id.cod_material='$item' and i.ingreso_anulado=0";
 			$resp_ingresos=mysqli_query($enlaceCon,$sql_ingresos);
@@ -582,7 +582,29 @@ function ubicacionProducto($enlaceCon,$almacen, $item){
 	$dat_ingresos=mysqli_fetch_array($resp_ingresos);
 	$ubicacion=$dat_ingresos[0]."-".$dat_ingresos[1];
 	return($ubicacion);
-	
+}
+function precioProducto($enlaceCon,$item){
+	//require("conexionmysqli.php");
+	$fechaActual=date("Y-m-d");
+
+	$sql="SELECT p.`precio` from precios p where p.`codigo_material`='$item' and p.`cod_precio`='1'";
+	$resp=mysqli_query($enlaceCon,$sql);
+	$dat=mysqli_fetch_array($resp);
+	$precio=0;
+	$precio=$dat[0];
+	return($precio);
+}
+function margenLinea($enlaceCon,$item){
+	//require("conexionmysqli.php");
+	$fechaActual=date("Y-m-d");
+
+	$sql="select p.margen_precio from material_apoyo m, proveedores_lineas p where 
+		p.cod_linea_proveedor=m.cod_linea_proveedor and m.codigo_material=$item;";
+	$resp=mysqli_query($enlaceCon,$sql);
+	$dat=mysqli_fetch_array($resp);
+	$margen=0;
+	$margen=$dat[0];
+	return($margen);
 }
 
 ?>

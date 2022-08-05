@@ -1,7 +1,7 @@
 <?php
 date_default_timezone_set('America/La_Paz');
 echo"<link href='stilos.css' rel='stylesheet' type='text/css'>";  
-require("conexionmysqli.php");
+require("conexionmysqli2.inc");
 
 $global_agencia=$_COOKIE["global_agencia"];
 $sql_almacen="select cod_almacen, nombre_almacen from almacenes where cod_ciudad='$global_agencia'";

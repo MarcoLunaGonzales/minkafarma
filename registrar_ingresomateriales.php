@@ -209,13 +209,9 @@ function calculaPrecioCliente(preciocompra, index){
 	var margen=document.getElementById('margenlinea'+index).value;
 	var cantidad=document.getElementById('cantidad_unitaria'+index).value;
 	var costounitario=costo/cantidad;
-<<<<<<< HEAD
-	console.log("costoUnitario: "+costounitario);
-=======
 
 	console.log("costoUnitario: "+costounitario); // s dejo esta parte de codigo
 
->>>>>>> bfd3d5cc397f0c13bcb9178db7282ffb66553e1d
 	var preciocliente=costounitario+(costounitario*(margen/100));
 	preciocliente=redondear(preciocliente,1);
 	preciocliente=number_format(preciocliente,2);

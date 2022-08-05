@@ -535,6 +535,14 @@ a:active {
     padding: 50px;
 }
 
+.divBotones2{
+    width: 600px;
+    height: 40px;
+    align: left;
+    border: 2px;
+    margin-left: 150px;
+    padding: 10px;
+}
 #i_div0_0 a, #i_txt0_0 {
     color: #000;
     font: "Times New Roman";

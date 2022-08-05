@@ -1,10 +1,10 @@
 <?php
 require('estilos_reportes_almacencentral.php');
 require('function_formatofecha.php');
-require('conexion.inc');
+require('conexionmysqli2.inc');
 require('funcion_nombres.php');
 
-$sqlUTF=mysql_query("SET NAMES utf8");
+$sqlUTF=mysqli_query($enlaceCon, "SET NAMES utf8");
 
 $fecha_ini=$_GET['fecha_ini'];
 $fecha_fin=$_GET['fecha_fin'];
@@ -19,7 +19,7 @@ $rpt_territorio=$_GET['rpt_territorio'];
 
 $fecha_reporte=date("d/m/Y");
 
-$nombre_territorio=nombreTerritorio($rpt_territorio);
+$nombre_territorio=nombreTerritorio($enlaceCon, $rpt_territorio);
 
 echo "<table align='center' class='textotit' width='100%'><tr><td align='center'>Ranking de Ventas x Item
 	<br>Territorio: $nombre_territorio <br> De: $fecha_ini A: $fecha_fin
@@ -35,7 +35,7 @@ $sql="select m.`codigo_material`, m.`descripcion_material`, (select nombre from 
 	group by m.`codigo_material` order by montoVenta desc;";
 	
 //	echo $sql;
-$resp=mysql_query($sql);
+$resp=mysqli_query($enlaceCon, $sql);
 
 echo "<br><table align='center' class='texto' width='100%'>
 <tr>
@@ -49,7 +49,7 @@ echo "<br><table align='center' class='texto' width='100%'>
 </tr>";
 
 $totalVenta=0;
-while($datos=mysql_fetch_array($resp)){	
+while($datos=mysqli_fetch_array($resp)){	
 	$codItem=$datos[0];
 	$nombreItem=$datos[1];
 	$nombreMarca=$datos[2];

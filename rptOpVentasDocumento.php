@@ -1,6 +1,6 @@
 <?php
 
-require("conexion.inc");
+require("conexionmysqli2.inc");
 require("estilos_almacenes.inc");
 
 $fecha_rptdefault=date("Y-m-d");
@@ -12,9 +12,9 @@ echo"<form method='post' action='rptVentasDocumento.php' target='_blank'>";
 	echo"\n<table class='texto' align='center' cellSpacing='0' width='50%'>\n";
 	echo "<tr><th align='left'>Territorio</th><td><select name='rpt_territorio' class='texto' required>";
 	$sql="select cod_ciudad, descripcion from ciudades order by descripcion";
-	$resp=mysql_query($sql);
+	$resp=mysqli_query($enlaceCon, $sql);
 	echo "<option value=''></option>";
-	while($dat=mysql_fetch_array($resp))
+	while($dat=mysqli_fetch_array($resp))
 	{	$codigo_ciudad=$dat[0];
 		$nombre_ciudad=$dat[1];
 		if($globalCiudad==$codigo_ciudad){
@@ -40,8 +40,8 @@ echo"<form method='post' action='rptVentasDocumento.php' target='_blank'>";
 	<td>
 	<select class='texto' name='tipo_pago[]' id='tipo_pago' multiple size='4' required>";
 	$sql="select cod_tipopago, nombre_tipopago from tipos_pago order by 2";
-	$resp=mysql_query($sql);
-	while($dat=mysql_fetch_array($resp))
+	$resp=mysqli_query($enlaceCon, $sql);
+	while($dat=mysqli_fetch_array($resp))
 	{	$codigo=$dat[0];
 		$nombre=$dat[1];
 		echo "<option value='$codigo' selected>$nombre</option>";

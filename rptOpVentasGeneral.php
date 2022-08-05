@@ -17,7 +17,7 @@ function envia_formulario(f)
 </script>
 <?php
 
-require("conexion.inc");
+require("conexionmysqli2.inc");
 require("estilos_almacenes.inc");
 
 $fecha_rptdefault=date("Y-m-d");
@@ -30,9 +30,9 @@ echo"<form method='post' action=''>";
 	echo "<tr><th align='left'>Territorio</th>
 	<td><select name='rpt_territorio' class='texto' required>";
 	$sql="select cod_ciudad, descripcion from ciudades order by descripcion";
-	$resp=mysql_query($sql);
+	$resp=mysqli_query($enlaceCon, $sql);
 	echo "<option value=''></option>";
-	while($dat=mysql_fetch_array($resp))
+	while($dat=mysqli_fetch_array($resp))
 	{	$codigo_ciudad=$dat[0];
 		$nombre_ciudad=$dat[1];
 		if($globalCiudad==$codigo_ciudad){

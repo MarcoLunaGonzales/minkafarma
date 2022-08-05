@@ -1,45 +1,35 @@
 <html>
 <head>
 	<meta charset="utf-8" />
-	<title>MinkaSoftware</title> 
-	    <link rel="shortcut icon" href="imagenes/icon_farma.ico" type="image/x-icon">
+	<title>Minka Software</title>
+
 	<link type="text/css" rel="stylesheet" href="menuLibs/css/demo.css" />
-	<script type="text/javascript" src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
-	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
-	<style>  
-	.boton-rojo
-{
-    text-decoration: none !important;
-    padding: 10px !important;
-    font-weight: 600 !important;
-    font-size: 12px !important;
-    color: #ffffff !important;
-    background-color: #E73024 !important;
-    border-radius: 3px !important;
-    border: 2px solid #E73024 !important;
-}
-.boton-rojo:hover{
-    color: #000000 !important;
-    background-color: #ffffff !important;
-  }
-</style>
-     <link rel="stylesheet" href="dist/css/demo.css" />
-     <link rel="stylesheet" href="dist/mmenu.css" />
-	 <link rel="stylesheet" href="dist/demo.css" />
+	<link type="text/css" rel="stylesheet" href="menuLibs/dist/jquery.mmenu.css" />
+
+	<script type="text/javascript" src="lib/js/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript" src="menuLibs/dist/jquery.mmenu.js"></script>
+	<script type="text/javascript">
+		$(function() {
+			$('nav#menu').mmenu();
+		});
+		
+</script> 
+	</script>
+		
 </head>
 <body>
-<?php
+<?
 include("datosUsuario.php");
 ?>
 <div id="page">
 	<div class="header">
 		<a href="#menu"><span></span></a>
-		TuFarma - <?=$nombreEmpresa;?>
+		TuFarma - Farmacia Carmelita
 		<div style="position:absolute; width:95%; height:50px; text-align:right; top:0px; font-size: 9px; font-weight: bold; color: #fff;">
-			[<?=$fechaSistemaSesion;?>][<?=$horaSistemaSesion;?>]			
+			[<? echo $fechaSistemaSesion?>][<? echo $horaSistemaSesion;?>]			
 		<div>
 		<div style="position:absolute; width:95%; height:50px; text-align:left; top:0px; font-size: 9px; font-weight: bold; color: #fff;">
-			[<?=$nombreUsuarioSesion;?>][<?=$nombreAlmacenSesion;?>]
+			[<? echo $nombreUsuarioSesion?>][<? echo $nombreAlmacenSesion;?>]
 		<div>
 	</div>
 	
@@ -50,9 +40,6 @@ include("datosUsuario.php");
 	
 	
 	<nav id="menu">
-
-		<div id="panel-menu">
-
 		<ul>
 			<li><span>Ingresos</span>
 				<ul>
@@ -64,26 +51,16 @@ include("datosUsuario.php");
 				<ul>
 					<li><a href="navegador_salidamateriales.php" target="contenedorPrincipal">Listado de Traspasos</a></li>
 					<li><a href="navegadorVentas.php" target="contenedorPrincipal">Listado de Ventas</a></li>
-					<li><a href="registrar_salidaventas_manuales.php" target="_blank">Factura Manual de Contigencia</a></li>
 				</ul>	
 			</li>
+			<li><a href="registrar_salidaventas.php" target="contenedorPrincipal">Vender / Facturar</a></li>
+			<li><a href="navegadorVentas.php" target="contenedorPrincipal">Listado de Ventas</a></li>
+			<li><a href="navegador_ingresomateriales.php" target="contenedorPrincipal">Listado de ingresos</a></li>
 			<li><span>Marcados de Personal</span>
 				<ul>
-					<li><a href="registrar_marcado.php" target="contenedorPrincipal">Registro de Marcados</a></li>
 					<li><a href="rptOpMarcados.php" target="contenedorPrincipal">Reporte de Marcados</a></li>
 				</ul>	
 			</li>
-			<li><span>SIAT</span>
-				<ul>
-					<li><a href="siat_folder/siat_facturacion_offline/facturas_sincafc_list.php" target="contenedorPrincipal">Facturas Off-line</a></li>
-					<li><a href="siat_folder/siat_facturacion_offline/facturas_cafc_list.php" target="contenedorPrincipal">Facturas Off-line CAFC</a></li>
-					<li><a href="siat_folder/siat_sincronizacion/index.php" target="contenedorPrincipal">Sincronización</a></li>
-					<li><a href="siat_folder/siat_puntos_venta/index.php" target="contenedorPrincipal">Puntos Venta</a></li>
-					<li><a href="siat_folder/siat_cuis_cufd/index.php" target="contenedorPrincipal">Generación CUIS y CUFD</a></li>
-					
-				</ul>	
-			</li>	
-			<li><a href="registrar_salidaventas.php" target="_blank">Vender / Facturar **</a></li>
 			<li><span>Reportes</span>
 				<ul>
 					<li><span>Movimiento de Almacen</span>
@@ -93,7 +70,6 @@ include("datosUsuario.php");
 							<li><a href="rpt_op_inv_ingresos.php" target="contenedorPrincipal">Ingresos</a></li>
 							<li><a href="rpt_op_inv_salidas.php" target="contenedorPrincipal">Salidas</a></li>
 							<li><a href="rptPrecios.php" target="contenedorPrincipal">Precios</a></li>
-							<li><a href="rptProductosVencer.php" target="contenedorPrincipal">Productos proximos a Vencer</a></li>
 							<!--li><a href="rptOCPagar.php" target="contenedorPrincipal">OC por Pagar</a></li-->
 						</ul>
 					</li>	
@@ -114,16 +90,8 @@ include("datosUsuario.php");
 						</ul>	
 					</li>
 				</ul>
-			</li>	
-		</ul>
-		
-		</div>		
+			</li>			
 	</nav>
 </div>
-
-<script src="dist/mmenu.polyfills.js"></script>
-<script src="dist/mmenu.js"></script>
-<script src="dist/demo.js"></script>
-
 	</body>
 </html>

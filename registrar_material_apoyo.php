@@ -1,3 +1,18 @@
+<?php
+require("conexionmysqli2.inc");
+require('estilos.inc');
+
+?>
+<head>
+    <script src="//code.jquery.com/jquery-3.1.1.min.js"></script>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link href="autoComplete/tokenize2.css" rel="stylesheet" />
+    <script src="autoComplete/tokenize2.js"></script>
+    <link href="autoComplete/demo.css" rel="stylesheet" />
+</head>
+
 <script language='Javascript'>
 	function validar(f)
 	{
@@ -41,18 +56,7 @@
 
 </script>
 
-<head>
-    <script src="//code.jquery.com/jquery-3.1.1.min.js"></script>
-    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
-    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <link href="autoComplete/tokenize2.css" rel="stylesheet" />
-    <script src="autoComplete/tokenize2.js"></script>
-    <link href="autoComplete/demo.css" rel="stylesheet" />
-</head>
 <?php
-require("conexionmysqli.php");
-require('estilos.inc');
 
 echo "<form action='guarda_material_apoyo.php' method='post' name='form1'>";
 

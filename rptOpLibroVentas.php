@@ -18,7 +18,7 @@ function envia_formularioTXT(f)
 </script>
 <?php
 	
-require("conexion.inc");
+require("conexionmysqli2.inc");
 require("estilos_administracion.inc");
 
 echo "<form action='rptLibroVentas.php' method='post'>";
@@ -32,7 +32,7 @@ echo "<tr><th>Año</th><th>Mes</th></tr>";
 echo "<tr>
 
 <td align='center'><select name='cod_anio' id='cod_anio' class='textograndenegro'>";
-for($i=2018; $i<=2030; $i++){
+for($i=2022; $i<=2025; $i++){
 	echo "<option value='$i'>$i</option>";
 }
 echo "</select></td>";
