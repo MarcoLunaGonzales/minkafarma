@@ -22,21 +22,26 @@ function frmAdicionar() {
     cargarPnl("#pnl00","frmProveedorAdicionar.php","");
 }
 function frmModificar() {
+    
     var total=$("#idtotal").val();
     var tag,sel,cod,c=0;
+    
+
     for(var i=1;i<=total;i++) {
+        console.log(i);
         tag=$("#idchk"+i);
-        sel=tag.attr("checked");
+        sel=tag.prop("checked");
         if(sel==true) {
             cod=tag.val(); c++;
         }
+        console.log(tag+" "+sel);
     }
     if(c==1) {
         cargarPnl("#pnl00","frmProveedorEditar.php","codprov="+cod);
     } else if(c>1) {
-        alert("Seleccione solo un elememnto para editar.");
+        alert("Seleccione solo un elemento para editar.");
     } else {
-        alert("Seleccione un elememnto para editar.");
+        alert("Seleccione un elemento para editar.");
     }
 }
 function frmEliminar() {

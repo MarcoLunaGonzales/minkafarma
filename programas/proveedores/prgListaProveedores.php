@@ -39,7 +39,7 @@ while($reg=mysqli_fetch_array($rs))
 	}
 	
     echo "<tr>";
-    echo "<td><input type='checkbox' id='idchk$cont' value='$codProv' ></td><td>$nomProv</td><td>$direccion</td><td>$telefono1</td>
+    echo "<td><input type='checkbox' id='idchk$cont' name='idchk$cont' value='$codProv' ></td><td>$nomProv</td><td>$direccion</td><td>$telefono1</td>
 	<td>$telefono2</td><td>$contacto</td>
 	<td>$txtLineas</td>";
 	

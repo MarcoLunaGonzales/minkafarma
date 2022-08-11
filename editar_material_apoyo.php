@@ -1,5 +1,5 @@
 <?php
-require("conexionmysqli.php");
+require("conexionmysqli2.inc");
 require('estilos.inc');
 require('funciones.php');
 ?>

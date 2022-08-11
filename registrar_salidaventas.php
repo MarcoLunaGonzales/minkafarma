@@ -333,6 +333,11 @@ function ajaxPrecioItem(indice){
 	var tipoPrecio=document.getElementById("tipoPrecio"+indice).value;
 	//var tipoPrecio=1;
 	var cantidadUnitaria=document.getElementById("cantidad_unitaria"+indice).value;
+	if(cantidadUnitaria>0){
+	}else{
+		cantidadUnitaria=0;
+	}
+
 	ajax=nuevoAjax();
 	ajax.open("GET", "ajaxPrecioItem.php?codmat="+codmat+"&indice="+indice+"&tipoPrecio="+tipoPrecio,true);
 	ajax.onreadystatechange=function() {
@@ -1028,22 +1033,13 @@ function validar(f, ventaDebajoCosto){
 		alert("El ingreso debe tener al menos 1 item.");
 		return(false);
 	}
-	Swal.fire({
+	/*Swal.fire({
         title: '¿Esta seguro de Realizar la Venta?',
         text: "Se procederá con el guardado del documento",
-         type: 'info',
-        showCancelButton: true,
-        confirmButtonClass: 'btn btn-info',
-        cancelButtonClass: 'btn btn-default',
-        confirmButtonText: tituloBoton,
-        cancelButtonText: 'Cancelar',
-        buttonsStyling: false
+         type: 'info'
        }).then((result) => {
           if (result.value) {
-          	//document.getElementById("confirmacion_guardado").value=1;
-          	//$("#confirmacion_guardado").val(1);
-            //$('#guardarSalidaVenta').submit();  
-            alert("enviando....");
+            alert("Enviando....");
           } else if (result.dismiss === Swal.DismissReason.cancel) {
             return(false);
           }
@@ -1052,7 +1048,7 @@ function validar(f, ventaDebajoCosto){
    if(1==1){
    	alert("parando");
    	return(false);
-   }
+   }*/
 }
 
 function checkSubmit() {

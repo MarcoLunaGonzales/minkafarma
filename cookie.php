@@ -4,6 +4,8 @@ $estilosVenta=0; //para no ejecutar las librerias js css
 
 
 require("conexionmysqli.php");
+require("funciones.php");
+require("funcion_nombres.php");
 $usuario = $_POST["usuario"];
 $contrasena = $_POST["contrasena"];
 $contrasena = str_replace("'", "''", $contrasena);
@@ -43,7 +45,15 @@ if ($num_filas != 0) {
 	setcookie("global_almacen",$global_almacen);
 	setcookie("globalGestion", $nombreG);
 	
-	setcookie("global_admin_cargo", 1);
+	
+	$stringGlobalAdmins=obtenerValorConfiguracion($enlaceCon, 0);
+	$posBuscada = strpos($stringGlobalAdmins, $usuario);
+	if ($posBuscada === true) {
+		setcookie("global_admin_cargo", 0);	    
+	}else{
+		setcookie("global_admin_cargo", 1);		
+	}
+
 
 	if($cod_cargo==1000){
 		header("location:indexGerencia.php");

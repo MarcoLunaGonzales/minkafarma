@@ -9,7 +9,7 @@
 	where i.cod_tipoingreso=ti.cod_tipoingreso and i.cod_almacen='$global_almacen' and i.cod_ingreso_almacen='$codigo_ingreso'";
 	
 	$resp=mysqli_query($enlaceCon,$sql);
-	echo "<center><table border='0' class='textotit'><tr><th>Detalle de Ingreso</th></tr></table></center><br>";
+	echo "<center><table border='0' class='textotit' align='center' width='100%'><tr><th align='center'>Detalle de Ingreso</th></tr></table></center><br>";
 	
 	echo "<table border='0' class='texto' align='center'>";
 	echo "<tr><th>Nro. de Ingreso</th><th>Fecha</th><th>Tipo de Ingreso</th><th>Proveedor</th><th>Nro. Factura</th>
@@ -21,11 +21,9 @@
 	$nombre_tipoingreso=$dat[2];
 	$obs_ingreso=$dat[3];
 	$nro_correlativo=$dat[4];
-	$nroFacturaProv=$dat[5];
-	$nombreProveedor=$dat[6];
 	
 	echo "<tr><td align='center'>$nro_correlativo</td><td align='center'>$fecha_ingreso_mostrar</td>
-	<td>$nombre_tipoingreso</td><td>$nombreProveedor</td><td>$nroFacturaProv</td>
+	<td>$nombre_tipoingreso</td><td>-</td><td>-</td>
 	<td>&nbsp;$obs_ingreso</td></tr>";
 	echo "</table>";
 	$sql_detalle="select i.cod_material, i.cantidad_unitaria, i.precio_neto, i.lote, DATE_FORMAT(i.fecha_vencimiento, '%d/%m/%Y'),

@@ -8,7 +8,7 @@
 	$respEmpresa=mysqli_query($enlaceCon,$sqlEmpresa);
 	$datEmpresa=mysqli_fetch_array($respEmpresa);
 	$nombreEmpresa=$datEmpresa[0];//$nombreEmpresa=mysql_result($respEmpresa,0,0);
-	$$nitEmpresa=$datEmpresa[1];//$nitEmpresa=mysql_result($respEmpresa,0,1);
+	$nitEmpresa=$datEmpresa[1];//$nitEmpresa=mysql_result($respEmpresa,0,1);
 	$direccionEmpresa=$datEmpresa[2];//$direccionEmpresa=mysql_result($respEmpresa,0,2);
 	
 	
@@ -45,17 +45,16 @@
 	</tr>";
 	
 	echo "<tr><td align='left' class='bordeNegroTdMod'>Cliente: $nombreCliente<br>Direccion: $direccionCliente</td>
-	<td align='center' class='bordeNegroTdMod'>NIT: $nitCliente</td><td align='right'>Observaciones: $obs_salida</td></tr>";
+	<td align='right' colspan='2'>Observaciones: $obs_salida</td></tr>";
 			
 	echo "</table><br>";
 
 	echo "<table border='0' class='texto' cellspacing='0' width='90%' align='center'>";
 	
 	echo "<tr><th>Material</th><th>Lote</th><th>Vencimiento</th>
-	<th>Cantidad</th><th>Precio</th>
-		<th>Desc. U.</th><th>Importe</th></tr>";
+	<th>Cantidad</th></tr>";
 	
-	echo "<tr><td colspan='7'>&nbsp;</td></tr>";
+	echo "<tr><td colspan='4'>&nbsp;</td></tr>";
 	echo "<form method='post' action=''>";
 	
 	$sql_detalle="select s.cod_material, m.descripcion_material, s.lote, s.fecha_vencimiento, 
@@ -85,29 +84,12 @@
 			<td align='center' class='bordeNegroTdMod'>$loteProducto</td>
 			<td align='center' class='bordeNegroTdMod'>$fechaVencimiento</td>
 			<td class='bordeNegroTdMod'>$cantidad_unitaria</td>
-			<td class='bordeNegroTdMod'>$precioUnitario</td>
-			<td class='bordeNegroTdMod'>$descuentoUnitario</td>
-			<td class='bordeNegroTdMod' align='center'>$montoUnitario</td></tr>";
+		</tr>";
 		$indice++;
 		$montoTotal=$montoTotal+$montoUnitario;
 		$montoTotal=redondear2($montoTotal);
 	
 	}
 	
-	/*for($j=$indice; $j<=15; $j++){
-		echo "<tr><td>&nbsp;</td>
-			<td align='center'>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td><td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td align='center'>-</td></tr>";
-	}*/
-	
-	echo "<tr><th></th><th></th><th></th><th></th><th></th><th>Total Venta</th><th>$montoNota</th></tr>";
-	echo "<tr><th></th><th></th><th></th><th></th><th></th><th>Descuento</th><th>$descuentoNota</th></tr>";
-	echo "<tr><th></th><th></th><th>Total Peso:</th><th>$pesoTotal</th><th></th><th>Total Final</th><th>$montoFinal</th></tr>";
-	echo "</table><br><br><br>";
-	echo "<div><table width='90%'>
-	<tr class='bordeNegroTdMod'><td width='33%' align='center'>Despachado</td><td width='33%' align='center'>Entregue Conforme</td><td width='33%' align='center'>Recibi Conforme</td></tr>
-	</table></div>";
+	echo "</table>";
 ?>

@@ -77,6 +77,8 @@ echo "<link rel='stylesheet' type='text/css' href='../../stilos.css'/>";
 $codProveedor=$_GET['codProveedor'];
 $nombreProveedor=nombreProveedor($enlaceCon,$codProveedor,$enlaceCon);
 
+$globalAdmin=$_COOKIE["global_admin_cargo"];
+
 echo "<h2>Lineas de Distribuidor <br> $nombreProveedor</h2>";
 
 echo "<div class='divBotones'><input class='boton' type='button' value='Adicionar' onClick='enviar_nav($codProveedor);'>
@@ -89,7 +91,7 @@ echo "<center>";
 echo "<table class='texto'>";
 echo "<tr>";
 echo "<th>&nbsp;</th><th>Linea</th><th>Abreviatura</th><th>Procedencia</th><th>Margen de precio</th><th>Contacto 1</th><th>Contacto 2</th>";
-echo "<th>Ver Productos</th><th>Editar Precios</th></tr>";
+echo "<th>Ver Productos</th><th>Editar Precios</th><th>Ajustar Stocks</th></tr>";
 $consulta="select p.cod_linea_proveedor, p.nombre_linea_proveedor, p.abreviatura_linea_proveedor, p.contacto1, 
 	p.contacto2, (select t.nombre_procedencia from tipos_procedencia t where t.cod_procedencia=p.cod_procedencia), 
 	margen_precio
@@ -111,9 +113,12 @@ while($reg=mysqli_fetch_array($rs)){
     echo "<tr>";
     echo "<td><input type='checkbox' id='$codLinea' value='$codLinea' ></td><td>$nombreLinea</td><td>$abreviatura</td>
 	<td>$procedencia</td><td>$margenPrecio</td>
-	<td>$contacto1</td><td>$contacto2</td>;
-	<td><a href='../../detalleMaterialLineas.php?linea=$codLinea' target='_BLANK'><img src='../../imagenes/detalle.png' width='40'></a></td>;
-	<td><a href='../../navegador_precios2.php?orden=3&linea=$codLinea' target='_BLANK'><img src='../../imagenes/detalle.png' width='40'></a></td>";
+	<td>$contacto1</td><td>$contacto2</td>";
+	if($globalAdmin==1){
+		echo "<td><a href='../../detalleMaterialLineas.php?linea=$codLinea' target='_BLANK'><img src='../../imagenes/detalle.png' width='40'></a></td>;
+			<td><a href='../../navegador_precios2.php?orden=3&linea=$codLinea' target='_BLANK'><img src='../../imagenes/detalle.png' width='40'></a></td>
+			<td><a href='../../navegadorpreciosstocks.php?orden=3&linea=$codLinea' target='_BLANK'><img src='../../imagenes/ruteroaprobado.png' width='40'></a></td>";
+	}
     echo "</tr>";
    }
 echo "</table>";

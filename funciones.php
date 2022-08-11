@@ -206,7 +206,7 @@ function stockProducto($enlaceCon,$almacen, $item){
 	//
 	//require("conexion.inc");
 	$fechaActual=date("Y-m-d");
-	$fechaInicioSistema="2000-11-19 00:00:00";
+	$fechaInicioSistema="1900-11-19 00:00:00";
 	
 		   $sql_ingresos="select sum(id.cantidad_unitaria) from ingreso_almacenes i, ingreso_detalle_almacenes id
 			where i.cod_ingreso_almacen=id.cod_ingreso_almacen and i.fecha between '$fechaInicioSistema' and '$fechaActual' and i.cod_almacen='$almacen'

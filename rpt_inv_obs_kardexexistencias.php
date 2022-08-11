@@ -14,7 +14,7 @@ echo "$rpt_territorio $rpt_almacen $tipo_item";
 	$nombre_almacen=$dat_almacen[0];
 	echo "<table align='center' class='textotit'><tr><td align='center'>Reporte Observaciones entre Kardex de Existencia Fisica y Existencias<br>Territorio: <strong>$nombre_territorio</strong> Almacen: <strong>$nombre_almacen</strong>Tipo de Item: <strong>$nombre_tipoitem</strong></th></tr></table>";
 	echo "<center><br><table border='1' class='texto' cellspacing='0' width='100%'>";
-	echo "<tr class='textomini'><th>Item</th><th>Saldo segun Kardex</th><th>Saldo segun Existencias</th></tr>";	
+	echo "<tr class='textomini'><th>Codigo</th><th>Item</th><th>Saldo segun Kardex</th><th>Saldo segun Existencias</th></tr>";	
 	
 	$sql_item="select codigo_material, descripcion_material from material_apoyo where codigo_material<>0 order by descripcion_material";
 	$resp_item=mysqli_query($enlaceCon, $sql_item);
@@ -41,7 +41,7 @@ echo "$rpt_territorio $rpt_almacen $tipo_item";
 		$dat_stock=mysqli_fetch_array($resp_stock);
 		$stock_real=$dat_stock[0];
 		if($cantidad_kardex!=$stock_real)
-		{	echo "<tr><td align='left'>$nombre_item</td><td align='right'>$cantidad_kardex</td><td align='right'>$stock_real<td></tr>";
+		{	echo "<tr><td align='left'>$codigo_item</td><td align='left'>$nombre_item</td><td align='right'>$cantidad_kardex</td><td align='right'>$stock_real<td></tr>";
 		}		
 	}
 	echo "</table></center><br>";	
