@@ -1,3 +1,9 @@
+<?php 
+require("conexion.inc");
+require('function_formatofecha.php');
+require("estilos_almacenes.inc");
+
+?>
 <html>
     <head>
         <title>Busqueda</title>
@@ -253,14 +259,20 @@ function llamar_preparado(f, estado_preparado, codigo_salida)
     <body>
 <?php
 
-require("conexion.inc");
-require('function_formatofecha.php');
 
-$txtnroingreso = $_GET["txtnroingreso"];
-$fecha1 = $_GET["fecha1"];
-$fecha2 = $_GET["fecha2"];
-
-require("estilos_almacenes.inc");
+$txtnroingreso="";
+$fecha1="";
+$fecha2="";
+if(!isset($_GET['txtnroingreso'])){
+    $txtnroingreso = $_GET["txtnroingreso"];
+}
+if(!isset($_GET["fecha1"])){
+    $fecha1 = $_GET["fecha1"];    
+}
+if(!isset($_GET["fecha2"])){
+    $fecha2 = $_GET["fecha2"];
+}
+$global_almacen=$_COOKIE['global_almacen'];
 
 echo "<form method='post' action=''>";
 echo "<input type='hidden' name='fecha_sistema' value='$fecha_sistema'>";
@@ -303,6 +315,7 @@ if($fecha1!="" && $fecha2!="")
    {$consulta = $consulta."AND '$fecha1'<=s.fecha AND s.fecha<='$fecha2' ";
    }
 $consulta = $consulta."ORDER BY s.fecha desc, s.nro_correlativo DESC limit 0, 50 ";
+
 $resp = mysqli_query($enlaceCon,$consulta);
 
 while ($dat = mysqli_fetch_array($resp)) {
