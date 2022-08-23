@@ -584,14 +584,21 @@ function ubicacionProducto($enlaceCon,$almacen, $item){
 	return($ubicacion);
 }
 function precioProducto($enlaceCon,$item){
+	
 	//require("conexionmysqli.php");
 	$fechaActual=date("Y-m-d");
 
 	$sql="SELECT p.`precio` from precios p where p.`codigo_material`='$item' and p.`cod_precio`='1'";
+	
 	$resp=mysqli_query($enlaceCon,$sql);
-	$dat=mysqli_fetch_array($resp);
 	$precio=0;
+ if (mysqli_num_rows($resp)>0){
+ 
+	$dat=mysqli_fetch_array($resp);
+	
 	$precio=$dat[0];
+
+	}
 	return($precio);
 }
 function margenLinea($enlaceCon,$item){

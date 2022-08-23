@@ -1,10 +1,11 @@
 <html>
+
 <body>
 <table align='center' class="texto">
 <tr>
-<th>Linea</th><th>Producto</th><th>Stock</th></tr>
+<th><input type='checkbox' id='selecTodo'  onchange=" marcarDesmarcar(form1,this)"></th><th>Linea</th><th>Producto</th><th>Stock</th></tr>
 <?php
-require("conexionmysqli.php");
+require("conexionmysqli2.inc");
 require("funciones.php");
 $codTipo=$_GET['codTipo'];
 $nombreItem=$_GET['nombreItem'];
@@ -27,7 +28,9 @@ $itemsNoUtilizar="0";
 	$resp=mysqli_query($enlaceCon,$sql);
 	$numFilas=mysqli_num_rows($resp);
 	if($numFilas>0){
+		$cont=0;
 		while($dat=mysqli_fetch_array($resp)){
+			$cont++;
 			$codigo=$dat[0];
 			$nombre=$dat[1];
 			$nombre=addslashes($nombre);
@@ -39,9 +42,12 @@ $itemsNoUtilizar="0";
 			if($precioProducto==""){
 				$precioProducto=0;
 			}
-			$margenLinea=margenLinea($enlaceCon,$codigo);
-			
-			echo "<tr><td>$linea</td><td><div class='textograndenegro'><a href='javascript:setMateriales(form1, $codigo, \"$nombre\", $cantidadPresentacion, $precioProducto, $margenLinea)'>$nombre</a></div></td><td><div class='textograndenegro'>$stockProducto</div></td></tr>";
+			$margenLinea=margenLinea($enlaceCon,$codigo);			
+			$datosProd=$codigo."|".$nombre."|".$cantidadPresentacion."|".$precioProducto."|".$margenLinea."|".$cantidadPresentacion."|".$precioProducto."|".$margenLinea;
+		
+	
+			echo "<tr><td><input type='checkbox' id='idchk$cont' value='$datosProd' onchange='ver(this)' ></td>
+			<td>$linea</td><td>$datosProd<div class='textograndenegro'><a href='javascript:setMateriales(form1, $codigo, \"$nombre\", $cantidadPresentacion, $precioProducto, $margenLinea, $cantidadPresentacion, $precioProducto, $margenLinea)'>$nombre</a></div></td><td><div class='textograndenegro'>$stockProducto</div></td></tr>";
 		}
 	}else{
 		echo "<tr><td colspan='3'>Sin Resultados en la busqueda.</td></tr>";

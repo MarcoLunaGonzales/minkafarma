@@ -30,8 +30,6 @@ window.onload = detectarCarga;
   function detectarCarga(){
     $(".cargar").fadeOut("slow");
   }
-  
-/*
 var tablaPrincipalGeneral=null;
 $(document).on('change', '.archivo', function() {
   var filename = $(this).val().split('\\').pop();
@@ -56,8 +54,6 @@ $(document).ready(function() {
     };
    });
 });
-*/
-
 
 function alert(texto){
   Swal.fire("Informativo!", texto, "warning");
