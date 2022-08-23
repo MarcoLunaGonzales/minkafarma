@@ -51,10 +51,10 @@
 
 	echo "<table border='0' class='texto' cellspacing='0' width='90%' align='center'>";
 	
-	echo "<tr><th>Material</th><th>Lote</th><th>Vencimiento</th>
+	echo "<tr><th>Codigo</th><th>Material</th><th>Lote</th><th>Vencimiento</th>
 	<th>Cantidad</th></tr>";
 	
-	echo "<tr><td colspan='4'>&nbsp;</td></tr>";
+	//echo "<tr><td colspan='4'>&nbsp;</td></tr>";
 	echo "<form method='post' action=''>";
 	
 	$sql_detalle="select s.cod_material, m.descripcion_material, s.lote, s.fecha_vencimiento, 
@@ -80,7 +80,9 @@
 		$montoUnitario=$dat_detalle[7];
 		$montoUnitario=redondear2($montoUnitario);
 		
-		echo "<tr><td class='bordeNegroTdMod'>$nombre_material</td>
+		echo "<tr>
+			<td class='bordeNegroTdMod'>$cod_material</td>
+			<td class='bordeNegroTdMod'>$nombre_material</td>
 			<td align='center' class='bordeNegroTdMod'>$loteProducto</td>
 			<td align='center' class='bordeNegroTdMod'>$fechaVencimiento</td>
 			<td class='bordeNegroTdMod'>$cantidad_unitaria</td>

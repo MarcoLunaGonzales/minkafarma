@@ -83,24 +83,28 @@ if($sql_inserta==1){
             list($nombreCampoX, $codProductoX)=explode("|",$nombre_campo);  
             $codigoProductoX=$codProductoX;
             $cantidadProductoX=$_POST["producto|".$codProductoX];
-            $stockProductoX=$_POST["stock|".$codProductoX];
-            $cantidadInsertX=$stockProductoX-$cantidadProductoX;
-            $precioUnitario=0;
-            $descuentoProducto=0;
-            $montoMaterial=0;
-            if($cantidadInsertX>0){
-                //echo "PRODUCTO: ".$codProductoX." STOCK: ".$stockProductoX." CANT INSERT: ".$cantidadInsertX;
-                if($banderaValidacionStock==1){
-                $respuesta=descontar_inventarios($enlaceCon,$codigo, $almacenOrigen,$codigoProductoX,$cantidadInsertX,$precioUnitario,$descuentoProducto,$montoMaterial,$i);
-                }else{
-                    $respuesta=insertar_detalleSalidaVenta($enlaceCon,$codigo, $almacenOrigen,$codigoProductoX,$cantidadInsertX,$precioUnitario,$descuentoProducto,$montoMaterial,$banderaValidacionStock, $i);
+
+            //VALIDAMOS QUE EL CAMPO ESTE VACIO NO INGRESA POR AHI
+            if($cantidadProductoX!=""){
+                $stockProductoX=$_POST["stock|".$codProductoX];
+                $cantidadInsertX=$stockProductoX-$cantidadProductoX;
+                $precioUnitario=0;
+                $descuentoProducto=0;
+                $montoMaterial=0;
+                if($cantidadInsertX>0){
+                    //echo "PRODUCTO: ".$codProductoX." STOCK: ".$stockProductoX." CANT INSERT: ".$cantidadInsertX;
+                    if($banderaValidacionStock==1){
+                    $respuesta=descontar_inventarios($enlaceCon,$codigo, $almacenOrigen,$codigoProductoX,$cantidadInsertX,$precioUnitario,$descuentoProducto,$montoMaterial,$i);
+                    }else{
+                        $respuesta=insertar_detalleSalidaVenta($enlaceCon,$codigo, $almacenOrigen,$codigoProductoX,$cantidadInsertX,$precioUnitario,$descuentoProducto,$montoMaterial,$banderaValidacionStock, $i);
+                    }
+                    if($respuesta!=1){
+                        echo "<script>
+                            alert('Existio un error en el detalle. Contacte con el administrador del sistema.');
+                        </script>";
+                    }
+                    $i++;
                 }
-                if($respuesta!=1){
-                    echo "<script>
-                        alert('Existio un error en el detalle. Contacte con el administrador del sistema.');
-                    </script>";
-                }
-                $i++;
             }
         }
     }
@@ -153,29 +157,33 @@ if($sql_inserta==1){
             list($nombreCampoX, $codProductoX)=explode("|",$nombre_campo);  
             $codigoProductoX=$codProductoX;
             $cantidadProductoX=$_POST["producto|".$codProductoX];
-            $stockProductoX=$_POST["stock|".$codProductoX];
-            $cantidadInsertX=$stockProductoX-$cantidadProductoX;
-            $precioUnitario=0;
-            $descuentoProducto=0;
-            $montoMaterial=0;
-            if($cantidadInsertX<0){
-                //echo "PRODUCTO: ".$codProductoX." STOCK: ".$stockProductoX." CANT INSERT: ".$cantidadInsertX;
-                $cantidadInsertX=$cantidadInsertX*(-1);
-                $lote="LA01";
-                $fechaVencimiento="2024-08-30";
+
+            //VALIDAMOS QUE EL CAMPO ESTE VACIO NO INGRESA POR AHI
+            if($cantidadProductoX!=""){
+                $stockProductoX=$_POST["stock|".$codProductoX];
+                $cantidadInsertX=$stockProductoX-$cantidadProductoX;
                 $precioUnitario=0;
-                $costo=0;
-                $ubicacionEstante=0;
-                $ubicacionFila=0;
-                $consulta="insert into ingreso_detalle_almacenes(cod_ingreso_almacen, cod_material, cantidad_unitaria, cantidad_restante, lote, fecha_vencimiento, 
-                precio_bruto, costo_almacen, costo_actualizado, costo_actualizado_final, costo_promedio, precio_neto, cod_ubicacionestante, cod_ubicacionfila) 
-                values($codigo,'$codigoProductoX',$cantidadInsertX,$cantidadInsertX,'$lote','$fechaVencimiento',$precioUnitario,$precioUnitario,$costo,$costo,$costo,$costo,'$ubicacionEstante','$ubicacionFila')";
-                $respuesta = mysqli_query($enlaceCon,$consulta);
-            
-                if($respuesta!=1){
-                    echo "<h2>Ocurrio un error en la transaccion. Contacte con el administrador del sistema.</h2>";
+                $descuentoProducto=0;
+                $montoMaterial=0;
+                if($cantidadInsertX<0){
+                    //echo "PRODUCTO: ".$codProductoX." STOCK: ".$stockProductoX." CANT INSERT: ".$cantidadInsertX;
+                    $cantidadInsertX=$cantidadInsertX*(-1);
+                    $lote="LA01";
+                    $fechaVencimiento="2024-08-30";
+                    $precioUnitario=0;
+                    $costo=0;
+                    $ubicacionEstante=0;
+                    $ubicacionFila=0;
+                    $consulta="insert into ingreso_detalle_almacenes(cod_ingreso_almacen, cod_material, cantidad_unitaria, cantidad_restante, lote, fecha_vencimiento, 
+                    precio_bruto, costo_almacen, costo_actualizado, costo_actualizado_final, costo_promedio, precio_neto, cod_ubicacionestante, cod_ubicacionfila) 
+                    values($codigo,'$codigoProductoX',$cantidadInsertX,$cantidadInsertX,'$lote','$fechaVencimiento',$precioUnitario,$precioUnitario,$costo,$costo,$costo,$costo,'$ubicacionEstante','$ubicacionFila')";
+                    $respuesta = mysqli_query($enlaceCon,$consulta);
+                
+                    if($respuesta!=1){
+                        echo "<h2>Ocurrio un error en la transaccion. Contacte con el administrador del sistema.</h2>";
+                    }
+                    $i++;
                 }
-                $i++;
             }
         }
     }    

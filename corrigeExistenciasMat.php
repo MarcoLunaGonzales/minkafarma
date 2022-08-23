@@ -5,7 +5,7 @@ require('conexionmysqli2.inc');
 $cod_almacen_arreglar=1000;
 
 $sqlMat="select m.codigo_material, m.descripcion_material from material_apoyo m where m.estado='1' and 
-m.codigo_material in (73,1672,651,600,74,116,958,1763,202,6731,526,1595,1519,550,78,333,442,117,208,546,908,602,1462,9107,603,124,125,9313,3126,3127,909,910,1174) ORDER BY 1";
+m.codigo_material in (904,905,1150,2527,1755,908,910) ORDER BY 1";
 //echo $sqlMat;
 $respMat=mysqli_query($enlaceCon, $sqlMat);
 
