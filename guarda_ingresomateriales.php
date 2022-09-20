@@ -90,7 +90,7 @@ if($sql_inserta==1){
 			*/
 			$precioItem=$_POST["preciocliente$i"];
 			
-			if($banderaPrecioUpd==1){
+			if($banderaPrecioUpd>0){
 				//SACAMOS EL ULTIMO PRECIO REGISTRADO
 				$sqlPrecioActual="select precio from precios where codigo_material='$cod_material' and cod_precio=1";
 				$respPrecioActual=mysqli_query($enlaceCon,$sqlPrecioActual);
@@ -108,18 +108,22 @@ if($sql_inserta==1){
 					$sqlPrecios="insert into precios (codigo_material, cod_precio, precio) values('$cod_material','1','$precioItem')";
 					$respPrecios=mysqli_query($enlaceCon,$sqlPrecios);
 				}else{
-					if($precioItem!=$precioActual){
-						$sqlPrecios="update precios set precio='$precioItem' where codigo_material='$cod_material' and cod_precio=1";
-						$respPrecios=mysqli_query($enlaceCon,$sqlPrecios);
+					if($banderaPrecioUpd==1){
+						if($precioItem!=$precioActual){
+							$sqlPrecios="update precios set precio='$precioItem' where codigo_material='$cod_material' and cod_precio=1";
+							$respPrecios=mysqli_query($enlaceCon,$sqlPrecios);
+						}
+					}
+					if($banderaPrecioUpd==2){
+						if($precioItem>$precioActual){
+							$sqlPrecios="update precios set precio='$precioItem' where codigo_material='$cod_material' and cod_precio=1";
+							$respPrecios=mysqli_query($enlaceCon,$sqlPrecios);
+						}
 					}
 				}				
 			}
-			
-			$aa=recalculaCostos($enlaceCon,$cod_material, $global_almacen);
-			
+			$aa=recalculaCostos($enlaceCon,$cod_material, $global_almacen);			
 		}
-		
-
 	}
 	
 	echo "<script language='Javascript'>

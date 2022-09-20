@@ -146,36 +146,28 @@ function setMaterialesSelec(f, cod, nombreMat, cantidadpresentacion, precio, mar
 	document.getElementById('cod_material'+numRegistro).innerHTML=nombreMat;
 	document.getElementById('divpreciocliente'+numRegistro).innerHTML=number_format(precio,2);
 	document.getElementById('margenlinea'+numRegistro).value=margenlinea;
-	
-	
-
-
-
 }
-function masSelec() {
-	
- console.log("entrando masSelec num="+num);
-			num++;
-			fi = document.getElementById('fiel');
-			contenedor = document.createElement('div');
-			contenedor.id = 'div'+num;  
-			fi.type="style";
-			fi.appendChild(contenedor);
-			var div_material;
-			div_material=document.getElementById("div"+num);			
-			ajax=nuevoAjax();
-			ajax.open("GET","ajaxMaterial.php?codigo="+num,true);
-			ajax.onreadystatechange=function(){
-				if (ajax.readyState==4) {
-					div_material.innerHTML=ajax.responseText;
-					
-					//buscarMaterial(form1, num);
-				}
-			}		
-			ajax.send(null);
-		
-		//alert("aqui"+num);
-	}	
+function masSelec() {	
+ 	console.log("entrando masSelec num="+num);
+	num++;
+	fi = document.getElementById('fiel');
+	contenedor = document.createElement('div');
+	contenedor.id = 'div'+num;  
+	fi.type="style";
+	fi.appendChild(contenedor);
+	var div_material;
+	div_material=document.getElementById("div"+num);			
+	ajax=nuevoAjax();
+	ajax.open("GET","ajaxMaterial.php?codigo="+num,true);
+	ajax.onreadystatechange=function(){
+		if (ajax.readyState==4) {
+			div_material.innerHTML=ajax.responseText;
+			//buscarMaterial(form1, num);
+			return (true);
+		}
+	}		
+	ajax.send(null);
+}	
 function setSeleccionados(f){
 	
 	var i;
@@ -190,33 +182,32 @@ function setSeleccionados(f){
 	 var sw=0;
 	 var numRegistro;
 	 numRegistro=f.materialActivo.value;
-	  //alert("numRegistro="+numRegistro);
-	  for(i=0;i<=f.length-1;i++){
-       if(f.elements[i].type=='checkbox'){  
-			   
+	//alert("numRegistro="+numRegistro);
+	for(i=0;i<=f.length-1;i++){
+    	if(f.elements[i].type=='checkbox'){  	   
 			if(f.elements[i].checked==true){ 
-			   
-				 numRegistro=num;
-				 cadena=f.elements[i].value;
+				numRegistro=num;
+				cadena=f.elements[i].value;
+				console.log("i: "+i+" cadena: "+cadena+" name: "+f.elements[i].name);
 				
 				
-				 prodArray=new Array();
-				 prodArray =cadena.split("|");
+				prodArray=new Array();
+				prodArray =cadena.split("|");
 				aux=prodArray[0]+prodArray[1]+prodArray[2]+prodArray[3]+prodArray[4];
-			     //console.log("datoSelec"+prodArray[0]);
+			    //console.log("datoSelec"+prodArray[0]);
 				if(sw==0){
-				 sw=1;
+					sw=1;
 				}else{
-				 masSelec();
+					masSelec();
 				}
 				
-				 console.log("num: "+num);
-				  console.log("material: "+prodArray[0]);
-				    console.log("cod_material: "+prodArray[1]);
-					//console.log("material"+num+"="+document.getElementById('material'+num).value);
+				console.log("num: "+num);
+				console.log("CodMaterialF: "+prodArray[0]);
+				console.log("MaterialF: "+prodArray[1]);
+				//console.log("material"+num+" = "+document.getElementById('material'+num).value);
 				 
-				document.getElementById('material'+num).value=prodArray[0];
-				document.getElementById('cod_material'+num).innerHTML=prodArray[1];
+				// document.getElementById('material'+num).value=prodArray[0];
+				// document.getElementById('cod_material'+num).innerHTML=prodArray[1];
 
 				
 				//document.getElementById('material2').value=10101010;
@@ -232,17 +223,9 @@ function setSeleccionados(f){
 				//numRegistro;
 				// setMaterialesSelec(f,prodArray[0], prodArray[1], prodArray[2], prodArray[3], prodArray[4]);
 				 ////////////
-				
-				 
 				 //alert("hola"+num);
-				
-			
 				// numRegistro=num*1;
 				 /////////////
-				
-				 
-				  
-			 
 			}
         }
       }	

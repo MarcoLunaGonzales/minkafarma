@@ -14,6 +14,7 @@
 	
 	$globalAlmacen=$_COOKIE['global_almacen'];
 	$lineaDistribuidor=$_GET['linea'];
+	$vistaStocks=$_GET['vista'];
 	
 	echo "<h1>Ajuste de Stocks x Linea de Distribuidor</h1>";
 
@@ -67,16 +68,31 @@
 			$txtAccionTerapeutica=$txtAccionTerapeutica." - ".$nombreAccionTerX;
 		}
 		
-		echo "<tr><td align='center'>$indice_tabla</td><td align='center'>
-		<input type='checkbox' name='codigo' value='$codigo'></td>
-		<td>$nombreProd</td><td>$empaque</td>
-		<td>$cantPresentacion</td><td>$formaFar</td>
-		<td>$nombreLinea</td><td>$principioActivo</td>
-		<td>$stockProducto</td>
-		<input type='hidden' name='stock|$codigo' id='stock|$codigo' value='$valorStockProducto' >
-		<td><input type='number' step='1' name='producto|$codigo' id='producto|$codigo' value='' style='width: 5em;' class='textogranderojo'></td>
-		</tr>";
-		$indice_tabla++;
+		if($vistaStocks==2 && $valorStockProducto>0){
+			echo "<tr><td align='center'>$indice_tabla</td><td align='center'>
+			<input type='checkbox' name='codigo' value='$codigo'></td>
+			<td>$nombreProd</td><td>$empaque</td>
+			<td>$cantPresentacion</td><td>$formaFar</td>
+			<td>$nombreLinea</td><td>$principioActivo</td>
+			<td>$stockProducto</td>
+			<input type='hidden' name='stock|$codigo' id='stock|$codigo' value='$valorStockProducto' >
+			<td><input type='number' step='1' name='producto|$codigo' id='producto|$codigo' value='' style='width: 5em;' class='textogranderojo'></td>
+			</tr>";
+			$indice_tabla++;
+		}
+		if($vistaStocks==1){
+			echo "<tr><td align='center'>$indice_tabla</td><td align='center'>
+			<input type='checkbox' name='codigo' value='$codigo'></td>
+			<td>$nombreProd</td><td>$empaque</td>
+			<td>$cantPresentacion</td><td>$formaFar</td>
+			<td>$nombreLinea</td><td>$principioActivo</td>
+			<td>$stockProducto</td>
+			<input type='hidden' name='stock|$codigo' id='stock|$codigo' value='$valorStockProducto' >
+			<td><input type='number' step='1' name='producto|$codigo' id='producto|$codigo' value='' style='width: 5em;' class='textogranderojo'></td>
+			</tr>";
+			$indice_tabla++;
+		}
+
 	}
 	echo "</table></center><br>";
 	echo "<div class='divBotones2'>

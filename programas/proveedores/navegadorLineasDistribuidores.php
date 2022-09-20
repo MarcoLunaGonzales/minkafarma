@@ -91,11 +91,11 @@ echo "<center>";
 echo "<table class='texto'>";
 echo "<tr>";
 echo "<th>&nbsp;</th><th>Linea</th><th>Abreviatura</th><th>Procedencia</th><th>Margen de precio</th><th>Contacto 1</th><th>Contacto 2</th>";
-echo "<th>Ver Productos</th><th>Editar Precios</th><th>Ajustar Stocks</th></tr>";
+echo "<th>Ver Productos</th><th>Editar Precios</th><th>Ajustar Stocks</th><th>Ajustar Stocks</th></tr>";
 $consulta="select p.cod_linea_proveedor, p.nombre_linea_proveedor, p.abreviatura_linea_proveedor, p.contacto1, 
 	p.contacto2, (select t.nombre_procedencia from tipos_procedencia t where t.cod_procedencia=p.cod_procedencia), 
 	margen_precio
-	from proveedores_lineas p where p.cod_proveedor=$codProveedor and estado=1";
+	from proveedores_lineas p where p.cod_proveedor=$codProveedor and estado=1 order by p.nombre_linea_proveedor";
 
 
 $rs=mysqli_query($enlaceCon,$consulta);
@@ -117,7 +117,8 @@ while($reg=mysqli_fetch_array($rs)){
 	if($globalAdmin==1){
 		echo "<td><a href='../../detalleMaterialLineas.php?linea=$codLinea' target='_BLANK'><img src='../../imagenes/detalle.png' width='40'></a></td>;
 			<td><a href='../../navegador_precios2.php?orden=3&linea=$codLinea' target='_BLANK'><img src='../../imagenes/detalle.png' width='40'></a></td>
-			<td><a href='../../navegadorpreciosstocks.php?orden=3&linea=$codLinea' target='_BLANK'><img src='../../imagenes/ruteroaprobado.png' width='40'></a></td>";
+			<td><a href='../../navegadorpreciosstocks.php?vista=1&orden=3&linea=$codLinea' target='_BLANK'><img src='../../imagenes/ruteroaprobado.png' width='40' title='Ver Todos los Productos'></a></td>
+			<td><a href='../../navegadorpreciosstocks.php?vista=2&orden=3&linea=$codLinea' target='_BLANK'><img src='../../imagenes/edit.png' width='35' title='Ver Solo Productos con Stock'></a></td>";
 	}
     echo "</tr>";
    }

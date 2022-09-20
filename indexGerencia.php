@@ -83,14 +83,14 @@ include("datosUsuario.php");
 					
 				</ul>	
 			</li>
-			<li><span>Ordenes de Compra</span>
+			<!--li><span>Ordenes de Compra</span>
 				<ul>
 					<li><a href="navegador_ordenCompra.php" target="contenedorPrincipal">Registro de O.C.</a></li>
-					<!--li><a href="registrarOCTerceros.php" target="contenedorPrincipal">Registro de O.C. de Terceros</a></li-->
-					<!--li><a href="navegadorIngresosOC.php" target="contenedorPrincipal">Generar OC a traves de Ingreso</a></li-->
+					<li><a href="registrarOCTerceros.php" target="contenedorPrincipal">Registro de O.C. de Terceros</a></li>
+					<li><a href="navegadorIngresosOC.php" target="contenedorPrincipal">Generar OC a traves de Ingreso</a></li>
 					<li><a href="navegador_pagos.php" target="contenedorPrincipal">Registro de Pagos</a></li>
 				</ul>	
-			</li>
+			</li-->
 			<li><span>Ingresos</span>
 				<ul>
 					<li><a href="navegador_ingresomateriales.php" target="contenedorPrincipal">Ingreso de Materiales</a></li>
@@ -99,7 +99,7 @@ include("datosUsuario.php");
 			</li>
 			<li><span>Salidas</span>
 				<ul>
-					<li><a href="navegador_salidamateriales.php" target="contenedorPrincipal">Listado de Traspasos</a></li>
+					<li><a href="navegador_salidamateriales.php" target="contenedorPrincipal">Listado de Salidas</a></li>
 					<li><a href="navegadorVentas.php" target="contenedorPrincipal">Listado de Ventas</a></li>
 					<li><a href="registrar_salidaventas_manuales.php" target="_blank">Factura Manual de Contigencia</a></li>
 
@@ -123,9 +123,9 @@ include("datosUsuario.php");
 			</li>	
 			<li><a href="registrar_ingresomateriales.php" target="contenedorPrincipal">Registrar Ingreso **</a></li>
 			<li><a href="registrar_salidaventas.php" target="_blank">Vender / Facturar **</a></li>
-			<li><a href="listadoProductosStock.php" target="_blank">Listado de Productos **</a></li>
-			<li><a href="rptProductosVencer.php" target="contenedorPrincipal">Productos proximos a Vencer</a></li>
-			<li><a href="navegador_etiquetas.php" target="contenedorPrincipal">Impresion de Etiquetas</a></li>
+			<!--li><a href="listadoProductosStock.php" target="_blank">Listado de Productos **</a></li-->
+			<!--li><a href="rptProductosVencer.php" target="contenedorPrincipal">Productos proximos a Vencer</a></li-->
+			<!--li><a href="navegador_etiquetas.php" target="contenedorPrincipal">Impresion de Etiquetas</a></li-->
 			<li><span>Reportes</span>
 				<ul>
 					<li><span>Movimiento de Almacen</span>

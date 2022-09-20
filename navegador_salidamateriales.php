@@ -296,7 +296,7 @@ echo "<div class='divBotones'>
 echo "<div id='divCuerpo'>";
 echo "<center><table class='texto'>";
 echo "<tr><th>&nbsp;</th><th>Numero Salida</th><th>Fecha/hora<br>Registro Salida</th><th>Tipo de Salida</th>
-	<th>Almacen Destino</th><th>Cliente</th><th>Observaciones</th><th>&nbsp;</th></tr>";
+	<th>Almacen Destino</th><th>Personal</th><th>Observaciones</th><th>&nbsp;</th></tr>";
 	
 	
 //
@@ -304,7 +304,8 @@ $consulta = "
 	SELECT s.cod_salida_almacenes, s.fecha, s.hora_salida, ts.nombre_tiposalida, 
 	(select a.nombre_almacen from almacenes a where a.`cod_almacen`=s.almacen_destino), s.observaciones, 
 	s.estado_salida, s.nro_correlativo, s.salida_anulada, s.almacen_destino, 
-	(select c.nombre_cliente from clientes c where c.cod_cliente = s.cod_cliente), s.cod_tipo_doc 
+	(select c.nombre_cliente from clientes c where c.cod_cliente = s.cod_cliente), s.cod_tipo_doc,
+    (select concat(f.paterno, ' ',f.nombres) from funcionarios f where f.codigo_funcionario=s.cod_chofer)as personal
 	FROM salida_almacenes s, tipos_salida ts 
 	WHERE s.cod_tiposalida = ts.cod_tiposalida AND s.cod_almacen = '$global_almacen' and s.cod_tiposalida<>1001 ";
 
@@ -332,6 +333,7 @@ while ($dat = mysqli_fetch_array($resp)) {
     $cod_almacen_destino = $dat[9];
 	$nombreCliente=$dat[10];
 	$codTipoDoc=$dat[11];
+    $nombrePersonalSalida=$dat[12];
 	
 	$anio_salida=intval("$fecha_salida[0]$fecha_salida[1]$fecha_salida[2]$fecha_salida[3]");
 	$globalGestionActual=intval($_COOKIE["globalGestion"]);
@@ -382,7 +384,7 @@ while ($dat = mysqli_fetch_array($resp)) {
     echo "<td align='center'>$nro_correlativo</td>";
     echo "<td align='center'>$fecha_salida_mostrar $hora_salida</td>";
     echo "<td>$nombre_tiposalida</td><td>&nbsp;$nombre_almacen</td>";
-    echo "<td>&nbsp;$nombreCliente</td><td>&nbsp;$obs_salida</td>";
+    echo "<td>$nombrePersonalSalida</td><td>&nbsp;$obs_salida</td>";
     $url_notaremision = "navegador_detallesalidamuestras.php?codigo_salida=$codigo";    
     echo "<td><a href='javascript:llamar_preparado(this.form, $estado_preparado, $codigo)'>
 		<img src='imagenes/detalles.png' border='0' title='Detalle' width='40'></a></td>";

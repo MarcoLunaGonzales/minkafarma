@@ -2,11 +2,12 @@
 <body>
 <table align='center' class="texto">
 <tr>
-<th>Producto</th><th>Linea</th><th>Principio Activo</th><th>Accion Terapeutica</th><th>Stock</th><th>Precio</th></tr>
+<th>Codigo</th><th>Producto</th><th>Linea</th><th>Principio Activo</th><th>Accion Terapeutica</th><th>Stock</th><th>Precio</th></tr>
 <?php
 require("conexionmysqli.php");
 require("funciones.php");
 
+$codigoMat=$_GET['codigoMat'];
 $codTipo=$_GET['codTipo'];
 $nombreItem=$_GET['nombreItem'];
 $globalAlmacen=$_COOKIE['global_almacen'];
@@ -26,9 +27,12 @@ $datConf=mysqli_fetch_array($respConf);
 $tipoSalidaVencimiento=$datConf[0];//$tipoSalidaVencimiento=mysql_result($respConf,0,0);
 
 	$sql="select m.codigo_material, m.descripcion_material,
-	(select concat(p.nombre_proveedor,' ',pl.abreviatura_linea_proveedor)
+	(select concat(p.nombre_proveedor,' ',pl.nombre_linea_proveedor)
 	from proveedores p, proveedores_lineas pl where p.cod_proveedor=pl.cod_proveedor and pl.cod_linea_proveedor=m.cod_linea_proveedor), m.principio_activo, m.accion_terapeutica
 	from material_apoyo m where estado=1 and m.codigo_material not in ($itemsNoUtilizar)";
+	if($codigoMat!=""){
+		$sql=$sql. " and codigo_material like '%$codigoMat%'";
+	}
 	if($nombreItem!=""){
 		$sql=$sql. " and descripcion_material like '%$nombreItem%'";
 	}
@@ -73,7 +77,7 @@ $tipoSalidaVencimiento=$datConf[0];//$tipoSalidaVencimiento=mysql_result($respCo
 				$stockProducto=stockProducto($enlaceCon,$globalAlmacen, $codigo);
 			}
 			
-			$ubicacionProducto=ubicacionProducto($enlaceCon,$globalAlmacen, $codigo);
+			//$ubicacionProducto=ubicacionProducto($enlaceCon,$globalAlmacen, $codigo);
 			
 			$consulta="select p.`precio` from precios p where p.`codigo_material`='$codigo' and p.`cod_precio`='1'";
 			$rs=mysqli_query($enlaceCon,$consulta);
@@ -95,7 +99,7 @@ $tipoSalidaVencimiento=$datConf[0];//$tipoSalidaVencimiento=mysql_result($respCo
 			  if($stockProducto>0){
 				$stockProducto="<b class='textograndenegro' style='color:#C70039'>".$stockProducto."</b>";
 			  }
-				echo "<tr><td><div class='textograndenegro'><a href='javascript:setMateriales(form1, $codigo, \"$nombre\")'>$nombre</a></div></td>
+				echo "<tr><td>$codigo</td><td><div class='textograndenegro'><a href='javascript:setMateriales(form1, $codigo, \"$nombre - $linea ($codigo)\")'>$nombre</a></div></td>
 				<td>$linea</td>
 				<td><small>$principioActivo</small></td>
 				<td><small>$accionTerapeutica</small></td>

@@ -240,12 +240,12 @@ function listaMateriales(f){
 	var contenedor;
 	var codTipo=f.itemTipoMaterial.value;
 	var nombreItem=f.itemNombreMaterial.value;
-	//var codigoMat=(f.itemCodigoMaterial.value);
+	var codigoMat=(f.itemCodigoMaterial.value);
 
 	var nomAccion=f.itemAccionMaterialNom.value;
 	var nomPrincipio=f.itemPrincipioMaterialNom.value;
 
-   if(nomAccion==""&&nomPrincipio==""&&nombreItem==""){
+   if(codigoMat==""&&nomAccion==""&&nomPrincipio==""&&nombreItem==""){
      alert("Debe ingresar un criterio de busqueda"+nombreItem);
    }else{
 	contenedor = document.getElementById('divListaMateriales');
@@ -260,7 +260,7 @@ function listaMateriales(f){
 		}
 	}
 	ajax=nuevoAjax();
-	ajax.open("GET", "ajaxListaMateriales.php?tipoSalida="+tipoSalida+"&codTipo="+codTipo+"&nombreItem="+nombreItem+"&arrayItemsUtilizados="+arrayItemsUtilizados+"&codProv="+codTipo+"&stock="+stock+"&nomAccion="+nomAccion+"&nomPrincipio="+nomPrincipio,true);
+	ajax.open("GET", "ajaxListaMateriales.php?codigoMat="+codigoMat+"&tipoSalida="+tipoSalida+"&codTipo="+codTipo+"&nombreItem="+nombreItem+"&arrayItemsUtilizados="+arrayItemsUtilizados+"&codProv="+codTipo+"&stock="+stock+"&nomAccion="+nomAccion+"&nomPrincipio="+nomPrincipio,true);
 	ajax.onreadystatechange=function() {
 		if (ajax.readyState==4) {			
 			contenedor.innerHTML = ajax.responseText;
@@ -300,6 +300,12 @@ function ajaxNroDoc(f){
 	contenedor=document.getElementById("divNroDoc");
 	ajax=nuevoAjax();
 	var codTipoDoc=(f.tipoDoc.value);
+	
+	if(codTipoDoc==2){
+		document.getElementById("nitCliente").value="123";
+		document.getElementById("razonSocial").value="SN";
+	}
+
 	ajax.open("GET", "ajaxNroDoc.php?codTipoDoc="+codTipoDoc,true);
 	ajax.onreadystatechange=function() {
 		if (ajax.readyState==4) {
@@ -979,21 +985,31 @@ function validar(f, ventaDebajoCosto){
 		// $("#pedido_realizado").val(0);
 		return(false);
 	}
+
+	if($("#totalFinal").val()<=0){
+		Swal.fire("Monto Final!", "El Monto Final del documento no puede ser 0", "info");
+		return(false);
+	}
 	//alert(ventaDebajoCosto);
 	f.cantidad_material.value=num;
 	var cantidadItems=num;
 	console.log("numero de items: "+cantidadItems);
+	console.log("MontoFinal: "+tota);
+	var montoFinal
+
 	if(cantidadItems>0){
 		var item="";
 		var cantidad="";
 		var stock="";
 		var descuento="";
+		var monto_item="";
 		for(var i=1; i<=cantidadItems; i++){
 			console.log("valor i: "+i);
 			console.log("objeto materiales: "+document.getElementById("materiales"+i));
 			if(document.getElementById("materiales"+i)!=null){
 				item=parseFloat(document.getElementById("materiales"+i).value);
 				cantidad=parseFloat(document.getElementById("cantidad_unitaria"+i).value);
+				monto_item=parseFloat(document.getElementById("montoMaterial"+i).value);
 				
 				//VALIDACION DE VARIABLE DE STOCK QUE NO SE VALIDA
 				stock=document.getElementById("stock"+i).value;
@@ -1023,8 +1039,8 @@ function validar(f, ventaDebajoCosto){
 					alert("No puede sacar cantidades mayores a las existencias. Fila "+i);
 					return(false);
 				}		
-				if((cantidad<=0 || precioUnit<=0) || (Number.isNaN(cantidad)) || Number.isNaN(precioUnit)){
-					alert("La cantidad y/o Precio no pueden estar vacios o ser <= 0.");
+				if( (cantidad<=0 || precioUnit<=0) || (Number.isNaN(cantidad)) || Number.isNaN(precioUnit) || (Number.isNaN(monto_item)) || monto_item<=0 ){
+					alert("La cantidad, Precio y Monto por Item no pueden estar vacios o ser <= 0.");
 					return(false);
 				}
 			}
@@ -1719,14 +1735,14 @@ while($dat2=mysqli_fetch_array($resp2)){
 			</td>
 			<td>
 				<div class="row">
-					<div class="col-sm-3"><!--input type='number' placeholder='--' name='itemCodigoMaterial' id='itemCodigoMaterial' class="textogranderojo" onkeypress="return pressEnter(event, this.form);" onkeyup="return pressEnter(event, this.form);"></div-->
-					<div class="col-sm-9"><input type='text' placeholder='Descripción' name='itemNombreMaterial' id='itemNombreMaterial' class="textogranderojo" onkeypress="return pressEnter(event, this.form);"></div>				   
+					<div class="col-sm-3"><input type='number' placeholder='--' name='itemCodigoMaterial' id='itemCodigoMaterial' class="textogranderojo" onkeypress="return pressEnter(event, this.form);" onkeyup="return pressEnter(event, this.form);"></div>
+					<div class="col-sm-7"><input type='text' placeholder='Descripción' name='itemNombreMaterial' id='itemNombreMaterial' class="textogranderojo" onkeypress="return pressEnter(event, this.form);"></div>				   
 				</div>
 				
 			</td>	
 					
 			<td align="center">				
-				<input type='button' id="enviar_busqueda" class='boton' value='Buscar Producto' onClick="listaMateriales(this.form)">	
+				<input type='button' id="enviar_busqueda" class='boton' value='Buscar' onClick="listaMateriales(this.form)">	
 				<input type='button' id="enviar_busqueda" class='boton2' value='Limpiar' onClick="limpiarFormularioBusqueda();return false;">	
 				<!--a href="#" class="btn btn-warning btn-fab float-right" title="Limpiar Formulario de Busqueda" data-toggle='tooltip' onclick="limpiarFormularioBusqueda();return false;"><i class="material-icons">cleaning_services</i></a-->
 			</td>
@@ -1771,9 +1787,9 @@ while($dat2=mysqli_fetch_array($resp2)){
       
         </td>
         <td>
-	<table id='' width='100%' border="0">
+	<table id='' width='100%' border="0" class="d-none">
 		<tr>
-			<td align='right' width='90%' style="color:#777B77;font-size:12px;"></td><td align='center' colspan="2"><b style="font-size:20px;color:#189B22;">$ USD</b></td>
+			<td align='right' width='90%' style="color:#777B77;font-size:12px;"></td><td align='center' colspan="2"><b style="font-size:20px;color:#189B22;"><p class="d-none">$ USD</p></b></td>
 		</tr>
 		<tr>
 			<td align='right' width='90%' style="color:#777B77;font-size:12px;">Monto Nota</td>

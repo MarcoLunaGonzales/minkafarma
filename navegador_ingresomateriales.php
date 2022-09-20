@@ -267,7 +267,8 @@ while ($dat = mysqli_fetch_array($resp)) {
         $color_fondo = "";
         $chkbox = "<input type='checkbox' name='codigo' value='$codigo'>";
     }
-	if ($anio_ingreso != $globalGestionActual) {
+	//if ($anio_ingreso != $globalGestionActual) {
+    if ($anio_ingreso != 2022 ) {
         $chkbox = "";
     }
     echo "<tr bgcolor='$color_fondo'><td align='center'>$chkbox</td><td align='center'>$nro_correlativo</td><td align='center'>&nbsp;$nota_entrega</td>

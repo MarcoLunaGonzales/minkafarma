@@ -1,4 +1,5 @@
 <?php
+
 define('BASEPATH', dirname(__DIR__));
 defined('SB_DS') or define('SB_DS', DIRECTORY_SEPARATOR);
 
@@ -42,6 +43,9 @@ class CufdTest
 	{
 		try
 		{
+			
+			date_default_timezone_set('America/La_Paz');
+
 			$config = self::buildConfig();
 			$config->validate();			
 			

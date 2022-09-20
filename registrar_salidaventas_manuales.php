@@ -327,6 +327,10 @@ function ajaxPrecioItem(indice){
 	var codmat=document.getElementById("materiales"+indice).value;
 	var tipoPrecio=document.getElementById("tipoPrecio"+indice).value;
 	var cantidadUnitaria=document.getElementById("cantidad_unitaria"+indice).value;
+	if(cantidadUnitaria>0){
+	}else{
+		cantidadUnitaria=0;
+	}
 	ajax=nuevoAjax();
 	ajax.open("GET", "ajaxPrecioItem.php?codmat="+codmat+"&indice="+indice+"&tipoPrecio="+tipoPrecio,true);
 	ajax.onreadystatechange=function() {
@@ -648,8 +652,14 @@ function aplicarCambioEfectivo(f){
 	var tipo_cambio=$("#tipo_cambio_dolar").val();
 	var recibido=document.getElementById("efectivoRecibido").value;
 	var total=document.getElementById("totalFinal").value;
+	var cambio=0;
 
-	var cambio=Math.round((parseFloat(recibido)-parseFloat(total))*100)/100;
+	if(recibido=="" || recibido==0){
+		recibido=0;
+	}else{
+		cambio=Math.round((parseFloat(recibido)-parseFloat(total))*100)/100;
+	}
+
 	document.getElementById("cambioEfectivo").value=parseFloat(cambio);
 	document.getElementById("efectivoRecibidoUSD").value=Math.round((recibido/tipo_cambio)*100)/100;
 	document.getElementById("cambioEfectivoUSD").value=Math.round((cambio/tipo_cambio)*100)/100;	
@@ -659,8 +669,14 @@ function aplicarCambioEfectivoUSD(f){
 	var tipo_cambio=$("#tipo_cambio_dolar").val();
 	var recibido=document.getElementById("efectivoRecibidoUSD").value;
 	var total=document.getElementById("totalFinalUSD").value;
+	var cambio=0;
 
-	var cambio=Math.round((parseFloat(recibido)-parseFloat(total))*100)/100;
+	if(recibido=="" || recibido==0){
+		recibido=0;
+	}else{
+		cambio=Math.round((parseFloat(recibido)-parseFloat(total))*100)/100;
+	}
+
 	document.getElementById("cambioEfectivoUSD").value=parseFloat(cambio);
 	document.getElementById("efectivoRecibido").value=Math.round((recibido*tipo_cambio)*100)/100;
 	document.getElementById("cambioEfectivo").value=Math.round((cambio*tipo_cambio)*100)/100;	
@@ -987,7 +1003,10 @@ function validar(f, ventaDebajoCosto){
 		$("#pedido_realizado").val(0);
 		return(false);
 	}
-
+	if($("#totalFinal").val()<=0){
+		Swal.fire("Monto Final!", "El Monto Final del documento no puede ser 0", "info");
+		return(false);
+	}
 	//alert(ventaDebajoCosto);
 	f.cantidad_material.value=num;
 	var cantidadItems=num;
@@ -997,6 +1016,7 @@ function validar(f, ventaDebajoCosto){
 		var cantidad="";
 		var stock="";
 		var descuento="";
+		var monto_item="";
 						
 		for(var i=1; i<=cantidadItems; i++){
 			console.log("valor i: "+i);
@@ -1004,6 +1024,7 @@ function validar(f, ventaDebajoCosto){
 			if(document.getElementById("materiales"+i)!=null){
 				item=parseFloat(document.getElementById("materiales"+i).value);
 				cantidad=parseFloat(document.getElementById("cantidad_unitaria"+i).value);
+				monto_item=parseFloat(document.getElementById("montoMaterial"+i).value);
 				
 				//VALIDACION DE VARIABLE DE STOCK QUE NO SE VALIDA
 				stock=document.getElementById("stock"+i).value;
@@ -1033,8 +1054,8 @@ function validar(f, ventaDebajoCosto){
 					alert("No puede sacar cantidades mayores a las existencias. Fila "+i);
 					return(false);
 				}		
-				if((cantidad<=0 || precioUnit<=0) || (Number.isNaN(cantidad)) || Number.isNaN(precioUnit)){
-					alert("La cantidad y/o Precio no pueden estar vacios o ser <= 0.");
+				if( (cantidad<=0 || precioUnit<=0) || (Number.isNaN(cantidad)) || Number.isNaN(precioUnit) || (Number.isNaN(monto_item)) || monto_item<=0 ){
+					alert("La cantidad, Precio y Monto por Item no pueden estar vacios o ser <= 0.");
 					return(false);
 				}
 			}
