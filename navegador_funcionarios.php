@@ -1,10 +1,7 @@
 <?php
-/**
- * Desarrollado por Datanet-Bolivia.
- * @autor: Marco Antonio Luna Gonzales
- * Sistema de Visita Médica
- * * @copyright 2006
-*/
+require("conexionmysqli.php");
+require("estilos_almacenes.inc");
+		
 echo "<script language='Javascript'>
                 function enviar_nav(cod_ciudad)
                 {       location.href='registro_funcionarios.php?cod_ciudad='+cod_ciudad;
@@ -74,9 +71,8 @@ echo "<script language='Javascript'>
                         location.href='navegador_funcionarios.php?cod_ciudad=$cod_ciudad&vista='+modo_vista+'';
                 }
                 </script>";
-        require("conexionmysqli.php");
-		require("estilos_almacenes.inc");
-		
+        	
+
 		$cod_ciudad=$_GET['cod_ciudad'];
 		
 		$sql_cab="select descripcion from ciudades where cod_ciudad=$cod_ciudad";
@@ -98,7 +94,8 @@ echo "<script language='Javascript'>
         echo "<center><table class='texto'>";
 		echo "<tr><th>&nbsp;</th><th>&nbsp;</th><th>Cargo</th><th>Nombre</th>
 				<th>E-mail</th><th>Celular</th><th>Alta en sistema</th>
-				<th>Dar Alta</th><th>Restablecer Clave</th></tr>";
+				<th>Dar Alta</th><th>Restablecer Clave</th><th>
+				Asignar Sucursales</th></tr>";
         $indice_tabla=1;
 	while($dat=mysqli_fetch_array($resp))
     {
@@ -149,7 +146,8 @@ echo "<script language='Javascript'>
 			<td align='left'>&nbsp;$email</td><td align='left'>&nbsp;$cel</td>
 			<td align='center'>$alta_sistema</td>
 			<td align='center'>$dar_alta</td>
-			<td align='center'>$restablecer</td></tr>";
+			<td align='center'>$restablecer</td>
+			<td align='center'><a href='asignarSucursalPersonal.php?p=$codigo'><img src='imagenes/personal.png' width='40' title='Asignar Sucursales'></a></td></tr>";
 		$indice_tabla++;
 	}
 		

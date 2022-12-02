@@ -18,7 +18,7 @@ function numeroCorrelativoCUFD($enlaceCon,$tipoDoc){
 	$globalAlmacen=$_COOKIE['global_almacen'];	 
 	//echo "GlobalAlmacen".$globalAlmacen;
   $fechaActual=date("Y-m-d");
-  $sqlCufd="select cufd FROM siat_cufd where cod_ciudad='$globalCiudad' and estado=1 and fecha='$fechaActual'";
+  $sqlCufd="select cufd FROM siat_cufd where cod_ciudad='$globalCiudad' and estado=1 and fecha='$fechaActual' and cufd<>'' and cuis<>''";
 
   $respCufd=mysqli_query($enlaceCon,$sqlCufd);
   $datCufd=mysqli_fetch_array($respCufd);
@@ -245,6 +245,29 @@ function stockProducto($enlaceCon,$almacen, $item){
 
 			$stock2=$cant_ingresos-$cant_salidas;
 			
+			return($stock2);
+}
+
+function stockProductoAFecha($enlaceCon, $almacen, $item, $fechaInventario){
+	$fechaActual=$fechaInventario;
+	$fechaInicioSistema="2000-01-01";
+		   $sql_ingresos="select IFNULL(sum(id.cantidad_unitaria),0) from ingreso_almacenes i, ingreso_detalle_almacenes id
+			where i.cod_ingreso_almacen=id.cod_ingreso_almacen and i.fecha between '$fechaInicioSistema' and '$fechaActual' and i.cod_almacen='$almacen'
+			and id.cod_material='$item' and i.ingreso_anulado=0";
+			$cant_ingresos=0;
+			$cant_salidas=0;
+			$resp_ingresos=mysqli_query($enlaceCon,$sql_ingresos);
+			if($dat_ingresos=mysqli_fetch_array($resp_ingresos)){
+				$cant_ingresos=$dat_ingresos[0];	
+			}
+			$sql_salidas="select IFNULL(sum(sd.cantidad_unitaria),0) from salida_almacenes s, salida_detalle_almacenes sd
+			where s.cod_salida_almacenes=sd.cod_salida_almacen and s.fecha between '$fechaInicioSistema' and '$fechaActual' and s.cod_almacen='$almacen'
+			and sd.cod_material='$item' and s.salida_anulada=0";
+			$resp_salidas=mysqli_query($enlaceCon,$sql_salidas);
+			if($dat_salidas=mysqli_fetch_array($resp_salidas)){
+				$cant_salidas=$dat_salidas[0];
+			}
+			$stock2=$cant_ingresos-$cant_salidas;
 			return($stock2);
 }
 
@@ -637,5 +660,23 @@ function margenLinea($enlaceCon,$item){
 	$margen=$dat[0];
 	return($margen);
 }
+
+function descargarPDFArqueoCajaVertical($nom,$html){
+ //aumentamos la memoria  
+ ini_set("memory_limit", "128M");
+ // Cargamos DOMPDF
+ require_once 'assets/libraries/dompdf/dompdf_config.inc.php';
+ $mydompdf = new DOMPDF();
+ $mydompdf->set_paper('legal', 'portrait');
+ ob_clean();
+ $mydompdf->load_html($html);
+ $mydompdf->render();
+ $canvas = $mydompdf->get_canvas();
+ $canvas->page_text(500, 970, "Página:  {PAGE_NUM} de {PAGE_COUNT}", Font_Metrics::get_font("sans-serif"), 9, array(0,0,0)); 
+ $mydompdf->set_base_path('assets/libraries/plantillaPDFArqueo.css');
+ $mydompdf->stream($nom.".pdf", array("Attachment" => false));
+}
+
+
 
 ?>

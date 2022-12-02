@@ -25,13 +25,19 @@ $tipoSalida=$_POST['tipoSalida'];
 
 //echo "TIPO SALIDA: ".$tipoSalida;
 
+//ARRASTRAMOS EL CODIGO ALMACEN ORIGEN DEL FORMULARIO ANTERIOR PARA ALMACEN Y PARA LA SUCURSAL
+$almacenOrigen=$_POST['almacen_origen'];
+$globalSucursal=$_POST['sucursal_origen'];
+
+
+
 $tipoDoc=$_POST['tipoDoc'];
 if(!isset($_POST['no_venta'])){
    $almacenDestino=2;
-   $almacenOrigen=$global_almacen;
+   //$almacenOrigen=$global_almacen;
 }else{
    $almacenDestino=$_POST['almacen'];
-   $almacenOrigen=$global_almacen;
+   //$almacenOrigen=$global_almacen;
 }
 
 $cod_tipopreciogeneral=0;
@@ -389,7 +395,7 @@ if($sql_inserta==1){
 				}
 			}else{ //ESTO ES CUANDO HAY ERROR FACTURA
 				$mensaje="Factura emitida fuera de línea :(";				
-				$url="location.href='dFacturaElectronica.php?codigo_salida=$codigo';";
+				$url="location.href='formatoFactura.php?codigo_salida=$codigo';";
 			}
 
 			//SACAMOS LA VARIABLE PARA ENVIAR EL CORREO O NO SI ES 1 ENVIAMOS CORREO DESPUES DE LA TRANSACCION
@@ -427,7 +433,7 @@ if($sql_inserta==1){
 				    html: '".$texto_correo."',
 				    type: 'success'
 					}).then(function() {
-					   location.href='formatoFactura.php?codVenta=$codigo'; 
+					   location.href='puente_impresion.php?codVenta=$codigo&tipodoc=$tipoDoc'; 
 					});
 					</script>";
 				// $texto_correo="<span style=\"border:1px;font-size:18px;color:#91d167;\"><b>¿DESEAS ENVIAR CORREO?</b></span>";
@@ -439,7 +445,7 @@ if($sql_inserta==1){
 				    html: '".$texto_correo."',
 				    type: 'success'
 					}).then(function() {
-					    location.href='formatoFactura.php?codVenta=$codigo';
+						 location.href='puente_impresion.php?codVenta=$codigo&tipodoc=$tipoDoc';
 					});
 					</script>";
 				// echo "<script type='text/javascript' language='javascript'>
@@ -456,7 +462,7 @@ if($sql_inserta==1){
 			    $respUpdMonto=mysqli_query($enlaceCon,$sqlUpdMonto);
 		    }else{
 				echo "<script type='text/javascript' language='javascript'>
-				location.href='formatoNotaRemision.php?codVenta=$codigo';
+					location.href='puente_impresion.php?codVenta=$codigo&tipodoc=$tipoDoc';
 				</script>";		
 			}
 		}else if($tipoDoc==4){

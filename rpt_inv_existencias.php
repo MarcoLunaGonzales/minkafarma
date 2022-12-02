@@ -97,7 +97,8 @@ $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
 			}
 			
 			if($stock2<0)
-			{	$cadena_mostrar.="<td align='center'>0</td></tr>";
+			{	//$cadena_mostrar.="<td align='center'>0</td></tr>";
+				$cadena_mostrar.="<td align='center'>0</td><td align='center'>$stock2</td></tr>";
 			}
 			else{	
 				if($stock2>=$cantidadPresentacion){

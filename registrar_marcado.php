@@ -5,7 +5,7 @@ function cargaInicio(f){
 </script>
 <body onload="cargaInicio(form1);">
 <?php
-require("conexion.inc");
+require("conexionmysqli2.inc");
 require("estilos.inc");
 
 echo "<form name='form1' action='guarda_marcado.php' method='post'>";
@@ -23,11 +23,11 @@ echo "<div class='divBotones'><input type='submit' class='boton' value='Guardar 
 $sql="select m.fecha_marcado, 
 (select concat(f.paterno,' ', f.nombres) from funcionarios f where f.codigo_funcionario=m.cod_funcionario) 
 from marcados_personal m order by m.fecha_marcado desc limit 0,10";
-$resp=mysql_query($sql);
+$resp=mysqli_query($enlaceCon, $sql);
 echo "<center><table class='texto'>";
 echo "<tr><th colspan='2'>Ultimos Marcados del personal</th></tr>";
 echo "<tr><th>Fecha/Hora Marcado</th><th>Personal</th></tr>";
-while($dat=mysql_fetch_array($resp)){
+while($dat=mysqli_fetch_array($resp)){
 	$fechaHora=$dat[0];
 	$nombresPersonal=$dat[1];
 	

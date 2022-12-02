@@ -12,7 +12,14 @@ $usuarioVendedor=$_COOKIE['global_usuario'];
 $globalSucursal=$_COOKIE['global_agencia'];
 
 $idLineaProveedor=$_POST["id_linea_proveedor"];
-$nombreLineaProveedorX=nombreLineaProveedor($enlaceCon, $idLineaProveedor);
+
+if($idLineaProveedor!=0){
+    $nombreLineaProveedorX=nombreLineaProveedor($enlaceCon, $idLineaProveedor);
+    $observaciones="Salida por Ajuste de Inventario por Linea. Linea $nombreLineaProveedorX";
+}else{
+    $observaciones="Salida por Ajuste (Por busqueda de Item)";
+}
+
 
 $errorProducto="";
 $totalFacturaMonto=0;
@@ -29,7 +36,6 @@ $monto_bs=0;
 $monto_usd=0;
 $tipo_cambio=0;
 $tipoVenta=0;
-$observaciones="Salida por Ajuste de Inventario por Linea. Linea $nombreLineaProveedorX";
 $totalVenta=0; 
 $descuentoVenta=0; 
 $totalFinal=0; 
@@ -133,7 +139,13 @@ $hora_sistema = date("H:i:s");
 $tipo_ingreso=1002;
 $nota_entrega=0;
 $nro_factura=0;
-$observaciones="Ingreso por ajuste de Linea. Linea $nombreLineaProveedorX";
+
+if($idLineaProveedor!=0){
+    $observaciones="Ingreso por ajuste de Linea. Linea $nombreLineaProveedorX";
+}else{
+    $observaciones="Ingreso por ajuste (Por Busqueda de Item).";
+}
+
 $proveedor=0;
 
 $createdBy=$_COOKIE['global_usuario'];

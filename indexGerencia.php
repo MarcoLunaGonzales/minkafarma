@@ -38,7 +38,7 @@ include("datosUsuario.php");
 		<div style="position:absolute; width:95%; height:50px; text-align:right; top:0px; font-size: 9px; font-weight: bold; color: #fff;">
 			[<?=$fechaSistemaSesion;?>][<?=$horaSistemaSesion;?>]			
 		<div>
-		<div style="position:absolute; width:95%; height:50px; text-align:left; top:0px; font-size: 9px; font-weight: bold; color: #fff;">
+		<div style="position:absolute; width:95%; height:50px; text-align:left; top:0px; font-size: 15px; font-weight: bold; color: #ffff00;">
 			[<?=$nombreUsuarioSesion;?>][<?=$nombreAlmacenSesion;?>]
 		<div>
 	</div>
@@ -58,6 +58,7 @@ include("datosUsuario.php");
 				<ul>
 					<li><a href="programas/proveedores/inicioProveedores.php" target="contenedorPrincipal">Distribuidores</a></li>
 					<li><a href="navegador_material.php" target="contenedorPrincipal">Productos</a></li>
+					<li><a href="navegador_ajustarpreciostock.php" target="contenedorPrincipal">Ajustar Precio/Stock **</a></li>
 					<li><a href="navegador_funcionarios1.php" target="contenedorPrincipal">Funcionarios</a></li>
 					<li><a href="programas/clientes/inicioClientes.php" target="contenedorPrincipal">Clientes</a></li>
 					<!--li><a href="navegador_vehiculos.php" target="contenedorPrincipal">Vehiculos</a></li-->
@@ -74,6 +75,7 @@ include("datosUsuario.php");
 						<li><a href="navegador_empaques.php" target="contenedorPrincipal">Empaques</a></li>
 						<li><a href="navegador_formasfar.php" target="contenedorPrincipal">Formas Farmaceuticas</a></li>
 						<li><a href="navegador_accionester.php" target="contenedorPrincipal">Acciones Terapeuticas</a></li>
+						<li><a href="navegador_ajustarpreciostock.php" target="contenedorPrincipal">Ajustar Precio y Stock</a></li>
 						<li><a href="navegador_precios.php?orden=1" target="contenedorPrincipal">Precios (Orden Alfabetico)</a></li>
 						<li><a href="navegador_precios.php?orden=2" target="contenedorPrincipal">Precios (Por Linea Proveedor)</a></li>		
 						<li><a href="navegadorUbicaciones.php" target="contenedorPrincipal">Ubicaciones</a></li>						
@@ -123,6 +125,8 @@ include("datosUsuario.php");
 			</li>	
 			<li><a href="registrar_ingresomateriales.php" target="contenedorPrincipal">Registrar Ingreso **</a></li>
 			<li><a href="registrar_salidaventas.php" target="_blank">Vender / Facturar **</a></li>
+			<li><a href="rptOpArqueoDiario.php?variableAdmin=1" target="contenedorPrincipal">Cierre de Caja</a></li>
+			<li><a href="cambiarSucursalSesion.php" target="contenedorPrincipal">Cambiar Almacen</a></li>
 			<!--li><a href="listadoProductosStock.php" target="_blank">Listado de Productos **</a></li-->
 			<!--li><a href="rptProductosVencer.php" target="contenedorPrincipal">Productos proximos a Vencer</a></li-->
 			<!--li><a href="navegador_etiquetas.php" target="contenedorPrincipal">Impresion de Etiquetas</a></li-->
@@ -135,6 +139,7 @@ include("datosUsuario.php");
 							<li><a href="rpt_op_inv_ingresos.php" target="contenedorPrincipal">Ingresos</a></li>
 							<li><a href="rpt_op_inv_salidas.php" target="contenedorPrincipal">Salidas</a></li>
 							<li><a href="rptPrecios.php" target="contenedorPrincipal">Precios</a></li>
+							<li><a href="rptOpProductosAReponer.php" target="contenedorPrincipal">Productos a reponer</a></li>
 							<li><a href="rptProductosVencer.php" target="contenedorPrincipal">Productos proximos a Vencer</a></li>
 							<!--li><a href="rptOCPagar.php" target="contenedorPrincipal">OC por Pagar</a></li-->
 						</ul>

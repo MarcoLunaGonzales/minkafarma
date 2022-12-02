@@ -11,8 +11,10 @@ $cantidadPresentacion=$_POST['cantidadPresentacion'];
 $principioActivo=$_POST['principioActivo'];
 $codTipoVenta=$_POST['codTipoVenta'];
 $productoControlado=$_POST['producto_controlado'];
-$arrayAccionTerapeutica=$_POST['arrayAccionTerapeutica'];
+//$arrayAccionTerapeutica=$_POST['arrayAccionTerapeutica'];
+$accionTerapeutica=$_POST['accion_terapeutica'];
 $precioProducto=$_POST['precio_producto'];
+$codigoBarras=$_POST['codigo_barras'];
 
 
 $sql="select IFNULL((max(codigo_material)+1),1) as codigo  from material_apoyo m";
@@ -23,19 +25,19 @@ $codigo=$dat[0];
 //$codigo=mysql_result($resp,0,0);
 
 $sql_inserta="insert into material_apoyo(codigo_material, descripcion_material, estado, cod_linea_proveedor, cod_forma_far, cod_empaque,
-cantidad_presentacion, principio_activo, cod_tipoventa, producto_controlado) values ($codigo,'$nombreProducto','1','$codLinea','$codForma','$codEmpaque',
-'$cantidadPresentacion','$principioActivo','$codTipoVenta','$productoControlado')";
+cantidad_presentacion, principio_activo, cod_tipoventa, producto_controlado, accion_terapeutica, codigo_barras) values ($codigo,'$nombreProducto','1','$codLinea','$codForma','$codEmpaque',
+'$cantidadPresentacion','$principioActivo','$codTipoVenta','$productoControlado','$accionTerapeutica','$codigoBarras')";
 //echo $sql_inserta;
 $resp_inserta=mysqli_query($enlaceCon,$sql_inserta);
 
-$vectorAccionTer=explode(",",$arrayAccionTerapeutica);
+/*$vectorAccionTer=explode(",",$arrayAccionTerapeutica);
 $n=sizeof($vectorAccionTer);
 //echo $n;
 for($i=0;$i<$n;$i++){
 	$sql="insert into material_accionterapeutica (codigo_material, cod_accionterapeutica) values('$codigo','$vectorAccionTer[$i]')";
 	//echo $sql."<br>";
 	$resp=mysqli_query($enlaceCon,$sql);
-}
+}*/
 
 $sqlDel="delete from precios where codigo_material=$codigo";
 $respDel=mysqli_query($enlaceCon,$sqlDel);

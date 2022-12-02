@@ -14,7 +14,7 @@ $nroItems=mysqli_result($respNro,0,0);
 
 $tamanoLargo=180+($nroItems*3)-3;
 
-$pdf=new FPDF('P','mm',array(76,$tamanoLargo));
+$pdf=new FPDF('P','mm',array(74,$tamanoLargo));
 //$pdf=new FPDF('P','mm',array(100,$tamanoLargo));
 $pdf->SetMargins(0,0,0);
 $pdf->AddPage(); 
@@ -125,7 +125,7 @@ while($datDetalle=mysqli_fetch_array($respDetalle)){
 	
 	$pdf->SetFont('Arial','',7);
 	//$pdf->SetXY(5,$y+$yyy);		$pdf->MultiCell(60,3,"$nombreMat",1,"C");
-	$pdf->SetXY(2,$y+$yyy);		$pdf->Cell(80,3,"$nombreMat",0,0,"L");
+	$pdf->SetXY(7,$y+$yyy);		$pdf->Cell(80,3,"$nombreMat",0,0,"L");
 	
 	$pdf->SetFont('Arial','',9);
 	
@@ -158,7 +158,7 @@ if($montoDecimal==""){
 $pdf->SetFont('Arial','',7);
 
 $txtMonto=NumeroALetras::convertir($montoEntero);
-$pdf->SetXY(5,$y+$yyy+15);		$pdf->MultiCell(0,3,"Son:  $txtMonto"." ".$montoDecimal."/100 Bolivianos",0,"L");
+$pdf->SetXY(6,$y+$yyy+15);		$pdf->MultiCell(0,3,"Son:  $txtMonto"." ".$montoDecimal."/100 Bolivianos",0,"L");
 $pdf->SetXY(0,$y+$yyy+21);		$pdf->Cell(0,0,"=================================================================================",0,0,"C");
 
 $pdf->Output();

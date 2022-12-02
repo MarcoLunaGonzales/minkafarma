@@ -47,11 +47,14 @@ if ($num_filas != 0) {
 	
 	
 	$stringGlobalAdmins=obtenerValorConfiguracion($enlaceCon, 0);
-	$posBuscada = strpos($stringGlobalAdmins, $usuario);
-	if ($posBuscada === true) {
-		setcookie("global_admin_cargo", 0);	    
-	}else{
+	$arrayAdmins = explode(",", $stringGlobalAdmins);
+
+	//var_dump($arrayAdmins);
+
+	if(in_array($usuario, $arrayAdmins)){
 		setcookie("global_admin_cargo", 1);		
+	}else{
+		setcookie("global_admin_cargo", 0);		
 	}
 
 

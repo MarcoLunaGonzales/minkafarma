@@ -93,16 +93,18 @@ if($sql_inserta==1){
 			if($banderaPrecioUpd>0){
 				//SACAMOS EL ULTIMO PRECIO REGISTRADO
 				$sqlPrecioActual="select precio from precios where codigo_material='$cod_material' and cod_precio=1";
+				//echo $sqlPrecioActual;
 				$respPrecioActual=mysqli_query($enlaceCon,$sqlPrecioActual);
 				$numFilasPrecios=mysqli_num_rows($respPrecioActual);
 				$precioActual=0;
 				if($numFilasPrecios>0){
 					$datPrecioActual = mysqli_fetch_array($respPrecioActual);
-					$precioActual=$dat[0];
+					$precioActual=$datPrecioActual[0];
 					//$precioActual=mysql_result($respPrecioActual,0,0);
 				}
 				
 				//echo "precio +margen: ".$precioItem." precio actual: ".$precioActual;
+				
 				//SI NO EXISTE EL PRECIO LO INSERTA CASO CONTRARIO VERIFICA QUE EL PRECIO DEL INGRESO SEA MAYOR AL ACTUAL PARA HACER EL UPDATE
 				if($numFilasPrecios==0){
 					$sqlPrecios="insert into precios (codigo_material, cod_precio, precio) values('$cod_material','1','$precioItem')";

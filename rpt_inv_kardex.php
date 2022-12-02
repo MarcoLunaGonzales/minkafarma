@@ -254,7 +254,7 @@ $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
 			<td align='left' class='bg-plomoclaro'>$nombre_responsable</td></tr>";
 		}
 		//hacemos la consulta para salidas
-		$sql_salidas="select s.nro_correlativo, sd.cantidad_unitaria, ts.nombre_tiposalida, s.observaciones, s.territorio_destino, s.cod_salida_almacenes,sd.cantidad_unitaria,s.created_by,s.cod_tipo_doc,s.razon_social,s.almacen_destino
+		$sql_salidas="select s.nro_correlativo, sd.cantidad_unitaria, ts.nombre_tiposalida, s.observaciones, s.territorio_destino, s.cod_salida_almacenes,sd.cantidad_unitaria,s.created_by,s.cod_tipo_doc,s.razon_social,s.almacen_destino, s.cod_chofer
 		from salida_almacenes s, salida_detalle_almacenes sd, tipos_salida ts
 		where s.cod_tiposalida=ts.cod_tiposalida and s.cod_salida_almacenes=sd.cod_salida_almacen and s.cod_almacen='$rpt_almacen' and
 		s.salida_anulada=0 and sd.cod_material='$rpt_item' and s.fecha='$fecha_consulta'";
@@ -269,7 +269,9 @@ $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
       $tipoDocumento=$dat_salidas["cod_tipo_doc"];
       $razon_social=$dat_salidas['razon_social'];            
 			$territorio_destino=$dat_salidas['almacen_destino'];
-          $sqlResponsable="select CONCAT(SUBSTRING_INDEX(nombres,' ', 1),' ',SUBSTR(paterno, 1, 1),'.') from funcionarios where codigo_funcionario='".$dat_salidas['created_by']."'";
+			$codPersonalSalida=$dat_salidas['cod_chofer'];
+
+          $sqlResponsable="select CONCAT(SUBSTRING_INDEX(nombres,' ', 1),' ',SUBSTR(paterno, 1, 1),'.') from funcionarios where codigo_funcionario='".$codPersonalSalida."'";
 	        $respResponsable=mysqli_query($enlaceCon,$sqlResponsable);
 	        $nombre_responsable=mysqli_result($respResponsable,0,0);
 
@@ -305,7 +307,8 @@ $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
                      $nro_facturaProveedor="";
 			       }else{
 			    					 $nro_salida="NR-".$nro_salida;
-                     $nro_facturaProveedor="";
+                     //$nro_facturaProveedor="";
+                     $obs_salida=$razon_social;
 			       }	
 			    }
 			}

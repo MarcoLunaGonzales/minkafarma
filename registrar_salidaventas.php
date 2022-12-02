@@ -16,10 +16,12 @@ require "conexionmysqli.inc";
         <link  rel="icon"   href="imagenes/card.png" type="image/png" />
         <link href="assets/style.css" rel="stylesheet" />
 		    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        
+				<script type="text/javascript" src="functionsGeneral.js"></script>
+
         <style type="text/css">
         	body{
               zoom: 86%;
+              line-height: 0;
             }
             img.bw {
 	            filter: grayscale(0);
@@ -730,6 +732,7 @@ function buscarMaterial(f, numMaterial){
 	document.getElementById('divboton').style.visibility='visible';
 	
 	document.getElementById('divListaMateriales').innerHTML='';
+	document.getElementById('itemCodigoMaterial').value='';	
 	document.getElementById('itemNombreMaterial').value='';	
 	document.getElementById('itemAccionMaterialNom').value='';	
 	document.getElementById('itemPrincipioMaterialNom').value='';	
@@ -969,8 +972,28 @@ require("funciones.php");
 ?>
 <script>
 
+function leerCookie(nombre) {
+	var lista = document.cookie.split(";");
+	for (i in lista) {
+	   var busca = lista[i].search(nombre);
+	   if (busca > -1) {micookie=lista[i]}
+	   }
+	var igual = micookie.indexOf("=");
+	var valor = micookie.substring(igual+1);
+	return valor;
+}
 
-function validar(f, ventaDebajoCosto){
+function validar(f, ventaDebajoCosto){	
+	
+	var cookieSucursal=leerCookie("global_agencia");	
+	var formularioSucursal=$("#sucursal_origen").val();
+	console.log("cookieSucursal: "+cookieSucursal+" formularioSucursal: "+formularioSucursal);
+
+	if(parseInt(cookieSucursal)!=parseInt(formularioSucursal)){
+		Swal.fire("NO PUEDE GENERAR LA VENTA!!!.", "Error en sesion de Sucursal!!!!. Cierre la Ventana de Facturacion y vuelva a abrir la misma.", "error");		
+		return (false);
+	}
+
 	
 	if($("#nitCliente").val()=="0"){
 		// errores++;
@@ -994,7 +1017,7 @@ function validar(f, ventaDebajoCosto){
 	f.cantidad_material.value=num;
 	var cantidadItems=num;
 	console.log("numero de items: "+cantidadItems);
-	console.log("MontoFinal: "+tota);
+	console.log("MontoFinal: "+totalFinal);
 	var montoFinal
 
 	if(cantidadItems>0){
@@ -1461,6 +1484,10 @@ if(isset($_GET['file'])){
 	<input type="hidden" id="confirmacion_guardado" value="0">
 	<input type="hidden" id="tipo_cambio_dolar" name="tipo_cambio_dolar"value="<?=$tipoCambio?>">
 	<input type="hidden" id="global_almacen" value="<?=$globalAlmacen?>">
+
+	<input type="hidden" id="almacen_origen" name="almacen_origen" value="<?=$globalAlmacen?>">
+	<input type="hidden" id="sucursal_origen" name="sucursal_origen" value="<?=$globalAgencia?>">
+
 	<input type="hidden" id="validacion_clientes" name="validacion_clientes" value="<?=obtenerValorConfiguracion($enlaceCon,11)?>">
 
 <table class='' width='100%' style='width:100%;margin-top:-24px !important;'>
@@ -1624,8 +1651,8 @@ while($dat2=mysqli_fetch_array($resp2)){
 			<option value=''>----</option>
 			<?php
 			$sql2="select f.`codigo_funcionario`,
-				concat(f.`paterno`,' ', f.`nombres`) as nombre from `funcionarios` f where 
-				f.`cod_ciudad`='$globalAgencia' and estado=1 order by 2";
+				concat(f.`paterno`,' ', f.`nombres`) as nombre from `funcionarios` f, funcionarios_agencias fa 
+				where fa.codigo_funcionario=f.codigo_funcionario and fa.`cod_ciudad`='$globalAgencia' and estado=1 order by 2";
 			$resp2=mysqli_query($enlaceCon,$sql2);
 
 			while($dat2=mysqli_fetch_array($resp2)){
@@ -1664,6 +1691,7 @@ while($dat2=mysqli_fetch_array($resp2)){
 </table>
 <br>
 <input type="hidden" id="ventas_codigo"><!--para validar la funcion mas desde ventas-->
+
 <div class="codigo-barras div-center">
 	<input class="boton" type="button" value="Add Item(+)" onclick="mas(this)" accesskey="a"/>&nbsp;&nbsp;&nbsp;
   <input type="text" class="form-codigo-barras" id="input_codigo_barras" placeholder="Ingrese el código de barras." autofocus autocomplete="off">
@@ -1832,11 +1860,11 @@ if($banderaErrorFacturacion==0){
             <table style='width:330px;padding:0 !important;margin:0 !important;bottom:25px;position:fixed;left:100px;'>
             <tr>
                <td style='font-size:12px;color:#0691CD; font-weight:bold;'>EFECTIVO Bs.</td>
-               <td style='font-size:12px;color:#189B22; font-weight:bold;'>EFECTIVO $ USD</td>
+               <td style='font-size:12px;color:#189B22; font-weight:bold;' class='d-none'>EFECTIVO $ USD</td>
              </tr>
              <tr>
                <td><input type='number' name='efectivoRecibidoUnido' onChange='aplicarMontoCombinadoEfectivo(form1);' onkeyup='aplicarMontoCombinadoEfectivo(form1);' onkeydown='aplicarMontoCombinadoEfectivo(form1);' id='efectivoRecibidoUnido' style='height:25px;font-size:18px;width:100%;' step='any'></td>
-               <td><input type='number' name='efectivoRecibidoUnidoUSD' onChange='aplicarMontoCombinadoEfectivo(form1);' onkeyup='aplicarMontoCombinadoEfectivo(form1);' onkeydown='aplicarMontoCombinadoEfectivo(form1);' id='efectivoRecibidoUnidoUSD' style='height:25px;font-size:18px;width:100%;' step='any'></td>
+               <td class='d-none'><input type='number' name='efectivoRecibidoUnidoUSD' onChange='aplicarMontoCombinadoEfectivo(form1);' onkeyup='aplicarMontoCombinadoEfectivo(form1);' onkeydown='aplicarMontoCombinadoEfectivo(form1);' id='efectivoRecibidoUnidoUSD' style='height:25px;font-size:18px;width:100%;' step='any'></td>
              </tr>
             </table>
 

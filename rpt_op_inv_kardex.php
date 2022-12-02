@@ -82,8 +82,12 @@ function buscarProductoReporte(){
 
 <?php
 
+$global_agencia=$_COOKIE['global_agencia'];
 $fecha_rptdefault=date("d/m/Y");
+
 echo "<h1>Reporte Kardex de Existencia Fisica</h1><br>";
+echo"<body onLoad='cargalistadoAlmacenes();'>";
+
 echo"<form method='post' action='rpt_op_inv_kardex.php'>";
 	echo"\n<table class='texto' align='center' cellSpacing='0' width='50%'>\n";
 	echo "<tr><th align='left'>Sucursal</th><td><select name='rpt_territorio' id='rpt_territorio' class='form-control' data-size='6' data-live-search='true' onChange='cargalistadoAlmacenes()'>";
@@ -112,16 +116,14 @@ echo"<form method='post' action='rpt_op_inv_kardex.php'>";
 	echo "<tr><th align='left'>Almacen</th><td><select name='rpt_almacen' id='rpt_almacen' class='form-control'>";
 	
 	$sql="select cod_almacen, nombre_almacen from almacenes where cod_ciudad='$global_agencia' and cod_ciudad>0 order by cod_tipoalmacen ";
+	//echo $sql;
 	$resp=mysqli_query($enlaceCon,$sql);
 	while($dat=mysqli_fetch_array($resp))
 	{	$codigo_almacen=$dat[0];
 		$nombre_almacen=$dat[1];
-		if($rpt_almacen==$codigo_almacen)
-		{	echo "<option value='$codigo_almacen' selected>$nombre_almacen</option>";
-		}
-		else
-		{	echo "<option value='$codigo_almacen'>$nombre_almacen</option>";
-		}
+		
+		echo "<option value='$codigo_almacen' selected>$nombre_almacen</option>";
+		
 	}
 
 
@@ -164,6 +166,7 @@ echo"<form method='post' action='rpt_op_inv_kardex.php'>";
 	echo "<center><input type='button' name='reporte' value='Ver Reporte' onClick='envia_formulario(this.form)' class='boton'>
 	</center><br>";
 	echo"</form>";
+	echo"</body>";
 	echo "</div>";
 	echo"<script type='text/javascript' language='javascript'  src='dlcalendar.js'></script>";
 

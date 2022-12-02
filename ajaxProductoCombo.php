@@ -24,9 +24,27 @@ if(isset($_COOKIE['global_tipo_almacen'])&&$_COOKIE['global_tipo_almacen']!=1){
 $sql_item.=" $sqlTipoSum order by m.descripcion_material limit 0,100 ";
 //echo $sql_item;
 	$resp=mysqli_query($enlaceCon,$sql_item);
-	while($dat=mysqli_fetch_array($resp))
-	{	$codigo_item=$dat[0];
+	while($dat=mysqli_fetch_array($resp)){	
+		$codigo_item=$dat[0];
 		$nombre_item=$dat[1];
 		$proveedor=$dat[2];
-		echo "<option value='$codigo_item' selected>$codigo_item: $nombre_item ($proveedor)</option>";
+
+		/*
+		VERIFICAMOS MOVIMIENTO CON LOS INGRESOS
+		*/
+		$txtSinMovimiento="";
+		$sqlMovimiento="select count(*) from ingreso_almacenes i, ingreso_detalle_almacenes id 
+			where i.cod_ingreso_almacen=id.cod_ingreso_almacen and id.cod_material='$codigo_item' and i.ingreso_anulado=0;";
+		$respMovimiento=mysqli_query($enlaceCon, $sqlMovimiento);
+		$filasMovimiento=0;
+		if($datMovimiento=mysqli_fetch_array($respMovimiento)){
+			$filasMovimiento=$datMovimiento[0];
+		}
+		if($filasMovimiento==0){
+			$txtSinMovimiento="**SM** ";
+		}
+
+
+
+		echo "<option value='$codigo_item' selected>$txtSinMovimiento $codigo_item: $nombre_item ($proveedor)</option>";
 	}

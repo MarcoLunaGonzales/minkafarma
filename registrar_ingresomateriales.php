@@ -450,7 +450,7 @@ echo "<th colspan='3'>Observaciones</th></tr>";
 $sql1="select p.cod_proveedor, concat(p.nombre_proveedor,' ',pl.nombre_linea_proveedor), pl.margen_precio from proveedores p, proveedores_lineas pl 
 			where p.cod_proveedor=pl.cod_proveedor and pl.estado=1 order by 2";
 $resp1=mysqli_query($enlaceCon,$sql1);
-echo "<tr><td align='center'><select name='proveedor' id='proveedor' class='texto' required>";
+echo "<tr><td align='center'><select name='proveedor' id='proveedor' class='texto' style='width:400px' required>";
 echo "<option value=''>-</option>";
 while($dat1=mysqli_fetch_array($resp1))
 {   $codigo=$dat1[0];

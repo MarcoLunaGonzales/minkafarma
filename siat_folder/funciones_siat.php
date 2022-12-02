@@ -1,10 +1,10 @@
 <?php
 require "Siat/siat_cobofar/siat_facturacionoffline.php";   
 date_default_timezone_set('America/La_Paz');
-function obtenerFechasEmisionFacturas($string_codigos,$cod_almacen,$fecha){
+function obtenerFechasEmisionFacturas($string_codigos,$cod_almacen,$fecha,$siat_codigocufd){
 	$sql="SELECT max(s.siat_fechaemision)as fin,min(s.siat_fechaemision)as inicio
     FROM salida_almacenes s 
-    WHERE s.cod_salida_almacenes in ($string_codigos) and s.cod_almacen=$cod_almacen and DATE_FORMAT(s.siat_fechaemision,'%Y-%m-%d') = '$fecha'";
+    WHERE s.cod_salida_almacenes in ($string_codigos) and s.cod_almacen=$cod_almacen and DATE_FORMAT(s.siat_fechaemision,'%Y-%m-%d') = '$fecha' and s.siat_codigocufd=$siat_codigocufd";
     // echo  $sql;
     $valor=0;
     // require("../../conexionmysqli.inc");

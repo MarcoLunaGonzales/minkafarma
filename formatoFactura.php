@@ -22,7 +22,7 @@ $nroItems=$datNro[0];
 
 $tamanoLargo=300+($nroItems*3)-3;
 
-$pdf=new FPDF('P','mm',array(76,$tamanoLargo));
+$pdf=new FPDF('P','mm',array(74,$tamanoLargo));
 $pdf->SetMargins(0,0,0);
 $pdf->AddPage(); 
 $pdf->SetFont('Arial','',8);
@@ -183,11 +183,11 @@ $pdf->SetXY(4,$y+41);		$pdf->MultiCell(68,3,utf8_decode("COD. DE AUTORIZACIÓN: 
 $pdf->SetXY(4,$y+51);		$pdf->Cell(68,0,"---------------------------------------------------------------------------", 0,0,"C");
 $pdf->SetXY(4,$y+52);		$pdf->MultiCell(68,3,utf8_decode($txt1),0,"C");
 
-$y=$y+3;
+$y=$y+5;
 
 $pdf->SetXY(4,$y+59);		$pdf->Cell(68,0,"---------------------------------------------------------------------------", 0,0,"C");
 
-$pdf->SetXY(4,$y+63);		$pdf->Cell(68,0,utf8_decode("NOMBRE/RAZÓN SOCIAL: ").utf8_decode($razonSocialCliente),0,0,"C");
+$pdf->SetXY(4,$y+63);		$pdf->Cell(68,0,utf8_decode("SEÑOR(ES):").utf8_decode($razonSocialCliente),0,0,"C");
 $pdf->SetXY(4,$y+67);		$pdf->Cell(68,0,"NIT/CI/CEX:".$nitCliente." ".$siat_complemento,0,0,"C");
 $pdf->SetXY(4,$y+71);		$pdf->Cell(68,0,"COD. CLIENTE:: $cod_cliente",0,0,"C");
 $pdf->SetXY(4,$y+75);		$pdf->Cell(68,0,utf8_decode("FECHA EMISIÓN: ").$fechaFactura."  ".$horaFactura,0,0,"C");
@@ -215,6 +215,8 @@ while($datDetalle=mysqli_fetch_array($respDetalle)){
 	$codInterno=$datDetalle[0];
 	$cantUnit=$datDetalle[1];
 	$nombreMat=$datDetalle[2];
+	$nombreMat=substr($nombreMat,0,34);
+
 	$precioUnit=$datDetalle[3];
 	$descUnit=$datDetalle[4];	
 	$montoUnit=($cantUnit*$precioUnit)-$descUnit;	

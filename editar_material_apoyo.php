@@ -42,7 +42,7 @@ require('funciones.php');
 		}
 		
 		
-		var codAccionTerapeutica=new Array();
+		/*var codAccionTerapeutica=new Array();
 		var j=0;
 		for(i=0;i<=f.codAccionTerapeutica.options.length-1;i++)
 		{	if(f.codAccionTerapeutica.options[i].selected)
@@ -50,7 +50,7 @@ require('funciones.php');
 				j++;
 			}
 		}
-		f.arrayAccionTerapeutica.value=codAccionTerapeutica;
+		f.arrayAccionTerapeutica.value=codAccionTerapeutica;*/
 		
 		f.submit();
 	}
@@ -65,7 +65,7 @@ $paginaRetorno=$_GET['pagina_retorno'];
 
 
 $sqlEdit="select m.codigo_material, m.descripcion_material, m.estado, m.cod_linea_proveedor, m.cod_forma_far, m.cod_empaque, 
-	m.cantidad_presentacion, m.principio_activo, m.cod_tipoventa, m.producto_controlado from material_apoyo m where m.codigo_material='$codProducto'";
+	m.cantidad_presentacion, m.principio_activo, m.cod_tipoventa, m.producto_controlado, m.accion_terapeutica, m.codigo_barras from material_apoyo m where m.codigo_material='$codProducto'";
 $respEdit=mysqli_query($enlaceCon,$sqlEdit);
 while($datEdit=mysqli_fetch_array($respEdit)){
 	$nombreProductoX=$datEdit[1];
@@ -76,6 +76,8 @@ while($datEdit=mysqli_fetch_array($respEdit)){
 	$principioActivoX=$datEdit[7];
 	$codTipoVentaX=$datEdit[8];
 	$productoControlado=$datEdit[9];
+	$accionTerapeutica=$datEdit[10];
+	$codigoBarras=$datEdit[11];
 }
 
 $sqlPrecio="select p.`precio` from `precios` p where p.`cod_precio`=1 and p.`codigo_material`='$codProducto'";
@@ -210,7 +212,7 @@ echo "</tr>";
 
 
 echo "<tr><th>Accion Terapeutica</th>";
-$sql1="select l.cod_accionterapeutica as value, l.nombre_accionterapeutica as texto from acciones_terapeuticas l;";
+/*$sql1="select l.cod_accionterapeutica as value, l.nombre_accionterapeutica as texto from acciones_terapeuticas l;";
 $resp1=mysqli_query($enlaceCon,$sql1);
 echo "<td>
 	<div class='container'>
@@ -232,10 +234,11 @@ echo "<td>
 					echo "<option value='$codigo'>$nombre</option>";
 				}
 			}
-echo "</select>
+echo "</select>*/
+/*	</div>
 	</div>
-	</div>
-</td>";
+</td>";*/
+echo "<td><input type='text' name='accion_terapeutica' id='accion_terapeutica' value='$accionTerapeutica' size='40' style='text-transform:uppercase;'></td>";
 echo "</tr>";
 
 echo "<tr><th>Producto Controlado</th>";
@@ -256,6 +259,10 @@ echo "<tr><th align='left'>Precio de Venta</th>";
 echo "<td align='left'>
 	<input type='number' class='texto' name='precio_producto' id='precio_producto' value='$precio1' step='0.01'>
 	</td></tr>";
+
+echo "<tr><th>Codigo de Barras</th>";
+echo "<td><input type='text' name='codigo_barras' id='codigo_barras' value='$codigoBarras' size='40'  style='text-transform:uppercase;'></td>";
+echo "</tr>";
 
 ?>	
 

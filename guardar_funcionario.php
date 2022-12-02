@@ -19,7 +19,7 @@ else
 }
 //estado=1 es activo, 0 es retirado
 $sql="insert into funcionarios values($codigo_funcionario,'$cargo','$paterno','$materno','$nombres','$fecha_real',
-'$direccion','$telefono','$celular','$email','$agencia',1)";
+'$direccion','$telefono','$celular','$email','$agencia',1,'')";
 $resp=mysqli_query($enlaceCon,$sql);
 echo "<script language='Javascript'>
 			alert('Los datos se registraron satisfactoriamente');

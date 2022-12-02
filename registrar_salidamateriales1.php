@@ -1,3 +1,9 @@
+<?php
+
+require("conexionmysqli.php");
+require("estilos_almacenes.inc");
+
+?>
 <html>
     <head>
         <title>Busqueda</title>
@@ -263,8 +269,6 @@ function validar(f)
 		
 <?php
 echo "<body>";
-require("conexionmysqli.php");
-require("estilos_almacenes.inc");
 if($fecha=="")
 {   $fecha=date("d/m/Y");
 }

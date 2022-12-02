@@ -1,8 +1,9 @@
 <?php
 require("conexionmysqli.php");
 require('estilos.inc');
-	
-echo "<script language='Javascript'>
+require('funciones.php');
+
+echo "<script>
 		function enviar_nav()
 		{	location.href='registrar_material_apoyo.php';
 		}
@@ -64,16 +65,46 @@ echo "<script language='Javascript'>
 				}
 			}
 		}
-		function cambiar_vista(sel_vista, f)
+		function cambiar_vista(f)
 		{
-			var modo_vista;
-			modo_vista=sel_vista.value;
-			location.href='navegador_material.php?vista='+modo_vista+'';
+			//var modo_vista;
+			//modo_vista=f.vista.value;
+
+			var proveedorB=$('#proveedorBusqueda').val();
+			var principioActivoB=$('#principioActivoBusqueda').val();
+			var nombreB=$('#itemNombreBusqueda').val();
+			var codBarrasB=$('#input_codigo_barras').val();
+			location.href='navegador_material.php?vista='+modo_vista+'&proveedorB='+proveedorB+'&nombreB='+nombreB+'&principioActivoB='principioActivoB+'&cb='+codBarrasB;
 		}
+function mostrarBusqueda(){
+	document.getElementById('divRecuadroExt').style.visibility='visible';
+	document.getElementById('divProfileData').style.visibility='visible';
+	document.getElementById('divProfileDetail').style.visibility='visible';
+	document.getElementById('divboton').style.visibility='visible';
+	//document.getElementById('divListaMateriales').innerHTML='';
+	document.getElementById('itemNombreBusqueda').value='';	
+	document.getElementById('itemNombreBusqueda').focus();		
+}
+function Hidden(){
+	document.getElementById('divRecuadroExt').style.visibility='hidden';
+	document.getElementById('divProfileData').style.visibility='hidden';
+	document.getElementById('divProfileDetail').style.visibility='hidden';
+	document.getElementById('divboton').style.visibility='hidden';
+}
+function enviar_buscador(){	
+	var proveedorB=$('#proveedorBusqueda').val();
+	var principioActivoB=$('#principioActivoBusqueda').val();
+	var nombreB=$('#itemNombreBusqueda').val();
+	var codBarrasB=$('#input_codigo_barras').val();
+	location.href='navegador_material.php?vista=1&proveedorB='+proveedorB+'&nombreB='+nombreB+'&principioActivoB='principioActivoB+'&barrasB='+codBarrasB;
+}
+		
 		</script>";
 		
 	
 	echo "<h1>Registro de Producto</h1>";
+
+
 	echo "<form method='post' action=''>";
 
 	//$vista=0;
@@ -87,7 +118,7 @@ echo "<script language='Javascript'>
 		(select pl.nombre_linea_proveedor from proveedores p, proveedores_lineas pl where p.cod_proveedor=pl.cod_proveedor and pl.cod_linea_proveedor=m.cod_linea_proveedor),
 		(select t.nombre_tipoventa from tipos_venta t where t.cod_tipoventa=m.cod_tipoventa), m.cantidad_presentacion, m.principio_activo 
 		from material_apoyo m
-		where m.estado='1' order by m.descripcion_material";
+		where m.estado='1' ";
 	if($vista==1)
 	{	$sql="select m.codigo_material, m.descripcion_material, m.estado, 
 		(select e.nombre_empaque from empaques e where e.cod_empaque=m.cod_empaque), 
@@ -95,14 +126,36 @@ echo "<script language='Javascript'>
 		(select pl.nombre_linea_proveedor from proveedores p, proveedores_lineas pl where p.cod_proveedor=pl.cod_proveedor and pl.cod_linea_proveedor=m.cod_linea_proveedor),
 		(select t.nombre_tipoventa from tipos_venta t where t.cod_tipoventa=m.cod_tipoventa), m.cantidad_presentacion, m.principio_activo 
 		from material_apoyo m
-		where m.estado='0' order by m.descripcion_material";
+		where m.estado='0' ";
 	}
+
+	//nuevos filtros
+  $proveedorB=0;$principioB=0;$nombreB="";$barrasB="";
+
+  if(isset($_GET['proveedorB'])&&$_GET['proveedorB']!=0){
+      $proveedorB=$_GET["proveedorB"];
+      $sql.=" and m.cod_linea_proveedor in (select cod_linea_proveedor from proveedores_lineas p where p.cod_proveedor='$proveedorB') ";
+  }
+  if(isset($_GET['nombreB'])&&$_GET['nombreB']!=""){
+      $nombreB=$_GET['nombreB'];
+      $sql.=" and m.descripcion_material like '%$nombreB%' ";
+  }
+  if(isset($_GET['principioB'])&&$_GET['principioB']!=""){
+      $principioB=$_GET['principioB'];
+      $sql.=" and m.principio_activo like '%$principioB%' ";
+  }
+  if(isset($_GET['barrasB'])&&$_GET['barrasB']!=""){
+      $barrasB=$_GET['barrasB'];
+      $sql.=" and m.codigo_barras like '%$barrasB%'";   
+  }
+
+	$sql.=" order by m.descripcion_material limit 0,50 ";
 	
 	//echo $sql;
 	$resp=mysqli_query($enlaceCon,$sql);
 	
 	echo "<table align='center' class='texto'><tr><th>Ver Productos:</th>
-	<th><select name='vista' class='texto' onChange='cambiar_vista(this, this.form)'>";
+	<th><select name='vista' class='texto' onChange='cambiar_vista(this.form)'>";
 	if($vista==0)	echo "<option value='0' selected>Activos</option><option value='1'>Retirados</option><option value='2'>Todo</option>";
 	if($vista==1)	echo "<option value='0'>Activos</option><option value='1' selected>Retirados</option><option value='2'>Todo</option>";
 	echo "</select>";
@@ -115,12 +168,14 @@ echo "<script language='Javascript'>
 		<input type='button' value='Adicionar' name='adicionar' class='boton' onclick='enviar_nav()'>
 		<input type='button' value='Editar' name='Editar' class='boton' onclick='editar_nav(this.form)'>
 		<input type='button' value='Eliminar' name='eliminar' class='boton2' onclick='eliminar_nav(this.form)'>
+		<a href='#' class='boton-verde' onclick='mostrarBusqueda()'><i class='fa fa-search'></i></a>
+
 		</div>";
 	
 	echo "<center><table class='texto'>";
-	echo "<tr><th>Indice</th><th>&nbsp;</th><th>Nombre Producto</th><th>Empaque</th>
-		<th>Cant.Presentacion</th><th>Forma Farmaceutica</th><th>Linea Distribuidor</th><th>Principio Activo</th><th>Tipo Venta</th>
-		<th>Accion Terapeutica</th></tr>";
+	echo "<tr><th>Indice</th><th>&nbsp;</th><th>Nombre Producto</th>
+		<th>Cant.Presentacion</th><th>Linea Distribuidor</th>
+		<th>Precio</th></tr>";
 	
 	$indice_tabla=1;
 	while($dat=mysqli_fetch_array($resp))
@@ -134,6 +189,9 @@ echo "<script language='Javascript'>
 		$tipoVenta=$dat[6];
 		$cantPresentacion=$dat[7];
 		$principioActivo=$dat[8];
+
+		$precioProducto=precioProducto($enlaceCon,$codigo);
+		$precioProducto=formatonumeroDec($precioProducto);
 		
 		$txtAccionTerapeutica="";
 		$sqlAccion="select a.nombre_accionterapeutica from acciones_terapeuticas a, material_accionterapeutica m
@@ -148,9 +206,9 @@ echo "<script language='Javascript'>
 		
 		echo "<tr><td align='center'>$indice_tabla</td><td align='center'>
 		<input type='checkbox' name='codigo' value='$codigo'></td>
-		<td>$nombreProd</td><td>$empaque</td>
-		<td>$cantPresentacion</td><td>$formaFar</td>
-		<td>$nombreLinea</td><td>$principioActivo</td><td>$tipoVenta</td><td>$txtAccionTerapeutica</td></tr>";
+		<td>$nombreProd</td>
+		<td>$cantPresentacion</td>
+		<td>$nombreLinea</td><td>$precioProducto</td></tr>";
 		$indice_tabla++;
 	}
 	echo "</table></center><br>";
@@ -159,7 +217,72 @@ echo "<script language='Javascript'>
 		<input type='button' value='Adicionar' name='adicionar' class='boton' onclick='enviar_nav()'>
 		<input type='button' value='Editar' name='Editar' class='boton' onclick='editar_nav(this.form)'>
 		<input type='button' value='Eliminar' name='eliminar' class='boton2' onclick='eliminar_nav(this.form)'>
+		<a href='#' class='boton-verde' onclick='mostrarBusqueda()'><i class='fa fa-search'></i></a>
+
 		</div>";
 		
-	echo "</form>";
 ?>
+
+
+
+<div id="divRecuadroExt" style="background-color:#666; position:absolute; width:800px; height: 500px; top:30px; left:150px; visibility: hidden; opacity: .70; -moz-opacity: .70; filter:alpha(opacity=70); -webkit-border-radius: 20px; -moz-border-radius: 20px; z-index:2;">
+</div>
+
+<div id="divboton" style="position: absolute; top:20px; left:920px;visibility:hidden; text-align:center; z-index:3">
+	<a href="javascript:Hidden();"><img src="imagenes/cerrar4.png" height="45px" width="45px"></a>
+</div>
+
+<div id="divProfileData" style="background-color:#FFF; width:750px; height:450px; position:absolute; top:50px; left:170px; -webkit-border-radius: 20px; 	-moz-border-radius: 20px; visibility: hidden; z-index:2;">
+  	<div id="divProfileDetail" style="visibility:hidden; text-align:center; height:445px; overflow-y: scroll;">
+		<table align='center' class="texto">
+			<tr><th>Proveedor</th></tr>
+			<tr>
+			<td colspan="2"><select name='proveedorBusqueda' id="proveedorBusqueda" class="textomedianorojo" style="width:600px">
+			<?php
+			$sqlTipo="SELECT p.cod_proveedor,p.nombre_proveedor from proveedores p where p.cod_proveedor>0 order by 2;";
+			$respTipo=mysqli_query($enlaceCon,$sqlTipo);
+			echo "<option value='0'>--</option>";
+			while($datTipo=mysqli_fetch_array($respTipo)){
+				$codTipoMat=$datTipo[0];
+				$nombreTipoMat=$datTipo[1];
+				if($codTipoMat==$gr){
+				  echo "<option value=$codTipoMat selected>$nombreTipoMat</option>";	
+				}else{
+					echo "<option value=$codTipoMat>$nombreTipoMat</option>";
+				}
+			}
+			?>
+			</select>
+			</td>
+			</tr>
+
+			<tr><th colspan="2">Nombre Producto</th></tr>
+			<tr>
+			<td colspan="2">
+				<input type='text' style="width:100%" name='itemNombreBusqueda' id="itemNombreBusqueda" class="textomedianorojo"  value="<?=$nm?>">
+			</td>
+			</tr>
+			<tr><th colspan="2">Principio Activo</th></tr>
+			<tr>
+			<td colspan="2">
+				<input type='text' style="width:100%" name='principioActivoBusqueda' id="principioActivoBusqueda" class="textomedianorojo"  value="<?=$nm?>">
+			</td>
+			</tr>
+			<tr><th colspan="2">Codigo de Barras</th></tr>
+			<tr>
+			<td colspan="2" style="text-align:center;">
+				<div class="codigo-barras div-center">
+               <input type="text" class="form-codigo-barras" id="input_codigo_barras" placeholder="Ingrese el codigo de barras." autofocus autocomplete="off">
+         </div>
+			</td>
+			</tr>
+		</table>
+		<div class="div-center">
+             <input type='button' class='boton-verde' value='Buscar Producto' id="btnBusqueda" onClick="enviar_buscador();">
+		</div>
+	
+	</div>
+</div>
+
+
+</form>

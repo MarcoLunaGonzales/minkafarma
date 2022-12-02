@@ -133,7 +133,7 @@ echo "<tr><th>Cantidad Presentacion</th>
 	</tr>";
 	
 echo "<tr><th>Principio Activo</th>
-	<td><input type='text' name='principioActivo' id='principioActivo' style='text-transform:uppercase;'></td>
+	<td><input type='text' name='principioActivo' id='principioActivo' size='40'  style='text-transform:uppercase;'></td>
 	</tr>";
 
 echo "<tr><th>Tipo Venta</th>";
@@ -157,7 +157,7 @@ echo "</tr>";
 
 
 echo "<tr><th>Accion Terapeutica</th>";
-$sql1="select l.cod_accionterapeutica as value, l.nombre_accionterapeutica as texto from acciones_terapeuticas l;";
+/*$sql1="select l.cod_accionterapeutica as value, l.nombre_accionterapeutica as texto from acciones_terapeuticas l;";
 $resp1=mysqli_query($enlaceCon,$sql1);
 echo "<td>
 	<div class='container'>
@@ -172,7 +172,8 @@ echo "<td>
 echo "</select>
 	</div>
 	</div>
-</td>";
+</td>";*/
+echo "<td><input type='text' name='accion_terapeutica' id='accion_terapeutica'  size='40' style='text-transform:uppercase;'></td>";
 echo "</tr>";
 
 
@@ -187,6 +188,10 @@ echo "<tr><th align='left'>Precio de Venta</th>";
 echo "<td align='left'>
 	<input type='number' class='texto' name='precio_producto' id='precio_producto' step='0.01'>
 	</td></tr>";
+
+echo "<tr><th>Codigo de Barras</th>";
+echo "<td><input type='text' name='codigo_barras' id='codigo_barras' size='40'  style='text-transform:uppercase;'></td>";
+echo "</tr>";
 
 ?>	
 

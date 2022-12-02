@@ -376,7 +376,7 @@ footer p {
                             <div class="txn mt-2">NIT: <?=$nitTxt?></div>
                             <p class="address"> <?=$direccionTxt?></p>
                             <div class="txn mt-2">Tel: <?=$telefonoTxt?></div>
-                            <div class="txn mt-2">La Paz - Bolivia</div>
+                            <div class="txn mt-2">San Jose Chiquitos</div>
                             </div></td><td width="60%" valign="top"><div class="col-5">
                             <p>Nombre/Razón Social</p>
                             <h4 style="color:#14AF91"><?=$razonSocialCliente?></h4>

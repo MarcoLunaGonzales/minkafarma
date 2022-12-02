@@ -7,14 +7,23 @@
 require("conexionmysqli.php");
 require("funciones.php");
 
-$codigoMat=$_GET['codigoMat'];
+$codigoMat=0;
+$nomAccion="";
+$nomPrincipio="";
+if(isset($_GET['codigoMat'])){
+	$codigoMat=$_GET['codigoMat'];
+}
+if(isset($_GET['nomAccion'])){
+	$nomAccion=$_GET['nomAccion'];
+}
+if(isset($_GET['nomPrincipio'])){
+	$nomPrincipio=$_GET['nomPrincipio'];	
+}
 $codTipo=$_GET['codTipo'];
 $nombreItem=$_GET['nombreItem'];
 $globalAlmacen=$_COOKIE['global_almacen'];
 $itemsNoUtilizar=$_GET['arrayItemsUtilizados'];
 $tipoSalida=$_GET['tipoSalida'];
-$nomAccion=$_GET['nomAccion'];
-$nomPrincipio=$_GET['nomPrincipio'];
 
 $fechaActual=date("Y-m-d");
 
@@ -31,7 +40,7 @@ $tipoSalidaVencimiento=$datConf[0];//$tipoSalidaVencimiento=mysql_result($respCo
 	from proveedores p, proveedores_lineas pl where p.cod_proveedor=pl.cod_proveedor and pl.cod_linea_proveedor=m.cod_linea_proveedor), m.principio_activo, m.accion_terapeutica
 	from material_apoyo m where estado=1 and m.codigo_material not in ($itemsNoUtilizar)";
 	if($codigoMat!=""){
-		$sql=$sql. " and codigo_material like '%$codigoMat%'";
+		$sql=$sql. " and codigo_material='$codigoMat'";
 	}
 	if($nombreItem!=""){
 		$sql=$sql. " and descripcion_material like '%$nombreItem%'";
