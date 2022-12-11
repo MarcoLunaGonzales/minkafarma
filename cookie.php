@@ -25,6 +25,8 @@ if ($num_filas != 0) {
 
     setcookie("global_usuario", $usuario);
     setcookie("global_agencia", $cod_ciudad);
+    
+    setcookie("globalIdEntidad", 1);    
 	
 	//sacamos la gestion activa
 	$sqlGestion="select cod_gestion, nombre_gestion from gestiones where estado=1";

@@ -43,7 +43,7 @@ class ServicioFacturacion extends ServicioSiat
 		// file_put_contents('siat_folder/Siat/temp/Facturas-XML/'.$factura->cabecera->cuf.".xml", $facturaXml);
 		// var_dump($facturaXml);die;
 		
-		if($tipoEmision!=2){
+		// if($tipoEmision!=2){
 			$solicitud = new SolicitudServicioRecepcionFactura();
 			$solicitud->cufd 					= $this->cufd;
 			$solicitud->cuis					= $this->cuis;
@@ -84,7 +84,7 @@ class ServicioFacturacion extends ServicioSiat
 				// echo "<br><br>";
 				// var_dump($data);
 				$res = $this->callAction('recepcionFactura', $data);			
-				//print_r($res);
+				print_r($res);
 				return array($res,$factura->cabecera->fechaEmision,$factura->cabecera->cuf,$facturaXml,$solicitud);
 			}
 			catch(\SoapFault $e)
@@ -94,9 +94,9 @@ class ServicioFacturacion extends ServicioSiat
 				//print_r($e->getMessage());
 				//throw new Exception($e->getMessage());
 			}			
-		}else{ // cuando esta en offline no guardar envio
-			return array(null,$factura->cabecera->fechaEmision,$factura->cabecera->cuf,$facturaXml);
-		}
+		// }else{ // cuando esta en offline no guardar envio
+		// 	return array(null,$factura->cabecera->fechaEmision,$factura->cabecera->cuf,$facturaXml);
+		// }
 	}
 	/**
 	 * 

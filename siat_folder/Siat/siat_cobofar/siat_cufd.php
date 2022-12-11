@@ -1,5 +1,4 @@
 <?php
-
 define('BASEPATH', dirname(__DIR__));
 defined('SB_DS') or define('SB_DS', DIRECTORY_SEPARATOR);
 
@@ -43,9 +42,6 @@ class CufdTest
 	{
 		try
 		{
-			
-			date_default_timezone_set('America/La_Paz');
-
 			$config = self::buildConfig();
 			$config->validate();			
 			
@@ -73,13 +69,11 @@ class CufdTest
 				$cufd=$resCufd->RespuestaCufd->codigo;
 				if($cufdAnt==""){
 					//echo $cufd;
-					if($cuis!="" && $cufd!=""){
-						$sqlUpdate="UPDATE siat_cufd SET estado=0 where cod_ciudad='$ciudad' and fecha='$fechaActual' and cuis='$cuis' and estado=1;";
-						mysqli_query($enlaceCon,$sqlUpdate);
-						$control=$resCufd->RespuestaCufd->codigoControl;
-						$sqlInsert="INSERT INTO siat_cufd (cufd,codigo_control,fecha,cod_ciudad,created_by,created_at,estado,cuis) VALUES ('$cufd','$control','$fechaActual','$ciudad','0',NOW(),1,'$cuis')";
-						mysqli_query($enlaceCon,$sqlInsert);
-					}					
+					$sqlUpdate="UPDATE siat_cufd SET estado=0 where cod_ciudad='$ciudad' and fecha='$fechaActual' and cuis='$cuis' and estado=1;";
+					mysqli_query($enlaceCon,$sqlUpdate);
+					$control=$resCufd->RespuestaCufd->codigoControl;
+					$sqlInsert="INSERT INTO siat_cufd (cufd,codigo_control,fecha,cod_ciudad,created_by,created_at,estado,cuis) VALUES ('$cufd','$control','$fechaActual','$ciudad','0',NOW(),1,'$cuis')";
+					mysqli_query($enlaceCon,$sqlInsert);					
 				}
 			}														
 

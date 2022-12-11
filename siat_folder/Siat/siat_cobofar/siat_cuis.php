@@ -61,7 +61,7 @@ class CuisTest
 			$dat=mysqli_fetch_array($resp);
 			$cuisAnt=$dat[0];
 			//echo $cuisAnt." - ".$cuis;
-			if( ($cuisAnt==""||$cuisAnt!=$cuis) && ($cuis!="") ){
+			if($cuisAnt==""||$cuisAnt!=$cuis){
 				//echo "ENTRO!!!";
 				if($cuisAnt!=$cuis){
 					$sqlUpdate="UPDATE siat_cuis SET estado=0 where cod_ciudad='$ciudad' and cod_gestion='$yearActual' and estado=1;";
