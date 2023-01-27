@@ -33,6 +33,7 @@ function envia_formulario(f)
 	rpt_territorio=f.rpt_territorio.value;
 	var rpt_persona=new Array();
 	var rpt_grupo=new Array();
+	var rpt_ver=f.rpt_ver.value;
 	
 	fecha_ini=f.exafinicial.value;
 	fecha_fin=f.exaffinal.value;
@@ -43,40 +44,25 @@ function envia_formulario(f)
 			j++;
 		}
 	}
-	j=0;
-	for(i=0;i<=f.rpt_grupo.options.length-1;i++)
-	{	if(f.rpt_grupo.options[i].selected)
-		{	rpt_grupo[j]=f.rpt_grupo.options[i].value;
-			j++;
-		}
-	}
-	
-	var forms = f;
-    if(forms.checkValidity()){
-		window.open('rptVentasxVendedorDetalle.php?rpt_territorio='+rpt_territorio+'&fecha_ini='+fecha_ini+'&fecha_fin='+fecha_fin+'&rpt_persona='+rpt_persona+'&rpt_grupo='+rpt_grupo,'','scrollbars=yes,status=no,toolbar=no,directories=no,menubar=no,resizable=yes,width=1000,height=800');			
-		return(true);
-	} else{
-        alert("Debe seleccionar todos los campos del reporte.");
-		return false;
-    }
-
+	window.open('rptVentasxVendedorDetalle.php?rpt_territorio='+rpt_territorio+'&fecha_ini='+fecha_ini+'&fecha_fin='+fecha_fin+'&rpt_persona='+rpt_persona+'&rpt_ver='+rpt_ver,'','scrollbars=yes,status=no,toolbar=no,directories=no,menubar=no,resizable=yes,width=1000,height=800');			
+	return(true);
 }
 </script>
 <?php
 
-require("conexion.inc");
+require("conexionmysqli2.inc");
 require("estilos_almacenes.inc");
 
 $fecha_rptdefault=date("d/m/Y");
-echo "<table align='center' class='textotit'><tr><th>Reporte Ventas x Vendedor Detallado</th></tr></table><br>";
+echo "<table align='center' class='textotit'><tr><th>Reporte Ventas x Vendedor</th></tr></table><br>";
 echo"<form method='post' action=''>";
 
 	echo"\n<table class='texto' align='center' cellSpacing='0' width='50%'>\n";
 	echo "<tr><th align='left'>Territorio</th><td><select name='rpt_territorio' id='rpt_territorio' class='texto' onChange='ajaxPersonal(this.form)' required>";
 	$sql="select cod_ciudad, descripcion from ciudades order by descripcion";
-	$resp=mysql_query($sql);
+	$resp=mysqli_query($enlaceCon, $sql);
 	echo "<option value='0'></option>";
-	while($dat=mysql_fetch_array($resp))
+	while($dat=mysqli_fetch_array($resp))
 	{	$codigo_ciudad=$dat[0];
 		$nombre_ciudad=$dat[1];
 		echo "<option value='$codigo_ciudad'>$nombre_ciudad</option>";
@@ -84,20 +70,12 @@ echo"<form method='post' action=''>";
 	echo "</select></td></tr>";
 	
 	echo "<tr><th align='left'>Personal</th>";
-	echo "<td><div id='divPersonal'>
-	<select name='rpt_persona' id='rpt_persona' class='texto' size='10' multiple required></select>
-	</div>
+	echo "<td><div id='divPersonal'></div>
 	</td></tr>";
-
-	echo "<tr><th align='left'>Grupo</th>
-	<td><select name='rpt_grupo[]' id='rpt_grupo' class='texto' size='5' onChange='ajaxReporteItems(this.form);' multiple required>";
-	$sql="select codigo, nombre from grupos where estado=1 order by 2";
-	$resp=mysql_query($sql);
-	while($dat=mysql_fetch_array($resp))
-	{	$codigo=$dat[0];
-		$nombre=$dat[1];
-		echo "<option value='$codigo' selected>$nombre</option>";
-	}
+	
+	echo "<tr><th align='left'>Ver</th><td><select name='rpt_ver' id='rpt_ver' class='texto' size='2'>";
+	echo "<option value='1' selected>Resumido</option>";
+	echo "<option value='2'>Detallado</option>";
 	echo "</select></td></tr>";
 	echo "</tr>";	
 	
@@ -116,5 +94,6 @@ echo"<form method='post' action=''>";
 	</center><br>";
 	echo"</form>";
 	echo "</div>";
+	echo"<script type='text/javascript' language='javascript'  src='dlcalendar.js'></script>";
 
 ?>

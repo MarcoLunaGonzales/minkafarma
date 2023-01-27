@@ -1,57 +1,22 @@
 <?php
-require("conexionmysqli2.inc");
+require_once 'conexionmysqli.inc';
+
 require('estilos.inc');
 
 ?>
 <head>
-    <script src="//code.jquery.com/jquery-3.1.1.min.js"></script>
+    <!--script src="//code.jquery.com/jquery-3.1.1.min.js"></script>
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link href="autoComplete/tokenize2.css" rel="stylesheet" />
     <script src="autoComplete/tokenize2.js"></script>
-    <link href="autoComplete/demo.css" rel="stylesheet" />
+    <link href="autoComplete/demo.css" rel="stylesheet" /-->
 </head>
 
 <script language='Javascript'>
-	function validar(f)
-	{
-		if(f.material.value=='')
-		{	alert('El campo Nombre esta vacio.');
-			f.material.focus();
-			return(false);
-		}
-		if(f.codLinea.value=='')
-		{	alert('Debe seleccionar Linea.');
-			f.codLinea.focus();
-			return(false);
-		}
-		if(f.codForma.value=='')
-		{	alert('Debe seleccionar Forma Farmaceutica.');
-			f.codForma.focus();
-			return(false);
-		}
-		if(f.codEmpaque.value=='')
-		{	alert('Debe seleccionar Empaque.');
-			f.codEmpaque.focus();
-			return(false);
-		}
-		if(f.codTipoVenta.value=='')
-		{	alert('Debe seleccionar Tipo de Venta.');
-			f.codTipoVenta.focus();
-			return(false);
-		}
-		
-		
-		var codAccionTerapeutica=new Array();
-		var j=0;
-		for(i=0;i<=f.codAccionTerapeutica.options.length-1;i++)
-		{	if(f.codAccionTerapeutica.options[i].selected)
-			{	codAccionTerapeutica[j]=f.codAccionTerapeutica.options[i].value;
-				j++;
-			}
-		}
-		f.arrayAccionTerapeutica.value=codAccionTerapeutica;		
+	function validar(f){
+		console.log("Guardando Datos");
 	}
 
 </script>
@@ -66,7 +31,7 @@ echo "<h1>Adicionar Producto</h1>";
 echo "<center><table class='texto'>";
 echo "<tr><th align='left'>Nombre</th>";
 echo "<td align='left'>
-	<input type='text' class='texto' name='material' size='40' style='text-transform:uppercase;'>
+	<input type='text' class='textomedianorojo' name='material' size='60' style='text-transform:uppercase;'>
 	</td>";
 	
 echo "<tr><th align='left'>Linea</th>";
@@ -74,18 +39,14 @@ $sql1="select pl.cod_linea_proveedor, CONCAT(p.nombre_proveedor,' - ',pl.nombre_
 where p.cod_proveedor=pl.cod_proveedor and pl.estado=1 order by 2;";
 $resp1=mysqli_query($enlaceCon,$sql1);
 echo "<td>
-<div class='container'>
-		<div class='col-md-6'>
-		<select name='codLinea' id='codLinea' class='tokenize-limit-demo2'>
-		<option value=''></option>";
+		<select name='codLinea' id='codLinea' class='selectpicker' data-style='btn btn-info' data-show-subtext='true' data-live-search='true' required>
+		<option value=''>Seleccionar Linea</option>";
 		while($dat1=mysqli_fetch_array($resp1))
 		{	$codLinea=$dat1[0];
 		$nombreLinea=$dat1[1];
 		echo "<option value='$codLinea'>$nombreLinea</option>";
 		}
 		echo "</select>
-	</div>
-	</div>
 </td>";
 echo "</tr>";
 
@@ -94,9 +55,7 @@ $sql1="select f.cod_forma_far, f.nombre_forma_far from formas_farmaceuticas f
 where f.estado=1 order by 2;";
 $resp1=mysqli_query($enlaceCon,$sql1);
 echo "<td>
-<div class='container'>
-		<div class='col-md-4'>
-			<select name='codForma' id='codForma' class='tokenize-limit-demo2'>
+	<select name='codForma' id='codForma' class='selectpicker' data-style='btn btn-info' data-show-subtext='true' data-live-search='true' required>
 			<option value=''></option>";
 			while($dat1=mysqli_fetch_array($resp1))
 			{	$codForma=$dat1[0];
@@ -104,54 +63,29 @@ echo "<td>
 				echo "<option value='$codForma'>$nombreForma</option>";
 			}
 			echo "</select>
-	</div>
-	</div>
-</td>";
-echo "</tr>";
-
-echo "<tr><th>Empaque</th>";
-$sql1="select e.cod_empaque, e.nombre_empaque from empaques e where e.estado=1 order by 2;";
-$resp1=mysqli_query($enlaceCon,$sql1);
-echo "<td>
-	<div class='container'>
-		<div class='col-md-4'>
-			<select name='codEmpaque' id='codEmpaque' class='tokenize-limit-demo2'>
-				<option value=''></option>";
-			while($dat1=mysqli_fetch_array($resp1))
-			{	$codEmpaque=$dat1[0];
-				$nombreEmpaque=$dat1[1];
-				echo "<option value='$codEmpaque'>$nombreEmpaque</option>";
-			}
-echo "</select>
-	</div>
-	</div>
-</td>";
+			</td>";
 echo "</tr>";
 
 echo "<tr><th>Cantidad Presentacion</th>
-	<td><input type='number' name='cantidadPresentacion' id='cantidadPresentacion' min='1' max='1000' value='1'></td>
+	<td><input type='number' name='cantidadPresentacion' id='cantidadPresentacion' min='1' max='1000' value='1' class='textomedianorojo' required></td>
 	</tr>";
 	
 echo "<tr><th>Principio Activo</th>
-	<td><input type='text' name='principioActivo' id='principioActivo' size='40'  style='text-transform:uppercase;'></td>
+	<td><input type='text' name='principioActivo' id='principioActivo' size='60' class='textomedianonegro' style='text-transform:uppercase;'></td>
 	</tr>";
 
 echo "<tr><th>Tipo Venta</th>";
-$sql1="select t.cod_tipoventa, t.nombre_tipoventa from tipos_venta t where t.estado=1;";
+$sql1="select t.cod_tipoventa, t.nombre_tipoventa from tipos_venta t where t.estado=1 order by 2;";
 $resp1=mysqli_query($enlaceCon,$sql1);
 echo "<td>
-	<div class='container'>
-		<div class='col-md-4'>
-			<select name='codTipoVenta' id='codTipoVenta' class='tokenize-limit-demo2'>
-			<option value=''></option>";
+		<select name='codTipoVenta' id='codTipoVenta' class='selectpicker' data-style='btn btn-info' data-show-subtext='true' data-live-search='true' required>";
+
 			while($dat1=mysqli_fetch_array($resp1))
 			{	$codTipoVenta=$dat1[0];
-				$nombreTipoVenta=$dat1[1];
+				$nombreTipoVenta=$dat1[1];	
 				echo "<option value='$codTipoVenta'>$nombreTipoVenta</option>";
 			}
-echo "</select>
-	</div>
-	</div>
+		echo "</select>
 </td>";
 echo "</tr>";
 
@@ -173,7 +107,7 @@ echo "</select>
 	</div>
 	</div>
 </td>";*/
-echo "<td><input type='text' name='accion_terapeutica' id='accion_terapeutica'  size='40' style='text-transform:uppercase;'></td>";
+echo "<td><input type='text' name='accion_terapeutica' id='accion_terapeutica'  size='60' style='text-transform:uppercase;' class='textomedianonegro'></td>";
 echo "</tr>";
 
 
@@ -185,25 +119,21 @@ echo "<td>
 echo "</tr>";
 
 echo "<tr><th align='left'>Precio de Venta</th>";
-echo "<td align='left'>
-	<input type='number' class='texto' name='precio_producto' id='precio_producto' step='0.01'>
-	</td></tr>";
+$sqlSucursales="select cod_ciudad, descripcion from ciudades order by 1";
+$respSucursales=mysqli_query($enlaceCon,$sqlSucursales);
+echo "<td align='left'>";
+while($datSucursales=mysqli_fetch_array($respSucursales)){
+	$codCiudadPrecio=$datSucursales[0];
+	$nombreCiudadPrecio=$datSucursales[1];
+	echo "<input type='number' class='texto' name='precio_producto|$codCiudadPrecio' id='precio_producto|$codCiudadPrecio' step='0.01' placeholder='$nombreCiudadPrecio' required>";
+}
+echo "</td></tr>";
 
 echo "<tr><th>Codigo de Barras</th>";
 echo "<td><input type='text' name='codigo_barras' id='codigo_barras' size='40'  style='text-transform:uppercase;'></td>";
 echo "</tr>";
 
-?>	
-
-	<script>
-		$('.tokenize-sample-demo1').tokenize2();
-		$('.tokenize-limit-demo2').tokenize2({
-                tokensMaxItems: 1
-        });
-	</script>
-	
-<?php
-	echo "</td></tr>";
+echo "</td></tr>";
 echo "</table></center>";
 echo "<input type='hidden' name='arrayAccionTerapeutica' id='arrayAccionTerapeutica'>";
 echo "<div class='divBotones'>

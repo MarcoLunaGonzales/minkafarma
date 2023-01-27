@@ -32,10 +32,20 @@ function nuevoAjax()
 
 function modifPreciosAjax(indice){
 	var item=document.getElementById('item_'+indice).value;
-	var precio1=document.getElementById('precio1_'+indice).value;
+	//var precio1=document.getElementById('precio1_'+indice).value;
+	var elementos = document.getElementById('form_precios');
+	var arrayPrecios=new Array();
+  	for(i=0; i<elementos.length; i++){
+    	var cadenaBuscar="precio|"+indice+"|";
+    	if(elementos[i].name.indexOf(cadenaBuscar) != -1){
+    		console.log(elementos[i].value);
+    		arrayPrecios.push(elementos[i].value+"|"+elementos[i].name);
+    	}
+  	}
+
 	contenedor = document.getElementById('contenedor_'+indice);
 	ajax=nuevoAjax();
-	ajax.open("GET", "ajaxGuardarPrecios.php?item="+item+"&precio1="+precio1,true);
+	ajax.open("GET", "ajaxGuardarPrecios.php?item="+item+"&precios="+arrayPrecios,true);
 	ajax.onreadystatechange=function() {
 		if (ajax.readyState==4) {
 			contenedor.innerHTML = ajax.responseText
@@ -44,7 +54,6 @@ function modifPreciosAjax(indice){
 		}
 	}
 	ajax.send(null)
-	
 }
 </script>
 
@@ -55,7 +64,7 @@ function modifPreciosAjax(indice){
 	$globalAlmacen=$_COOKIE['global_almacen'];
 	$globalAdmin=$_COOKIE['global_admin_cargo'];
 	
-	echo "<form method='POST' action='guardarPrecios.php' name='form1'>";
+	echo "<form method='POST' name='form_precios' id='form_precios' action='guardarPrecios.php' name='form1'>";
 	
 	$sql="select ma.codigo_material, ma.descripcion_material, 
 	(select pl.nombre_linea_proveedor from proveedores_lineas pl where pl.cod_linea_proveedor=ma.cod_linea_proveedor)as linea,
@@ -84,9 +93,15 @@ function modifPreciosAjax(indice){
 	echo "<center><table class='texto' id='main'>";
 	echo "<tr><th>Proveedor / Linea</th>
 	<th>Material</th>
-	<th>Stock</th>
-	<th>Precio Normal</th>
-	<th>Guardar</th>
+	<th>Stock</th>";
+	$sqlSucursales="select cod_ciudad, descripcion from ciudades order by 1";
+	$respSucursales=mysqli_query($enlaceCon,$sqlSucursales);
+	while($datSucursales=mysqli_fetch_array($respSucursales)){
+		$codCiudadPrecio=$datSucursales[0];
+		$nombreCiudadPrecio=$datSucursales[1];
+		echo "<th align='center'>$nombreCiudadPrecio</th>";
+	}
+	echo "<th>Guardar</th>
 	<th>-</th>
 	</tr>";
 	$indice=1;
@@ -97,22 +112,20 @@ function modifPreciosAjax(indice){
 		$nombreLinea=$dat[2];
 		$nombreProveedor=$dat[3];
 
-
-		$sqlPrecio="select p.`precio` from `precios` p where p.`cod_precio`=1 and p.`codigo_material`=$codigo";
-		$respPrecio=mysqli_query($enlaceCon,$sqlPrecio);
-		$numFilas=mysqli_num_rows($respPrecio);
-		if($numFilas==1){
+		$cadenaPrecios="";
+		$sqlSucursales="select cod_ciudad, descripcion from ciudades order by 1";
+		$respSucursales=mysqli_query($enlaceCon,$sqlSucursales);
+		while($datSucursales=mysqli_fetch_array($respSucursales)){
+			$codCiudadPrecio=$datSucursales[0];
+			$nombreCiudadPrecio=$datSucursales[1];
+			$sqlPrecios="select precio from precios where cod_precio=1 and cod_ciudad='$codCiudadPrecio' and codigo_material='$codigo'";
+			//echo $sqlPrecios;
+			$respPrecios=mysqli_query($enlaceCon,$sqlPrecios);
+			$precio1=mysqli_result($respPrecios,0,0);
+			$precio1=redondear2($precio1);
 			
-			$datPrecio=mysqli_fetch_array($respPrecio);
-			$precio1=$datPrecio[0];
-			//$precio1=mysql_result($respPrecio,0,0);
-			$precio1=redondear2($precio1);
-		}else{
-			$precio1=0;
-			$precio1=redondear2($precio1);
+			$cadenaPrecios.="<th align='center'><input type='text' size='5' value='$precio1' id='precio|$indice|$codCiudadPrecio' name='precio|$indice|$codCiudadPrecio'></th>";
 		}
-
-		$precioConMargen=$precioBase+($precioBase*($porcentajeMargen/100));
 		$stockProducto=stockProducto($enlaceCon, $globalAlmacen, $codigo);
 		
 		if($stockProducto==0){
@@ -124,7 +137,7 @@ function modifPreciosAjax(indice){
 		<td><a href='editar_material_apoyo.php?cod_material=$codigo&pagina_retorno=2'><div class='textomedianorojo'>$nombreMaterial</div></a></td>
 		<td align='center'><div class='textomedianorojo'>$stockProducto</div></td>";
 		echo "<input type='hidden' name='item_$indice' id='item_$indice' value='$codigo'>";
-		echo "<td align='center'><input type='text' size='5' value='$precio1' id='precio1_$indice' name='$codigo|1'></td>";
+		echo $cadenaPrecios;
 		if($globalAdmin==1){
 			echo "<td><a href='javascript:modifPreciosAjax($indice)'>
 			<img src='imagenes/guardar.png' title='Guardar este item.' width='30'></a></td>";

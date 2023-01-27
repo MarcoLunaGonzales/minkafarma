@@ -16,8 +16,9 @@ $estilosVenta=1;
 require("conexionmysqli.php");
 $nitCliente=$_GET['nitCliente'];
 
-$sql="select f.razon_social from facturas_venta f 
-	where f.nit='$nitCliente' and (f.razon_social<>'SN' or f.razon_social<>'S/N' or f.razon_social<>'S-N') order by f.fecha desc limit 0,1";
+$sql="select f.razon_social from salida_almacenes f 
+	where f.nit='$nitCliente' and (f.razon_social<>'SN' or f.razon_social<>'S/N' or f.razon_social<>'S-N' or f.razon_social<>'') and 
+	f.cod_tiposalida=1001 order by f.fecha desc limit 0,1";
 $resp=mysqli_query($enlaceCon,$sql);
 
 $nombre="";

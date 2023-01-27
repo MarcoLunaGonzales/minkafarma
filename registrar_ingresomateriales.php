@@ -1,6 +1,7 @@
 <?php
 require("conexionmysqli2.inc");
 require("estilos_almacenes.inc");
+require("funciones.php");
 ?>
 
 <html>
@@ -328,6 +329,26 @@ function pressEnter(e, f){
 		return false;
 	}
 }
+function calculaMargen(preciocliente, index){
+	preciocliente=parseFloat(preciocliente.value);
+	var preciocompra=document.getElementById('precio'+index).value;
+	var costo=parseFloat(preciocompra);
+	var cantidad=document.getElementById('cantidad_unitaria'+index).value;
+	var costounitario=parseFloat(costo)/parseFloat(cantidad);
+
+	console.log("preciocompra: "+preciocompra);
+	console.log("cantidad: "+cantidad);
+	console.log("costoUnitario: "+costounitario);
+
+	console.log("nuevo precio cliente: "+preciocliente);
+
+	var margenNuevo=(preciocliente-costounitario)/costounitario;
+	
+	console.log("nuevo margen cliente: "+margenNuevo);
+
+	var margenNuevoF="M ["+ number_format((margenNuevo*100),0) + "%]";
+	document.getElementById('divmargen'+index).innerHTML=margenNuevoF;
+}
 function calculaPrecioCliente(preciocompra, index){
 	//alert('calculaPrecioCliente');
 	var costo=preciocompra.value;
@@ -338,9 +359,14 @@ function calculaPrecioCliente(preciocompra, index){
 	console.log("costoUnitario: "+costounitario); // s dejo esta parte de codigo
 
 	var preciocliente=costounitario+(costounitario*(margen/100));
-	preciocliente=redondear(preciocliente,1);
+	preciocliente=redondear(preciocliente,2);
 	preciocliente=number_format(preciocliente,2);
 	document.getElementById('preciocliente'+index).value=preciocliente;
+
+	var margenNuevo=(preciocliente-costounitario)/costounitario;
+	var margenNuevoF="M ["+ number_format((margenNuevo*100),0) + "%]";
+	document.getElementById('divmargen'+index).innerHTML=margenNuevoF;
+
 	totalesMonto();
 }
 
@@ -410,81 +436,90 @@ if($fecha=="")
 {   $fecha=date("d/m/Y");
 }
 
-echo "<form action='guarda_ingresomateriales.php' method='post' name='form1' onsubmit='return checkSubmit();'>";
-echo "<table border='0' class='textotit' align='center'><tr><th>Registrar Ingreso de Materiales</th></tr></table><br>";
-echo "<table border='0' class='texto' cellspacing='0' align='center' width='90%' style='border:#ccc 1px solid;'>";
-echo "<tr><th>Numero de Ingreso</th><th>Fecha</th><th>Tipo de Ingreso</th><th>Factura</th></tr>";
-echo "<tr>";
-$sql="select nro_correlativo from ingreso_almacenes where cod_almacen='$global_almacen' order by cod_ingreso_almacen desc";
+$banderaUpdPreciosSucursales=obtenerValorConfiguracion($enlaceCon,49);
+$txtUpdPrecios="";
+if($banderaUpdPreciosSucursales==0){
+	$txtUpdPrecios="Los precios seran actualizados solo en ESTA SUCURSAL.";
+}else{
+	$txtUpdPrecios="Los precios seran actualizados en TODAS LAS SUCURSALES del sistema.";
+}
+
+
+$global_almacen=$_COOKIE["global_almacen"];
+
+$sql="select IFNULL(max(nro_correlativo)+1,1) from ingreso_almacenes where cod_almacen='$global_almacen'";
 $resp=mysqli_query($enlaceCon,$sql);
 $dat=mysqli_fetch_array($resp);
 $num_filas=mysqli_num_rows($resp);
-if($num_filas==0)
-{   $nro_correlativo=1;
+if($num_filas==1){   
+	$nro_correlativo=$dat[0];
 }
-else
-{   $nro_correlativo=$dat[0];
-    $nro_correlativo++;
-}
-echo "<td align='center'>$nro_correlativo</td>";
-echo "<td align='center'>";
-
-echo "<input type='text' disabled='true' class='texto' value='$fecha' id='fecha' size='10' name='fecha'>";
-echo "<img id='imagenFecha' src='imagenes/fecha.bmp'>";
-echo "</td>";
-
+echo "<form action='guarda_ingresomateriales.php' method='post' name='form1' onsubmit='return checkSubmit();'>";
+echo "<table border='0' class='textotit' align='center'>
+		<tr><th>Registrar Ingreso de Materiales</th></tr>
+		<tr><th align='left'><span class='textopequenorojo' style='background-color:yellow;'><b>$txtUpdPrecios</b></span></th></tr>
+		</table><br>";
+echo "<table border='0' class='texto' cellspacing='0' align='center' width='90%' style='border:#ccc 1px solid;'>";
+echo "<tr>
+	<th>Nro. Ingreso: <b>$nro_correlativo<b></th>";
+echo"<th>Fecha: <input type='text' disabled='true' class='texto' value='$fecha' id='fecha' size='10' name='fecha'></th>
+	<th>Tipo de Ingreso: ";
 $sql1="select cod_tipoingreso, nombre_tipoingreso from tipos_ingreso order by nombre_tipoingreso";
 $resp1=mysqli_query($enlaceCon,$sql1);
-echo "<td align='center'><select name='tipo_ingreso' id='tipo_ingreso' class='texto'>";
+echo "<select name='tipo_ingreso' id='tipo_ingreso' class='texto'>";
 while($dat1=mysqli_fetch_array($resp1))
 {   $cod_tipoingreso=$dat1[0];
     $nombre_tipoingreso=$dat1[1];
     echo "<option value='$cod_tipoingreso'>$nombre_tipoingreso</option>";
 }
 echo "</select></td>";
-echo "<td align='center'><input type='number' class='texto' name='nro_factura' value='' id='nro_factura' required></td></tr>";
+echo "<th>Factura:  <input type='number' class='texto' name='nro_factura' value='' id='nro_factura' required>
+		</th></tr>";
+
 
 echo "<tr><th>Proveedor</th>";
 echo "<th colspan='3'>Observaciones</th></tr>";
 
-$sql1="select p.cod_proveedor, concat(p.nombre_proveedor,' ',pl.nombre_linea_proveedor), pl.margen_precio from proveedores p, proveedores_lineas pl 
-			where p.cod_proveedor=pl.cod_proveedor and pl.estado=1 order by 2";
+// $sql1="select p.cod_proveedor, concat(p.nombre_proveedor,' ',pl.nombre_linea_proveedor), pl.margen_precio from proveedores p, proveedores_lineas pl 
+// 			where p.cod_proveedor=pl.cod_proveedor and pl.estado=1 order by 2";
+$sql1="select p.cod_proveedor, concat(p.nombre_proveedor) from proveedores p 
+			order by 2";
 $resp1=mysqli_query($enlaceCon,$sql1);
-echo "<tr><td align='center'><select name='proveedor' id='proveedor' class='texto' style='width:400px' required>";
+echo "<tr><td align='center'><select name='proveedor' id='proveedor' class='texto' style='width:200px' required>";
 echo "<option value=''>-</option>";
 while($dat1=mysqli_fetch_array($resp1))
 {   $codigo=$dat1[0];
     $nombre=$dat1[1];
 	$margenPrecio=$dat1[2];
 	
-    echo "<option value='$codigo'>$nombre  -  ($margenPrecio%)</option>";
+    echo "<option value='$codigo'>$nombre</option>";
 }
 echo "</select></td>";
-echo "<td colspan='4' align='center'><input type='text' class='texto' name='observaciones' value='$observaciones' size='100'></td></tr>";
+echo "<td colspan='4' align='center'><input type='text' class='texto' name='observaciones' value='$observaciones' size='40'></td></tr>";
 echo "</table><br>";
 ?>
 		<fieldset id="fiel" style="width:98%;border:0;" >
 			<table align="center"class="text" cellSpacing="1" cellPadding="2" width="100%" border="0" id="data0" style="border:#ccc 1px solid;">
 				<tr>
-					<td align="center" colspan="6">
+					<td align="center" colspan="7">
 						<input class="boton" type="button" value="Nuevo Item (+)" onclick="mas(this)" accesskey="A"/>&nbsp;&nbsp;&nbsp;
 						<input class="boton" type="button" value="Agregar por Linea (+)" onclick="modalMasLinea(this)" accesskey="B"/>
 					</td>
 				</tr>
 				<tr>
-					<td align="center" colspan="6">
+					<td align="center" colspan="7">
 					<div style="width:100%;" align="center"><b>DETALLE</b></div>
 					</td>				
 				</tr>				
 				<tr class="titulo_tabla" align="center">
-					<td width="5%" align="center">&nbsp;</td>
-					<td width="25%" align="center">Producto</td>
+					<td width="10%" align="center">&nbsp;</td>
+					<td width="40%" align="center">Producto</td>
 					<td width="10%" align="center">Cantidad</td>
 					<!--td width="10%" align="center">Lote</td-->
 					<td width="10%" align="center">Vencimiento</td>
 
-					<td width="10%" align="center">PrecioDistribuidor(Total_item)</td>
-					<td width="10%" align="center">PrecioClienteFinal</td>
+					<td width="10%" align="center">Precio Distribuidor<br>(Total_item)</td>
+					<td width="10%" align="center">Precio Cliente Final</td>
 					<td width="10%" align="center">&nbsp;</td>
 				</tr>
 			</table>

@@ -1,7 +1,10 @@
-
 <?php
-require("../../conexionmysqli.php");
+
+$estilosVenta=1;
+require("../../conexionmysqli.inc");
 require("../../funciones.php");
+require("../../funcion_nombres.php");
+
 
 $codigo=$_GET["codigo"];
 //
@@ -11,20 +14,18 @@ $sqlFecha="select DAY(i.fecha), MONTH(i.fecha), YEAR(i.fecha), HOUR(i.hora_ingre
 from ingreso_almacenes i where i.cod_ingreso_almacen=$codigo";
 $respFecha=mysqli_query($enlaceCon,$sqlFecha);
 
-$dia=mysql_result($respFecha,0,0);
-$mes=mysql_result($respFecha,0,1);
-$ano=mysql_result($respFecha,0,2);
-$hh=mysql_result($respFecha,0,3);
-$mm=mysql_result($respFecha,0,4);
+$dia=mysqli_result($respFecha,0,0);
+$mes=mysqli_result($respFecha,0,1);
+$ano=mysqli_result($respFecha,0,2);
+$hh=mysqli_result($respFecha,0,3);
+$mm=mysqli_result($respFecha,0,4);
 
 
 //generamos el codigo de confirmacion
 $codigoGenerado=$codigo+$dia+$mes+$ano+$hh+$mm;
 //
 
-//SACAMOS LA VARIABLE PARA ENVIAR EL CORREO O NO SI ES 2 ENVIAMOS CORREO PARA APROBACION
-$banderaCorreo=obtenerValorConfiguracion(8);
-
+$banderaCorreo=0;
 if($banderaCorreo==2){
 	$codigoIngreso=$codigo;
 	$codigoGeneradoX=$codigoGenerado;

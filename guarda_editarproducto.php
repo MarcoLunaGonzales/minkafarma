@@ -1,6 +1,7 @@
 <?php
 require("conexionmysqli.php");
 require("estilos.inc");
+require("funciones.php");
 
 //recogemos variables
 $paginaRetorno=$_POST['pagina_retorno'];
@@ -14,14 +15,22 @@ $cantidadPresentacion=$_POST['cantidadPresentacion'];
 $principioActivo=$_POST['principioActivo'];
 $codTipoVenta=$_POST['codTipoVenta'];
 $productoControlado=$_POST['producto_controlado'];
-$precioProducto=$_POST['precio_producto'];
 $accionTerapeutica=$_POST['accion_terapeutica'];
 $codigoBarras=$_POST['codigo_barras'];
-
 $lineaAnterior=$_POST['linea_anterior'];
 
-
 $arrayAccionTerapeutica=$_POST['arrayAccionTerapeutica'];
+
+/*RECUPERAMOS LOS PRECIOS*/
+$arrayPrecios=[];
+$sqlSucursales="select cod_ciudad, descripcion from ciudades order by 1";
+$respSucursales=mysqli_query($enlaceCon,$sqlSucursales);
+while($datSucursales=mysqli_fetch_array($respSucursales)){
+	$codCiudadPrecio=$datSucursales[0];
+	$nombreCiudadPrecio=$datSucursales[1];
+	$precioProducto=$_POST["precio_producto|".$codCiudadPrecio];
+	$arrayPrecios[$codCiudadPrecio]=$precioProducto;
+}
 
 
 $sql_inserta="update material_apoyo set descripcion_material='$nombreProducto', cod_linea_proveedor='$codLinea', 
@@ -39,11 +48,9 @@ for($i=0;$i<$n;$i++){
 	$resp=mysqli_query($enlaceCon,$sql);
 }*/
 
-$sqlDel="delete from precios where codigo_material=$codProducto";
-$respDel=mysqli_query($enlaceCon,$sqlDel);
 
-$sqlInsertPrecio="insert into precios values($codProducto, 1,$precioProducto)";
-$respInsertPrecio=mysqli_query($enlaceCon,$sqlInsertPrecio);
+$resp=actualizarPrecios($enlaceCon,$codProducto,$arrayPrecios);
+
 
 if($resp_inserta){
 	

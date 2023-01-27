@@ -6,13 +6,9 @@ require("funcionRecalculoCostos.php");
 require("funciones.php");
 
 //HABILITAMOS LA BANDERA DE VENCIDOS PARA ACTUALIZAR EL PRECIO
-$banderaPrecioUpd=0;
-$sqlConf="select valor_configuracion from configuraciones where id_configuracion=7";
-$respConf=mysqli_query($enlaceCon,$sqlConf);
-$datConf = mysqli_fetch_array($respConf);
-$banderaPrecioUpd=$datConf[0];
-//$banderaPrecioUpd=mysql_result($respConf,0,0);
+$banderaPrecioUpd=obtenerValorConfiguracion($enlaceCon,7);
 
+$banderaUpdPreciosSucursales=obtenerValorConfiguracion($enlaceCon,49);
 
 $sql = "select IFNULL(MAX(cod_ingreso_almacen)+1,1) from ingreso_almacenes order by cod_ingreso_almacen desc";
 $resp = mysqli_query($enlaceCon,$sql);
@@ -34,10 +30,21 @@ $nro_factura=$_POST['nro_factura'];
 $observaciones=$_POST['observaciones'];
 $proveedor=$_POST['proveedor'];
 
+$codSucursalIngreso=$_COOKIE['global_agencia'];
+
 $createdBy=$_COOKIE['global_usuario'];
 $createdDate=date("Y-m-d H:i:s");
 
 $fecha_real=date("Y-m-d");
+
+
+if($tipo_ingreso==1003){
+	$codSalida=$_POST['cod_salida'];
+	$estadoSalida=4;//recepcionado
+	$sqlCambiaEstado="update salida_almacenes set estado_salida='$estadoSalida' where cod_salida_almacenes=$codSalida";
+	$respCambiaEstado=mysqli_query($enlaceCon,$sqlCambiaEstado);
+}
+
 
 
 $consulta="insert into ingreso_almacenes (cod_ingreso_almacen,cod_almacen,cod_tipoingreso,fecha,hora_ingreso,observaciones,cod_salida_almacen,
@@ -77,57 +84,53 @@ if($sql_inserta==1){
 			$sql_inserta2 = mysqli_query($enlaceCon,$consulta);
 			
 			
-			
-			/*$sqlMargen="select p.margen_precio from material_apoyo m, proveedores_lineas p
-				where m.cod_linea_proveedor=p.cod_linea_proveedor and m.codigo_material='$cod_material'";
-			$respMargen=mysql_query($sqlMargen);
-			$numFilasMargen=mysql_num_rows($respMargen);
-			$porcentajeMargen=0;
-			if($numFilasMargen>0){
-				$porcentajeMargen=mysql_result($respMargen,0,0);			
-			}		
-			$precioItem=$costo+($costo*($porcentajeMargen/100));
-			*/
 			$precioItem=$_POST["preciocliente$i"];
 			
-			if($banderaPrecioUpd>0){
+			//ARMAMOS EL ARRAY CON LOS PRECIOS
+			$arrayPreciosModificar=[];
+			$sqlSucursales="select cod_ciudad, descripcion from ciudades ";
+			if($banderaUpdPreciosSucursales==0){
+				$sqlSucursales=$sqlSucursales." where cod_ciudad='$codSucursalIngreso'";
+			}
+			echo $sqlSucursales;
+			$respSucursales=mysqli_query($enlaceCon,$sqlSucursales);
+			while($datSucursales=mysqli_fetch_array($respSucursales)){
+				$codCiudadPrecio=$datSucursales[0];
+				$precioProductoModificar=$precioItem;
+				$arrayPreciosModificar[$codCiudadPrecio]=$precioProductoModificar;
+			}
+
+			
+			/*SOLO CUANDO ESTAN ACTIVADOS LOS CAMBIOS DE PRECIO Y EL TIPO DE INGRESO ES POR LABORATORIO*/
+			if($banderaPrecioUpd>0 && $tipo_ingreso==1000){
 				//SACAMOS EL ULTIMO PRECIO REGISTRADO
-				$sqlPrecioActual="select precio from precios where codigo_material='$cod_material' and cod_precio=1";
-				//echo $sqlPrecioActual;
+				$sqlPrecioActual="select precio from precios where codigo_material='$cod_material' and cod_precio=1 and cod_ciudad='$codSucursalIngreso'";
 				$respPrecioActual=mysqli_query($enlaceCon,$sqlPrecioActual);
 				$numFilasPrecios=mysqli_num_rows($respPrecioActual);
 				$precioActual=0;
 				if($numFilasPrecios>0){
 					$datPrecioActual = mysqli_fetch_array($respPrecioActual);
 					$precioActual=$datPrecioActual[0];
-					//$precioActual=mysql_result($respPrecioActual,0,0);
 				}
-				
-				//echo "precio +margen: ".$precioItem." precio actual: ".$precioActual;
-				
+								
 				//SI NO EXISTE EL PRECIO LO INSERTA CASO CONTRARIO VERIFICA QUE EL PRECIO DEL INGRESO SEA MAYOR AL ACTUAL PARA HACER EL UPDATE
-				if($numFilasPrecios==0){
-					$sqlPrecios="insert into precios (codigo_material, cod_precio, precio) values('$cod_material','1','$precioItem')";
-					$respPrecios=mysqli_query($enlaceCon,$sqlPrecios);
-				}else{
-					if($banderaPrecioUpd==1){
-						if($precioItem!=$precioActual){
-							$sqlPrecios="update precios set precio='$precioItem' where codigo_material='$cod_material' and cod_precio=1";
-							$respPrecios=mysqli_query($enlaceCon,$sqlPrecios);
-						}
+				if($banderaPrecioUpd==1){
+					if($precioItem!=$precioActual){
+						$respModificarPrecios=actualizarPrecios($enlaceCon,$cod_material,$arrayPreciosModificar);
 					}
-					if($banderaPrecioUpd==2){
-						if($precioItem>$precioActual){
-							$sqlPrecios="update precios set precio='$precioItem' where codigo_material='$cod_material' and cod_precio=1";
-							$respPrecios=mysqli_query($enlaceCon,$sqlPrecios);
-						}
+				}
+				if($banderaPrecioUpd==2){
+					if($precioItem>$precioActual){
+						$respModificarPrecios=actualizarPrecios($enlaceCon,$cod_material,$arrayPreciosModificar);
 					}
-				}				
+				}
 			}
 			$aa=recalculaCostos($enlaceCon,$cod_material, $global_almacen);			
 		}
 	}
 	
+	//var_dump($arrayPreciosModificar);
+
 	echo "<script language='Javascript'>
 		alert('Los datos fueron insertados correctamente.');
 		location.href='navegador_ingresomateriales.php';

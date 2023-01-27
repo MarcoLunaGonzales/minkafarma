@@ -78,124 +78,62 @@ function ajaxBuscarItems(f){
 </script>
 <?php
 
-	require("conexion.inc");
+	require("conexionmysqli.inc");
 	require("estilos_almacenes.inc");
 	require("funciones.php");
+
+	error_reporting(E_ALL);
+ ini_set('display_errors', '1');
+
+
+
+	$almacenReporte=$_COOKIE["global_almacen"];
+	$codigoCiudadGlobal=$_COOKIE["global_agencia"];
+
 
 	echo "<form method='POST' action='guardarPrecios.php' name='form1'>";
 	
 	echo "<h1>Reporte de Precios</h1>";
 	
 	
-	echo "<div class='divBotones'><input type='button' value='Buscar' class='boton' onclick='ShowBuscar()'></div>";
+	//echo "<div class='divBotones'><input type='button' value='Buscar' class='boton' onclick='ShowBuscar()'></div>";
 	
 	echo "<div id='divCuerpo'>";
-	$sql="select codigo_material, descripcion_material from material_apoyo ma
-			where estado=1 order by 2";
-	$resp=mysql_query($sql);
+	$sql="select codigo_material, descripcion_material, (select p.nombre_proveedor from proveedores p, proveedores_lineas pl where p.cod_proveedor=pl.cod_proveedor and pl.cod_linea_proveedor=ma.cod_linea_proveedor) as proveedor  from material_apoyo ma where estado=1 order by 3,2";
+	$resp=mysqli_query($enlaceCon, $sql);
 	
 	echo "<center><table class='texto'>";
-	echo "<tr><th>Material</th>
+	echo "<tr><th>Proveedor</th><th>Material</th>
 	<th>Existencias</th>
-	<th>Precio A</th>
-	<th>Precio B</th>
-	<th>Precio C</th>
-	<th>Precio Factura</th>
-	<th>Costo</th>
+	<th>Precio</th>
 	</tr>";
 	$indice=1;
-	while($dat=mysql_fetch_array($resp))
+	$precio1=0;
+	while($dat=mysqli_fetch_array($resp))
 	{
 		$codigo=$dat[0];
 		$nombreMaterial=$dat[1];
-		$nombreTipo=$dat[2];
-		
-		//sacamos existencias
-		$rpt_fecha=date("Y-m-d");
-		$sql_ingresos="select sum(id.cantidad_unitaria) from ingreso_almacenes i, ingreso_detalle_almacenes id
-		where i.cod_ingreso_almacen=id.cod_ingreso_almacen and i.fecha<='$rpt_fecha' and i.cod_almacen='$global_almacen'
-		and id.cod_material='$codigo' and i.ingreso_anulado=0";
-		$resp_ingresos=mysql_query($sql_ingresos);
-		$dat_ingresos=mysql_fetch_array($resp_ingresos);
-		$cant_ingresos=$dat_ingresos[0];
-		$sql_salidas="select sum(sd.cantidad_unitaria) from salida_almacenes s, salida_detalle_almacenes sd
-		where s.cod_salida_almacenes=sd.cod_salida_almacen and s.fecha<='$rpt_fecha' and s.cod_almacen='$global_almacen'
-		and sd.cod_material='$codigo' and s.salida_anulada=0";
-		$resp_salidas=mysql_query($sql_salidas);
-		$dat_salidas=mysql_fetch_array($resp_salidas);
-		$cant_salidas=$dat_salidas[0];
-		$stock2=$cant_ingresos-$cant_salidas;
+		$nombreProveedor=$dat[2];
 
-		$sqlOC="select id.costo_promedio from ingreso_almacenes i, ingreso_detalle_almacenes id
-			where i.cod_ingreso_almacen=id.cod_ingreso_almacen and i.cod_almacen=1000 and id.cod_material=$codigo and i.ingreso_anulado=0 order By i.cod_ingreso_almacen desc limit 0,1;";
-		$respOC=mysql_query($sqlOC);
-		$filasOC=mysql_num_rows($respOC);
-		$precioOC=0;
-		if($filasOC>0){
-			$precioOC=mysql_result($respOC,0,0);
-		}
-		$precioOC=redondear2($precioOC);
-		
-		echo "<tr><td>$nombreMaterial </td>";
-		echo "<td align='center'>$stock2</td>";
+		$stockProducto=stockProducto($enlaceCon, $almacenReporte, $codigo);
+		$precioProducto=precioProductoSucursal($enlaceCon,$codigo,$codigoCiudadGlobal);
 
-		$sqlPrecio="select p.`precio` from `precios` p where p.`cod_precio`=1 and p.`codigo_material`=$codigo";
-		$respPrecio=mysql_query($sqlPrecio);
-		$numFilas=mysql_num_rows($respPrecio);
-		if($numFilas==1){
-			$precio1=mysql_result($respPrecio,0,0);
-			$precio1=redondear2($precio1);
-		}else{
-			$precio1=0;
-			$precio1=redondear2($precio1);
-		}
-
-		$sqlPrecio="select p.`precio` from `precios` p where p.`cod_precio`=2 and p.`codigo_material`=$codigo";
-		$respPrecio=mysql_query($sqlPrecio);
-		$numFilas=mysql_num_rows($respPrecio);
-		if($numFilas==1){
-			$precio2=mysql_result($respPrecio,0,0);
-			$precio2=redondear2($precio2);
-		}else{
-			$precio2=0;
-			$precio2=redondear2($precio2);
-		}
-
-		$sqlPrecio="select p.`precio` from `precios` p where p.`cod_precio`=3 and p.`codigo_material`=$codigo";
-		$respPrecio=mysql_query($sqlPrecio);
-		$numFilas=mysql_num_rows($respPrecio);
-		if($numFilas==1){
-			$precio3=mysql_result($respPrecio,0,0);
-			$precio3=redondear2($precio3);
-		}else{
-			$precio3=0;
-			$precio3=redondear2($precio3);
-		}
-
-		$sqlPrecio="select p.`precio` from `precios` p where p.`cod_precio`=4 and p.`codigo_material`=$codigo";
-		$respPrecio=mysql_query($sqlPrecio);
-		$numFilas=mysql_num_rows($respPrecio);
-		if($numFilas==1){
-			$precio4=mysql_result($respPrecio,0,0);
-			$precio4=redondear2($precio4);
-		}else{
-			$precio4=0;
-			$precio4=redondear2($precio4);
-		}
-
+		$precioProductoF=formatonumeroDec($precioProducto);
 		$indice++;
 
-		echo "<td align='center'><div id='1$codigo' onDblClick='cambiaPrecio(this.form, this.id, $codigo, $precio1, 1)';>$precio1</div></td>";
-		echo "<td align='center'><div id='2$codigo' onDblClick='cambiaPrecio(this.form, this.id, $codigo, $precio2, 2)';>$precio2</div></td>";
-		echo "<td align='center'><div id='3$codigo' onDblClick='cambiaPrecio(this.form, this.id, $codigo, $precio3, 3)';>$precio3</div></td>";
-		echo "<td align='center'><div id='4$codigo' onDblClick='cambiaPrecio(this.form, this.id, $codigo, $precio4, 4)';>$precio4</div></td>";
-		echo "<td align='center'>$precioOC</td>";
-		echo "</tr>";
+		if($stockProducto>0){
+			echo "<tr><td>$nombreProveedor</td>";
+			echo "<td>$nombreMaterial</td>";
+			echo "<td align='right'>$stockProducto</td>";
+			echo "<td align='right'><div id='1$codigo'>$precioProductoF</div></td>";
+			echo "</tr>";			
+		}
+
 	}
 	echo "</table></center><br>";
 	echo "</div>";
 
-	echo "<div class='divBotones'><input type='button' value='Buscar' class='boton' onclick='ShowBuscar()'></div>";
+	//echo "<div class='divBotones'><input type='button' value='Buscar' class='boton' onclick='ShowBuscar()'></div>";
 	
 ?>
 
@@ -217,12 +155,12 @@ function ajaxBuscarItems(f){
 				<td>
 				<?php
 					$sql1="select * from tipos_material order by nombre_tipomaterial";
-					$resp1=mysql_query($sql1);
+					$resp1=mysqli_query($enlaceCon, $sql1);
 				?>
 					<select name='tipo_material' id='tipo_material' class='texto'>
 					<option value="0">Seleccione una opcion.</option>
 				<?php
-					while($dat1=mysql_fetch_array($resp1))
+					while($dat1=mysqli_fetch_array($resp1))
 					{	$cod_tipomaterial=$dat1[0];
 						$nombre_tipomaterial=$dat1[1];
 				?>	

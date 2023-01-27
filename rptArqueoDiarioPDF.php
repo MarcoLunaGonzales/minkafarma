@@ -108,7 +108,7 @@ while($datos=mysqli_fetch_array($resp)){
 	$obsVenta=$datos[3];
 	$datosDoc=$datos[4]."-".$datos[5];
 	$montoVenta=$datos[6];
-	$montoVenta=number_format($montoVenta,1,'.','');
+	//$montoVenta=number_format($montoVenta,1,'.','');
 	$totalVenta=$totalVenta+$montoVenta;	
 	
 	$codTipoPago=$datos[7];
@@ -123,7 +123,7 @@ while($datos=mysqli_fetch_array($resp)){
 	    $totalEfectivoUsd+=$montoDolares;		
 	}else{
 		if($datos['salida_anulada']==0){
-			$montoVenta=number_format($montoVenta,1,'.','');
+			//$montoVenta=number_format($montoVenta,1,'.','');
 			$totalTarjeta+=$montoVenta;		
 		}
 	}
@@ -195,7 +195,7 @@ while($datos=mysqli_fetch_array($respTarjeta)){
 	$obsVenta=$datos[3];
 	$datosDoc=$datos[4]."-".$datos[5];
 	$montoVenta=$datos[6];
-	$montoVenta=number_format($montoVenta,1,'.','');
+	//$montoVenta=number_format($montoVenta,1,'.','');
 	$totalVenta=$totalVenta+$montoVenta;
 	$codTipoPago=$datos[7];
 	$nombreTipoPago=$datos[8];
@@ -207,7 +207,7 @@ while($datos=mysqli_fetch_array($respTarjeta)){
 	if($codTipoPago==1){
 		$totalEfectivo+=$montoVenta;
 	}else{
-		$montoVenta=number_format($montoVenta,1,'.','');
+		//$montoVenta=number_format($montoVenta,1,'.','');
 		$totalTarjeta+=$montoVenta;
 	}
 

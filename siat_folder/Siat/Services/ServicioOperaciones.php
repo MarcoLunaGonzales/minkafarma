@@ -26,14 +26,32 @@ class ServicioOperaciones extends ServicioSiat
 		return $data;
 	}
 	
-	public function consultaEventoSignificativo($fecha)
+	public function consultaEventoSignificativo($codigoSucursal = 0,$codigoPuntoVenta = 0,$fechaEvento)
 	{
-		list(, $method) = explode('::', __METHOD__);
 		
-		$res = $this->callAction($method, $this->buildData($fecha));
-		
+		list(,$action) = explode('::', __METHOD__);
+		$data = [
+			[
+				'SolicitudConsultaEvento'  => [
+					'codigoAmbiente'	 => $this->ambiente,
+					// 'codigoModalidad'	 => $this->modalidad,
+					'codigoPuntoVenta'	=> $codigoPuntoVenta,
+					'codigoSistema'		 => $this->codigoSistema,
+					'codigoSucursal'	 => $codigoSucursal,
+					'cuis'				 => $this->cuis,
+					'nit'				 => $this->nit,					
+					// 'tipoFacturaDocumento'=>self::TIPO_FACTURA_CREDITO_FISCAL,
+					// 'codigoDocumentoSector'=>1,
+					// 'codigoEmision'=>self::TIPO_EMISION_ONLINE,
+					'cufd'=>$this->cufd,
+					'fechaEvento'=>$fechaEvento
+				]
+			]
+		];
+		$res = $this->callAction($action, $data);
 		return $res;
 	}
+
 	public function registroEventoSignificativo($codigoMotivoEvento, $descripcion, $cufdEvento, $fechaInicio, $fechaFin, $codigoSucursal = 0,$codigoPuntoVenta=0)
 	{
 		list(, $method) = explode('::', __METHOD__);

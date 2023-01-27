@@ -10,6 +10,7 @@
      document.body.innerHTML = contenidoOriginal;
 }
 </script>
+
 <style type="text/css">
 	body {color:#000 }
 	/*@media print {
@@ -423,6 +424,8 @@ QRcode::png($codeContents, $fileName,QR_ECLEVEL_L, 4);
 </center>
 </div>
 </body>
+
+
 <script type="text/javascript">
  javascript:window.print();
  setTimeout(function () { window.location.href="registrar_salidaventas.php";}, 1000);

@@ -114,21 +114,25 @@ class FacturacionOffLine
 			$facturas = [];
 			$ii = 0;
 			$sqlUpdateFacturas="";
-			$sql="SELECT s.cod_salida_almacenes,(select siat_cafc from dosificaciones d where d.cod_dosificacion=s.cod_dosificacion and d.tipo_dosificacion=2 and d.tipo_descargo=2)as cafc,s.cod_tipo_doc
-			    FROM salida_almacenes s 
+			// $sql="SELECT s.cod_salida_almacenes,(select siat_cafc from dosificaciones d where d.cod_dosificacion=s.cod_dosificacion and d.tipo_dosificacion=2 and d.tipo_descargo=2)as cafc,s.cod_tipo_doc,a.cod_ciudad
+			//     FROM salida_almacenes s 
+			//     WHERE s.cod_salida_almacenes in ($string_codigos) and s.cod_almacen=$cod_almacen and DATE_FORMAT(s.siat_fechaemision,'%Y-%m-%d') = '$fecha'";
+			$sql="SELECT s.cod_salida_almacenes,(select siat_cafc from dosificaciones d where d.cod_dosificacion=s.cod_dosificacion and d.tipo_dosificacion=2 and d.tipo_descargo=2)as cafc,s.cod_tipo_doc,a.cod_ciudad
+			    FROM salida_almacenes s join almacenes a on s.cod_almacen=a.cod_almacen
 			    WHERE s.cod_salida_almacenes in ($string_codigos) and s.cod_almacen=$cod_almacen and DATE_FORMAT(s.siat_fechaemision,'%Y-%m-%d') = '$fecha'";
 			    //echo  $sql;
 		    $valor=0;		    
 		    require("../../conexionmysqli2.inc");
 		    // echo $sql;
-		    
 		    $resp=mysqli_query($enlaceCon,$sql);
 		    $facturax= new FacturaOnline();
 		    $facturax->endpoint=conexionSiatUrl::endpoint;
 		    $facturax->wsdl=conexionSiatUrl::wsdl;
 		    $cafc=null;
+		    $cod_ciudad=null;
 		    while($row=mysqli_fetch_array($resp)){ 
 		      	$cod_salida_almacenes=$row['cod_salida_almacenes'];
+		      	$cod_ciudad=$row['cod_ciudad'];
 		      	$cafc=$row['cafc'];
 				$factura=$facturax::testRecepcionFacturaElectronica($cod_salida_almacenes,2,false,1,$nuevo_cuf);
 				if($cafc<>null&&$row['cod_tipo_doc']==4){
@@ -169,8 +173,7 @@ class FacturacionOffLine
 								$resp2=mysqli_query($enlaceCon,$sql_up);//actualizamos factura;
 								$datos_factura=explode('where cod_salida_almacenes=', $sql_up);
 								$cod_venta=$datos_factura[1];
-								$respFac=$facturaVerif::verificarEstadoFactura($cod_venta);
-
+								$respFac=$facturaVerif::verificarEstadoFactura($cod_venta,$cod_ciudad);
 								//si existe error en validacion
 								if(isset($respFac->RespuestaServicioFacturacion->codigoEstado)){
 									if($respFac->RespuestaServicioFacturacion->codigoEstado<>690){
@@ -244,6 +247,49 @@ class FacturacionOffLine
 			echo "\033[0;31m", $e->getMessage(), "\033[0m", "\n\n";
 			print $e->getTraceAsString();
 		}
+	}
+
+	public static function consultaEventoSignificativo($fechaEvento,$global_agencia=null)
+	{
+
+
+		require dirname(__DIR__). SB_DS ."../../conexionmysqli2.inc";			
+		if($global_agencia==null){
+			$global_agencia=$_COOKIE["global_agencia"];
+		}
+		
+		$fechaActual=date("Y-m-d");
+		$consulta="SELECT s.cuis,c.cod_impuestos,(SELECT codigoPuntoVenta from siat_puntoventa where cod_ciudad=c.cod_ciudad limit 1) as punto_venta,(SELECT cufd from siat_cufd where fecha='$fechaActual' and cod_ciudad=c.cod_ciudad and s.cuis=cuis and estado=1 order by fecha limit 1)as siat_cufd from siat_cuis s join ciudades c on c.cod_ciudad=s.cod_ciudad where s.cod_ciudad='$global_agencia' and cod_gestion=YEAR(NOW()) and estado=1";		
+		
+		//echo "consulta: ".$consulta;
+
+		$resp = mysqli_query($enlaceCon,$consulta);	
+		$dataList = $resp->fetch_array(MYSQLI_ASSOC);
+		$cuis = $dataList['cuis'];
+		$codigoPuntoVenta = $dataList['punto_venta'];
+		$cufd = $dataList['siat_cufd'];
+		$codigoSucursal = $dataList['cod_impuestos'];
+
+		$config = self::buildConfig();
+		$config->validate();
+		$serviceOps = new ServicioOperaciones($cuis, $cufd);
+		$serviceOps->wsdl = conexionSiatUrl::wsdlOperaciones;
+		$serviceOps->setConfig((array)$config);	
+		
+		$serviceOps->codigoPuntoVenta=$codigoPuntoVenta;
+		$serviceOps->codigoSucursal=$codigoSucursal;
+		$serviceOps->cufd=$cufd;
+		$serviceOps->cuis=$cuis;
+		
+		 //echo "*+*";
+		 //print_r($serviceOps);
+		
+		$res2 = $serviceOps->consultaEventoSignificativo($codigoSucursal,$codigoPuntoVenta,$fechaEvento);
+		
+		 //print_r($res2);
+		
+		 return $res2;
+
 	}
 
 }

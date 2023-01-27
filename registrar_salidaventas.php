@@ -1,8 +1,8 @@
 <?php
 
 $indexGerencia=1;
-
 require "conexionmysqli.inc";
+require("funciones.php");
 
 /* error_reporting(E_ALL);
  ini_set('display_errors', '1');
@@ -818,10 +818,19 @@ $( document ).ready(function() {
 
 </script>
 <?php 
+require("estilos_almacenes.inc");
+
 $rpt_territorio=$_COOKIE['global_agencia'];
 $rpt_almacen=$_COOKIE['global_almacen'];
+
 $fecha_inicio="01/".date("m/Y");
 $fecha_actual=date("d/m/Y");
+$fecha_inicio_kardex=obtenerValorConfiguracion($enlaceCon,50);
+if($fecha_inicio_kardex==0 || $fecha_inicio_kardex==""){
+	$fecha_inicio_kardex=$fecha_inicio;	
+}
+
+
 ?>
 <script>
 
@@ -967,8 +976,6 @@ function alterna_modo_de_pantalla() {
 </script>
 <?php
 echo "</head><body onLoad='funcionInicio();'>";
-require("estilos_almacenes.inc");
-require("funciones.php");
 ?>
 <script>
 
@@ -1129,8 +1136,6 @@ function mostrarComplemento(){
 		
 	}
 }
-
-
 $(document).ready(function (){
 		mostrarComplemento();
 });
@@ -1382,6 +1387,12 @@ function cambiarNotaRemision(){
 		ajaxNroDoc(form1);
 	}
 }
+
+function buscarKardexProducto(f, numMaterial){
+	window.open('rpt_inv_kardex.php?rpt_territorio=<?=$rpt_territorio?>&rpt_almacen=<?=$rpt_almacen?>&fecha_ini=<?=$fecha_inicio_kardex?>&fecha_fin=<?=$fecha_actual?>&tipo_item=2&rpt_item='+$("#materiales"+numMaterial).val()+'','','scrollbars=yes,status=no,toolbar=no,directories=no,menubar=no,resizable=yes,width=1000,height=800');		
+}
+
+
 </script>
 
 		
@@ -1495,8 +1506,8 @@ if(isset($_GET['file'])){
 <?php
 
 if($tipoDocDefault==2){
-	$razonSocialDefault="-";
-	$nitDefault="0";
+	$razonSocialDefault="SN";
+	$nitDefault="123";
 }else{
 	$razonSocialDefault="";
 	$nitDefault="";
@@ -1543,14 +1554,17 @@ if($tipoDocDefault==2){
 	<div id='divNroDoc'>
 		<?php
 
-		$vectorNroCorrelativo=numeroCorrelativoCUFD($enlaceCon,$tipoDocDefault);
+		if($tipoDocDefault==1){
+			$vectorNroCorrelativo=numeroCorrelativoCUFD($enlaceCon,$tipoDocDefault);
+		}else{
+			$vectorNroCorrelativo=numeroCorrelativo($enlaceCon,$tipoDocDefault);
+		}
 		$nroCorrelativo=$vectorNroCorrelativo[0];
 		$banderaErrorFacturacion=$vectorNroCorrelativo[1];
 
 		echo "<span class='textogranderojo'>$nroCorrelativo</span>";
-	  if($nroCorrelativo=="CUFD INCORRECTO / VENCIDO"){
+	  if($nroCorrelativo=="CUFD INCORRECTO / VENCIDO" && $tipoDocDefault==1){
 			?><script>$(document).ready(function (){
-			
 				$("#dosificar_factura_sucursal").removeClass("d-none");
 			})</script><?php
 	  }
@@ -1698,7 +1712,7 @@ while($dat2=mysqli_fetch_array($resp2)){
 </div>
 
 <fieldset id="fiel" style="width:100%;border:0;">
-	<table align="center" class="texto" width="100%" id="data0">
+	<table align="center" class="texto" width="100%" id="data0" border="0">
 	<!--tr>
 		<td align="center" colspan="9">
 			<b>Detalle de la Venta</b>
@@ -1706,14 +1720,14 @@ while($dat2=mysqli_fetch_array($resp2)){
 	</tr-->
 
 	<tr align="center">
-		<td width="5%">&nbsp;</td>
-		<td width="30%">Material</td>
-		<td width="10%">Stock</td>
-		<td width="10%">Cantidad</td>
-		<td width="10%">Precio </td>
+		<td width="8%">&nbsp;</td>
+		<td width="40%">Material</td>
+		<td width="8%">Stock</td>
+		<td width="8%">Cantidad</td>
+		<td width="8%">Precio </td>
 		<td width="15%">Desc.</td>
-		<td width="10%">Monto</td>
-		<td width="10%">&nbsp;</td>
+		<td width="8%">Monto</td>
+		<td width="5%">&nbsp;</td>
 	</tr>
 	</table>
 </fieldset>
@@ -1847,7 +1861,7 @@ while($dat2=mysqli_fetch_array($resp2)){
 
 <?php
 
-if($banderaErrorFacturacion==0){
+if($banderaErrorFacturacion==0 || $tipoDocDefault!=1){
 	echo "<div class='divBotones2'>
 	        <input type='submit' class='boton' value='Guardar Venta' id='btsubmit' name='btsubmit' onClick='return validar(this.form, $ventaDebajoCosto)'>
 					

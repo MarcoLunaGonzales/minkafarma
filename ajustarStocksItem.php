@@ -49,9 +49,17 @@
 	
 	echo "</th></tr></table><br>";
 		
-	echo "<center><table class='texto'>";
-	echo "<tr><th>Indice</th><th>Nombre Producto</th>
-		<th>Presentacion</th><th>Linea Distribuidor</th><th>Precio</th><th>Stock</th><th>Stock Ajustado</th></tr>";
+	echo "<center><table class='texto' width='90%'>";
+	echo "<tr><th width='5%'>#</th><th width='30%'>Nombre Producto</th>
+		<th width='5%'>CP</th><th width='15%'>Linea</th>";
+	$sqlSucursales="select cod_ciudad, descripcion from ciudades order by 1";
+	$respSucursales=mysqli_query($enlaceCon,$sqlSucursales);
+	while($datSucursales=mysqli_fetch_array($respSucursales)){
+		$codCiudadPrecio=$datSucursales[0];
+		$nombreCiudadPrecio=$datSucursales[1];
+		echo "<th align='center' width='6%'><small>$nombreCiudadPrecio</small></th>";
+	}
+	echo "<th width='7.5%'>Stock</th><th width='10%'>Stock Ajustado</th></tr>";
 	
 	$indice_tabla=1;
 	while($dat=mysqli_fetch_array($resp))
@@ -70,11 +78,27 @@
 		$valorStockProducto=$stockProducto;
 
 		if($stockProducto>0){
-			$stockProducto="<b class='textograndenegro' style='color:#C70039'>".$stockProducto."</b>";
+			$stockProducto="<b class='textomedianorojo' style='color:#C70039'>".$stockProducto."</b>";
 		}
-		
-		$precioProducto=precioProducto($enlaceCon,$codigo);
-		$precioProducto=formatonumeroDec($precioProducto);
+		$cadenaPrecios="";
+		$sqlSucursales="select cod_ciudad, descripcion from ciudades order by 1";
+		$respSucursales=mysqli_query($enlaceCon,$sqlSucursales);
+		while($datSucursales=mysqli_fetch_array($respSucursales)){
+			$codCiudadPrecio=$datSucursales[0];
+			$nombreCiudadPrecio=$datSucursales[1];
+			$sqlPrecios="select precio from precios where cod_precio=1 and cod_ciudad='$codCiudadPrecio' and codigo_material='$codigo'";
+			//echo $sqlPrecios;
+			$respPrecios=mysqli_query($enlaceCon,$sqlPrecios);
+			$precio1=mysqli_result($respPrecios,0,0);
+			
+			if($precio1==0){
+				$precio1="-";
+			}else{
+				$precio1=formatonumeroDec($precio1);
+			}
+			
+			$cadenaPrecios.="<th align='center'>$precio1</th>";
+		}
 
 		$txtAccionTerapeutica="";
 		$sqlAccion="select a.nombre_accionterapeutica from acciones_terapeuticas a, material_accionterapeutica m
@@ -87,11 +111,11 @@
 		}
 		
 			echo "<tr><td align='center'>$indice_tabla</td>
-			<td><a href='editar_material_apoyo.php?cod_material=$codigo&pagina_retorno=2'><div class='textomedianorojo'>$nombreProd</div></a></td>
+			<td><a href='editar_material_apoyo.php?cod_material=$codigo&pagina_retorno=2'><div class='textopequenorojo2'>$nombreProd</div></a></td>
 			<td align='center'>$cantPresentacion</td>
-			<td>$nombreLinea</td>
-			<td align='center'><div class='textomedianonegro'>$precioProducto</div></td>
-			<td>$stockProducto</td>
+			<td><small>$nombreLinea</small></td>";
+			echo $cadenaPrecios;
+			echo "<td>$stockProducto</td>
 			<input type='hidden' name='stock|$codigo' id='stock|$codigo' value='$valorStockProducto' >
 			<td><input type='number' step='1' name='producto|$codigo' id='producto|$codigo' value='' style='width: 5em;' class='textogranderojo'></td>
 			</tr>";

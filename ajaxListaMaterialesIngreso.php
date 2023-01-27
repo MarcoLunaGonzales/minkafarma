@@ -10,6 +10,9 @@ require("funciones.php");
 $codTipo=$_GET['codTipo'];
 $nombreItem=$_GET['nombreItem'];
 $globalAlmacen=$_COOKIE['global_almacen'];
+
+$codCiudadIngreso=$_COOKIE['global_agencia'];
+
 //$itemsNoUtilizar=$_GET['arrayItemsUtilizados'];
 $itemsNoUtilizar="0";
 
@@ -38,7 +41,7 @@ $itemsNoUtilizar="0";
 			$linea=$dat[3];
 			
 			$stockProducto=stockProducto($enlaceCon,$globalAlmacen, $codigo);
-			$precioProducto=precioProducto($enlaceCon,$codigo);
+			$precioProducto=precioProductoSucursal($enlaceCon,$codigo,$codCiudadIngreso);
 			if($precioProducto==""){
 				$precioProducto=0;
 			}

@@ -10,6 +10,9 @@ require("funciones.php");
 $codigoMat=0;
 $nomAccion="";
 $nomPrincipio="";
+
+$codigoCiudadGlobal=$_COOKIE["global_agencia"];
+
 if(isset($_GET['codigoMat'])){
 	$codigoMat=$_GET['codigoMat'];
 }
@@ -36,14 +39,14 @@ $datConf=mysqli_fetch_array($respConf);
 $tipoSalidaVencimiento=$datConf[0];//$tipoSalidaVencimiento=mysql_result($respConf,0,0);
 
 	$sql="select m.codigo_material, m.descripcion_material,
-	(select concat(p.nombre_proveedor,' ',pl.nombre_linea_proveedor)
+	(select p.nombre_proveedor
 	from proveedores p, proveedores_lineas pl where p.cod_proveedor=pl.cod_proveedor and pl.cod_linea_proveedor=m.cod_linea_proveedor), m.principio_activo, m.accion_terapeutica
 	from material_apoyo m where estado=1 and m.codigo_material not in ($itemsNoUtilizar)";
 	if($codigoMat!=""){
 		$sql=$sql. " and codigo_material='$codigoMat'";
 	}
 	if($nombreItem!=""){
-		$sql=$sql. " and descripcion_material like '%$nombreItem%'";
+		$sql=$sql. " and descripcion_material like '%$nombreItem%' ";
 	}
 	if($tipoSalidaVencimiento==$tipoSalida){
 		$sql=$sql. " and m.codigo_material in (select id.cod_material from ingreso_almacenes i, ingreso_detalle_almacenes id 
@@ -79,6 +82,7 @@ $tipoSalidaVencimiento=$datConf[0];//$tipoSalidaVencimiento=mysql_result($respCo
 			$accionTerapeutica=$dat[4];
 			
 			$nombre=addslashes($nombre);
+			$linea=addslashes($linea);
 			
 			if($tipoSalida==$tipoSalidaVencimiento){
 				$stockProducto=stockProductoVencido($enlaceCon,$globalAlmacen, $codigo);
@@ -88,7 +92,9 @@ $tipoSalidaVencimiento=$datConf[0];//$tipoSalidaVencimiento=mysql_result($respCo
 			
 			//$ubicacionProducto=ubicacionProducto($enlaceCon,$globalAlmacen, $codigo);
 			
-			$consulta="select p.`precio` from precios p where p.`codigo_material`='$codigo' and p.`cod_precio`='1'";
+			$consulta="select p.`precio` from precios p where p.`codigo_material`='$codigo' and p.`cod_precio`='1' and 
+					cod_ciudad='$codigoCiudadGlobal'";
+					
 			$rs=mysqli_query($enlaceCon,$consulta);
 			$registro=mysqli_fetch_array($rs);
 			$precioProducto=$registro[0];

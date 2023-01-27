@@ -60,7 +60,7 @@ if ($num_filas != 0) {
 	}
 
 
-	if($cod_cargo==1000){
+	if($cod_cargo==1000 || $cod_cargo==1019){
 		header("location:indexGerencia.php");
 	}
 	if($cod_cargo==1010){
@@ -69,7 +69,7 @@ if ($num_filas != 0) {
 	if($cod_cargo==1002){
 		header("location:indexAlmacenReg.php");
 	}
-	if($cod_cargo==1016 || $cod_cargo==1017 || $cod_cargo==1018){
+	if($cod_cargo==1016 || $cod_cargo==1017){
 		header("location:indexSecond.php");
 	}
 	if($cod_cargo==1018){

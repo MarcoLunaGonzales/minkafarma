@@ -255,4 +255,13 @@ function verificarConexion(){
   $resFac=$factura::verificarConexion();
   return array($resFac[0],$resFac[1]);  
 }
+
+
+function consultaEventoSignificativo($fechaEvento,$global_agencia=null){
+  // require_once "Siat/siat_cobofar/siat_factura_online.php";   
+  // $factura= new FacturaOnline();
+  //echo "entra eventoSignificativo;";
+  $eventoSignificativo= new FacturacionOffLine();
+  return $eventoSignificativo::consultaEventoSignificativo($fechaEvento,$global_agencia);  
+}
 ?>

@@ -1,13 +1,14 @@
 <script language='JavaScript'>
 function envia_formulario(f)
-{	var rpt_territorio,fecha_ini, fecha_fin, rpt_ver;
+{	var rpt_territorio,fecha_ini, fecha_fin, rpt_ordenar;
 	rpt_territorio=f.rpt_territorio.value;
 	fecha_ini=f.exafinicial.value;
 	fecha_fin=f.exaffinal.value;
+	rpt_ordenar=f.rpt_ordenar.value;
 	
 	var forms = f;
     if(forms.checkValidity()){
-		window.open('rptVentasxItem.php?rpt_territorio='+rpt_territorio+'&fecha_ini='+fecha_ini+'&fecha_fin='+fecha_fin+'','','scrollbars=yes,status=no,toolbar=no,directories=no,menubar=no,resizable=yes,width=1000,height=800');			
+		window.open('rptVentasxItem.php?rpt_territorio='+rpt_territorio+'&fecha_ini='+fecha_ini+'&fecha_fin='+fecha_fin+'&rpt_ordenar='+rpt_ordenar,'','scrollbars=yes,status=no,toolbar=no,directories=no,menubar=no,resizable=yes,width=1000,height=800');			
 		return(true);    
 	} else{
         alert("Debe seleccionar todos los campos del reporte.")
@@ -45,6 +46,13 @@ echo"<form method='post' action=''>";
 			<INPUT  type='date' class='texto' value='$fecha_rptdefault' id='exaffinal' size='10' name='exaffinal' required>";
     		echo" </TD>";
 	echo "</tr>";
+
+
+	echo "<tr><th align='left'>Ordenar por:</th><td><select name='rpt_ordenar' class='texto' required>";
+	echo "<option value='1'>Monto</option>";
+	echo "<option value='2'>Cantidad</option>";
+	echo "</select></td></tr>";
+
 	
 	echo"\n </table><br>";
 	require('home_almacen.php');

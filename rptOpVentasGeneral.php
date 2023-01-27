@@ -74,12 +74,8 @@ echo"<form method='post' action=''>";
 	echo "</select></td></tr>";
 
 		echo "<tr><th align='left'>Personal</th><td><select name='rpt_personal' id='rpt_personal' multiple class='selectpicker' data-live-search='true' data-size='6' data-actions-box='true'>";
-	if($global_tipoalmacen==1)
-	{	$sql="SELECT codigo_funcionario,CONCAT(paterno,' ',materno,' ',nombres)personal FROM funcionarios where estado=1 order by paterno,materno,nombres ";
-	}
-	else
-	{	$sql="SELECT codigo_funcionario,CONCAT(paterno,' ',materno,' ',nombres)personal FROM funcionarios WHERE cod_ciudad='$globalCiudad' and estado=1 order by paterno,materno,nombres";
-	}
+		$sql="SELECT codigo_funcionario,CONCAT(paterno,' ',materno,' ',nombres)personal FROM funcionarios where estado=1 order by paterno,materno,nombres ";
+
 	$resp=mysqli_query($enlaceCon,$sql);
 	while($dat=mysqli_fetch_array($resp))
 	{	$codigo_funcionario=$dat[0];

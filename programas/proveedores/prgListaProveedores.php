@@ -11,7 +11,7 @@ echo "<div class='divBotones'><input class='boton' type='button' value='Adiciona
 echo "<br>";
 echo "<center><table class='texto'>";
 echo "<tr>";
-echo "<th>&nbsp;</th><th>Nombre</th><th>Direccion</th><th>Telefono 1</th><th>Telefono 2</th><th>Contacto</th><th>Detalle Lineas</th><th>Ver Lineas</th>";
+echo "<th>&nbsp;</th><th>Codigo</th><th>Nombre</th><th>Direccion</th><th>Telefono 1</th><th>Telefono 2</th><th>Contacto</th><th>Detalle Lineas</th><th>Ver Lineas</th>";
 echo "</tr>";
 $consulta="
     SELECT p.cod_proveedor, p.nombre_proveedor, p.direccion, p.telefono1, p.telefono2, p.contacto
@@ -29,17 +29,17 @@ while($reg=mysqli_fetch_array($rs))
     $telefono2 = $reg["telefono2"];
     $contacto  = $reg["contacto"];
 	
-	$consultaDet="select p.nombre_linea_proveedor
+	$consultaDet="select p.cod_linea_proveedor, p.nombre_linea_proveedor
 	from proveedores_lineas p where p.cod_proveedor=$codProv and estado=1 order by 1";
 	//echo $consultaDet;
 	$rsDet=mysqli_query($enlaceCon,$consultaDet);
 	$txtLineas="";
 	while($regDet=mysqli_fetch_array($rsDet)){
-		$txtLineas.="".$regDet[0].", ";
+		$txtLineas.="$regDet[1] ($regDet[0]), ";
 	}
 	
     echo "<tr>";
-    echo "<td><input type='checkbox' id='idchk$cont' name='idchk$cont' value='$codProv' ></td><td>$nomProv</td><td>$direccion</td><td>$telefono1</td>
+    echo "<td><input type='checkbox' id='idchk$cont' name='idchk$cont' value='$codProv' ></td><td>$codProv</td><td>$nomProv</td><td>$direccion</td><td>$telefono1</td>
 	<td>$telefono2</td><td>$contacto</td>
 	<td>$txtLineas</td>";
 	

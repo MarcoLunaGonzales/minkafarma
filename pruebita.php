@@ -1,11 +1,16 @@
 <?php
+require_once("funciones.php");
+require_once("conexionmysqli2.inc");
 
-$fecha="2011-12-01";
+$arrayPrecios = array(1 => 70, 2 => 71, 3 => 72);
 
-echo $fecha."<br>";
+var_dump($arrayPrecios);
 
-$fecha= date("Y-m-d", strtotime("$fecha + 31 days")); 
+$codProducto=1151;
 
-echo $fecha;
+$resp=actualizarPrecios($enlaceCon,$codProducto,$arrayPrecios);
+
+echo "vamos";
+
 
 ?>

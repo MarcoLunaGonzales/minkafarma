@@ -14,11 +14,11 @@ $fechaActual=date("Y-m-d");
 <table border="0" align="center" cellSpacing="1" cellPadding="1" width="100%" style="border:#ccc 1px solid;" id="data<?php echo $num?>" >
 <tr bgcolor="#FFFFFF">
 
-<td width="5%" align="center">
+<td width="10%" align="center">
 	<a href="javascript:buscarMaterial(form1, <?php echo $num;?>)" accesskey="B"><img src='imagenes/buscar2.png' title="Buscar Producto" width="30"></a>
 </td>
 
-<td width="25%" align="center"><?php echo $num;?>
+<td width="40%" align="center"><?php echo $num;?>
 <input type="hidden" name="material<?php echo $num;?>" id="material<?php echo $num;?>" value="0">
 <div id="cod_material<?php echo $num;?>" class='textomedianorojo'>-</div>
 </td>
@@ -40,9 +40,10 @@ $fechaActual=date("Y-m-d");
 </td>
 
 <td align="center" width="10%">
-<input type="number" class="inputnumber" value="0" id="preciocliente<?php echo $num;?>" name="preciocliente<?php echo $num;?>" size="4" min="0" step="0.01" required>
+<input type="number" class="inputnumber" value="0" id="preciocliente<?php echo $num;?>" name="preciocliente<?php echo $num;?>" size="4" min="0" step="0.01" onKeyUp='calculaMargen(this,<?php echo $num;?>);' onChange='calculaMargen(this,<?php echo $num;?>);' required>
 </br>
 <div id="divpreciocliente<?php echo $num;?>" class="textopequenorojo">-</div>
+<div id="divmargen<?php echo $num;?>" class="textopequenorojo2">-</div>
 <input type="hidden" name="margenlinea<?php echo $num;?>" id="margenlinea<?php echo $num;?>" value="0">
 </td>
 

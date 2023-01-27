@@ -1,13 +1,21 @@
 <?php
-require('conexionmysqli.php');
-$item=$_GET['item'];
-$precio1=$_GET['precio1'];
+require('conexionmysqli2.inc');
+require('funciones.php');
 
-	$sqlDel="delete from precios where codigo_material=$item";
-	$respDel=mysqli_query($enlaceCon,$sqlDel);
-	
-	$sqlInsert="insert into precios values($item, 1,$precio1)";
-	$respInsert=mysqli_query($enlaceCon,$sqlInsert);
+$item=$_GET['item'];
+$precios=$_GET['precios'];
+
+$arrayPreciosModificados=[];
+
+$arrayPrecios=explode(",",$precios);
+for($i=0;$i<sizeof($arrayPrecios);$i++){
+	list($precioValor, $cadena, $index, $codCiudad) = explode("|",$arrayPrecios[$i]);
+	//echo $codCiudad." ".$precioValor."<br>";
+	$arrayPreciosModificados[$codCiudad]=$precioValor;
+}
+
+$resp=actualizarPrecios($enlaceCon,$item,$arrayPreciosModificados);
+
 
 echo "<img src='imagenes/guardarOK.png' width='30'><br>Precio Guardado!";
 ?>

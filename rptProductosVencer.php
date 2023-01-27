@@ -78,7 +78,7 @@ function ajaxBuscarItems(f){
 </script>
 <?php
 
-	require("conexion.inc");
+	require("conexionmysqli2.inc");
 	require("estilos_almacenes.inc");
 	require("funciones.php");
 
@@ -100,7 +100,7 @@ function ajaxBuscarItems(f){
 		i.ingreso_anulado=0 and id.fecha_vencimiento<='$fechaFin' and id.cantidad_restante>0 
 		order by id.fecha_vencimiento";
 		
-	$resp=mysql_query($sql);
+	$resp=mysqli_query($enlaceCon, $sql);
 	
 	echo "<center><table class='texto'>";
 	echo "<tr>
@@ -112,7 +112,7 @@ function ajaxBuscarItems(f){
 	<th>Cantidad</th>
 	</tr>";
 	$indice=1;
-	while($dat=mysql_fetch_array($resp))
+	while($dat=mysqli_fetch_array($resp))
 	{
 		$nombreMaterial=$dat[0];
 		$fechaVencimiento=$dat[1];
@@ -124,21 +124,25 @@ function ajaxBuscarItems(f){
 		
 		//echo $fechaVencimientoSF." ".$fechaActual;
 		
-		if($fechaVencimientoSF<=$fechaActual){
-			echo "<td align='center'><div class='textogranderojo'>$indice</div></td>";
-			echo "<td align='left'><div class='textogranderojo'>$distribuidor</div></td>";
-			echo "<td align='left'><div class='textogranderojo'>$lineaProveedor</div></td>";
-			echo "<td align='left'><div class='textogranderojo'>$nombreMaterial</div></td>";
-			echo "<td align='center'><div class='textogranderojo'>$fechaVencimiento</div></td>";
-			echo "<td align='center'><div class='textogranderojo'>$cantidadUnitaria</div></td>";
-		}else{
-			echo "<td align='center'>$indice</td>";
-			echo "<td align='left'>$distribuidor</td>";
-			echo "<td align='left'>$lineaProveedor</td>";
-			echo "<td align='left'>$nombreMaterial</td>";
-			echo "<td align='center'>$fechaVencimiento</td>";
-			echo "<td align='center'>$cantidadUnitaria</td>";
+
+		if($fechaVencimientoSF!="0000-00-00" && $fechaVencimientoSF!="1969-12-30"){
+			if($fechaVencimientoSF<=$fechaActual){
+				echo "<td align='center'><div class='textogranderojo'>$indice</div></td>";
+				echo "<td align='left'><div class='textogranderojo'>$distribuidor</div></td>";
+				echo "<td align='left'><div class='textogranderojo'>$lineaProveedor</div></td>";
+				echo "<td align='left'><div class='textogranderojo'>$nombreMaterial</div></td>";
+				echo "<td align='center'><div class='textogranderojo'>$fechaVencimiento</div></td>";
+				echo "<td align='center'><div class='textogranderojo'>$cantidadUnitaria</div></td>";
+			}else{
+				echo "<td align='center'>$indice</td>";
+				echo "<td align='left'>$distribuidor</td>";
+				echo "<td align='left'>$lineaProveedor</td>";
+				echo "<td align='left'>$nombreMaterial</td>";
+				echo "<td align='center'>$fechaVencimiento</td>";
+				echo "<td align='center'>$cantidadUnitaria</td>";
+			}			
 		}
+
 		
 		echo "</tr>";
 		

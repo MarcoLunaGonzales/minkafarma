@@ -1,22 +1,32 @@
-<html>
-    <head>
-        
-<script type="text/javascript" src="lib/externos/jquery/jquery-1.4.4.min.js"></script>
-<script type="text/javascript" src="dlcalendar.js"></script>
-<script type='text/javascript' language='javascript'>
 <?php
-
-	require("conexion.inc");
-	
+	require("conexionmysqli.inc");	
 	$codIngresoEditar=$_GET["codIngreso"];
 	$sql=" select count(*) from ingreso_detalle_almacenes where cod_ingreso_almacen=".$codIngresoEditar;	
 	$num_materiales=0;
-	$resp= mysql_query($sql);				
-	while($dat=mysql_fetch_array($resp)){	
+	$resp= mysqli_query($enlaceCon, $sql);				
+	while($dat=mysqli_fetch_array($resp)){	
 		$num_materiales=$dat[0];
 	}
 ?>
+<script>
 num=<?php echo $num_materiales;?>;
+
+function number_format(amount, decimals) {
+    amount += ''; // por si pasan un numero en vez de un string
+    amount = parseFloat(amount.replace(/[^0-9\.-]/g, '')); // elimino cualquier cosa que no sea numero o punto
+    decimals = decimals || 0; // por si la variable no fue fue pasada
+    // si no es un numero o es igual a cero retorno el mismo cero
+    if (isNaN(amount) || amount === 0) 
+        return parseFloat(0).toFixed(decimals);
+    // si es mayor o menor que cero retorno el valor formateado como numero
+    amount = '' + amount.toFixed(decimals);
+    var amount_parts = amount.split('.'),
+        regexp = /(\d+)(\d{3})/;
+    while (regexp.test(amount_parts[0]))
+        amount_parts[0] = amount_parts[0].replace(regexp, '$1' + ',' + '$2');
+    return amount_parts.join('.');
+}
+
 function nuevoAjax()
 {	var xmlhttp=false;
 	try {
@@ -50,7 +60,6 @@ function ajaxNroSalida(){
 	}
 	ajax.send(null)
 }
-
 function listaMateriales(f){
 	var contenedor;
 	var codTipo=f.itemTipoMaterial.value;
@@ -66,39 +75,223 @@ function listaMateriales(f){
 	ajax.send(null)
 }
 
+function buscarMaterialLinea(f, numMaterial){
+	f.materialActivo.value=numMaterial;
+	document.getElementById('divRecuadroExt').style.visibility='visible';
+	document.getElementById('divProfileData').style.visibility='visible';
+	document.getElementById('divProfileDetail').style.visibility='visible';
+	document.getElementById('divboton').style.visibility='visible';
+	document.getElementById('divListaMateriales').innerHTML='';
+	document.getElementById('itemNombreMaterial').value='';	
+	document.getElementById('itemNombreMaterial').focus();	
+}
+
 function buscarMaterial(f, numMaterial){
 	f.materialActivo.value=numMaterial;
 	document.getElementById('divRecuadroExt').style.visibility='visible';
 	document.getElementById('divProfileData').style.visibility='visible';
 	document.getElementById('divProfileDetail').style.visibility='visible';
+	document.getElementById('divboton').style.visibility='visible';
 	document.getElementById('divListaMateriales').innerHTML='';
 	document.getElementById('itemNombreMaterial').value='';	
 	document.getElementById('itemNombreMaterial').focus();	
-	
 }
-function setMateriales(f, cod, nombreMat){
+function marcarDesmarcar(f,elem){
+	 var i;
+      var j=0;
+	 if(elem.checked==true){      	       
+      for(i=0;i<=f.length-1;i++){
+       if(f.elements[i].type=='checkbox'){       
+		f.elements[i].checked=true;
+        }
+      }	
+    }else{
+		for(i=0;i<=f.length-1;i++){
+       if(f.elements[i].type=='checkbox'){       
+		f.elements[i].checked=false;
+        }
+      }	
+	}
+}
+function buscarMaterialSelec(f, numMaterial){
+	f.materialActivo.value=numMaterial;
+
+	document.getElementById('divListaMateriales').innerHTML='';
+	document.getElementById('itemNombreMaterial').value='';	
+	document.getElementById('itemNombreMaterial').focus();	
+}
+
+function ver(elem){
+	alert(elem.value);
+	}
+function setMateriales(f, cod, nombreMat, cantidadpresentacion, precio, margenlinea){
 	var numRegistro=f.materialActivo.value;
-	
+		
 	document.getElementById('material'+numRegistro).value=cod;
 	document.getElementById('cod_material'+numRegistro).innerHTML=nombreMat;
+	document.getElementById('divpreciocliente'+numRegistro).innerHTML=number_format(precio,2);
+	document.getElementById('margenlinea'+numRegistro).value=margenlinea;
+	
 	
 	document.getElementById('divRecuadroExt').style.visibility='hidden';
 	document.getElementById('divProfileData').style.visibility='hidden';
 	document.getElementById('divProfileDetail').style.visibility='hidden';
-	
-	document.getElementById("cantidad_unitaria"+numRegistro).focus();
-	
+	document.getElementById('divboton').style.visibility='hidden';
+
+	document.getElementById("cantidad_unitaria"+numRegistro).focus();	
 }
+function setMaterialesSelec(f, cod, nombreMat, cantidadpresentacion, precio, margenlinea){
+	var numRegistro=f.materialActivo.value;
+//alert(numRegistro);
+	document.getElementById('material'+numRegistro).value=cod;
+	document.getElementById('cod_material'+numRegistro).innerHTML=nombreMat;
+	document.getElementById('divpreciocliente'+numRegistro).innerHTML=number_format(precio,2);
+	document.getElementById('margenlinea'+numRegistro).value=margenlinea;
+}
+function masSelec() {	
+ 	console.log("entrando masSelec num="+num);
+	num++;
+	fi = document.getElementById('fiel');
+	contenedor = document.createElement('div');
+	contenedor.id = 'div'+num;  
+	fi.type="style";
+	fi.appendChild(contenedor);
+	var div_material;
+	div_material=document.getElementById("div"+num);			
+	ajax=nuevoAjax();
+	ajax.open("GET","ajaxMaterial.php?codigo="+num,true);
+	ajax.onreadystatechange=function(){
+		if (ajax.readyState==4) {
+			div_material.innerHTML=ajax.responseText;
+			//buscarMaterial(form1, num);
+			return (true);
+		}
+	}		
+	ajax.send(null);
+}	
+function setSeleccionados(f){
+	
+	var i;
+   
+	var cadena="";
+	var aux="";
+	var corrnum="";
+	var prodArray;
+	 var sw=0;
+	 var x=0;
+	 var cont=1;
+	 var sw=0;
+	 var numRegistro;
+	 numRegistro=f.materialActivo.value;
+	//alert("numRegistro="+numRegistro);
+	for(i=0;i<=f.length-1;i++){
+    	if(f.elements[i].type=='checkbox'){  	   
+			if(f.elements[i].checked==true){ 
+				numRegistro=num;
+				cadena=f.elements[i].value;
+				console.log("i: "+i+" cadena: "+cadena+" name: "+f.elements[i].name);
+				
+				
+				prodArray=new Array();
+				prodArray =cadena.split("|");
+				aux=prodArray[0]+prodArray[1]+prodArray[2]+prodArray[3]+prodArray[4];
+			    //console.log("datoSelec"+prodArray[0]);
+				if(sw==0){
+					sw=1;
+				}else{
+					masSelec();
+				}
+				
+				console.log("num: "+num);
+				console.log("CodMaterialF: "+prodArray[0]);
+				console.log("MaterialF: "+prodArray[1]);
+				//console.log("material"+num+" = "+document.getElementById('material'+num).value);
+				 
+				// document.getElementById('material'+num).value=prodArray[0];
+				// document.getElementById('cod_material'+num).innerHTML=prodArray[1];
 
+				
+				//document.getElementById('material2').value=10101010;
+				//document.getElementById('cod_material2').innerHTML="vamos carajo";
+
+				//setMateriales(f,prodArray[0], prodArray[1], prodArray[2], prodArray[3], prodArray[4]);
+				//document.getElementById('material'+numRegistro).value=prodArray[1];
+				//document.getElementById('material'+numRegistro).value=prodArray[1];
+				
+				//document.getElementById('cod_material'+numRegistro).innerHTML=prodArray[0];
+				//document.getElementById('divpreciocliente'+num).innerHTML=number_format(precio,2);
+				//document.getElementById('margenlinea'+num).value=margenlinea;
+				//numRegistro;
+				// setMaterialesSelec(f,prodArray[0], prodArray[1], prodArray[2], prodArray[3], prodArray[4]);
+				 ////////////
+				 //alert("hola"+num);
+				// numRegistro=num*1;
+				 /////////////
+			}
+        }
+      }	
+	//alert("numRegistro=="+numRegistro);
+	document.getElementById('divRecuadroExt').style.visibility='hidden';
+	document.getElementById('divProfileData').style.visibility='hidden';
+	document.getElementById('divProfileDetail').style.visibility='hidden';
+	document.getElementById('divboton').style.visibility='hidden';
+
+}
+	
+
+function Hidden(){
+	document.getElementById('divRecuadroExt').style.visibility='hidden';
+	document.getElementById('divProfileData').style.visibility='hidden';
+	document.getElementById('divProfileDetail').style.visibility='hidden';
+	document.getElementById('divboton').style.visibility='hidden';
+	document.getElementById('divboton').style.visibility='hidden';
+}
 		
-
 function enviar_form(f)
 {   f.submit();
 }
-	//num=0;
+function fun13(cadIdOrg,cadIdDes)
+{   var num=document.getElementById(cadIdOrg).value;
+    num=(100-13)*num/100;
+    document.getElementById(cadIdDes).value=num;
+}
 
+	num=0;
+
+	function modalMasLinea(form){
+		buscarMaterialLinea(form1,0);
+	}
+	function masLinea(obj) {
+		var banderaItems0=0;
+		console.log("bandera: "+banderaItems0);
+		var codLineaProveedor=form1.itemTipoMaterial.value;
+		//alert(codLineaProveedor);
+		if(banderaItems0==0){
+			num++;
+			div_material_linea=document.getElementById("divMaterialLinea");			
+			ajax=nuevoAjax();
+			ajax.open("GET","ajaxMaterialLineaIngreso.php?codigo="+num+"&cod_linea_proveedor="+codLineaProveedor,true);
+			ajax.onreadystatechange=function(){
+				if (ajax.readyState==4) {
+					div_material_linea.innerHTML=ajax.responseText;
+				}
+			}		
+			ajax.send(null);
+		}
+		Hidden();
+	}	
 	function mas(obj) {
-
+		var banderaItems0=0;
+		for(var j=1; j<=num; j++){
+			if(document.getElementById('material'+j)!=null){
+				if(document.getElementById('material'+j).value==0){
+					banderaItems0=1;
+				}
+			}
+		}
+		//fin validacion
+		console.log("bandera: "+banderaItems0);
+		if(banderaItems0==0){
 			num++;
 			fi = document.getElementById('fiel');
 			contenedor = document.createElement('div');
@@ -116,9 +309,9 @@ function enviar_form(f)
 				}
 			}		
 			ajax.send(null);
-		
+		}
 	}	
-		
+	
 	function menos(numero) {
 		if(numero==num){
 			num=parseInt(num)-1;
@@ -127,6 +320,77 @@ function enviar_form(f)
 		fi = document.getElementById('fiel');
 		fi.removeChild(document.getElementById('div'+numero));		
 	}
+
+function pressEnter(e, f){
+	tecla = (document.all) ? e.keyCode : e.which;
+	if (tecla==13){
+		document.getElementById('itemNombreMaterial').focus();
+		listaMateriales(f);
+		return false;
+	}
+}
+function calculaMargen(preciocliente, index){
+	preciocliente=parseFloat(preciocliente.value);
+	var preciocompra=document.getElementById('precio'+index).value;
+	var costo=parseFloat(preciocompra);
+	var cantidad=document.getElementById('cantidad_unitaria'+index).value;
+	var costounitario=parseFloat(costo)/parseFloat(cantidad);
+
+	console.log("preciocompra: "+preciocompra);
+	console.log("cantidad: "+cantidad);
+	console.log("costoUnitario: "+costounitario);
+
+	console.log("nuevo precio cliente: "+preciocliente);
+
+	var margenNuevo=(preciocliente-costounitario)/costounitario;
+	
+	console.log("nuevo margen cliente: "+margenNuevo);
+
+	var margenNuevoF="M ["+ number_format((margenNuevo*100),0) + "%]";
+	document.getElementById('divmargen'+index).innerHTML=margenNuevoF;
+}
+function calculaPrecioCliente(preciocompra, index){
+	//alert('calculaPrecioCliente');
+	var costo=preciocompra.value;
+	var margen=document.getElementById('margenlinea'+index).value;
+	var cantidad=document.getElementById('cantidad_unitaria'+index).value;
+	var costounitario=costo/cantidad;
+
+	console.log("costoUnitario: "+costounitario); // s dejo esta parte de codigo
+
+	var preciocliente=costounitario+(costounitario*(margen/100));
+	preciocliente=redondear(preciocliente,1);
+	preciocliente=number_format(preciocliente,2);
+	document.getElementById('preciocliente'+index).value=preciocliente;
+
+	var margenNuevo=(preciocliente-costounitario)/costounitario;
+	var margenNuevoF="M ["+ number_format((margenNuevo*100),0) + "%]";
+	document.getElementById('divmargen'+index).innerHTML=margenNuevoF;
+
+	totalesMonto();
+}
+
+function totalesMonto(){
+	
+	var cantidadTotal=0;
+	var precioTotal=0;
+	var montoTotal=0;
+    for(var ii=1;ii<=num;ii++){
+		if(document.getElementById('material'+ii)!=null){
+			var precio=document.getElementById("precio"+ii).value;
+			montoTotal=montoTotal+parseFloat(precio);
+		}
+	}
+	montoTotal=Math.round(montoTotal*100)/100;
+	
+    document.getElementById("totalCompra").value=montoTotal;
+	//alert(montoTotal);
+	var descuentoTotal=document.getElementById("descuentoTotal").value;
+	var totalSD=montoTotal-descuentoTotal;
+	//alert(totalSD);
+	document.getElementById("totalCompraSD").value=totalSD;
+	
+}
 
 function validar(f){   
 	f.cantidad_material.value=num;
@@ -139,8 +403,7 @@ function validar(f){
 		var precioNeto="";
 		
 		for(var i=1; i<=cantidadItems; i++){
-			item=parseFloat(document.getElementById("material"+i).value);	
-			console.log("item: "+item);
+			item=parseFloat(document.getElementById("material"+i).value);			
 			if(item==0){
 				alert("Debe escoger un item en la fila "+i);
 				return(false);
@@ -155,10 +418,19 @@ function validar(f){
 }
 
 
-	</script>
-<?php
+function checkSubmit() {
+    document.getElementById("btsubmit").value = "Enviando...";
+    document.getElementById("btsubmit").disabled = true;
+    return true;
+}
 
-require("conexion.inc");
+function redondear(value, precision) {
+    var multiplier = Math.pow(10, precision || 0);
+    return Math.round(value * multiplier) / multiplier;
+}
+
+</script>
+<?php
 
 require("estilos_almacenes.inc");
 
@@ -175,8 +447,8 @@ if($fecha=="")
 
 $sqlIngreso="select i.`nro_correlativo`, i.`fecha`, i.`cod_tipoingreso`, i.`nota_entrega`, i.`nro_factura_proveedor`, 
 		i.`observaciones` from `ingreso_almacenes` i where i.`cod_ingreso_almacen` = $codIngresoEditar" ;
-$respIngreso=mysql_query($sqlIngreso);
-while($datIngreso=mysql_fetch_array($respIngreso)){
+$respIngreso=mysqli_query($enlaceCon, $sqlIngreso);
+while($datIngreso=mysqli_fetch_array($respIngreso)){
 	$nroCorrelativo=$datIngreso[0];
 	$fechaIngreso=$datIngreso[1];
 	$codTipoIngreso=$datIngreso[2];
@@ -197,14 +469,14 @@ while($datIngreso=mysql_fetch_array($respIngreso)){
 	
 <?php
 $sql1="select cod_tipoingreso, nombre_tipoingreso from tipos_ingreso order by nombre_tipoingreso";
-$resp1=mysql_query($sql1);
+$resp1=mysqli_query($enlaceCon, $sql1);
 ?>
 
 <td align='center'><select name='tipo_ingreso' id='tipo_ingreso' class='texto'>
 
 <?php
 
-while($dat1=mysql_fetch_array($resp1))
+while($dat1=mysqli_fetch_array($resp1))
 {   $cod_tipoingreso=$dat1[0];
     $nombre_tipoingreso=$dat1[1];
 ?>
@@ -232,12 +504,13 @@ while($dat1=mysql_fetch_array($resp1))
 					</td>				
 				</tr>				
 				<tr class="titulo_tabla" align="center">
-					<td width="5%" align="center">&nbsp;</td>
-					<td width="35%" align="center">Producto</td>
+					<td width="10%" align="center">&nbsp;</td>
+					<td width="40%" align="center">Producto</td>
 					<td width="10%" align="center">Cantidad</td>
-					<td width="10%" align="center">Lote</td>
+					<!--td width="10%" align="center">Lote</td-->
 					<td width="10%" align="center">Vencimiento</td>
-					<td width="10%" align="center">Precio </td>
+					<td width="10%" align="center">Precio Distribuidor<br>(Total_item)</td>
+					<td width="10%" align="center">Precio Cliente Final</td>
 					<td width="10%" align="center">&nbsp;</td>
 				</tr>
 			</table>
@@ -247,9 +520,9 @@ while($dat1=mysql_fetch_array($resp1))
 				lote, fecha_vencimiento
 				from `ingreso_detalle_almacenes` id, `material_apoyo` m where
 				id.`cod_material`=m.`codigo_material` and id.`cod_ingreso_almacen`='$codIngresoEditar' order by 2";
-			$respDetalle=mysql_query($sqlDetalle);
+			$respDetalle=mysqli_query($enlaceCon, $sqlDetalle);
 			$indiceMaterial=1;
-			while($datDetalle=mysql_fetch_array($respDetalle)){
+			while($datDetalle=mysqli_fetch_array($respDetalle)){
 				$codMaterial=$datDetalle[0];
 				$nombreMaterial=$datDetalle[1];
 				$cantidadMaterial=$datDetalle[2];
@@ -265,22 +538,22 @@ while($dat1=mysql_fetch_array($resp1))
 <table border="0" align="center" cellSpacing="1" cellPadding="1" width="100%" style="border:#ccc 1px solid;" id="data<?php echo $num?>" >
 <tr bgcolor="#FFFFFF">
 
-<td width="5%" align="center">
+<td width="10%" align="center">
 	<a href="javascript:buscarMaterial(form1, <?php echo $num;?>)" accesskey="B"><img src='imagenes/buscar2.png' title="Buscar Producto" width="30"></a>
 </td>
 
-<td width="35%" align="center">
+<td width="40%" align="center">
 <input type="hidden" name="material<?php echo $num;?>" id="material<?php echo $num;?>" value="<?php echo $codMaterial;?>">
-<div id="cod_material<?php echo $num;?>" class='textograndenegro'><?php echo $nombreMaterial;?></div>
+<div id="cod_material<?php echo $num;?>" class='textomedianorojo'><?php echo $nombreMaterial;?></div>
 </td>
 
 <td align="center" width="10%">
 <input type="number" class="inputnumber" min="1" max="1000000" id="cantidad_unitaria<?php echo $num;?>" name="cantidad_unitaria<?php echo $num;?>" size="5" value="<?php echo $cantidadMaterial;?>" required>
 </td>
 
-<td align="center" width="10%">
+<!--td align="center" width="10%">
 <input type="text" class="textoform" id="lote<?php echo $num;?>" name="lote<?php echo $num;?>" size="10" value="<?php echo $loteMaterial;?>" required>
-</td>
+</td-->
 
 <td align="center" width="10%">
 <input type="date" class="textoform" min="<?php echo $fechaActual; ?>" id="fechaVenc<?php echo $num;?>" name="fechaVenc<?php echo $num;?>" size="5" value="<?php echo $fechaVencimiento;?>" required>
@@ -288,6 +561,14 @@ while($dat1=mysql_fetch_array($resp1))
 
 <td align="center" width="10%">
 <input type="number" class="inputnumber" value="<?php echo $precioBruto;?>" id="precio<?php echo $num;?>" name="precio<?php echo $num;?>" size="5" min="0" required>
+</td>
+
+<td align="center" width="10%">
+<input type="number" class="inputnumber" value="0" id="preciocliente<?php echo $num;?>" name="preciocliente<?php echo $num;?>" size="4" min="0" step="0.01" onKeyUp='calculaMargen(this,<?php echo $num;?>);' onChange='calculaMargen(this,<?php echo $num;?>);' required>
+</br>
+<div id="divpreciocliente<?php echo $num;?>" class="textopequenorojo">-</div>
+<div id="divmargen<?php echo $num;?>" class="textopequenorojo2">-</div>
+<input type="hidden" name="margenlinea<?php echo $num;?>" id="margenlinea<?php echo $num;?>" value="0">
 </td>
 
 <td align="center"  width="10%" ><input class="boton1" type="button" value="(-)" onclick="menos(<?php echo $num;?>)" size="5"/></td>
@@ -326,9 +607,9 @@ echo "<div class='divBotones'>
 			<?php
 			$sqlTipo="select pl.cod_linea_proveedor, CONCAT(p.nombre_proveedor,' - ',pl.nombre_linea_proveedor) from proveedores p, proveedores_lineas pl 
 			where p.cod_proveedor=pl.cod_proveedor and pl.estado=1 order by 2;";
-			$respTipo=mysql_query($sqlTipo);
+			$respTipo=mysqli_query($enlaceCon, $sqlTipo);
 			echo "<option value='0'>--</option>";
-			while($datTipo=mysql_fetch_array($respTipo)){
+			while($datTipo=mysqli_fetch_array($respTipo)){
 				$codTipoMat=$datTipo[0];
 				$nombreTipoMat=$datTipo[1];
 				echo "<option value=$codTipoMat>$nombreTipoMat</option>";

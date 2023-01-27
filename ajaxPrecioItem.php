@@ -6,11 +6,14 @@ $codMaterial = $_GET["codmat"];
 $indice = $_GET["indice"];
 $codTipoPrecio=$_GET["tipoPrecio"];
 
+$codigoCiudadGlobal=$_COOKIE["global_agencia"];
+
+
 //
 require("conexionmysqli2.inc");
 $cadRespuesta="";
-$consulta="
-    select p.`precio` from precios p where p.`codigo_material`='$codMaterial' and p.`cod_precio`=1";
+$consulta="select p.`precio` from precios p where p.`codigo_material`='$codMaterial' and p.`cod_precio`=1 and 
+    p.cod_ciudad='$codigoCiudadGlobal' ";
 $rs=mysqli_query($enlaceCon,$consulta);
 $registro=mysqli_fetch_array($rs);
 $cadRespuesta=$registro[0];

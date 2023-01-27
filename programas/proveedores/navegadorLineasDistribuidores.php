@@ -90,7 +90,7 @@ echo "<div class='divBotones'><input class='boton' type='button' value='Adiciona
 echo "<center>";
 echo "<table class='texto'>";
 echo "<tr>";
-echo "<th>&nbsp;</th><th>Linea</th><th>Abreviatura</th><th>Procedencia</th><th>Margen de precio</th><th>Contacto 1</th><th>Contacto 2</th>";
+echo "<th>&nbsp;</th><th>Codigo</th><th>Linea</th><th>Abreviatura</th><th>Procedencia</th><th>Margen de precio</th><th>Contacto 1</th><th>Contacto 2</th>";
 echo "<th>Ver Productos</th><th>Editar Precios</th><th>Ajustar Stocks</th><th>Ajustar Stocks</th></tr>";
 $consulta="select p.cod_linea_proveedor, p.nombre_linea_proveedor, p.abreviatura_linea_proveedor, p.contacto1, 
 	p.contacto2, (select t.nombre_procedencia from tipos_procedencia t where t.cod_procedencia=p.cod_procedencia), 
@@ -111,7 +111,10 @@ while($reg=mysqli_fetch_array($rs)){
 	$procedencia=$reg[5];
 	$margenPrecio=$reg[6];
     echo "<tr>";
-    echo "<td><input type='checkbox' id='$codLinea' value='$codLinea' ></td><td>$nombreLinea</td><td>$abreviatura</td>
+    echo "<td><input type='checkbox' id='$codLinea' value='$codLinea' ></td>
+    <td>$codLinea</td>
+    <td>$nombreLinea</td>
+    <td>$abreviatura</td>
 	<td>$procedencia</td><td>$margenPrecio</td>
 	<td>$contacto1</td><td>$contacto2</td>";
 	if($globalAdmin==1){

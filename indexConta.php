@@ -109,8 +109,7 @@ include("datosUsuario.php");
 					<li><span>Reportes Contables</span>
 						<ul>
 							<li><a href="rptOpLibroVentas.php" target="contenedorPrincipal">Libro de Ventas</a></li>
-							<li><a href="" target="contenedorPrincipal">Libro de Compras</a></li>
-							<!--li><a href="rptOpKardexCliente.php" target="contenedorPrincipal">Kardex x Cliente</a></li-->
+							<li><a href="rptOpExistenciasCostos.php" target="contenedorPrincipal">Existencias Valorado</a></li>
 						</ul>	
 					</li>
 				</ul>

@@ -67,7 +67,7 @@ class CufdTest
 				//$servCodigos->cuis = 'C5ACBC6F';
 				$resCufd = $servCodigos->cufd($codigoPuntoVenta, $codigoSucursal);				
 				$cufd=$resCufd->RespuestaCufd->codigo;
-				if($cufdAnt==""){
+				if($cufdAnt=="" && $cufd!=""){
 					//echo $cufd;
 					$sqlUpdate="UPDATE siat_cufd SET estado=0 where cod_ciudad='$ciudad' and fecha='$fechaActual' and cuis='$cuis' and estado=1;";
 					mysqli_query($enlaceCon,$sqlUpdate);

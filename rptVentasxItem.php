@@ -8,7 +8,7 @@ $sqlUTF=mysqli_query($enlaceCon, "SET NAMES utf8");
 
 $fecha_ini=$_GET['fecha_ini'];
 $fecha_fin=$_GET['fecha_fin'];
-$rpt_ver=$_GET['rpt_ver'];
+$rpt_ordenar=$_GET['rpt_ordenar'];
 
 //desde esta parte viene el reporte en si
 $fecha_iniconsulta=$fecha_ini;
@@ -26,14 +26,17 @@ echo "<table align='center' class='textotit' width='100%'><tr><td align='center'
 	<br>Fecha Reporte: $fecha_reporte</tr></table>";
 	
 $sql="select m.`codigo_material`, m.`descripcion_material`, (select p.nombre_proveedor from proveedores p, proveedores_lineas pl where p.cod_proveedor=pl.cod_proveedor and pl.cod_linea_proveedor=m.cod_linea_proveedor)as linea, m.codigo_barras, 
-	(sum(sd.monto_unitario)-sum(sd.descuento_unitario))montoVenta, sum(sd.cantidad_unitaria), s.descuento, s.monto_total
+	(sum(sd.monto_unitario)-sum(sd.descuento_unitario))montoVenta, sum(sd.cantidad_unitaria)cantidadventa, s.descuento, s.monto_total
 	from `salida_almacenes` s, `salida_detalle_almacenes` sd, `material_apoyo` m 
 	where s.`cod_salida_almacenes`=sd.`cod_salida_almacen` and s.`fecha` BETWEEN '$fecha_iniconsulta' and '$fecha_finconsulta'
 	and s.`salida_anulada`=0 and sd.`cod_material`=m.`codigo_material` and s.`cod_tiposalida`=1001 and  
 	s.`cod_almacen` in (select a.`cod_almacen` from `almacenes` a where a.`cod_ciudad`='$rpt_territorio')
-	group by m.`codigo_material` order by montoVenta desc;";
-	
-	//echo $sql;
+	group by m.`codigo_material`";
+if($rpt_ordenar==1){
+	$sql=$sql." order by montoVenta desc;";
+}elseif($rpt_ordenar==2){
+	$sql=$sql." order by cantidadventa desc;";
+}
 $resp=mysqli_query($enlaceCon, $sql);
 
 echo "<br><table align='center' class='texto' width='100%'>

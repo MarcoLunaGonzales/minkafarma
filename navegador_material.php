@@ -1,13 +1,44 @@
 <?php
-require("conexionmysqli.php");
+require("conexionmysqli.inc");
 require('estilos.inc');
 require('funciones.php');
+?>
 
-echo "<script>
-		function enviar_nav()
-		{	location.href='registrar_material_apoyo.php';
+<script language="JavaScript">
+		function enviar_nav(f){	
+			console.log('consolaaaaaaaaaaaa');
+			location.href='registrar_material_apoyo.php';
 		}
-		function eliminar_nav(f)
+		function enviar_buscador(){	
+			var proveedorB=document.getElementById('proveedorBusqueda').value;
+			var principioActivoB=document.getElementById('principioActivoBusqueda').value;
+			var nombreB=document.getElementById('itemNombreBusqueda').value;
+			var codBarrasB=document.getElementById('input_codigo_barras').value;
+			console.log("datos prov: "+proveedorB+" PA: "+principioActivoB+" nombre "+nombreB+" codBarrasB: "+codBarrasB);
+			location.href="navegador_material.php?vista=0&proveedorB="+proveedorB+"&nombreB="+nombreB+"&principioActivoB="+principioActivoB+"&barrasB="+codBarrasB;
+		}
+		function mostrarBusqueda(){
+			document.getElementById('divRecuadroExt').style.visibility='visible';
+			document.getElementById('divProfileData').style.visibility='visible';
+			document.getElementById('divProfileDetail').style.visibility='visible';
+			document.getElementById('divboton').style.visibility='visible';
+			//document.getElementById('divListaMateriales').innerHTML='';
+			document.getElementById('itemNombreBusqueda').value='';	
+			document.getElementById('itemNombreBusqueda').focus();		
+		}
+		function Hidden(){
+			document.getElementById('divRecuadroExt').style.visibility='hidden';
+			document.getElementById('divProfileData').style.visibility='hidden';
+			document.getElementById('divProfileDetail').style.visibility='hidden';
+			document.getElementById('divboton').style.visibility='hidden';
+		}
+		function deleteProducto(codProducto,nombreProducto){
+			console.log(codProducto);
+			if(confirm('Desea Eliminar el Producto '+nombreProducto+', la accion no se podra revertir.')){
+				location.href="eliminar_material_apoyo.php?datos="+codProducto;
+			}
+		}
+		/*function eliminar_nav(f)
 		{
 			var i;
 			var j=0;
@@ -76,31 +107,17 @@ echo "<script>
 			var codBarrasB=$('#input_codigo_barras').val();
 			location.href='navegador_material.php?vista='+modo_vista+'&proveedorB='+proveedorB+'&nombreB='+nombreB+'&principioActivoB='principioActivoB+'&cb='+codBarrasB;
 		}
-function mostrarBusqueda(){
-	document.getElementById('divRecuadroExt').style.visibility='visible';
-	document.getElementById('divProfileData').style.visibility='visible';
-	document.getElementById('divProfileDetail').style.visibility='visible';
-	document.getElementById('divboton').style.visibility='visible';
-	//document.getElementById('divListaMateriales').innerHTML='';
-	document.getElementById('itemNombreBusqueda').value='';	
-	document.getElementById('itemNombreBusqueda').focus();		
-}
-function Hidden(){
-	document.getElementById('divRecuadroExt').style.visibility='hidden';
-	document.getElementById('divProfileData').style.visibility='hidden';
-	document.getElementById('divProfileDetail').style.visibility='hidden';
-	document.getElementById('divboton').style.visibility='hidden';
-}
+
 function enviar_buscador(){	
 	var proveedorB=$('#proveedorBusqueda').val();
 	var principioActivoB=$('#principioActivoBusqueda').val();
 	var nombreB=$('#itemNombreBusqueda').val();
 	var codBarrasB=$('#input_codigo_barras').val();
 	location.href='navegador_material.php?vista=1&proveedorB='+proveedorB+'&nombreB='+nombreB+'&principioActivoB='principioActivoB+'&barrasB='+codBarrasB;
-}
-		
-		</script>";
-		
+}*/		
+	</script>
+
+<?php	
 	
 	echo "<h1>Registro de Producto</h1>";
 
@@ -152,6 +169,7 @@ function enviar_buscador(){
 	$sql.=" order by m.descripcion_material limit 0,50 ";
 	
 	//echo $sql;
+	
 	$resp=mysqli_query($enlaceCon,$sql);
 	
 	echo "<table align='center' class='texto'><tr><th>Ver Productos:</th>
@@ -159,23 +177,18 @@ function enviar_buscador(){
 	if($vista==0)	echo "<option value='0' selected>Activos</option><option value='1'>Retirados</option><option value='2'>Todo</option>";
 	if($vista==1)	echo "<option value='0'>Activos</option><option value='1' selected>Retirados</option><option value='2'>Todo</option>";
 	echo "</select>";
-	echo "</th></tr></table><br>";
-	
-	echo "<center><table border='0' class='textomini'><tr><th>Leyenda:</th><th>Productos Retirados</th><td bgcolor='#ff6666' width='30%'></td></tr></table></center><br>";
-	
+	echo "</th></tr></table><br>";	
 	
 	echo "<div class='divBotones'>
-		<input type='button' value='Adicionar' name='adicionar' class='boton' onclick='enviar_nav()'>
-		<input type='button' value='Editar' name='Editar' class='boton' onclick='editar_nav(this.form)'>
-		<input type='button' value='Eliminar' name='eliminar' class='boton2' onclick='eliminar_nav(this.form)'>
-		<a href='#' class='boton-verde' onclick='mostrarBusqueda()'><i class='fa fa-search'></i></a>
+		<input type='button' value='Adicionar' name='adicionar' class='boton' onclick='enviar_nav(this.form)'>
+		<a href='#' class='boton-verde' onclick='mostrarBusqueda()'><img src='imagenes/buscar2.png' width='25'></img></a>
 
 		</div>";
 	
 	echo "<center><table class='texto'>";
-	echo "<tr><th>Indice</th><th>&nbsp;</th><th>Nombre Producto</th>
+	echo "<tr><th>Indice</th><th>Nombre Producto</th>
 		<th>Cant.Presentacion</th><th>Linea Distribuidor</th>
-		<th>Precio</th></tr>";
+		<th>Precio</th><th>Principio Activo</th><th>&nbsp;</th></tr>";
 	
 	$indice_tabla=1;
 	while($dat=mysqli_fetch_array($resp))
@@ -204,20 +217,24 @@ function enviar_buscador(){
 			$txtAccionTerapeutica=$txtAccionTerapeutica." - ".$nombreAccionTerX;
 		}
 		
-		echo "<tr><td align='center'>$indice_tabla</td><td align='center'>
-		<input type='checkbox' name='codigo' value='$codigo'></td>
+		echo "<tr><td align='center'>$indice_tabla</td>
 		<td>$nombreProd</td>
 		<td>$cantPresentacion</td>
-		<td>$nombreLinea</td><td>$precioProducto</td></tr>";
+		<td>$nombreLinea</td>
+		<td>$precioProducto</td>
+		<td>$principioActivo</td>
+		<td align='center'>
+		<a href='editar_material_apoyo.php?cod_material=$codigo&pagina_retorno=0'><img src='imagenes/edit.png' width='25'></a>
+		<a href='javascript:deleteProducto($codigo,\"$nombreProd\");'><img src='imagenes/eliminarproceso.gif' width='25'></a>
+		</td>
+		</tr>";
 		$indice_tabla++;
 	}
 	echo "</table></center><br>";
 	
 		echo "<div class='divBotones'>
 		<input type='button' value='Adicionar' name='adicionar' class='boton' onclick='enviar_nav()'>
-		<input type='button' value='Editar' name='Editar' class='boton' onclick='editar_nav(this.form)'>
-		<input type='button' value='Eliminar' name='eliminar' class='boton2' onclick='eliminar_nav(this.form)'>
-		<a href='#' class='boton-verde' onclick='mostrarBusqueda()'><i class='fa fa-search'></i></a>
+		<a href='#' class='boton-verde' onclick='mostrarBusqueda()'><img src='imagenes/buscar2.png' width='25'></img></a>
 
 		</div>";
 		

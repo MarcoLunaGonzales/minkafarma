@@ -631,23 +631,31 @@ function ubicacionProducto($enlaceCon,$almacen, $item){
 	return($ubicacion);
 }
 function precioProducto($enlaceCon,$item){
-	
 	//require("conexionmysqli.php");
 	$fechaActual=date("Y-m-d");
-
-	$sql="SELECT p.`precio` from precios p where p.`codigo_material`='$item' and p.`cod_precio`='1'";
-	
+	$sql="SELECT p.`precio` from precios p where p.`codigo_material`='$item' and p.`cod_precio`='1'";	
 	$resp=mysqli_query($enlaceCon,$sql);
 	$precio=0;
- if (mysqli_num_rows($resp)>0){
- 
+ if (mysqli_num_rows($resp)>0){ 
 	$dat=mysqli_fetch_array($resp);
-	
 	$precio=$dat[0];
-
 	}
 	return($precio);
 }
+function precioProductoSucursal($enlaceCon,$item,$sucursal){
+	//require("conexionmysqli.php");
+	$fechaActual=date("Y-m-d");
+	$sql="SELECT p.`precio` from precios p where p.`codigo_material`='$item' and p.`cod_precio`='1' 
+				and p.cod_ciudad='$sucursal'";	
+	$resp=mysqli_query($enlaceCon,$sql);
+	$precio=0;
+ if (mysqli_num_rows($resp)>0){ 
+	$dat=mysqli_fetch_array($resp);
+	$precio=$dat[0];
+	}
+	return($precio);
+}
+
 function margenLinea($enlaceCon,$item){
 	//require("conexionmysqli.php");
 	$fechaActual=date("Y-m-d");
@@ -677,6 +685,27 @@ function descargarPDFArqueoCajaVertical($nom,$html){
  $mydompdf->stream($nom.".pdf", array("Attachment" => false));
 }
 
+function actualizarPrecios($enlaceCon, $codProducto, $arrayPrecios){
+	foreach ( $arrayPrecios as $clave => $valor ){
+	    //echo "ciudad: ".$clave." valor: ".$valor."<br>";
+	    $sqlVerificaPrecio="select count(*) from precios p where p.cod_precio=1 and p.codigo_material='$codProducto' and p.cod_ciudad='$clave'";
+		 $respVerificaPrecio=mysqli_query($enlaceCon, $sqlVerificaPrecio);
+	    $bandera=0;
+	    if($datVerificaPrecio=mysqli_fetch_array($respVerificaPrecio)){
+	    	$bandera=$datVerificaPrecio[0];
+	    }
 
+	    if($bandera==0){    //insertamos
+	    	$sqlActPrecio="insert into precios (codigo_material, cod_precio, precio, cod_ciudad) values 
+	    	('$codProducto','1','$valor','$clave')";
+	    }elseif($bandera>0){
+	    	$sqlActPrecio="update precios set precio='$valor' where codigo_material='$codProducto' and cod_precio=1 and 
+	    		cod_ciudad='$clave'";
+	    }
+	    //echo $sqlActPrecio."<br>";
+	    $respPrecio=mysqli_query($enlaceCon,$sqlActPrecio);
+	}
+	return(1);
+}
 
 ?>

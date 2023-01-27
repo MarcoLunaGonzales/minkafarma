@@ -1,6 +1,5 @@
 <?php
- error_reporting(E_ALL);
- ini_set('display_errors', '1');
+
 $start_time = microtime(true);
 require("conexionmysqli.php");
 require("estilos_almacenes.inc");
@@ -8,15 +7,16 @@ require("funciones.php");
 require("funciones_inventarios.php");
 require("enviar_correo/php/send-email_anulacion.php");
 
-
-//PARA KIDSPLACE ROPA
-//$codigoActividadSIAT=475100;
-//PARA FARMACIA
-// $codigoActividadSIAT=477300;
+// error_reporting(E_ALL);
+// ini_set('display_errors', '1');
 
 
 $usuarioVendedor=$_COOKIE['global_usuario'];
 $globalSucursal=$_COOKIE['global_agencia'];
+
+/*SACAMOS EL TIPO DE IMPRESION PDF O HTML*/
+$tipoImpresion=obtenerValorConfiguracion($enlaceCon,48);
+
 
 $errorProducto="";
 $totalFacturaMonto=0;
@@ -105,8 +105,14 @@ $cuf="";
 if(isset($_POST['totalVenta'])){	$totalVenta=$_POST['totalVenta']; }else{ $totalVenta=0;	}
 if(isset($_POST['descuentoVenta'])){	$descuentoVenta=$_POST['descuentoVenta']; }else{ $descuentoVenta=0;	}
 if(isset($_POST['totalFinal'])){	$totalFinal=$_POST['totalFinal']; }else{ $totalFinal=0;	}
-if(isset($_POST['totalEfectivo'])){	$totalEfectivo=$_POST['totalEfectivo']; }else{ $totalEfectivo=0;	}
-if(isset($_POST['totalCambio'])){	$totalCambio=$_POST['totalCambio']; }else{ $totalCambio=0;	}
+
+$totalEfectivo=0;
+$totalCambio=0;
+if(isset($_POST['efectivoRecibido'])){	$totalEfectivo=$_POST['efectivoRecibido']; }else{ $totalEfectivo=0;	}
+if(isset($_POST['cambioEfectivo'])){	$totalCambio=$_POST['cambioEfectivo']; }else{ $totalCambio=0;	}
+//echo "total efectivo ".$totalEfectivo;
+//echo "total cambio ".$totalCambio;
+
 if(isset($_POST['complemento'])){	$complemento=$_POST['complemento']; }else{ $complemento=0;	}
 
 $totalFinalRedondeado=round($totalFinal);
@@ -264,9 +270,10 @@ do {
 
 		$sql_inserta="INSERT INTO salida_almacenes(cod_salida_almacenes, cod_almacen, cod_tiposalida, 
  		cod_tipo_doc, fecha, hora_salida, territorio_destino, almacen_destino, observaciones, estado_salida, nro_correlativo, salida_anulada, 
- 		cod_cliente, monto_total, descuento, monto_final, razon_social, nit, cod_chofer, cod_vehiculo, monto_cancelado, cod_dosificacion,cod_tipopago)
+ 		cod_cliente, monto_total, descuento, monto_final, razon_social, nit, cod_chofer, cod_vehiculo, monto_cancelado, cod_dosificacion,cod_tipopago, monto_efectivo, monto_cambio)
  		values ('$codigo', '$almacenOrigen', '$tipoSalida', '$tipoDoc', '$fecha', '$hora', '0', '$almacenDestino', 
- 		'$observaciones', '1', '$nro_correlativo', 0, '$codCliente', '$totalVenta', '$descuentoVenta', '$totalFinal', '$razonSocial', '$nitCliente', '$usuarioVendedor', '$vehiculo',0,'$cod_dosificacion','$tipoVenta')";
+ 		'$observaciones', '1', '$nro_correlativo', 0, '$codCliente', '$totalVenta', '$descuentoVenta', '$totalFinal', '$razonSocial', '$nitCliente', '$usuarioVendedor', '$vehiculo',0,'$cod_dosificacion','$tipoVenta','$totalEfectivo','$totalCambio')";
+ 		//echo $sql_inserta;
  		$sql_inserta=mysqli_query($enlaceCon,$sql_inserta);
 	}
 	$contador++;
@@ -389,13 +396,16 @@ if($sql_inserta==1){
 							location.href='errorDiferenciaFactura.php?codVenta=$codigo';
 						</script>";	
 				}else{
-					$mensaje="transacción Existosa :)";	
-					$url="location.href='formatoFactura.php?codVenta=$codigo';";				
+					$mensaje="Transacción Exitosa :)";	
+					
+					if($tipoImpresion==0){$url="puente_impresion.php?codVenta=$codigo&tipodoc=$tipoDoc";}
+					else{$url="formatoFacturaOnLine.php?codVenta=$codigo";}
 					
 				}
 			}else{ //ESTO ES CUANDO HAY ERROR FACTURA
 				$mensaje="Factura emitida fuera de línea :(";				
-				$url="location.href='formatoFactura.php?codigo_salida=$codigo';";
+				if($tipoImpresion==0){$url="puente_impresion.php?codVenta=$codigo&tipodoc=$tipoDoc";}
+					else{$url="formatoFacturaOnLine.php?codVenta=$codigo";}
 			}
 
 			//SACAMOS LA VARIABLE PARA ENVIAR EL CORREO O NO SI ES 1 ENVIAMOS CORREO DESPUES DE LA TRANSACCION
@@ -427,13 +437,17 @@ if($sql_inserta==1){
 				}else{
 					$texto_correo="<span style=\"border:1px;font-size:18px;color:red;\"><b>Ocurrio un error al enviar el correo, vuelva a intentarlo.</b></span>";
 				}
+				/*DIRECCIONAMOS A LA URL CORRECTA TIPO DE IMPRESION*/
+				if($tipoImpresion==0){$url="puente_impresion.php?codVenta=$codigo&tipodoc=$tipoDoc";}
+				else{$url="formatoFacturaOnLine.php?codVenta=$codigo";}
+
 				echo "<script language='Javascript'>
 					Swal.fire({
 				    title: 'SIAT: ".$mensaje."',
 				    html: '".$texto_correo."',
 				    type: 'success'
 					}).then(function() {
-					   location.href='puente_impresion.php?codVenta=$codigo&tipodoc=$tipoDoc'; 
+					   location.href='$url'; 
 					});
 					</script>";
 				// $texto_correo="<span style=\"border:1px;font-size:18px;color:#91d167;\"><b>¿DESEAS ENVIAR CORREO?</b></span>";
@@ -445,25 +459,21 @@ if($sql_inserta==1){
 				    html: '".$texto_correo."',
 				    type: 'success'
 					}).then(function() {
-						 location.href='puente_impresion.php?codVenta=$codigo&tipodoc=$tipoDoc';
+						 location.href='$url';
 					});
 					</script>";
-				// echo "<script type='text/javascript' language='javascript'>
-				// location.href='navegadorVentas.php?codVenta=$codigo';
-				// </script>";
 			}
-
-		}else if($tipoDoc==2){
-			//SACAMOS LA VARIABLE PARA ENVIAR EL CORREO O NO SI ES 1 ENVIAMOS CORREO DESPUES DE LA TRANSACCION
-			//NO ENVIAMOS CORREO EN NR
+		}else if($tipoDoc==2){			
+			if($tipoImpresion==0){$url="puente_impresion.php?codVenta=$codigo&tipodoc=$tipoDoc";}
+					else{$url="formatoNotaRemisionOnLine.php?codVenta=$codigo";}
 			$banderaCorreo=0;
 			if($banderaCorreo==1 || $banderaCorreo==2){
 				header("location:sendEmailVenta.php?codigo=$codigo&evento=1&tipodoc=$tipoDoc");
 			    $respUpdMonto=mysqli_query($enlaceCon,$sqlUpdMonto);
 		    }else{
 				echo "<script type='text/javascript' language='javascript'>
-					location.href='puente_impresion.php?codVenta=$codigo&tipodoc=$tipoDoc';
-				</script>";		
+					location.href='$url';
+				</script>";
 			}
 		}else if($tipoDoc==4){
 			$sqlUpdMonto="update salida_almacenes set siat_codigotipoemision=2,siat_fechaemision='$fecha_emision_manual',siat_codigocufd='$codigoCufd'

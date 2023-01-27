@@ -1,18 +1,16 @@
 <?php
-require('estilos_reportes_almacencentral.php');
-require('function_formatofecha.php');
-require('conexion.inc');
-require('funcion_nombres.php');
+
+require('conexionmysqli2.inc');
 require('funciones.php');
 
 
-$sql="SELECT s.cod_salida_almacenes, s.monto_final from salida_almacenes s where s.cod_almacen=1000 and s.cod_tiposalida=1001 and s.salida_anulada=0";
-$resp=mysql_query($sql);
+$sql="select distinct(p.codigo_material), cod_precio, precio from precios p where p.cod_precio=1";
+$resp=mysqli_query($enlaceCon, $sql);
 while($dat=mysql_fetch_array($resp)){
-	$codSalida=$dat[0];
-	$montoFinal=$dat[1];
+	$codProducto=$dat[0];
+	$precio=$dat[2];
 
-	echo $codSalida." ".$montoFinal."<br>";
+	echo $codProducto." ".$precio."<br>";
 
 	$sqlVeri="SELECT c.cod_cobro from cobros_detalle c where c.cod_venta=$codSalida";
 	$respVeri=mysql_query($sqlVeri);

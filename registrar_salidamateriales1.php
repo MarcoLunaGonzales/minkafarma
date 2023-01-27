@@ -3,6 +3,11 @@
 require("conexionmysqli.php");
 require("estilos_almacenes.inc");
 
+
+$usuarioVentas=$_COOKIE['global_usuario'];
+$globalAgencia=$_COOKIE['global_agencia'];
+$globalAlmacen=$_COOKIE['global_almacen'];
+
 ?>
 <html>
     <head>
@@ -264,9 +269,7 @@ function validar(f)
 }
 	
 	
-</script>
-
-		
+</script>	
 <?php
 echo "<body>";
 if($fecha=="")
@@ -286,6 +289,11 @@ else
 ?>
 <form action='guardarSalidaMaterial.php' method='POST' name='form1'>
 <h1>Registrar Salida de Almacen</h1>
+
+<input type="hidden" id="almacen_origen" name="almacen_origen" value="<?=$globalAlmacen?>">
+<input type="hidden" id="sucursal_origen" name="sucursal_origen" value="<?=$globalAgencia?>">
+<input type="hidden" id="no_venta" name="no_venta" value="100">
+
 
 <table class='texto' align='center' width='90%'>
 <tr><th>Tipo de Salida</th><th>Tipo de Documento</th><th>Nro. Salida</th><th>Fecha</th><th>Almacen Destino</th></tr>

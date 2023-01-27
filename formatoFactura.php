@@ -161,7 +161,7 @@ $datConf=mysqli_fetch_array($respConf);
 $txtLeyendaFin=$datConf[1];//$txtLeyendaFin=mysqli_result($respConf,0,1);
 
 
-$y=5;
+$y=0;
 $incremento=3;
 //$pdf->SetFont('Arial','',10);
 $pdf->SetXY(0,$y+3);		$pdf->Cell(68,0,"FACTURA",0,0,"C");

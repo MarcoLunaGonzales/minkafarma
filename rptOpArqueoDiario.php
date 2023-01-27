@@ -131,6 +131,7 @@ echo"<form method='post' action='rptArqueoDiarioPDF.php'>";
 		}
 	}
 	echo "</select></td></tr>";
+	
 	echo "<tr><th align='left'>Fecha Inicio:</th>";
 			echo" <TD bgcolor='#ffffff'>
 				<INPUT  type='date' class='texto' value='$fecha_rptdefault' id='exafinicial' size='10' name='exafinicial'><INPUT  type='time' class='texto' value='$hora_rptinidefault' id='exahorainicial' size='10' name='exahorainicial'>";
