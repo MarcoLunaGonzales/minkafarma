@@ -4,10 +4,11 @@ function envia_formulario(f)
 	rpt_territorio=f.rpt_territorio.value;
 	fecha_ini=f.exafinicial.value;
 	fecha_fin=f.exaffinal.value;
+	rpt_ver=f.rpt_ver.value;
 	
 	var forms = f;
     if(forms.checkValidity()){
-		window.open('rptProductosAReponer.php?rpt_territorio='+rpt_territorio+'&fecha_ini='+fecha_ini+'&fecha_fin='+fecha_fin+'','','scrollbars=yes,status=no,toolbar=no,directories=no,menubar=no,resizable=yes,width=1000,height=800');			
+		window.open('rptProductosAReponer.php?rpt_territorio='+rpt_territorio+'&fecha_ini='+fecha_ini+'&fecha_fin='+fecha_fin+'&rpt_ver='+rpt_ver,'','scrollbars=yes,status=no,toolbar=no,directories=no,menubar=no,resizable=yes,width=1000,height=800');			
 		return(true);    
 	} else{
         alert("Debe seleccionar todos los campos del reporte.")
@@ -23,6 +24,7 @@ $fecha_rptdefault=date("d/m/Y");
 echo "<table align='center' class='textotit'><tr><th>Productos a Reponer</th></tr></table><br>";
 echo"<form method='post' action=''>";
 	echo"\n<table class='texto' align='center' cellSpacing='0' width='50%'>\n";
+
 	echo "<tr><th align='left'>Territorio</th><td><select name='rpt_territorio' class='texto' required>";
 	$sql="select cod_ciudad, descripcion from ciudades order by descripcion";
 	$resp=mysqli_query($enlaceCon, $sql);
@@ -44,6 +46,11 @@ echo"<form method='post' action=''>";
 			<INPUT  type='date' class='texto' value='$fecha_rptdefault' id='exaffinal' size='10' name='exaffinal' required>";
     		echo" </TD>";
 	echo "</tr>";
+
+	echo "<tr><th align='left'>Ver</th><td><select name='rpt_ver' class='texto' required>";
+	echo "<option value='0'>Solo Productos a reponer</option>";
+	echo "<option value='1'>Ver todos los productos vendidos</option>";
+	echo "</select></td></tr>";
 	
 	echo"\n </table><br>";
 	require('home_almacen.php');

@@ -343,3 +343,30 @@ function cambiarNotaRemision(){
 		ajaxNroDoc(form1);
 	}
 }
+
+function totalesTablaVertical(tabla,columna,fila){
+   var main=document.getElementById(tabla);   
+   var numFilas=main.rows.length;
+   var numCols=main.rows[1].cells.length; 
+   for(var j=columna; j<=numCols-1; j++){
+    var subtotal=0;
+      for(var i=fila; i<=numFilas-2; i++){
+            var datoS=main.rows[i].cells[j].innerHTML;
+            datoS=datoS.trim();   
+            console.log(datoS+" "+typeof(datoS));
+            if(datoS=="-"){
+              datoS="0";
+            }
+            datoS=datoS.replace(/,/g,'');
+            console.log(datoS);
+            var dato=parseFloat(datoS);
+            //console.log(dato);
+            subtotal=subtotal+dato;
+            var subtotalF=number_format(subtotal,2); 
+            console.log("subtotal: "+subtotal);
+      }
+      var html='<th style="text-align:right;">'+subtotalF+'</th>';
+      $("tfoot tr").append(html);   
+  }
+  $("tfoot tr").prepend("<th colspan='"+columna+"'>Totales</th>");   
+}

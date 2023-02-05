@@ -170,9 +170,7 @@ function masSelec() {
 	ajax.send(null);
 }	
 function setSeleccionados(f){
-	
 	var i;
-   
 	var cadena="";
 	var aux="";
 	var corrnum="";
@@ -261,16 +259,28 @@ function fun13(cadIdOrg,cadIdDes)
 	function modalMasLinea(form){
 		buscarMaterialLinea(form1,0);
 	}
-	function masLinea(obj) {
+
+	function masMultiple(form) {
 		var banderaItems0=0;
 		console.log("bandera: "+banderaItems0);
-		var codLineaProveedor=form1.itemTipoMaterial.value;
-		//alert(codLineaProveedor);
-		if(banderaItems0==0){
+		
+		var productosMultiples=new Array();		
+		for(i=0;i<=form.length-1;i++){
+    		if(form.elements[i].type=='checkbox'){  	   
+				if(form.elements[i].checked==true){ 
+					cadena=form.elements[i].value;
+					console.log("i: "+i+" cadena: "+cadena+" name: "+form.elements[i].name);
+					productosMultiples.push(cadena);
+					$banderaItems0=1;
+				}
+			}
+		}
+
+		if(banderaItems0==1){
 			num++;
 			div_material_linea=document.getElementById("divMaterialLinea");			
 			ajax=nuevoAjax();
-			ajax.open("GET","ajaxMaterialLineaIngreso.php?codigo="+num+"&cod_linea_proveedor="+codLineaProveedor,true);
+			ajax.open("GET","ajaxMaterialesIngresoMultiple.php?codigo="+num+"&productos_multiple="+productosMultiples,true);
 			ajax.onreadystatechange=function(){
 				if (ajax.readyState==4) {
 					div_material_linea.innerHTML=ajax.responseText;
@@ -280,6 +290,8 @@ function fun13(cadIdOrg,cadIdDes)
 		}
 		Hidden();
 	}	
+
+	
 	function mas(obj) {
 		var banderaItems0=0;
 		for(var j=1; j<=num; j++){
@@ -502,8 +514,8 @@ echo "</table><br>";
 			<table align="center"class="text" cellSpacing="1" cellPadding="2" width="100%" border="0" id="data0" style="border:#ccc 1px solid;">
 				<tr>
 					<td align="center" colspan="7">
-						<input class="boton" type="button" value="Nuevo Item (+)" onclick="mas(this)" accesskey="A"/>&nbsp;&nbsp;&nbsp;
-						<input class="boton" type="button" value="Agregar por Linea (+)" onclick="modalMasLinea(this)" accesskey="B"/>
+						<input class="boton" type="button" value="Nuevo Item (+)" onclick="mas(this)" accesskey="A"/>
+						<!--input class="boton" type="button" value="Agregar por Linea (+)" onclick="modalMasLinea(this)" accesskey="B"/-->
 					</td>
 				</tr>
 				<tr>
@@ -529,13 +541,13 @@ echo "</table><br>";
 		
 		<table align="center"class="text" cellSpacing="1" cellPadding="2" width="100%" border="0" id="data0" style="border:#ccc 1px solid;">
 			<tr>
-				<td align='right'>Total Compra</td><td align='right'><input type='number' name='totalCompra' id='totalCompra' value='0' size='3' readonly></td>
+				<td align='right'>Total Compra</td><td align='right'><input type='number' name='totalCompra' id='totalCompra' value='0' size='10' readonly></td>
 			</tr>
 			<tr>
-				<td align='right'>Descuento</td><td align='right'><input type='number' name='descuentoTotal' id='descuentoTotal' value='0' size='3' onKeyUp='totalesMonto();' required></td>
+				<td align='right'>Descuento</td><td align='right'><input type='number' name='descuentoTotal' id='descuentoTotal' value='0' size='10' onKeyUp='totalesMonto();' required></td>
 			</tr>
 			<tr>
-				<td align='right'>Total</td><td align='right'><input type='number' name='totalCompraSD' id='totalCompraSD' value='0' size='3' readonly></td>
+				<td align='right'>Total</td><td align='right'><input type='number' name='totalCompraSD' id='totalCompraSD' value='0' size='10' readonly></td>
 			</tr>
 		</table>
 
@@ -584,15 +596,15 @@ echo "<script type='text/javascript' language='javascript'  src='dlcalendar.js'>
 			</select>
 			</td>
 			<td>
-				<input type='text' name='itemNombreMaterial' id="itemNombreMaterial" class="textogranderojo"  onkeypress="return pressEnter(event, this.form);">
+				<input type='text' name='itemNombreMaterial' id="itemNombreMaterial" class="textogranderojo" onkeypress="return pressEnter(event, this.form);">
 			</td>
 			<td>
 				<input type='button' class='boton' value='Buscar' onClick="listaMateriales(this.form)">
 			</td>
 			</tr>
 			<tr>
-			<td><input type="button" class="boton2peque" onclick="javascript:masLinea(this.form);" value="BL">
-			<input type="button" class="boton2peque" onclick="javascript:setSeleccionados(this.form);" value="Subir Productos Seleccionados"></td>
+			<td><input type="button" class="boton2peque" onclick="javascript:masMultiple(this.form);" value="Seleccionar varios Productos">
+			</td>
 			</tr>
 			
 		</table>

@@ -81,25 +81,15 @@ function funOk(codReg,funOkConfirm)
 }
 
 function ajaxBuscarVentas(f){
-    var fechaIniBusqueda, fechaFinBusqueda, nroCorrelativoBusqueda, verBusqueda, global_almacen, clienteBusqueda;
+    var fechaIniBusqueda, fechaFinBusqueda, nroCorrelativoBusqueda, verBusqueda, global_almacen, clienteBusqueda,vendedorBusqueda,tipoVentaBusqueda;
     fechaIniBusqueda=document.getElementById("fechaIniBusqueda").value;
     fechaFinBusqueda=document.getElementById("fechaFinBusqueda").value;
     nroCorrelativoBusqueda=document.getElementById("nroCorrelativoBusqueda").value;
-    verBusqueda=document.getElementById("verBusqueda").value;
     global_almacen=document.getElementById("global_almacen").value;
-    clienteBusqueda=document.getElementById("clienteBusqueda").value;
-    var contenedor;
-    contenedor = document.getElementById('divCuerpo');
-    ajax=nuevoAjax();
+    vendedorBusqueda=document.getElementById("vendedorBusqueda").value;
+    tipoVentaBusqueda=document.getElementById("tipoVentaBusqueda").value;
 
-    ajax.open("GET", "ajaxSalidaVentas.php?fechaIniBusqueda="+fechaIniBusqueda+"&fechaFinBusqueda="+fechaFinBusqueda+"&nroCorrelativoBusqueda="+nroCorrelativoBusqueda+"&verBusqueda="+verBusqueda+"&global_almacen="+global_almacen+"&clienteBusqueda="+clienteBusqueda,true);
-    ajax.onreadystatechange=function() {
-        if (ajax.readyState==4) {
-            contenedor.innerHTML = ajax.responseText;
-            HiddenBuscar();
-        }
-    }
-    ajax.send(null)
+    location.href="navegadorVentas2.php?fechaIniBusqueda="+fechaIniBusqueda+"&fechaFinBusqueda="+fechaFinBusqueda+"&nroCorrelativoBusqueda="+nroCorrelativoBusqueda+"&vendedorBusqueda="+vendedorBusqueda+"&tipoPagoBusqueda="+tipoVentaBusqueda;
 }
 
 function enviar_nav()
@@ -320,20 +310,30 @@ function llamar_preparado(f, estado_preparado, codigo_salida)
 $global_almacen=$_COOKIE["global_almacen"];
 $estado_preparado=0;
 
-$txtnroingreso="";
-$fecha1="";
-$fecha2="";
+$nroCorrelativoBusqueda="";
+$fechaIniBusqueda="";
+$fechaFinBusqueda="";
+$vendedorBusqueda="";
+$tipoPagoBusqueda="";
+$fecha_sistema="";
+$estado_preparado="";
+$view=1;
 
-if(isset($_GET["txtnroingreso"])){
-    $txtnroingreso = $_GET["txtnroingreso"];
+if(isset($_GET["nroCorrelativoBusqueda"])){
+    $nroCorrelativoBusqueda = $_GET["nroCorrelativoBusqueda"];    
 }
-if(isset($_GET["fecha1"])){
-    $fecha1 = $_GET["fecha1"];
+if(isset($_GET["fechaIniBusqueda"])){
+    $fechaIniBusqueda = $_GET["fechaIniBusqueda"];
 }
-if(isset($_GET["fecha2"])){
-    $fecha2 = $_GET["fecha2"];    
+if(isset($_GET["fechaFinBusqueda"])){
+    $fechaFinBusqueda = $_GET["fechaFinBusqueda"];
 }
-
+if(isset($_GET["vendedorBusqueda"])){
+    $vendedorBusqueda = $_GET["vendedorBusqueda"];
+}
+if(isset($_GET["tipoPagoBusqueda"])){
+    $tipoPagoBusqueda = $_GET["tipoPagoBusqueda"];
+}
 
 echo "<form method='post' action=''>";
 echo "<input type='hidden' name='fecha_sistema' value='$fecha_sistema'>";
@@ -353,7 +353,7 @@ echo "<div class='divBotones'>
     </div>";
         
 echo "<center><table class='texto'>";
-echo "<tr><th>&nbsp;</th><th>Nro. Doc</th><th>Fecha/hora<br>Registro Salida</th><th>Vendedor</th>
+echo "<tr><th>&nbsp;</th><th>Nro. Doc</th><th>Fecha/hora<br>Registro Salida</th><th>Vendedor</th><th>TipoPago</th>
     <th>Razon Social</th><th>NIT</th><th>Observaciones</th><th>Imprimir</th></tr>";
     
 echo "<input type='hidden' name='global_almacen' value='$global_almacen' id='global_almacen'>";
@@ -363,18 +363,25 @@ $consulta = "
     (select a.nombre_almacen from almacenes a where a.`cod_almacen`=s.almacen_destino), s.observaciones, 
     s.estado_salida, s.nro_correlativo, s.salida_anulada, s.almacen_destino, 
     (select c.nombre_cliente from clientes c where c.cod_cliente = s.cod_cliente), s.cod_tipo_doc, razon_social, nit,
-    (select concat(f.paterno,' ',f.nombres) from funcionarios f where f.codigo_funcionario=s.cod_chofer)as vendedor
+    (select concat(f.paterno,' ',f.nombres) from funcionarios f where f.codigo_funcionario=s.cod_chofer)as vendedor,
+    (select t.nombre_tipopago from tipos_pago t where t.cod_tipopago=s.cod_tipopago)as tipopago
     FROM salida_almacenes s, tipos_salida ts 
     WHERE s.cod_tiposalida = ts.cod_tiposalida AND s.cod_almacen = '$global_almacen' and s.cod_tiposalida=1001 and 
     s.cod_tipo_doc not in (1,4) ";
 
-if($txtnroingreso!="")
-   {$consulta = $consulta."AND s.nro_correlativo='$txtnroingreso' ";
-   }
-if($fecha1!="" && $fecha2!="")
-   {$consulta = $consulta."AND '$fecha1'<=s.fecha AND s.fecha<='$fecha2' ";
-   }
-$consulta = $consulta."ORDER BY s.fecha desc, s.nro_correlativo DESC limit 0, 100 ";
+if($nroCorrelativoBusqueda!="")
+{   $consulta = $consulta."AND s.nro_correlativo='$nroCorrelativoBusqueda' ";
+}
+if($vendedorBusqueda!="")
+{   $consulta = $consulta."AND s.cod_chofer='$vendedorBusqueda' ";
+}
+if($tipoPagoBusqueda!="")
+{   $consulta = $consulta."AND s.cod_tipopago='$tipoPagoBusqueda' ";
+}
+if($fechaIniBusqueda!="" && $fechaFinBusqueda!="")
+{   $consulta = $consulta."AND '$fechaIniBusqueda'<=s.fecha AND s.fecha<='$fechaFinBusqueda' ";
+}   
+$consulta = $consulta."ORDER BY s.fecha desc, s.hora_salida desc limit 0, 100 ";
 
 //echo $consulta;
 $resp = mysqli_query($enlaceCon,$consulta);
@@ -398,7 +405,8 @@ while ($dat = mysqli_fetch_array($resp)) {
     $razonSocial=$dat[12];
     $nitCli=$dat[13];
     $vendedor=$dat[14];
-    
+    $tipoPago=$dat[15];
+
     echo "<input type='hidden' name='fecha_salida$nro_correlativo' value='$fecha_salida_mostrar'>";
     
     $sqlEstadoColor="select color from estados_salida where cod_estado='$estado_almacen'";
@@ -419,6 +427,7 @@ while ($dat = mysqli_fetch_array($resp)) {
     echo "<td align='center'>$nombreTipoDoc-$nro_correlativo</td>";
     echo "<td align='center'>$fecha_salida_mostrar $hora_salida</td>";
     echo "<td>$vendedor</td>";
+    echo "<td>$tipoPago</td>";
     echo "<td>&nbsp;$razonSocial</td><td>&nbsp;$nitCli</td><td>&nbsp;$obs_salida</td>";
     $url_notaremision = "navegador_detallesalidamuestras.php?codigo_salida=$codigo";    
     
@@ -451,23 +460,22 @@ echo "</form>";
 
 ?>
 
-<div id="divRecuadroExt" style="background-color:#666; position:absolute; width:800px; height: 400px; top:30px; left:150px; visibility: hidden; opacity: .70; -moz-opacity: .70; filter:alpha(opacity=70); -webkit-border-radius: 20px; -moz-border-radius: 20px; z-index:2;">
+<div id="divRecuadroExt" style="background-color:#666; position:absolute; width:800px; height: 450px; top:30px; left:150px; visibility: hidden; opacity: .70; -moz-opacity: .70; filter:alpha(opacity=70); -webkit-border-radius: 20px; -moz-border-radius: 20px; z-index:2;">
 </div>
-
-<div id="divProfileData" style="background-color:#FFF; width:750px; height:350px; position:absolute; top:50px; left:170px; -webkit-border-radius: 20px;     -moz-border-radius: 20px; visibility: hidden; z-index:2;">
+<div id="divProfileData" style="background-color:#FFF; width:750px; height:400px; position:absolute; top:50px; left:170px; -webkit-border-radius: 20px;     -moz-border-radius: 20px; visibility: hidden; z-index:2;">
     <div id="divProfileDetail" style="visibility:hidden; text-align:center">
         <h2 align='center' class='texto'>Buscar Ventas</h2>
         <table align='center' class='texto'>
             <tr>
                 <td>Fecha Ini(dd/mm/aaaa)</td>
                 <td>
-                <input type='text' name='fechaIniBusqueda' id="fechaIniBusqueda" class='texto'>
+                <input type='date' name='fechaIniBusqueda' id="fechaIniBusqueda" class='texto'>
                 </td>
             </tr>
             <tr>
                 <td>Fecha Fin(dd/mm/aaaa)</td>
                 <td>
-                <input type='text' name='fechaFinBusqueda' id="fechaFinBusqueda" class='texto'>
+                <input type='date' name='fechaFinBusqueda' id="fechaFinBusqueda" class='texto'>
                 </td>
             </tr>
             <tr>
@@ -477,12 +485,12 @@ echo "</form>";
                 </td>
             </tr>           
             <tr>
-                <td>Cliente:</td>
+                <td>Vendedor:</td>
                 <td>
-                    <select name="clienteBusqueda" class="texto" id="clienteBusqueda">
-                        <option value="0">Todos</option>
+                    <select name="vendedorBusqueda" class="texto" id="vendedorBusqueda">
+                        <option value="">Todos</option>
                     <?php
-                        $sqlClientes="select c.`cod_cliente`, c.`nombre_cliente` from clientes c order by 2";
+                        $sqlClientes="SELECT DISTINCT c.codigo_funcionario,CONCAT(c.paterno,' ',c.materno,' ',c.nombres) as personal from salida_almacenes s join funcionarios c on c.codigo_funcionario=s.cod_chofer order by 2;";
                         $respClientes=mysqli_query($enlaceCon,$sqlClientes);
                         while($datClientes=mysqli_fetch_array($respClientes)){
                             $codCliBusqueda=$datClientes[0];
@@ -493,39 +501,35 @@ echo "</form>";
                         }
                     ?>
                     </select>
-                
                 </td>
             </tr>           
-
             <tr>
-                <td>Ver:</td>
+                <td>Tipo Pago:</td>
                 <td>
-                <select name='verBusqueda' id='verBusqueda' class='texto' >
-                    <option value='0'>Todo</option>
-                    <option value='1'>No Cancelados</option>
-                    <option value='2'>Anulados</option>
-                </select>
+                    <select name="tipoVentaBusqueda" class="texto" id="tipoVentaBusqueda">
+                        <option value="">Todos</option>
+                    <?php
+                        $sqlClientes="select c.cod_tipopago, c.nombre_tipopago from tipos_pago c order by 2";
+                        $respClientes=mysqli_query($enlaceCon,$sqlClientes);
+                        while($datClientes=mysqli_fetch_array($respClientes)){
+                            $codCliBusqueda=$datClientes[0];
+                            $nombreCliBusqueda=$datClientes[1];
+                    ?>
+                            <option value="<?php echo $codCliBusqueda;?>"><?php echo $nombreCliBusqueda;?></option>
+                    <?php
+                        }
+                    ?>
+                    </select>
                 </td>
-            </tr>           
+            </tr>
         </table>    
         <center>
-            <input type='button' value='Buscar' onClick="ajaxBuscarVentas(this.form)">
-            <input type='button' value='Cancelar' onClick="HiddenBuscar()">
+            <input type='button' class="boton" value='Buscar' onClick="ajaxBuscarVentas(this.form)">
+            <input type='button' class="boton2" value='Cancelar' onClick="HiddenBuscar()">
             
         </center>
     </div>
 </div>
 
-        <script type='text/javascript' language='javascript'>
-        </script>
-        <div id="pnldlgfrm"></div>
-        <div id="pnldlgSN"></div>
-        <div id="pnldlgAC"></div>
-        <div id="pnldlgA1"></div>
-        <div id="pnldlgA2"></div>
-        <div id="pnldlgA3"></div>
-        <div id="pnldlgArespSvr"></div>
-        <div id="pnldlggeneral"></div>
-        <div id="pnldlgenespera"></div>
     </body>
 </html>

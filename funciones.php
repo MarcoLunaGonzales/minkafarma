@@ -708,4 +708,36 @@ function actualizarPrecios($enlaceCon, $codProducto, $arrayPrecios){
 	return(1);
 }
 
+function obtenerMontoVentasGeneradas($desde,$hasta,$sucursal,$tipoPago){
+	$estilosVenta=1;
+	require("conexionmysqli2.inc");
+	$sql="select sum(s.monto_final) as monto
+	from `salida_almacenes` s where s.`cod_tiposalida`=1001 and s.salida_anulada=0 and
+	s.`cod_almacen` in (select a.`cod_almacen` from `almacenes` a where a.`cod_ciudad` in ($sucursal))
+	and s.`fecha` BETWEEN '$desde' and '$hasta' and 
+	s.cod_tipopago in ($tipoPago)";
+  //echo $sql;	
+  $resp=mysqli_query($enlaceCon,$sql);
+  $monto=0;				
+  while($detalle=mysqli_fetch_array($resp)){	
+       $monto+=$detalle[0];   		
+  }  
+  mysqli_close($enlaceCon);
+  return $monto;
+}
+
+function obtenerAlmacenesDeCiudadString($subGrupo){
+	$estilosVenta=1;
+	require("conexionmysqli2.inc");
+	$sql="SELECT GROUP_CONCAT(cod_almacen) from almacenes where cod_ciudad in ($subGrupo) GROUP BY cod_ciudad;";
+    $resp=mysqli_query($enlaceCon,$sql);
+    $datos=[];$index=0;				
+    while($detalle=mysqli_fetch_array($resp)){
+       $datos[$index]=$detalle[0];
+       $index++;		 		
+    }  
+    return implode(",", $datos);
+}
+
+
 ?>

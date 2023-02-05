@@ -33,3 +33,4 @@
   <script src="assets/js/mousetrap.min.js"></script>
   <script src="assets/alerts/alerts.js"></script>
   <script src="assets/alerts/functionsGeneral.js"></script>
+  <script src="functionsGeneral.js"></script>

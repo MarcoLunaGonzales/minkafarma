@@ -90,17 +90,21 @@ while($datos=mysqli_fetch_array($resp)){
 	$montoPtr=number_format($montoVenta,2,".",",");
 	$cantidadFormat=number_format($cantidad,0,".",",");
 	
-	$totalVenta=$totalVenta+$montoVenta;
-	echo "<tr>
-	<td>$barCode</td>
-	<td>$nombreItem</td>
-	<td>$nombreMarca</td>
-	<td>$cantidadFormat</td>
-	<td>$montoPtr</td>
-	<td>$fechaUltimaVenta</td>
-	<td>$stockFechaUltimaVenta</td>
-	<td>$obsStock</td>	
-	</tr>";
+	if( ($rpt_ver==0 && $stockFechaUltimaVenta==0) || $rpt_ver==1 ){
+
+		$totalVenta=$totalVenta+$montoVenta;
+
+		echo "<tr>
+		<td>$barCode</td>
+		<td>$nombreItem</td>
+		<td>$nombreMarca</td>
+		<td>$cantidadFormat</td>
+		<td>$montoPtr</td>
+		<td>$fechaUltimaVenta</td>
+		<td>$stockFechaUltimaVenta</td>
+		<td>$obsStock</td>	
+		</tr>";		
+	}
 }
 $totalPtr=number_format($totalVenta,2,".",",");
 echo "<tr>

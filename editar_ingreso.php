@@ -1,15 +1,31 @@
 <?php
-	require("conexionmysqli.inc");	
+	require("conexionmysqli2.inc");	
+	require("funciones.php");
+	
 	$codIngresoEditar=$_GET["codIngreso"];
+
+	$globalAlmacen=$_COOKIE['global_almacen'];
+	$codCiudadIngreso=$_COOKIE['global_agencia'];
+
 	$sql=" select count(*) from ingreso_detalle_almacenes where cod_ingreso_almacen=".$codIngresoEditar;	
 	$num_materiales=0;
 	$resp= mysqli_query($enlaceCon, $sql);				
 	while($dat=mysqli_fetch_array($resp)){	
 		$num_materiales=$dat[0];
 	}
+
+	$banderaUpdPreciosSucursales=obtenerValorConfiguracion($enlaceCon,49);
+	$txtUpdPrecios="";
+	if($banderaUpdPreciosSucursales==0){
+		$txtUpdPrecios="Los precios seran actualizados solo en ESTA SUCURSAL.";
+	}else{
+		$txtUpdPrecios="Los precios seran actualizados en TODAS LAS SUCURSALES del sistema.";
+	}
+
 ?>
 <script>
-num=<?php echo $num_materiales;?>;
+num=<?=$num_materiales;?>;
+console.log(num);
 
 function number_format(amount, decimals) {
     amount += ''; // por si pasan un numero en vez de un string
@@ -255,9 +271,6 @@ function fun13(cadIdOrg,cadIdDes)
     num=(100-13)*num/100;
     document.getElementById(cadIdDes).value=num;
 }
-
-	num=0;
-
 	function modalMasLinea(form){
 		buscarMaterialLinea(form1,0);
 	}
@@ -293,6 +306,7 @@ function fun13(cadIdOrg,cadIdDes)
 		console.log("bandera: "+banderaItems0);
 		if(banderaItems0==0){
 			num++;
+			console.log("num"+num);
 			fi = document.getElementById('fiel');
 			contenedor = document.createElement('div');
 			contenedor.id = 'div'+num;  
@@ -441,8 +455,11 @@ if($fecha=="")
 ?>
 <form action='guarda_editaringresomateriales.php' method='post' name='form1'>
 <input type="hidden" name="codIngreso" value="<?php echo $codIngresoEditar;?>" id="codIngreso">
-<table border='0' class='textotit' align='center'><tr><th>Editar Ingreso de Materiales</th></tr></table><br>
 
+<table border='0' class='textotit' align='center'>
+	<tr><th>Editar Ingreso de Materiales</th></tr>
+	<tr><th align='left'><span class='textopequenorojo' style='background-color:yellow;'><b><?=$txtUpdPrecios;?></b></span></th></tr>
+</table><br>
 <?php
 
 $sqlIngreso="select i.`nro_correlativo`, i.`fecha`, i.`cod_tipoingreso`, i.`nota_entrega`, i.`nro_factura_proveedor`, 
@@ -526,11 +543,23 @@ while($dat1=mysqli_fetch_array($resp1))
 				$codMaterial=$datDetalle[0];
 				$nombreMaterial=$datDetalle[1];
 				$cantidadMaterial=$datDetalle[2];
+				$cantidadMaterial=redondear2($cantidadMaterial);
 				$precioBruto=$datDetalle[3];
 				$precioNeto=$datDetalle[4];
 				$loteMaterial=$datDetalle[5];
 				$fechaVencimiento=$datDetalle[6];
 				$num=$indiceMaterial;
+
+				$precioTotalItem=$precioBruto*$cantidadMaterial;
+				$precioTotalItem=redondear2($precioTotalItem);
+
+				$precioProducto=precioProductoSucursal($enlaceCon,$codMaterial,$codCiudadIngreso);
+				$precioProducto=redondear2($precioProducto);
+				if($precioProducto==""){
+					$precioProducto=0;
+				}
+				$margenLinea=margenLinea($enlaceCon,$codMaterial);			
+				
 			?>
 
 <div id="div<?php echo $num?>">
@@ -556,34 +585,44 @@ while($dat1=mysqli_fetch_array($resp1))
 </td-->
 
 <td align="center" width="10%">
-<input type="date" class="textoform" min="<?php echo $fechaActual; ?>" id="fechaVenc<?php echo $num;?>" name="fechaVenc<?php echo $num;?>" size="5" value="<?php echo $fechaVencimiento;?>" required>
+<input type="date" class="textoform" min="<?=$fechaActual;?>" id="fechaVenc<?php echo $num;?>" name="fechaVenc<?php echo $num;?>" size="5" value="<?php echo $fechaVencimiento;?>" required>
 </td>
 
 <td align="center" width="10%">
-<input type="number" class="inputnumber" value="<?php echo $precioBruto;?>" id="precio<?php echo $num;?>" name="precio<?php echo $num;?>" size="5" min="0" required>
+<input type="number" class="inputnumber" value="<?=$precioTotalItem;?>" id="precio<?php echo $num;?>" name="precio<?php echo $num;?>" size="5" min="0" onKeyUp='calculaPrecioCliente(this,<?php echo $num;?>);' onChange='calculaPrecioCliente(this,<?php echo $num;?>);' required>
 </td>
 
 <td align="center" width="10%">
-<input type="number" class="inputnumber" value="0" id="preciocliente<?php echo $num;?>" name="preciocliente<?php echo $num;?>" size="4" min="0" step="0.01" onKeyUp='calculaMargen(this,<?php echo $num;?>);' onChange='calculaMargen(this,<?php echo $num;?>);' required>
+<input type="number" class="inputnumber" value="<?=$precioProducto;?>" id="preciocliente<?php echo $num;?>" name="preciocliente<?php echo $num;?>" size="4" min="0" step="0.01" onKeyUp='calculaMargen(this,<?php echo $num;?>);' onChange='calculaMargen(this,<?php echo $num;?>);' required>
 </br>
-<div id="divpreciocliente<?php echo $num;?>" class="textopequenorojo">-</div>
-<div id="divmargen<?php echo $num;?>" class="textopequenorojo2">-</div>
-<input type="hidden" name="margenlinea<?php echo $num;?>" id="margenlinea<?php echo $num;?>" value="0">
+<div id="divpreciocliente<?php echo $num;?>" class="textopequenorojo"><?=$precioProducto;?></div>
+<div id="divmargen<?php echo $num;?>" class="textopequenorojo2">M:[<?=$margenLinea;?>]</div>
+<input type="hidden" name="margenlinea<?php echo $num;?>" id="margenlinea<?php echo $num;?>" value="<?=$margenLinea;?>">
 </td>
 
-<td align="center"  width="10%" ><input class="boton1" type="button" value="(-)" onclick="menos(<?php echo $num;?>)" size="5"/></td>
+<td align="center"  width="10%" ><input class="boton2peque" type="button" value="(-)" onclick="menos(<?php echo $num;?>)" size="5"/></td>
 
 </tr>
 </table>
 
 </div>
-			
 			<?php
 				$indiceMaterial++;
 			}
-			?>
-			
-		</fieldset>
+			?>			
+	</fieldset>
+
+<table align="center"class="text" cellSpacing="1" cellPadding="2" width="80%" border="0" id="data0" style="border:#ccc 1px solid;">
+	<tr>
+		<td align='right'>Total Compra</td><td align='right'><input type='number' name='totalCompra' id='totalCompra' value='0' size='10' readonly></td>
+	</tr>
+	<tr>
+		<td align='right'>Descuento</td><td align='right'><input type='number' name='descuentoTotal' id='descuentoTotal' value='0' size='10' onKeyUp='totalesMonto();' required></td>
+	</tr>
+	<tr>
+		<td align='right'>Total</td><td align='right'><input type='number' name='totalCompraSD' id='totalCompraSD' value='0' size='10' readonly></td>
+	</tr>
+</table>
 
 
 <?php
@@ -596,6 +635,10 @@ echo "<div class='divBotones'>
 
 
 <div id="divRecuadroExt" style="background-color:#666; position:absolute; width:800px; height: 500px; top:30px; left:150px; visibility: hidden; opacity: .70; -moz-opacity: .70; filter:alpha(opacity=70); -webkit-border-radius: 20px; -moz-border-radius: 20px; z-index:2;">
+</div>
+
+<div id="divboton" style="position: absolute; top:20px; left:920px;visibility:hidden; text-align:center; z-index:3">
+	<a href="javascript:Hidden();"><img src="imagenes/cerrar4.png" height="45px" width="45px"></a>
 </div>
 
 <div id="divProfileData" style="background-color:#FFF; width:750px; height:450px; position:absolute; top:50px; left:170px; -webkit-border-radius: 20px; 	-moz-border-radius: 20px; visibility: hidden; z-index:2;">
@@ -618,7 +661,7 @@ echo "<div class='divBotones'>
 			</select>
 			</td>
 			<td>
-				<input type='text' name='itemNombreMaterial' id="itemNombreMaterial" class="textogranderojo">
+				<input type='text' name='itemNombreMaterial' id="itemNombreMaterial" class="textogranderojo" onkeypress="return pressEnter(event, this.form);">
 			</td>
 			<td>
 				<input type='button' class='boton' value='Buscar' onClick="listaMateriales(this.form)">
@@ -633,6 +676,11 @@ echo "<div class='divBotones'>
 </div>
 <input type='hidden' name='materialActivo' value="0">
 <input type='hidden' name='cantidad_material' value="0">
+
+
+<script>
+	totalesMonto();
+</script>
 
 </form>
 </body>
