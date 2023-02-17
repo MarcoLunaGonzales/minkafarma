@@ -18,7 +18,7 @@ $fechaActual=date("Y-m-d");
 	<a href="javascript:buscarMaterial(form1, <?php echo $num;?>)" accesskey="B"><img src='imagenes/buscar2.png' title="Buscar Producto" width="30"></a>
 </td>
 
-<td width="40%" align="center"><?php echo $num;?>
+<td width="40%" align="left"><?php echo $num;?>
 <input type="hidden" name="material<?php echo $num;?>" id="material<?php echo $num;?>" value="0">
 <div id="cod_material<?php echo $num;?>" class='textomedianorojo'>-</div>
 </td>

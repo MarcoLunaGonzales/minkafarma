@@ -531,5 +531,17 @@ echo "</form>";
     </div>
 </div>
 
+        <script type='text/javascript' language='javascript'>
+        </script>
+        <div id="pnldlgfrm"></div>
+        <div id="pnldlgSN"></div>
+        <div id="pnldlgAC"></div>
+        <div id="pnldlgA1"></div>
+        <div id="pnldlgA2"></div>
+        <div id="pnldlgA3"></div>
+        <div id="pnldlgArespSvr"></div>
+        <div id="pnldlggeneral"></div>
+        <div id="pnldlgenespera"></div>
+
     </body>
 </html>

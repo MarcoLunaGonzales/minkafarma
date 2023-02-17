@@ -122,7 +122,7 @@ function buscarMaterialSelec(f, numMaterial){
 }
 
 function ver(elem){
-	alert(elem.value);
+	//alert(elem.value);
 	}
 function setMateriales(f, cod, nombreMat, cantidadpresentacion, precio, margenlinea){
 	var numRegistro=f.materialActivo.value;
@@ -263,31 +263,37 @@ function fun13(cadIdOrg,cadIdDes)
 	function masMultiple(form) {
 		var banderaItems0=0;
 		console.log("bandera: "+banderaItems0);
-		
+		var numFilas=num;
+
+		menos(numFilas);
+
 		var productosMultiples=new Array();		
 		for(i=0;i<=form.length-1;i++){
     		if(form.elements[i].type=='checkbox'){  	   
-				if(form.elements[i].checked==true){ 
+				if(form.elements[i].checked==true && form.elements[i].name.indexOf("idchk")!==-1 ){ 
 					cadena=form.elements[i].value;
 					console.log("i: "+i+" cadena: "+cadena+" name: "+form.elements[i].name);
 					productosMultiples.push(cadena);
-					$banderaItems0=1;
+					banderaItems0=1;
+					num++;
 				}
 			}
 		}
-
+		num--;
+		console.log("bandera: "+banderaItems0);
 		if(banderaItems0==1){
 			num++;
-			div_material_linea=document.getElementById("divMaterialLinea");			
+			div_material_linea=document.getElementById("fiel");			
 			ajax=nuevoAjax();
-			ajax.open("GET","ajaxMaterialesIngresoMultiple.php?codigo="+num+"&productos_multiple="+productosMultiples,true);
+			ajax.open("GET","ajaxMaterialesIngresoMultiple.php?codigo="+numFilas+"&productos_multiple="+productosMultiples,true);
 			ajax.onreadystatechange=function(){
 				if (ajax.readyState==4) {
-					div_material_linea.innerHTML=ajax.responseText;
+					div_material_linea.innerHTML=div_material_linea.innerHTML+ajax.responseText;
 				}
 			}		
 			ajax.send(null);
 		}
+		console.log("CONTROL NUM: "+num);
 		Hidden();
 	}	
 
@@ -322,6 +328,7 @@ function fun13(cadIdOrg,cadIdDes)
 			}		
 			ajax.send(null);
 		}
+		console.log("CONTROL NUM: "+num);
 	}	
 	
 	function menos(numero) {
@@ -535,9 +542,11 @@ echo "</table><br>";
 					<td width="10%" align="center">&nbsp;</td>
 				</tr>
 			</table>
+
+			<div id="divMaterialLinea"></div>
+
 		</fieldset>
 
-		<div id="divMaterialLinea"></div>
 		
 		<table align="center"class="text" cellSpacing="1" cellPadding="2" width="100%" border="0" id="data0" style="border:#ccc 1px solid;">
 			<tr>
@@ -603,7 +612,7 @@ echo "<script type='text/javascript' language='javascript'  src='dlcalendar.js'>
 			</td>
 			</tr>
 			<tr>
-			<td><input type="button" class="boton2peque" onclick="javascript:masMultiple(this.form);" value="Seleccionar varios Productos">
+			<td><input type="button" class="boton2peque" onclick="javascript:masMultiple(this.form);" value="Incluir Productos Seleccionados">
 			</td>
 			</tr>
 			

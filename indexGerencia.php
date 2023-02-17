@@ -137,6 +137,7 @@ include("datosUsuario.php");
 						<ul>
 							<li><a href="rpt_op_inv_kardex.php" target="contenedorPrincipal">Kardex de Movimiento</a></li>
 							<li><a href="rpt_op_inv_existencias.php" target="contenedorPrincipal">Existencias</a></li>
+							<li><a href="rptOpMovimientoProductos.php" target="contenedorPrincipal">Movimiento de Productos</a></li>
 							<!--li><a href="rpt_op_inv_ingresos.php" target="contenedorPrincipal">Ingresos</a></li>
 							<li><a href="rpt_op_inv_salidas.php" target="contenedorPrincipal">Salidas</a></li-->
 							<li><a href="rptPrecios.php" target="contenedorPrincipal">Precios</a></li>
@@ -161,7 +162,8 @@ include("datosUsuario.php");
 							<li><a href="rptOpVentasGeneral.php" target="contenedorPrincipal">Ventas x Documento e Item</a></li>
 							<li><a href="rptOpVentasxPersonaDetalle.php" target="contenedorPrincipal">Ventas x Vendedor</a></li>
 							<li><a href="rptOpVentasSucursal.php" target="contenedorPrincipal">Ventas x Sucursal</a></li>
-  							<li><a href="rptOpVentasLineasProveedor.php" target="contenedorPrincipal">Ventas x Linea y Proveedor</a></li>
+							<li><a href="rptOpUtilidadLineaVenta.php" target="contenedorPrincipal">Ranking Ventas x Distribuidor</a></li>
+  							<li><a href="rptOpVentasLineasProveedor.php" target="contenedorPrincipal">Ventas x Distribuidor y Linea</a></li>
 						</ul>	
 					</li>
 					<li><span>Reportes Contables</span>

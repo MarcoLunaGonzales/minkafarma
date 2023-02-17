@@ -46,7 +46,7 @@ function cambiarSubLinea(){
         success:  function (resp) { 
         	//alert(resp);
           $("#rpt_subcategoria").html(resp);
-          $(".selectpicker").selectpicker("refresh");
+          //$(".selectpicker").selectpicker("refresh");
         }
     });
 }
@@ -57,33 +57,33 @@ require("conexionmysqli.inc");
 require("estilos_almacenes.inc");
 
 $fecha_rptdefault=date("Y-m-d");
-echo "<h1>Reporte Ventas x Linea y Proveedor</h1><br>";
+echo "<h1>Ventas x Distribuidor y Linea</h1><br>";
 echo"<form method='post' action='rptOpKardexCostos.php'>";
 
-	echo"\n<table class='' align='center' cellSpacing='0' width='50%'>\n";
-	echo "<tr><th align='left' class='text-muted'>Sucursal</th><td><select name='rpt_territorio' data-live-search='true' title='-- Elija una sucursal --'  id='rpt_territorio' multiple data-actions-box='true' data-style='select-with-transition' data-actions-box='true' data-size='10' class='selectpicker form-control'>";
+	echo"\n<table class='texto' align='center' cellSpacing='0' width='50%'>\n";
+	echo "<tr><th align='left' class='text-muted'>Sucursal</th><td><select name='rpt_territorio' title='-- Elija una sucursal --'  id='rpt_territorio' multiple class='texto'>";
 	$sql="select cod_ciudad, descripcion from ciudades order by descripcion";
 	$resp=mysqli_query($enlaceCon,$sql);
 	while($dat=mysqli_fetch_array($resp))
 	{	$codigo_ciudad=$dat[0];
 		$nombre_ciudad=$dat[1];
-		echo "<option value='$codigo_ciudad'>$nombre_ciudad</option>";
+		echo "<option value='$codigo_ciudad' selected>$nombre_ciudad</option>";
 	}
 	echo "</select></td></tr>";
 
-	echo "<tr><th align='left' class='text-muted' >Tipo de Pago:</th>
-	<td><select name='rpt_tipopago' class='selectpicker form-control' multiple data-style='btn btn-primary' data-actions-box='true'>";
+	echo "<tr><th align='left' class='texto' >Tipo de Pago:</th>
+	<td><select name='rpt_tipopago' class='texto' multiple>";
 	$sql="select cod_tipopago, nombre_tipopago from tipos_pago order by 2";
 	$resp=mysqli_query($enlaceCon,$sql);
 	while($dat=mysqli_fetch_array($resp))
 	{	$codigo_pago=$dat[0];
 		$nombre_pago=$dat[1];
-		echo "<option value='$codigo_pago'>$nombre_pago</option>";
+		echo "<option value='$codigo_pago' selected>$nombre_pago</option>";
 	}
 	echo "</select></td></tr>";
 
 	echo "<tr><th align='left' class='text-muted' >Proveedor:</th>
-	<td><select name='rpt_categoria'  id='rpt_categoria' class='selectpicker form-control' data-style='btn btn-primary' onchange='cambiarSubLinea()' data-live-search='true'>
+	<td><select name='rpt_categoria'  id='rpt_categoria' class='texto' onchange='cambiarSubLinea()'>
 	<option value='' disabled selected>--Seleccione--</option>";
 	$sql="select cod_proveedor, nombre_proveedor from proveedores order by 2";
 	$resp=mysqli_query($enlaceCon,$sql);
@@ -94,7 +94,7 @@ echo"<form method='post' action='rptOpKardexCostos.php'>";
 	}
 	echo "</select></td></tr>";
 	echo "<tr><th align='left' class='text-muted' >Linea:</th>
-	<td><select name='rpt_subcategoria' id='rpt_subcategoria' class='selectpicker form-control' multiple data-style='btn btn-primary' data-actions-box='true' data-live-search='true'>";
+	<td><select name='rpt_subcategoria' id='rpt_subcategoria' class='texto' multiple data-style='btn btn-primary' data-actions-box='true' data-live-search='true'>";
 	echo "</select></td></tr>";
 
 	echo "<tr><th align='left' class='text-muted'>Fecha inicio:</th>";
@@ -116,7 +116,7 @@ echo"<form method='post' action='rptOpKardexCostos.php'>";
     		echo"  </TD>";
 	echo "</tr>";
 	echo "<tr><th align='left' class='text-muted' >Formato:</th>
-	<td><select name='rpt_formato' id='rpt_formato' class='selectpicker form-control' data-style='btn btn-primary'>";
+	<td><select name='rpt_formato' id='rpt_formato' class='texto' data-style='btn btn-primary'>";
 	echo "<option value='1'>RESUMIDO</option>";
 	echo "<option value='2'>DETALLADO</option>";
 	echo "</select></td></tr>";

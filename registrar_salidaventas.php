@@ -339,6 +339,7 @@ function ajaxPrecioItem(indice){
 	contenedor=document.getElementById("idprecio"+indice);
 	var codmat=document.getElementById("materiales"+indice).value;
 	var tipoPrecio=document.getElementById("tipoPrecio"+indice).value;
+	console.log("descuento: "+tipoPrecio);
 	//var tipoPrecio=1;
 	var cantidadUnitaria=document.getElementById("cantidad_unitaria"+indice).value;
 	if(cantidadUnitaria>0){
@@ -537,7 +538,7 @@ function calculaMontoMaterial(indice){
 	var precioUnitario=document.getElementById("precio_unitario"+indice).value;
 	var descuentoUnitario=document.getElementById("descuentoProducto"+indice).value;
 
-	console.log("calculo: CU:"+cantidadUnitaria+" PU"+precioUnitario+" DU"+descuentoUnitario);
+	console.log("calculo: CU: "+cantidadUnitaria+" PU: "+precioUnitario+" DU: "+descuentoUnitario);
 	
 	var montoUnitario=(parseFloat(cantidadUnitaria)*parseFloat(precioUnitario)) - (parseFloat(descuentoUnitario));
 	montoUnitario=Math.round(montoUnitario*100)/100

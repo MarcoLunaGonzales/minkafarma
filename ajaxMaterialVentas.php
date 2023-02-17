@@ -1,6 +1,10 @@
 <?php 
 require_once('conexionmysqli2.inc');
-	$num=$_GET['codigo'];
+
+$num=$_GET['codigo'];
+
+$globalAdmin=$_COOKIE["global_admin_cargo"];
+
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -24,7 +28,7 @@ require_once('conexionmysqli2.inc');
 
 <td width="8%" align="center">
 	<div id='idstock<?php echo $num;?>'>
-		<input type='hidden' id='stock<?php echo $num;?>' name='stock<?php echo $num;?>' value=''>
+		<input type='hidden' id='stock<?php echo $num;?>' name='stock<?php echo $num;?>' value='' style='background:#ADF8FA;'>
 	</div>
 </td>
 
@@ -41,6 +45,7 @@ require_once('conexionmysqli2.inc');
 
 <td align="center" width="15%">
 	<?php
+		if($globalAdmin==0){
 			$sql1="select codigo, nombre, abreviatura from tipos_precio where estado=1 order by 3";
 			//echo $sql1."XXXXXXXXXXXXXXXXXX";
 			$resp1=mysqli_query($enlaceCon,$sql1);
@@ -55,9 +60,14 @@ require_once('conexionmysqli2.inc');
 				echo "<option value='$codigo'>$abreviatura %</option>";					
 				}
 			}
-			echo "</select>";
+			echo "</select>";			
+		}elseif($globalAdmin==1){
+			echo "<input class='inputnumber' type='number' min='0' max='90' step='0.5' value='0' id='tipoPrecio$num' name='tipoPrecio$num' onKeyUp='ajaxPrecioItem(".$num.")' style='background:#ADF8FA;' >%";
+		}
+
+
 			?>
-	<input class="inputnumber" type="number" value="0" id="descuentoProducto<?php echo $num;?>" name="descuentoProducto<?php echo $num;?>" onKeyUp='calculaMontoMaterial(<?php echo $num;?>);' onChange='calculaMontoMaterial(<?php echo $num;?>);' step="0.01" readonly>
+	<input class="inputnumber" type="number" value="0" id="descuentoProducto<?php echo $num;?>" name="descuentoProducto<?php echo $num;?>" onKeyUp='calculaMontoMaterial(<?php echo $num;?>);' onChange='calculaMontoMaterial(<?php echo $num;?>);' step="0.01" style='background:#ADF8FA;' readonly>
 </td>
 
 <td align="center" width="8%">
