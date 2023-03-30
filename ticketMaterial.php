@@ -1,28 +1,7 @@
-<script type="text/javascript">
-	function printDiv(nombreDiv) {
-     var contenido= document.getElementById(nombreDiv).innerHTML;
-     var contenidoOriginal= document.body.innerHTML;
-
-     document.body.innerHTML = contenido;
-
-     window.print();
-
-     document.body.innerHTML = contenidoOriginal;
-}
-</script>
-
-<style type="text/css">
-	body {color:#000 }
-	/*@media print {
-      body {
-        color:#C2C0C0 !important;
-      }
-    }*/
-</style>
 <?php
 $estilosVenta=1;
 require('conexionmysqli.inc');
-// require('funcionesBar.php');
+include 'assets/php-barcode-master/barcode.php';
 
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
@@ -38,39 +17,13 @@ $sqlConf="SELECT ma.codigo_material, ma.descripcion_material, ROUND(p.precio, 2)
 $respConf=mysqli_query($enlaceCon,$sqlConf);
 
 $nombre_producto = mysqli_result($respConf,0,1);
-$code            = mysqli_result($respConf,0,0);
-$precio          = mysqli_result($respConf,0,2);
+$codigo          = mysqli_result($respConf,0,0);
+$precio          = empty(mysqli_result($respConf,0,2)) ? '0.00' : mysqli_result($respConf,0,2);
 
+
+barcode('codigo_barra/'.$codigo.'.png', $codigo, 20, 'horizontal', 'code128', true);
+
+// Redirecciona a otro archivo PHP pasando los datos en la URL como parámetros
+header('Location: ticketMaterialPrint.php?codigo=' . urlencode($codigo) . '&nombre=' . urlencode($nombre_producto) . '&precio=' . urlencode($precio));
+exit;
 ?>
-<body>
-
-<table style="margin: auto; width: 80%;">
-  <tr>
-    <td style="max-width: 50mm; max-height: 30mm;">
-        <div style="border: 1px solid #ccc; border-radius: 5px; padding: 10px;">
-            <div style="font-weight: bold; padding-bottom:5px; font-size:11px;"><?=$nombre_producto;?></div>
-            <div style="font-weight: bold; text-align: center;">
-                <img src="barcode.php?text=<?=$code;?>&size=40&codetype=Code39&print=true"  style="max-width: 100%; max-height: 100%; display: inline-block;"/>
-            </div>
-            <div style="font-weight: bold;">P: <?=$precio;?></div>
-        </div>
-    </td>
-    <td style="max-width: 50mm; max-height: 30mm;">
-        <div style="border: 1px solid #ccc; border-radius: 5px; padding: 10px;">
-            <div style="font-weight: bold; padding-bottom:5px; font-size:11px;"><?=$nombre_producto;?></div>
-            <div style="font-weight: bold; text-align: center;">
-                <img src="barcode.php?text=<?=$code;?>&size=40&codetype=Code39&print=true"  style="max-width: 100%; max-height: 100%; display: inline-block;"/>
-            </div>
-            <div style="font-weight: bold;">P: <?=$precio;?></div>
-        </div>
-    </td>
-  </tr>
-</table>
-
-</div>
-</body>
-
-
-<script type="text/javascript">
- javascript:window.print();
-</script>
