@@ -47,7 +47,7 @@ $sql="select s.`fecha`,
 	s.`razon_social`, s.`observaciones`, 
 	(select t.`abreviatura` from `tipos_docs` t where t.`codigo`=s.cod_tipo_doc),
 	s.`nro_correlativo`, s.`monto_final`, s.cod_tipopago, (select tp.nombre_tipopago from tipos_pago tp where tp.cod_tipopago=s.cod_tipopago), 
-	s.hora_salida,s.cod_chofer,s.cod_salida_almacenes,s.salida_anulada,s.monto_cancelado_usd,s.tipo_cambio
+	s.hora_salida,s.cod_chofer,s.cod_salida_almacenes,s.salida_anulada,s.monto_cancelado_usd,s.tipo_cambio, s.monto_total, s.descuento
 	from `salida_almacenes` s where s.`cod_tiposalida`=1001 and
 	s.`cod_almacen` in (select a.`cod_almacen` from `almacenes` a where a.`cod_ciudad`='$rpt_territorio')
 	and CONCAT(s.fecha,' ',s.hora_salida) BETWEEN '$fecha_iniconsultahora' and '$fecha_finconsultahora' and s.`cod_chofer`='$rpt_funcionario' and s.cod_tipopago=1 ";
@@ -58,7 +58,7 @@ $sqlTarjetas="select s.`fecha`,
 	s.`razon_social`, s.`observaciones`, 
 	(select t.`abreviatura` from `tipos_docs` t where t.`codigo`=s.cod_tipo_doc),
 	s.`nro_correlativo`, s.`monto_final`, s.cod_tipopago, (select tp.nombre_tipopago from tipos_pago tp where tp.cod_tipopago=s.cod_tipopago), 
-	s.hora_salida,s.cod_chofer,s.cod_salida_almacenes,s.monto_cancelado_usd,s.tipo_cambio,
+	s.hora_salida,s.cod_chofer,s.cod_salida_almacenes,s.monto_cancelado_usd,s.tipo_cambio, s.monto_total, s.descuento,
  	0 as nombre_banco, (SELECT nro_tarjeta FROM tarjetas_salidas where cod_salida_almacen=s.cod_salida_almacenes limit 1)numero_tarjeta
 	from `salida_almacenes` s where s.`cod_tiposalida`=1001 and s.salida_anulada=0 and
 	s.`cod_almacen` in (select a.`cod_almacen` from `almacenes` a where a.`cod_ciudad`='$rpt_territorio')
@@ -81,15 +81,17 @@ $respTarjeta=mysqli_query($enlaceCon,$sqlTarjetas);
 
 
 echo "<br><table align='center' class='textomediano' width='100%'>
-<tr><th colspan='7'>Detalle de Ventas (EFECTIVO)</th></tr>
+<tr><th colspan='9'>Detalle de Ventas (EFECTIVO)</th></tr>
 <tr>
 <th>Fecha</th>
 <th>Cajero(a)</th>
-<th>Cliente</th>
 <th>Razon Social</th>
 <th>TipoPago</th>
 <th>Documento</th>
 <th>Monto [Bs]</th>
+<th>Desc. [Bs]</th>
+<th>Desc. [%]</th>
+<th>Monto Final[Bs]</th>
 </tr>";
 
 $totalVenta=0;
@@ -107,7 +109,16 @@ while($datos=mysqli_fetch_array($resp)){
 	$razonSocial=$datos[2];
 	$obsVenta=$datos[3];
 	$datosDoc=$datos[4]."-".$datos[5];
-	$montoVenta=$datos[6];
+	$montoVenta=$datos["monto_final"];
+	$montoVentaBruto=$datos["monto_total"];
+	$descuentoVentaCabecera=$datos["descuento"];
+	$descuentoCabPorcentaje=0;
+
+	if($descuentoVentaCabecera>0){
+		$descuentoCabPorcentaje=($descuentoVentaCabecera/$montoVentaBruto)*100;
+		$descuentoCabPorcentaje=round($descuentoCabPorcentaje);
+	}
+
 	//$montoVenta=number_format($montoVenta,1,'.','');
 	$totalVenta=$totalVenta+$montoVenta;	
 	
@@ -127,6 +138,8 @@ while($datos=mysqli_fetch_array($resp)){
 			$totalTarjeta+=$montoVenta;		
 		}
 	}
+	$montoVentaBrutoFormat=number_format($montoVentaBruto,2,".",",");
+	$descuentoVentaCabFormat=number_format($descuentoVentaCabecera,2,".",",");
 	$montoVentaFormat=number_format($montoVenta,2,".",",");
 	$totalEfectivoF=number_format($totalEfectivo,2,".",",");
 	$totalEfectivoFUSD=number_format($totalEfectivoUsd,2,".",",");
@@ -137,20 +150,24 @@ while($datos=mysqli_fetch_array($resp)){
 	  	echo "<tr>
 		<td>$fechaVenta $horaVenta</td>
 		<td>$personalCliente</td>
-		<td>$nombreCliente</td>
 		<td>$razonSocial</td>
 		<td>$nombreTipoPago</td>
 		<td>$datosDoc</td>
+		<td align='right'>$montoVentaBrutoFormat</td>
+		<td align='right'>$descuentoVentaCabFormat</td>
+		<td align='right'>$descuentoCabPorcentaje</td>
 		<td align='right'>$montoVentaFormat</td>
 		</tr>";
 	}else{
 		echo "<tr style='color:red'>
 		<td><strike>$fechaVenta $horaVenta</strike></td>
 		<td><strike>$personalCliente</strike></td>
-		<td><strike>$nombreCliente</strike></td>
 		<td><strike>$razonSocial</strike></td>
 		<td><strike>$nombreTipoPago</strike></td>
 		<td><strike>$datosDoc</strike></td>
+		<td align='right'>$montoVentaBrutoFormat</td>
+		<td align='right'>$descuentoVentaCabFormat</td>
+		<td align='right'>$descuentoCabPorcentaje</td>
 		<td align='right'>$montoVentaFormat</td>
 		</tr>";
 	} 
@@ -159,6 +176,8 @@ while($datos=mysqli_fetch_array($resp)){
 
 $totalVentaFormat=number_format($totalVenta,2,".",",");
 echo "<tr>
+	<td>&nbsp;</td>
+	<td>&nbsp;</td>
 	<td>&nbsp;</td>
 	<td>&nbsp;</td>
 	<td>&nbsp;</td>
@@ -173,18 +192,18 @@ echo "</table></br>";
 
 
 echo "<br><table align='center' class='textomediano' width='100%'>
-<tr><th colspan='9'>Detalle de Ventas Otros Tipos de Pago (Tarjeta D/C- Transferencia)</th></tr>
+<tr><th colspan='10'>Detalle de Ventas Otros Tipos de Pago (Tarjeta D/C- Transferencia)</th></tr>
 <tr>
 <th>Fecha</th>
 <th>Cajero(a)</th>
-<th>Cliente</th>
 <th>Razon Social</th>
 <th>TipoPago</th>
 <th>Documento</th>
-<th>Banco</th>
 <th>Tarjeta</th>
 <th>Monto [Bs]</th>
-</tr>";
+<th>Desc. [Bs]</th>
+<th>Desc. [%]</th>
+<th>Monto Final[Bs]</th></tr>";
 
 $totalTarjeta=0;
 while($datos=mysqli_fetch_array($respTarjeta)){
@@ -194,7 +213,14 @@ while($datos=mysqli_fetch_array($respTarjeta)){
 	$razonSocial=$datos[2];
 	$obsVenta=$datos[3];
 	$datosDoc=$datos[4]."-".$datos[5];
-	$montoVenta=$datos[6];
+	$montoVenta=$datos["monto_final"];
+	$montoVentaBruto=$datos["monto_total"];
+	$descuentoVentaCabecera=$datos["descuento"];
+
+	if($descuentoVentaCabecera>0){
+		$descuentoCabPorcentaje=($descuentoVentaCabecera/$montoVentaBruto)*100;
+		$descuentoCabPorcentaje=round($descuentoCabPorcentaje);
+	}
 	//$montoVenta=number_format($montoVenta,1,'.','');
 	$totalVenta=$totalVenta+$montoVenta;
 	$codTipoPago=$datos[7];
@@ -214,6 +240,8 @@ while($datos=mysqli_fetch_array($respTarjeta)){
 	if($bancoNombre==""){
 		$bancoNombre="OTRO";
 	}
+	$montoVentaBrutoFormat=number_format($montoVentaBruto,2,".",",");
+	$descuentoVentaCabFormat=number_format($descuentoVentaCabecera,2,".",",");
 	$montoVentaFormat=number_format($montoVenta,2,".",",");
 	$totalEfectivoF=number_format($totalEfectivo,2,".",",");
 	$totalTarjetaF=number_format($totalTarjeta,2,".",",");
@@ -221,18 +249,19 @@ while($datos=mysqli_fetch_array($respTarjeta)){
 	echo "<tr>
 	<td>$fechaVenta $horaVenta</td>
 	<td>$personalCliente</td>
-	<td>$nombreCliente</td>
 	<td>$razonSocial</td>
 	<td>$nombreTipoPago</td>
 	<td>$datosDoc</td>
-	<td>$bancoNombre</td>
-	<td align='right'>$tarjetaNumero</td>
-	<td align='right'>$montoVentaFormat</td>
-	</tr>";
+	<td align='right'><small><small><small>$tarjetaNumero</small></small></small></td>
+	<td align='right'>$montoVentaBrutoFormat</td>
+	<td align='right'>$descuentoVentaCabFormat</td>
+		<td align='right'>$descuentoCabPorcentaje</td>
+	<td align='right'>$montoVentaFormat</td>	</tr>";
 }
 
 $totalVentaFormat=number_format($totalVenta,2,".",",");
 echo "<tr>
+	<td>&nbsp;</td>
 	<td>&nbsp;</td>
 	<td>&nbsp;</td>
 	<td>&nbsp;</td>

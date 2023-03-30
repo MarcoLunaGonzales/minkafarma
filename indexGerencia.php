@@ -124,6 +124,12 @@ include("datosUsuario.php");
 					
 				</ul>	
 			</li>	
+			<li><span>Adicionales</span>
+				<ul>
+					<li><a href="campanias/list.php" target="contenedorPrincipal">Campañas</a></li>					
+				</ul>	
+			</li>	
+
 			<li><a href="registrar_ingresomateriales.php" target="contenedorPrincipal">Registrar Ingreso **</a></li>
 			<li><a href="registrar_salidaventas.php" target="_blank">Vender / Facturar **</a></li>
 			<li><a href="rptOpArqueoDiario.php?variableAdmin=1" target="contenedorPrincipal">Cierre de Caja</a></li>

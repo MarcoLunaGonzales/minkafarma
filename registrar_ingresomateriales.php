@@ -612,7 +612,7 @@ echo "<script type='text/javascript' language='javascript'  src='dlcalendar.js'>
 			</td>
 			</tr>
 			<tr>
-			<td><input type="button" class="boton2peque" onclick="javascript:masMultiple(this.form);" value="Incluir Productos Seleccionados">
+			<td colspan="3"><input type="button" class="boton2peque" onclick="javascript:masMultiple(this.form);" value="Incluir Productos Seleccionados">
 			</td>
 			</tr>
 			

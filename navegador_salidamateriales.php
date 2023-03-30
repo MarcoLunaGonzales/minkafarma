@@ -373,9 +373,10 @@ while ($dat = mysqli_fetch_array($resp)) {
         $color_fondo = "#ff8080";
         $chk = "&nbsp;";
     }
-	if ($anio_salida != $globalGestionActual) {
+	
+    /*if ($anio_salida != $globalGestionActual) {
         $chk = "";
-    }
+    }*/
 	
     echo "<input type='hidden' name='estado_preparado' value='$estado_preparado'>";
     //echo "<tr><td><input type='checkbox' name='codigo' value='$codigo'></td><td align='center'>$fecha_salida_mostrar</td><td>$nombre_tiposalida</td><td>$nombre_ciudad</td><td>$nombre_almacen</td><td>$nombre_funcionario</td><td>&nbsp;$obs_salida</td><td>$txt_detalle</td></tr>";

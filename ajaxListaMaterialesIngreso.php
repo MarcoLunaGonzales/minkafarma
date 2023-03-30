@@ -3,7 +3,7 @@
 <body>
 <table align='center' class="texto">
 <tr>
-<th><input type='checkbox' id='selecTodo'  onchange=" marcarDesmarcar(form1,this)"></th><th>Linea</th><th>Producto</th><th>Stock</th></tr>
+<th><input type='checkbox' id='selecTodo'  onchange="marcarDesmarcar(form1,this)"></th><th>Linea</th><th>Producto</th><th>Stock</th></tr>
 <?php
 require("conexionmysqli2.inc");
 require("funciones.php");

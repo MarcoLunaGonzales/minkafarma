@@ -1,6 +1,7 @@
 ﻿<?php
 
 require_once 'config.php';
+require_once 'estilos.inc';
 
 set_time_limit(0);
 error_reporting(0);

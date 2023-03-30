@@ -21,7 +21,7 @@ else
 $sql="insert into funcionarios values($codigo_funcionario,'$cargo','$paterno','$materno','$nombres','$fecha_real',
 '$direccion','$telefono','$celular','$email','$agencia',1,'')";
 $resp=mysqli_query($enlaceCon,$sql);
-echo "<script language='Javascript'>
+echo "<script language='Javascript'> 
 			alert('Los datos se registraron satisfactoriamente');
 			location.href='navegador_funcionarios.php?cod_ciudad=$agencia';
 		</script>

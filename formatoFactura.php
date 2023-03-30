@@ -10,6 +10,11 @@ include('phpqrcode/qrlib.php');
 //header("Content-Type: text/html; charset=iso-8859-1 ");
 mysqli_query($enlaceCon,"SET NAMES utf8");
 
+ error_reporting(E_ALL);
+ ini_set('display_errors', '1');
+
+
+
 $codigoVenta=$_GET["codVenta"];
 $cod_ciudad=$_COOKIE["global_agencia"];
 
