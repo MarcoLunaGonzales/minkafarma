@@ -1,82 +1,76 @@
+<script type="text/javascript">
+	function printDiv(nombreDiv) {
+     var contenido= document.getElementById(nombreDiv).innerHTML;
+     var contenidoOriginal= document.body.innerHTML;
 
+     document.body.innerHTML = contenido;
+
+     window.print();
+
+     document.body.innerHTML = contenidoOriginal;
+}
+</script>
+
+<style type="text/css">
+	body {color:#000 }
+	/*@media print {
+      body {
+        color:#C2C0C0 !important;
+      }
+    }*/
+</style>
 <?php
+$estilosVenta=1;
+require('conexionmysqli.inc');
+// require('funcionesBar.php');
 
-// require("conexionmysqli.php");
-require('assets/fpdf/fpdf.php');
-header('Content-Type: text/html; charset=utf-8');
+error_reporting(E_ALL);
+ini_set('display_errors', '1');
 
-$pdf = new FPDF($orientation='P',$unit='mm', 'A4');
-$pdf->AddPage();
+// Modigo de Material
+$cod_material = $_GET['cod_material'];
 
-// Establecemos el tamaño de las columnas y la altura de las celdas
-$col_width = $pdf->GetPageWidth()/2;
+$sqlConf="SELECT ma.codigo_material, ma.descripcion_material, ROUND(p.precio, 2)
+            FROM material_apoyo ma 
+            LEFT JOIN precios p ON p.codigo_material = ma.codigo_material
+            WHERE ma.codigo_material = '$cod_material'
+            LIMIT 1";
+$respConf=mysqli_query($enlaceCon,$sqlConf);
 
-// Definimos las variables con los datos de ejemplo
-$nombre_producto = 'Mezcladora lava platos extralabable xxxxxx 35090';
-$codigo_general = 'ABCD-5678';
-$precio = 'P:8250';
+$nombre_producto = mysqli_result($respConf,0,1);
+$code            = mysqli_result($respConf,0,0);
+$precio          = mysqli_result($respConf,0,2);
 
-// Definimos los márgenes y las medidas de los cards
-$margen_x = 10;
-$margen_y = 10;
-$card_width = 50;
-$card_height = 30;
-$radio_borde = 3;
-
-// Dibujamos la primera card
-$textypos = 5;
-$pdf->RoundedRect($margen_x, $margen_y, $card_width, $card_height, $radio_borde);
-// Dibujamos la segunda card
-$pdf->RoundedRect($margen_x + $card_width + $margen_x, $margen_y, $card_width, $card_height, $radio_borde);
-
-
-// margen_adicional
-$ma = 10;
-
-// TEXTO PRIMERA COLUMNA
-
-/*****************************************************************************/
-$textypos = 5;
-$pdf->SetFont('Arial','B',9);
-$pdf->setY(12);$pdf->setX(0 + $ma);
-$pdf->multiCell(55, 3, utf8_decode($nombre_producto), 0, 'B', false);
-$pdf->Ln();
-
-$pdf->SetFont('Arial','',9);
-$y = $pdf->getY();
-$pdf->setY($y + 8);
-$pdf->Cell(15, $textypos,utf8_decode($codigo_general));
-$pdf->Ln();
-
-$pdf->SetFont('Arial','',10);
-$pdf->Cell(15, $textypos,utf8_decode($precio));
-$pdf->Ln();
-/*****************************************************************************/
-/*****************************************************************************/
-$pos2 = 60;
-$pdf->SetFont('Arial','B',9);
-$pdf->setY(12);$pdf->setX(0 + $ma + $pos2);
-$pdf->multiCell(55, 3, utf8_decode($nombre_producto), 0, 'B', false);
-$pdf->Ln();
-
-$pdf->SetFont('Arial','',9);
-$y = $pdf->getY();
-$pdf->setY($y + 8);
-$pdf->setX(0 + $ma + $pos2);
-$pdf->Cell(15, $textypos,utf8_decode($codigo_general));
-$pdf->Ln();
-
-$pdf->SetFont('Arial','',9);
-$pdf->setX(0 + $ma + $pos2);
-$pdf->Cell(15, $textypos,utf8_decode($precio));
-$pdf->Ln();
-/*****************************************************************************/
-
-
-// $textypos = 5;
-// $pdf->setY(12);$pdf->setX(0 + $ma);
-// $pdf->Cell(5,$textypos,utf8_decode($nombre_producto));
-
-// $pdf->Output('F', 'mi_pdf_con_codigo_de_barras.pdf'); // Guardar el PDF en el servidor con el nombre "mi_pdf_con_codigo_de_barras.pdf"
-$pdf->Output('I', 'mi_pdf_con_codigo_de_barras.pdf'); // Mostrar el PDF en el navegador
 ?>
+<body>
+
+<table style="margin: auto; width: 80%;">
+  <tr>
+    <td style="max-width: 50mm; max-height: 30mm;">
+        <div style="border: 1px solid #ccc; border-radius: 5px; padding: 10px;">
+            <div style="font-weight: bold; padding-bottom:5px; font-size:11px;"><?=$nombre_producto;?></div>
+            <div style="font-weight: bold; text-align: center;">
+                <img src="barcode.php?text=<?=$code;?>&size=40&codetype=Code39&print=true"  style="max-width: 100%; max-height: 100%; display: inline-block;"/>
+            </div>
+            <div style="font-weight: bold;">P: <?=$precio;?></div>
+        </div>
+    </td>
+    <td style="max-width: 50mm; max-height: 30mm;">
+        <div style="border: 1px solid #ccc; border-radius: 5px; padding: 10px;">
+            <div style="font-weight: bold; padding-bottom:5px; font-size:11px;"><?=$nombre_producto;?></div>
+            <div style="font-weight: bold; text-align: center;">
+                <img src="barcode.php?text=<?=$code;?>&size=40&codetype=Code39&print=true"  style="max-width: 100%; max-height: 100%; display: inline-block;"/>
+            </div>
+            <div style="font-weight: bold;">P: <?=$precio;?></div>
+        </div>
+    </td>
+  </tr>
+</table>
+
+</div>
+</body>
+
+
+<script type="text/javascript">
+ javascript:window.print();
+</script>

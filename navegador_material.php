@@ -38,6 +38,10 @@ require('funciones.php');
 				location.href="eliminar_material_apoyo.php?datos="+codProducto;
 			}
 		}
+
+		function codigoBarraProducto(codMaterial){
+			location.href="ticketMaterial.php?cod_material="+codMaterial;
+		}
 		/*function eliminar_nav(f)
 		{
 			var i;
@@ -53,7 +57,7 @@ require('funciones.php');
 				}
 			}
 			if(j==0)
-			{	alert('Debe seleccionar al menos un material de apoyo para proceder a su eliminación.');
+			{	alert('Debe seleccionar al menos un material de apoyo para proceder a su eliminaciï¿½n.');
 			}
 			else
 			{
@@ -226,6 +230,7 @@ function enviar_buscador(){
 		<td align='center'>
 		<a href='editar_material_apoyo.php?cod_material=$codigo&pagina_retorno=0'><img src='imagenes/edit.png' width='25'></a>
 		<a href='javascript:deleteProducto($codigo,\"$nombreProd\");'><img src='imagenes/eliminarproceso.gif' width='25'></a>
+		<a href='ticketMaterial.php?cod_material=$codigo' target='_blank'><img src='imagenes/icono-barra.png' width='25'></a>
 		</td>
 		</tr>";
 		$indice_tabla++;
