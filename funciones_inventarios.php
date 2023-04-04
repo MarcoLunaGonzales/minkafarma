@@ -85,4 +85,18 @@ function insertar_detalleSalidaVenta($enlaceCon,$cod_salida, $cod_almacen, $cod_
 	return($banderaError);
 }
 
+
+function insertar_detalleCotizacion($enlaceCon,$cod_salida, $cod_almacen, $cod_material, $cantidad, $precio, $descuento, $montoparcial, $banderaStock, $orden){
+	$cantidadPivote=$cantidad;	
+	$banderaError=1;	
+	$sqlInsert="insert into cotizaciones_detalle (cod_salida_almacen, cod_material, cantidad_unitaria, lote, fecha_vencimiento, precio_unitario,
+	descuento_unitario, monto_unitario, orden_detalle) values ('$cod_salida', '$cod_material', '$cantidad', '0', '0000-00-00',
+	'$precio','$descuento','$montoparcial','$orden')";	
+	$respInsert=mysqli_query($enlaceCon,$sqlInsert);
+	if($respInsert!=1){
+		$banderaError=2;
+	}
+	return($banderaError);
+}
+
 ?>

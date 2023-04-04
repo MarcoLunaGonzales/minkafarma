@@ -457,6 +457,17 @@ function numeroCorrelativo($enlaceCon,$tipoDoc){
 	}
 }
 
+
+function numeroCorrelativoCotizacion($enlaceCon,$tipoDoc){
+	$sql="select IFNULL(max(nro_correlativo)+1,1) from cotizaciones where cod_tipo_doc='1' and cod_almacen='$globalAlmacen'";
+	$resp=mysqli_query($enlaceCon,$sql);
+	while($dat=mysqli_fetch_array($resp)){
+		$codigo=$dat[0];
+		$vectorCodigo = array($codigo,$banderaErrorFacturacion,0);
+		return $vectorCodigo;
+	}
+}
+
 function unidadMedida($enlaceCon,$codigo){
 	
 	$consulta="select u.abreviatura from material_apoyo m, unidades_medida u

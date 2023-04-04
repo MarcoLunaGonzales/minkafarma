@@ -127,6 +127,7 @@ include("datosUsuario.php");
 			<li><span>Adicionales</span>
 				<ul>
 					<li><a href="campanias/list.php" target="contenedorPrincipal">Campañas</a></li>					
+					<li><a href="navegadorCotizaciones.php" target="contenedorPrincipal">Cotizaciones</a></li>					
 				</ul>	
 			</li>	
 

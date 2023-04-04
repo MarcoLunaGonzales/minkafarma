@@ -14,12 +14,8 @@ require("estilos_almacenes.inc");
         <title>Busqueda</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link href="lib/externos/jquery/jquery-ui/completo/jquery-ui-1.8.9.custom.css" rel="stylesheet" type="text/css"/>
-        <link href="lib/css/paneles.css" rel="stylesheet" type="text/css"/>
-        
-        <script src="//code.jquery.com/jquery-1.11.0.min.js"></script> 
-        <script type="text/javascript" src="js/bootstrap.js"></script>
-        
-        <!--script type="text/javascript" src="lib/externos/jquery/jquery-1.4.4.min.js"></script>
+        <link href="lib/css/paneles.css" rel="stylesheet" type="text/css"/>        
+        <script type="text/javascript" src="lib/externos/jquery/jquery-1.4.4.min.js"></script>
         <script type="text/javascript" src="lib/externos/jquery/jquery-ui/minimo/jquery.ui.core.min.js"></script>
         <script type="text/javascript" src="lib/externos/jquery/jquery-ui/minimo/jquery.ui.widget.min.js"></script>
         <script type="text/javascript" src="lib/externos/jquery/jquery-ui/minimo/jquery.ui.button.min.js"></script>
@@ -28,7 +24,7 @@ require("estilos_almacenes.inc");
         <script type="text/javascript" src="lib/externos/jquery/jquery-ui/minimo/jquery.ui.position.min.js"></script>
         <script type="text/javascript" src="lib/externos/jquery/jquery-ui/minimo/jquery.ui.resizable.min.js"></script>
         <script type="text/javascript" src="lib/externos/jquery/jquery-ui/minimo/jquery.ui.dialog.min.js"></script>
-        <script type="text/javascript" src="lib/externos/jquery/jquery-ui/minimo/jquery.ui.datepicker.min.js"></script-->
+        <script type="text/javascript" src="lib/externos/jquery/jquery-ui/minimo/jquery.ui.datepicker.min.js"></script>
         <script type="text/javascript" src="lib/js/xlibPrototipo-v0.1.js"></script>
         <script type='text/javascript' language='javascript'>
 
@@ -352,23 +348,11 @@ echo "<input type='hidden' name='fecha_sistema' value='$fecha_sistema'>";
 echo "<input type='hidden' name='codigo_salida_cambio' name='codigo_salida_cambio' value=''>";
 
 
-echo "<h1>Listado de Ventas</h1>";
-echo "<table class='texto' cellspacing='0' width='90%'>
-<tr><th>Leyenda:</th>
-<th>Ventas Registradas</th><td bgcolor='#f9e79f' width='5%'></td>
-<th>Ventas Entregadas</th><td bgcolor='#1abc9c' width='5%'></td>
-<th>Ventas Anuladas</th><td bgcolor='#e74c3c' width='5%'></td>
-<td bgcolor='' width='10%'>&nbsp;</td></tr></table><br>";
-//
-echo "<div class='divBotones'>
-        <input type='button' value='Registrar' name='adicionar' class='boton' onclick='enviar_nav()'>
-        <input type='button' value='Buscar' class='boton' onclick='ShowBuscar()'></td>      
-        <input type='button' value='Anular' class='boton2' onclick='anular_salida(this.form)'>
-    </div>";
+echo "<h1>Listado de Cotizaciones</h1>";
         
 echo "<center><table class='texto'>";
-echo "<tr><th>&nbsp;</th><th>Nro. Doc</th><th>Fecha/hora<br>Registro Salida</th><th>Vendedor</th><th>TipoPago</th>
-    <th>Razon Social</th><th>NIT</th><th>Observaciones</th><th>Imprimir</th></tr>";
+echo "<tr><th>&nbsp;</th><th>Nro. Doc</th><th>Fecha/hora<br>Cotizacion</th><th>Vendedor</th><th>TipoPago</th>
+    <th>Nombre Cotizacion</th><th>Observaciones</th><th>Imprimir</th></tr>";
     
 echo "<input type='hidden' name='global_almacen' value='$global_almacen' id='global_almacen'>";
 
@@ -379,9 +363,8 @@ $consulta = "
     (select c.nombre_cliente from clientes c where c.cod_cliente = s.cod_cliente), s.cod_tipo_doc, razon_social, nit,
     (select concat(f.paterno,' ',f.nombres) from funcionarios f where f.codigo_funcionario=s.cod_chofer)as vendedor,
     (select t.nombre_tipopago from tipos_pago t where t.cod_tipopago=s.cod_tipopago)as tipopago
-    FROM salida_almacenes s, tipos_salida ts 
-    WHERE s.cod_tiposalida = ts.cod_tiposalida AND s.cod_almacen = '$global_almacen' and s.cod_tiposalida=1001 and 
-    s.cod_tipo_doc not in (1,4) ";
+    FROM cotizaciones s, tipos_salida ts 
+    WHERE s.cod_tiposalida = ts.cod_tiposalida AND s.cod_almacen = '$global_almacen' and s.cod_tiposalida=1001 ";
 
 if($nroCorrelativoBusqueda!="")
 {   $consulta = $consulta."AND s.nro_correlativo='$nroCorrelativoBusqueda' ";
@@ -398,6 +381,7 @@ if($fechaIniBusqueda!="" && $fechaFinBusqueda!="")
 $consulta = $consulta."ORDER BY s.fecha desc, s.hora_salida desc limit 0, 100 ";
 
 //echo $consulta;
+
 $resp = mysqli_query($enlaceCon,$consulta);
     
     
@@ -438,166 +422,21 @@ while ($dat = mysqli_fetch_array($resp)) {
     //echo "<tr><td><input type='checkbox' name='codigo' value='$codigo'></td><td align='center'>$fecha_salida_mostrar</td><td>$nombre_tiposalida</td><td>$nombre_ciudad</td><td>$nombre_almacen</td><td>$nombre_funcionario</td><td>&nbsp;$obs_salida</td><td>$txt_detalle</td></tr>";
     echo "<tr>";
     echo "<td align='center'>&nbsp;$chk</td>";
-    echo "<td align='center'>$nombreTipoDoc-$nro_correlativo</td>";
+    echo "<td align='center'>COT-$nro_correlativo</td>";
     echo "<td align='center'>$fecha_salida_mostrar $hora_salida</td>";
     echo "<td>$vendedor</td>";
     echo "<td>$tipoPago</td>";
-    echo "<td>&nbsp;$razonSocial</td><td>&nbsp;$nitCli</td><td>&nbsp;$obs_salida</td>";
+    echo "<td>&nbsp;$razonSocial</td><td>&nbsp;$obs_salida</td>";
     $url_notaremision = "navegador_detallesalidamuestras.php?codigo_salida=$codigo";    
     
-    $htmlTipoPago="<a href='#' title='Cambiar Tipo de Pago' onclick='cambiarTipoPago($codigo)'><img src='imagenes/tarjetacredito2.png' width='60px'></a>";
-
-    /*echo "<td bgcolor='$color_fondo'><a href='javascript:llamar_preparado(this.form, $estado_preparado, $codigo)'>
-        <img src='imagenes/icon_detail.png' width='30' border='0' title='Detalle'></a></td>";
-    */
-    if($codTipoDoc==1){
-        echo "<td  bgcolor='$color_fondo'><a href='formatoFactura.php?codVenta=$codigo' target='_BLANK'><img src='imagenes/factura1.jpg' width='30' border='0' title='Factura Formato Pequeño'></a></td>";
-        echo "<td  bgcolor='$color_fondo'><a href='notaSalida.php?codVenta=$codigo' target='_BLANK'><img src='imagenes/detalle.png' width='30' border='0' title='Factura Formato Pequeño'></a></td>";
-    }
-    else{
-        echo "<td  bgcolor='$color_fondo'><a href='formatoNotaRemision.php?codVenta=$codigo' target='_BLANK'><img src='imagenes/factura1.jpg' width='30' border='0' title='Factura Formato Pequeño'></a>
-        $htmlTipoPago
+       echo "<td  bgcolor='$color_fondo'><a href='formatoCotizacionOnLine.php?codigo=$codigo' target='_BLANK'><img src='imagenes/factura1.jpg' width='30' border='0' title='Factura Formato Pequeño'></a>
         </td>";
-        //echo "<td  bgcolor='$color_fondo'><a href='notaSalida.php?codVenta=$codigo' target='_BLANK'><img src='imagenes/detalle.png' width='30' border='0' title='Factura Formato Pequeño'></a></td>";
-    }
-    
-    /*echo "<td  bgcolor='$color_fondo'><a href='notaSalida.php?codVenta=$codigo' target='_BLANK'><img src='imagenes/factura1.jpg' width='30' border='0' title='Factura Formato Grande'></a></td>";*/
-    
     echo "</tr>";
 }
 echo "</table></center><br>";
-echo "</div>";
-
-echo "<div class='divBotones'>
-        <input type='button' value='Registrar' name='adicionar' class='boton' onclick='enviar_nav()'>
-        <input type='button' value='Buscar' class='boton' onclick='ShowBuscar()'></td>      
-        <input type='button' value='Anular' class='boton2' onclick='anular_salida(this.form)'>
-    </div>";
-    
+echo "</div>";    
 echo "</form>";
 
 ?>
-
-<div id="divRecuadroExt" style="background-color:#666; position:absolute; width:800px; height: 450px; top:30px; left:150px; visibility: hidden; opacity: .70; -moz-opacity: .70; filter:alpha(opacity=70); -webkit-border-radius: 20px; -moz-border-radius: 20px; z-index:2;">
-</div>
-<div id="divProfileData" style="background-color:#FFF; width:750px; height:400px; position:absolute; top:50px; left:170px; -webkit-border-radius: 20px;     -moz-border-radius: 20px; visibility: hidden; z-index:2;">
-    <div id="divProfileDetail" style="visibility:hidden; text-align:center">
-        <h2 align='center' class='texto'>Buscar Ventas</h2>
-        <table align='center' class='texto'>
-            <tr>
-                <td>Fecha Ini(dd/mm/aaaa)</td>
-                <td>
-                <input type='date' name='fechaIniBusqueda' id="fechaIniBusqueda" class='texto'>
-                </td>
-            </tr>
-            <tr>
-                <td>Fecha Fin(dd/mm/aaaa)</td>
-                <td>
-                <input type='date' name='fechaFinBusqueda' id="fechaFinBusqueda" class='texto'>
-                </td>
-            </tr>
-            <tr>
-                <td>Nro. de Documento</td>
-                <td>
-                <input type='text' name='nroCorrelativoBusqueda' id="nroCorrelativoBusqueda" class='texto'>
-                </td>
-            </tr>           
-            <tr>
-                <td>Vendedor:</td>
-                <td>
-                    <select name="vendedorBusqueda" class="texto" id="vendedorBusqueda">
-                        <option value="">Todos</option>
-                    <?php
-                        $sqlClientes="SELECT DISTINCT c.codigo_funcionario,CONCAT(c.paterno,' ',c.materno,' ',c.nombres) as personal from salida_almacenes s join funcionarios c on c.codigo_funcionario=s.cod_chofer order by 2;";
-                        $respClientes=mysqli_query($enlaceCon,$sqlClientes);
-                        while($datClientes=mysqli_fetch_array($respClientes)){
-                            $codCliBusqueda=$datClientes[0];
-                            $nombreCliBusqueda=$datClientes[1];
-                    ?>
-                            <option value="<?php echo $codCliBusqueda;?>"><?php echo $nombreCliBusqueda;?></option>
-                    <?php
-                        }
-                    ?>
-                    </select>
-                </td>
-            </tr>           
-            <tr>
-                <td>Tipo Pago:</td>
-                <td>
-                    <select name="tipoVentaBusqueda" class="texto" id="tipoVentaBusqueda">
-                        <option value="">Todos</option>
-                    <?php
-                        $sqlClientes="select c.cod_tipopago, c.nombre_tipopago from tipos_pago c order by 2";
-                        $respClientes=mysqli_query($enlaceCon,$sqlClientes);
-                        while($datClientes=mysqli_fetch_array($respClientes)){
-                            $codCliBusqueda=$datClientes[0];
-                            $nombreCliBusqueda=$datClientes[1];
-                    ?>
-                            <option value="<?php echo $codCliBusqueda;?>"><?php echo $nombreCliBusqueda;?></option>
-                    <?php
-                        }
-                    ?>
-                    </select>
-                </td>
-            </tr>
-        </table>    
-        <center>
-            <input type='button' class="boton" value='Buscar' onClick="ajaxBuscarVentas(this.form)">
-            <input type='button' class="boton2" value='Cancelar' onClick="HiddenBuscar()">
-            
-        </center>
-    </div>
-</div>
-
-        <script type='text/javascript' language='javascript'>
-        </script>
-        <div id="pnldlgfrm"></div>
-        <div id="pnldlgSN"></div>
-        <div id="pnldlgAC"></div>
-        <div id="pnldlgA1"></div>
-        <div id="pnldlgA2"></div>
-        <div id="pnldlgA3"></div>
-        <div id="pnldlgArespSvr"></div>
-        <div id="pnldlggeneral"></div>
-        <div id="pnldlgenespera"></div>
-
-<!-- small modal -->
-<div class="modal fade modal-primary" id="modalCambioTipoPago" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-md">
-    <div class="modal-content card">
-               <div class="card-header card-header-primary card-header-icon">
-                  <div class="card-icon" style="background: #96079D;color:#fff;">
-                    <i class="material-icons">credit_card</i>
-                  </div>
-                  <h4 class="card-title text-dark font-weight-bold">Cambiar Tipo de Pago <small id="titulo_tarjeta"></small></h4>
-                  <button type="button" class="btn btn-danger btn-sm btn-fab float-right" data-dismiss="modal" aria-hidden="true" style="position:absolute;top:0px;right:0;">
-                    <i class="material-icons">close</i>
-                  </button>
-                </div>
-                <div class="card-body">
-                    <input type="hidden" id="codigo_salida_tarjeta">
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="row">
-              <label class="col-sm-3 col-form-label">Monto <br>Tarjeta</label>
-              <div class="col-sm-9">
-                <div class="form-group">
-                  <input class="form-control" type="number" style="background: #A5F9EA;" id="monto_tarjeta" name="monto_tarjeta" value=""/>
-                </div>
-              </div>
-            </div>                
-        </div>
-    </div>                
-
-                </div>
-                <div class="card-footer">
-                    <a href="#" onclick="guardarTarjetaVenta();return false;" class="btn btn-default btn-sm">GUARDAR</a>
-                </div>
-      </div>  
-    </div>
-  </div>
-<!--    end small modal -->
-
-
     </body>
 </html>
