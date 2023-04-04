@@ -178,7 +178,7 @@ $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
         }
 
 		//hacemos la consulta para ingresos        
-		$sql_ingresos="select i.nro_correlativo, id.cantidad_unitaria, i.observaciones, ti.nombre_tipoingreso,id.cantidad_unitaria,i.created_by,i.cod_ingreso_almacen,(SELECT cod_almacen FROM salida_almacenes where cod_salida_almacenes=i.cod_salida_almacen)almacen_origen,i.nro_factura_proveedor,(SELECT nro_correlativo FROM salida_almacenes where cod_salida_almacenes=i.cod_salida_almacen)nro_origen,i.nota_entrega, i.nro_factura_proveedor as nro_factura
+		$sql_ingresos="select i.nro_correlativo, id.cantidad_unitaria, i.observaciones, ti.nombre_tipoingreso,id.cantidad_unitaria,i.created_by,i.cod_ingreso_almacen,(SELECT cod_almacen FROM salida_almacenes where cod_salida_almacenes=i.cod_salida_almacen)almacen_origen,i.nro_factura_proveedor,(SELECT nro_correlativo FROM salida_almacenes where cod_salida_almacenes=i.cod_salida_almacen)nro_origen,i.nota_entrega, i.nro_factura_proveedor as nro_factura, i.hora_ingreso
 		from ingreso_almacenes i, ingreso_detalle_almacenes id, tipos_ingreso ti
 		where i.cod_tipoingreso=ti.cod_tipoingreso and i.cod_ingreso_almacen=id.cod_ingreso_almacen and i.cod_almacen='$rpt_almacen' and
 		i.ingreso_anulado=0 and id.cod_material='$rpt_item' and i.fecha='$fecha_consulta'";
@@ -194,6 +194,8 @@ $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
 			$nro_facturaProveedor=$dat_ingresos['nro_factura'];
 			$nro_origenSalida=$dat_ingresos['nro_origen'];
 			$cod_ingreso_al=$dat_ingresos['cod_ingreso_almacen'];
+			$horaIngreso=$dat_ingresos['hora_ingreso'];
+
 			$suma_ingresos=$suma_ingresos+$cantidad_ingreso;
 			$cantidad_kardex=$cantidad_kardex+$cantidad_ingreso;            
 			$sqlResponsable="select CONCAT(SUBSTRING_INDEX(nombres,' ', 1),' ',SUBSTR(paterno, 1,1),'.') from funcionarios where codigo_funcionario='".$dat_ingresos['created_by']."'";
@@ -240,7 +242,7 @@ $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
 
 
 		  
-			echo "<tr><td class='bg-plomoclaro'><b>$cod_ingreso_al</b></td><td class='bg-plomoclaro'>Ingreso</td><td align='left' class='bg-plomoclaro'>$nro_ingreso</td><td align='center' class='bg-plomoclaro'>$fecha_consulta_format</td>
+			echo "<tr><td class='bg-plomoclaro'><b>$cod_ingreso_al</b></td><td class='bg-plomoclaro'>Ingreso</td><td align='left' class='bg-plomoclaro'>$nro_ingreso</td><td align='center' class='bg-plomoclaro'>$fecha_consulta_format<br>$horaIngreso</td>
 			<td class='bg-plomoclaro'>$nro_facturaProveedor</td>
 			<td>&nbsp;$obs_ingreso</td>
 			<td align='right'>$cantidad_ingresoCajaF</td>
@@ -254,7 +256,7 @@ $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
 			<td align='left' class='bg-plomoclaro'>$nombre_responsable</td></tr>";
 		}
 		//hacemos la consulta para salidas
-		$sql_salidas="select s.nro_correlativo, sd.cantidad_unitaria, ts.nombre_tiposalida, s.observaciones, s.territorio_destino, s.cod_salida_almacenes,sd.cantidad_unitaria,s.created_by,s.cod_tipo_doc,s.razon_social,s.almacen_destino, s.cod_chofer
+		$sql_salidas="select s.nro_correlativo, sd.cantidad_unitaria, ts.nombre_tiposalida, s.observaciones, s.territorio_destino, s.cod_salida_almacenes,sd.cantidad_unitaria,s.created_by,s.cod_tipo_doc,s.razon_social,s.almacen_destino, s.cod_chofer, s.hora_salida
 		from salida_almacenes s, salida_detalle_almacenes sd, tipos_salida ts
 		where s.cod_tiposalida=ts.cod_tiposalida and s.cod_salida_almacenes=sd.cod_salida_almacen and s.cod_almacen='$rpt_almacen' and
 		s.salida_anulada=0 and sd.cod_material='$rpt_item' and s.fecha='$fecha_consulta'";
@@ -270,6 +272,7 @@ $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
       $razon_social=$dat_salidas['razon_social'];            
 			$territorio_destino=$dat_salidas['almacen_destino'];
 			$codPersonalSalida=$dat_salidas['cod_chofer'];
+			$horaSalida=$dat_salidas['hora_salida'];
 
           $sqlResponsable="select CONCAT(SUBSTRING_INDEX(nombres,' ', 1),' ',SUBSTR(paterno, 1, 1),'.') from funcionarios where codigo_funcionario='".$codPersonalSalida."'";
 	        $respResponsable=mysqli_query($enlaceCon,$sqlResponsable);
@@ -321,7 +324,7 @@ $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
 			if(!($nro_ingreso_destino==0||$nro_ingreso_destino=="")){
 		  	$nro_ingreso_destino="I-".$nro_ingreso_destino;	
 		  }
-			echo "<tr><td class='bg-plomoclaro'><b>$cod_salida</b></td><td class='bg-plomoclaro'>Salida</td><td align='left' class='bg-plomoclaro'>$nro_salida</td><td align='center' class='bg-plomoclaro'>$fecha_consulta_format</td>
+			echo "<tr><td class='bg-plomoclaro'><b>$cod_salida</b></td><td class='bg-plomoclaro'>Salida</td><td align='left' class='bg-plomoclaro'>$nro_salida</td><td align='center' class='bg-plomoclaro'>$fecha_consulta_format<br>$horaSalida</td>
 			   <td class='bg-plomoclaro'>$nro_facturaProveedor</td>
 			   <td>&nbsp;$obs_salida</td>
 			   <td align='right'>0</td>

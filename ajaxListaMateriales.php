@@ -2,7 +2,7 @@
 <body>
 <table align='center' class="texto">
 <tr>
-<th>Codigo</th><th>Producto</th><th>Linea</th><th>Principio Activo</th><th>Accion Terapeutica</th><th>Stock</th><th>Precio</th></tr>
+<th><input type='checkbox' id='selecTodo'  onchange="marcarDesmarcar(form1,this)" ></th><th>Codigo</th><th>Producto</th><th>Linea</th><th>Principio Activo</th><th>Accion Terapeutica</th><th>Stock</th><th>Precio</th></tr>
 <?php
 require("conexionmysqli.php");
 require("funciones.php");
@@ -39,7 +39,7 @@ $datConf=mysqli_fetch_array($respConf);
 $tipoSalidaVencimiento=$datConf[0];//$tipoSalidaVencimiento=mysql_result($respConf,0,0);
 
 	$sql="select m.codigo_material, m.descripcion_material,
-	(select p.nombre_proveedor
+	(select concat(p.nombre_proveedor,'-',pl.nombre_linea_proveedor)as nombre_proveedor
 	from proveedores p, proveedores_lineas pl where p.cod_proveedor=pl.cod_proveedor and pl.cod_linea_proveedor=m.cod_linea_proveedor), m.principio_activo, m.accion_terapeutica
 	from material_apoyo m where estado=1 and m.codigo_material not in ($itemsNoUtilizar)";
 	if($codigoMat!=""){
@@ -74,6 +74,7 @@ $tipoSalidaVencimiento=$datConf[0];//$tipoSalidaVencimiento=mysql_result($respCo
 
 	$numFilas=mysqli_num_rows($resp);
 	if($numFilas>0){
+		$cont=0;
 		while($dat=mysqli_fetch_array($resp)){
 			$codigo=$dat[0];
 			$nombre=$dat[1];
@@ -91,7 +92,10 @@ $tipoSalidaVencimiento=$datConf[0];//$tipoSalidaVencimiento=mysql_result($respCo
 			}
 			
 			//$ubicacionProducto=ubicacionProducto($enlaceCon,$globalAlmacen, $codigo);
-			
+					
+			$datosProd=$codigo."|".$nombre."|".$linea;
+		
+
 			$consulta="select p.`precio` from precios p where p.`codigo_material`='$codigo' and p.`cod_precio`='1' and 
 					cod_ciudad='$codigoCiudadGlobal'";
 					
@@ -111,16 +115,17 @@ $tipoSalidaVencimiento=$datConf[0];//$tipoSalidaVencimiento=mysql_result($respCo
 			if($mostrarFila==1){
 				$indexFila++;
 
-			  if($stockProducto>0){
-				$stockProducto="<b class='textograndenegro' style='color:#C70039'>".$stockProducto."</b>";
-			  }
-				echo "<tr><td>$codigo</td><td><div class='textograndenegro'><a href='javascript:setMateriales(form1, $codigo, \"$nombre - $linea ($codigo)\")'>$nombre</a></div></td>
+			  	if($stockProducto>0){
+					$stockProducto="<b class='textograndenegro' style='color:#C70039'>".$stockProducto."</b>";
+			  	}
+				echo "<tr><td><input type='checkbox' id='idchk$cont' name='idchk$cont' value='$datosProd' onchange='ver(this)' ></td><td>$codigo</td><td><div class='textograndenegro'><a href='javascript:setMateriales(form1, $codigo, \"$nombre - $linea ($codigo)\")'>$nombre</a></div></td>
 				<td>$linea</td>
 				<td><small>$principioActivo</small></td>
 				<td><small>$accionTerapeutica</small></td>
 				<td>$stockProducto</td>
 				<td>$precioProducto</td>
 				</tr>";
+				$cont++;
 			}
 		}
 	}else{

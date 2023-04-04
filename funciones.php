@@ -457,6 +457,17 @@ function numeroCorrelativo($enlaceCon,$tipoDoc){
 	}
 }
 
+
+function numeroCorrelativoCotizacion($enlaceCon,$tipoDoc){
+	$sql="select IFNULL(max(nro_correlativo)+1,1) from cotizaciones where cod_tipo_doc='1' and cod_almacen='$globalAlmacen'";
+	$resp=mysqli_query($enlaceCon,$sql);
+	while($dat=mysqli_fetch_array($resp)){
+		$codigo=$dat[0];
+		$vectorCodigo = array($codigo,$banderaErrorFacturacion,0);
+		return $vectorCodigo;
+	}
+}
+
 function unidadMedida($enlaceCon,$codigo){
 	
 	$consulta="select u.abreviatura from material_apoyo m, unidades_medida u
@@ -800,5 +811,44 @@ function obtenerMontoVentasGeneradasLineaProducto($desde,$hasta,$almacenes,$tipo
   return $monto;
 }
 
+function obtenerVentaClienteCampania($enlaceCon, $codCliente, $fechaVenta){
+	$sqlCampanias="SELECT c.codigo, c.nombre, c.abreviatura, c.fecha_inicio, c.fecha_fin from campanias c where 
+	c.fecha_inicio<='$fechaVenta' and c.fecha_fin>='$fechaVenta' and c.estado_campania=3";
+	$respCampanias=mysqli_query($enlaceCon, $sqlCampanias);
+	$codCampaniaHabilitada=0;
+	$abrevCampaniaHabilitada="";
+	$montoVenta=0;
+	if($datCampanias=mysqli_fetch_array($respCampanias)){
+		$codCampaniaHabilitada=$datCampanias[0];
+		$abrevCampaniaHabilitada=$datCampanias[2];
+		$fechaInicioCampania=$datCampanias[3];
+		$fechaFinCampania=$datCampanias[4];
+
+		$sql="select (sum(sd.monto_unitario)-sum(sd.descuento_unitario))montoVenta, sum(sd.cantidad_unitaria)cantidadventa, s.descuento, s.monto_total
+			from `salida_almacenes` s, `salida_detalle_almacenes` sd 
+			where s.`cod_salida_almacenes`=sd.`cod_salida_almacen` and s.`fecha` BETWEEN '$fechaInicioCampania' and '$fechaFinCampania'
+			and s.cod_cliente='$codCliente' and s.`salida_anulada`=0 and s.`cod_tiposalida`=1001";
+		$resp=mysqli_query($enlaceCon, $sql);
+		$totalVentaClienteCampania=0;
+		$montoVenta=0;
+		while($datos=mysqli_fetch_array($resp)){	
+			$montoVenta=$datos[0];
+			$cantidad=$datos[1];
+			$descuentoVenta=$datos[2];
+			$montoNota=$datos[3];
+
+			if($descuentoVenta>0){
+				$porcentajeVentaProd=($montoVenta/$montoNota);
+				$descuentoAdiProducto=($descuentoVenta*$porcentajeVentaProd);
+				$montoVenta=$montoVenta-$descuentoAdiProducto;
+			}			
+			$montoPtr=number_format($montoVenta,2,".",",");
+			$cantidadFormat=number_format($cantidad,0,".",",");
+			$totalVentaClienteCampania=$totalVentaClienteCampania+$montoVenta;
+		}
+	}
+	$arrayCampania = array($abrevCampaniaHabilitada,$montoVenta);
+	return($arrayCampania);
+}
 
 ?>

@@ -57,7 +57,7 @@ $sqlNro="select count(*) from `salida_detalle_almacenes` s where s.`cod_salida_a
 $respNro=mysqli_query($enlaceCon,$sqlNro);
 $nroItems=mysqli_result($respNro,0,0);
 
-$tamanoLargo=230+($nroItems*5)-5;
+$tamanoLargo=300+($nroItems*5)-5;
 
 ?><div style="width:320;margin:0;padding-left:30px !important;padding-right:30px !important;height:<?=$tamanoLargo?>; font-family:Arial;">
 <?php	
@@ -111,7 +111,7 @@ $nitTxt=mysqli_result($respConf,0,1);
 
 // $sqlDatosFactura="select '' as nro_autorizacion, '', f.codigo_control, f.nit, f.razon_social, DATE_FORMAT(f.fecha, '%d/%m/%Y') from facturas_venta f
 // 	where f.cod_venta=$codigoVenta";
-$sqlDatosFactura="select '' as nro_autorizacion, '', '' as codigo_control, f.nit, f.razon_social, DATE_FORMAT(f.siat_fechaemision, '%d/%m/%Y') from salida_almacenes f
+$sqlDatosFactura="select '' as nro_autorizacion, '', '' as codigo_control, f.nit, f.razon_social, DATE_FORMAT(f.siat_fechaemision, '%d/%m/%Y'), f.fecha from salida_almacenes f
 	where f.cod_salida_almacenes=$codigoVenta";
 //echo $sqlDatosFactura;
 $respDatosFactura=mysqli_query($enlaceCon,$sqlDatosFactura);
@@ -122,6 +122,8 @@ $nitCliente=mysqli_result($respDatosFactura,0,3);
 $razonSocialCliente=mysqli_result($respDatosFactura,0,4);
 $razonSocialCliente=strtoupper($razonSocialCliente);
 $fechaFactura=mysqli_result($respDatosFactura,0,5);
+
+$fechaFacturaFormatoMy=mysqli_result($respDatosFactura,0,6);
 
 $cod_funcionario=$_COOKIE["global_usuario"];
 //datos documento
@@ -395,11 +397,22 @@ $txtMonto=NumeroALetras::convertir($montoEntero);
 <div style="border-bottom: 1px solid black;border-bottom-style: dotted;">
 <label class="arial-12"><?="Cajero(a): $nombreFuncionario"?></label>
 </div>
-<!-- <label class="arial-12"><?="--------------------------------------------------------"?></label><br> -->
-<table><tr><td><label class="arial-7"><?=$txt2?></label></td><td>
-<!-- <div style="width:90%"><label class="arial-7"><?=$txt2?></label></div> -->
+
+
+
+<!-- ESTA PARTE ES PARA LAS CAMPANIAS -->
 <?php
-// $cadenaQR=$nitTxt."|".$nroDocVenta."|".$nroAutorizacion."|".$fechaVenta."|".$montoTotal."|".$montoFinal."|".$codigoControl."|".$nitCliente."|0|0|0|".($descuentoVentaProd+$descuentoVenta);
+	$arrayCampaniaCliente=obtenerVentaClienteCampania($enlaceCon, $cod_cliente, $fecha_salida);
+	$abrevCampaniaHabilitada=$arrayCampaniaCliente[0];
+	$totalVentaClienteCampania=$arrayCampaniaCliente[1];
+?>
+
+
+
+<table>
+	<tr><td colspan="2" align="center"><label class="arial-7" style="align-content: center;">C: <?=$abrevCampaniaHabilitada;?> -> <?=$totalVentaClienteCampania?></label></td></tr>
+	<tr><td><label class="arial-7"><?=$txt2?></label></td><td>
+<?php
 
 $sqlDir="select valor_configuracion from configuraciones where id_configuracion=46";
 $respDir=mysqli_query($enlaceCon,$sqlDir);
@@ -411,14 +424,10 @@ $fechahora=date("dmy.His");
 $fileName="qrs/".$fechahora.$nroDocVenta.".png"; 
     
 QRcode::png($codeContents, $fileName,QR_ECLEVEL_L, 4);
-//$txt3=iconv('utf-8', 'windows-1252', $txt3); 
 ?>
 <img src="<?=$fileName?>" style="margin: 0px;padding: 0;width: 150px;">
 </td></tr></table>
-<!-- <br> -->
 
-<!-- <div style="margin: 0px;padding: 0;position: absolute;left:0;width: 100px;"><label class="arial-12"><?=$txt3?></label><br>
-<img src="<?=$fileName?>" style="margin: 0px;padding: 0;"> -->
 <div style="width:97%"><label class="arial-7"><?=$txt3?></label><br><br><label class="arial-7">"<?=$txtLeyendaFin?>"</label><br></div>
 
 </center>

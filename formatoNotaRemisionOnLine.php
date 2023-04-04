@@ -356,6 +356,15 @@ $txtMonto=NumeroALetras::convertir($montoEntero);
 <label class="arial-12"><?="Cajero(a): $nombreFuncionario"?></label>
 </div>
 
+<!-- ESTA PARTE ES PARA LAS CAMPANIAS -->
+<?php
+	$arrayCampaniaCliente=obtenerVentaClienteCampania($enlaceCon, $cod_cliente, $fecha_salida);
+	$abrevCampaniaHabilitada=$arrayCampaniaCliente[0];
+	$totalVentaClienteCampania=$arrayCampaniaCliente[1];
+?>
+<table>
+	<tr><td colspan="2" align="center"><label class="arial-7" style="align-content: center;">C: <?=$abrevCampaniaHabilitada;?> -> <?=$totalVentaClienteCampania?></label></td></tr></table>
+
 </center>
 </div>
 </body>

@@ -1,6 +1,6 @@
 <?php
 
-require("conexionmysqli2.inc");
+require("conexionmysqli.inc");
 require('funciones.php');
 require('function_formatofecha.php');
 require("estilos_almacenes.inc");
@@ -15,7 +15,11 @@ require("estilos_almacenes.inc");
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link href="lib/externos/jquery/jquery-ui/completo/jquery-ui-1.8.9.custom.css" rel="stylesheet" type="text/css"/>
         <link href="lib/css/paneles.css" rel="stylesheet" type="text/css"/>
-        <script type="text/javascript" src="lib/externos/jquery/jquery-1.4.4.min.js"></script>
+        
+        <script src="//code.jquery.com/jquery-1.11.0.min.js"></script> 
+        <script type="text/javascript" src="js/bootstrap.js"></script>
+        
+        <!--script type="text/javascript" src="lib/externos/jquery/jquery-1.4.4.min.js"></script>
         <script type="text/javascript" src="lib/externos/jquery/jquery-ui/minimo/jquery.ui.core.min.js"></script>
         <script type="text/javascript" src="lib/externos/jquery/jquery-ui/minimo/jquery.ui.widget.min.js"></script>
         <script type="text/javascript" src="lib/externos/jquery/jquery-ui/minimo/jquery.ui.button.min.js"></script>
@@ -24,7 +28,7 @@ require("estilos_almacenes.inc");
         <script type="text/javascript" src="lib/externos/jquery/jquery-ui/minimo/jquery.ui.position.min.js"></script>
         <script type="text/javascript" src="lib/externos/jquery/jquery-ui/minimo/jquery.ui.resizable.min.js"></script>
         <script type="text/javascript" src="lib/externos/jquery/jquery-ui/minimo/jquery.ui.dialog.min.js"></script>
-        <script type="text/javascript" src="lib/externos/jquery/jquery-ui/minimo/jquery.ui.datepicker.min.js"></script>
+        <script type="text/javascript" src="lib/externos/jquery/jquery-ui/minimo/jquery.ui.datepicker.min.js"></script-->
         <script type="text/javascript" src="lib/js/xlibPrototipo-v0.1.js"></script>
         <script type='text/javascript' language='javascript'>
 
@@ -302,6 +306,12 @@ function enviar_datosdespacho(f)
 function llamar_preparado(f, estado_preparado, codigo_salida)
 {   window.open('navegador_detallesalidamateriales.php?codigo_salida='+codigo_salida,'popup','');
 }
+
+function cambiarTipoPago(codigo){
+    $("#codigo_salida_cambio").val(codigo);
+    $("#modalCambioTipoPago").modal("show");   
+}
+
         </script>
     </head>
     <body>
@@ -337,6 +347,10 @@ if(isset($_GET["tipoPagoBusqueda"])){
 
 echo "<form method='post' action=''>";
 echo "<input type='hidden' name='fecha_sistema' value='$fecha_sistema'>";
+
+
+echo "<input type='hidden' name='codigo_salida_cambio' name='codigo_salida_cambio' value=''>";
+
 
 echo "<h1>Listado de Ventas</h1>";
 echo "<table class='texto' cellspacing='0' width='90%'>
@@ -431,6 +445,8 @@ while ($dat = mysqli_fetch_array($resp)) {
     echo "<td>&nbsp;$razonSocial</td><td>&nbsp;$nitCli</td><td>&nbsp;$obs_salida</td>";
     $url_notaremision = "navegador_detallesalidamuestras.php?codigo_salida=$codigo";    
     
+    $htmlTipoPago="<a href='#' title='Cambiar Tipo de Pago' onclick='cambiarTipoPago($codigo)'><img src='imagenes/tarjetacredito2.png' width='60px'></a>";
+
     /*echo "<td bgcolor='$color_fondo'><a href='javascript:llamar_preparado(this.form, $estado_preparado, $codigo)'>
         <img src='imagenes/icon_detail.png' width='30' border='0' title='Detalle'></a></td>";
     */
@@ -439,7 +455,9 @@ while ($dat = mysqli_fetch_array($resp)) {
         echo "<td  bgcolor='$color_fondo'><a href='notaSalida.php?codVenta=$codigo' target='_BLANK'><img src='imagenes/detalle.png' width='30' border='0' title='Factura Formato Pequeño'></a></td>";
     }
     else{
-        echo "<td  bgcolor='$color_fondo'><a href='formatoNotaRemision.php?codVenta=$codigo' target='_BLANK'><img src='imagenes/factura1.jpg' width='30' border='0' title='Factura Formato Pequeño'></a></td>";
+        echo "<td  bgcolor='$color_fondo'><a href='formatoNotaRemision.php?codVenta=$codigo' target='_BLANK'><img src='imagenes/factura1.jpg' width='30' border='0' title='Factura Formato Pequeño'></a>
+        $htmlTipoPago
+        </td>";
         //echo "<td  bgcolor='$color_fondo'><a href='notaSalida.php?codVenta=$codigo' target='_BLANK'><img src='imagenes/detalle.png' width='30' border='0' title='Factura Formato Pequeño'></a></td>";
     }
     
@@ -542,6 +560,44 @@ echo "</form>";
         <div id="pnldlgArespSvr"></div>
         <div id="pnldlggeneral"></div>
         <div id="pnldlgenespera"></div>
+
+<!-- small modal -->
+<div class="modal fade modal-primary" id="modalCambioTipoPago" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content card">
+               <div class="card-header card-header-primary card-header-icon">
+                  <div class="card-icon" style="background: #96079D;color:#fff;">
+                    <i class="material-icons">credit_card</i>
+                  </div>
+                  <h4 class="card-title text-dark font-weight-bold">Cambiar Tipo de Pago <small id="titulo_tarjeta"></small></h4>
+                  <button type="button" class="btn btn-danger btn-sm btn-fab float-right" data-dismiss="modal" aria-hidden="true" style="position:absolute;top:0px;right:0;">
+                    <i class="material-icons">close</i>
+                  </button>
+                </div>
+                <div class="card-body">
+                    <input type="hidden" id="codigo_salida_tarjeta">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="row">
+              <label class="col-sm-3 col-form-label">Monto <br>Tarjeta</label>
+              <div class="col-sm-9">
+                <div class="form-group">
+                  <input class="form-control" type="number" style="background: #A5F9EA;" id="monto_tarjeta" name="monto_tarjeta" value=""/>
+                </div>
+              </div>
+            </div>                
+        </div>
+    </div>                
+
+                </div>
+                <div class="card-footer">
+                    <a href="#" onclick="guardarTarjetaVenta();return false;" class="btn btn-default btn-sm">GUARDAR</a>
+                </div>
+      </div>  
+    </div>
+  </div>
+<!--    end small modal -->
+
 
     </body>
 </html>

@@ -4,9 +4,9 @@ $indexGerencia=1;
 require "conexionmysqli.inc";
 require("funciones.php");
 
-/* error_reporting(E_ALL);
+ error_reporting(E_ALL);
  ini_set('display_errors', '1');
-*/
+
 
 ?>
 
@@ -421,9 +421,9 @@ function ajaxNitCliente(f){
 function ajaxVerificarNitCliente(){
 	$("#siat_error").attr("style","");
 	$("#siat_error_valor").val(0);
-	$("#siat_error").html("Verificando existencia del NIT...");
+	//$("#siat_error").html("Verificando existencia del NIT...");
 	var parametros={"nit":$("#nitCliente").val()};
-	$.ajax({
+	/*$.ajax({
         type: "GET",
         dataType: 'html',
         url: "ajaxVerificarNitSiatCliente.php",
@@ -448,6 +448,7 @@ function ajaxVerificarNitCliente(){
            $("#tipo_documento").selectpicker("refresh");                        	   
         }
     });	
+	*/
 }
 function ajaxClienteBuscar(f){
 	var contenedor;
@@ -581,6 +582,9 @@ function totales(){
     //setear descuento o aplicar la suma total final con el descuento
 	document.getElementById("descuentoVenta").value=0;
 	document.getElementById("descuentoVentaUSD").value=0;
+
+	aplicarDescuentoPorcentaje(form1);
+
 	aplicarCambioEfectivo();
 	minimoEfectivo();
 }
@@ -631,7 +635,8 @@ function aplicarDescuentoPorcentaje(f){
 
 	var descuento=document.getElementById("descuentoVenta").value;
 	
-	descuento=Math.round(parseFloat(descuentoPorcentaje)*parseFloat(total)/100);
+	descuento=Math.round((parseFloat(descuentoPorcentaje)*parseFloat(total)/100)*100)/100;
+	console.log("descuento: "+descuento);
 	
 	document.getElementById("totalFinal").value=Math.round((parseFloat(total)-parseFloat(descuento))*100)/100;
 	var descuentoUSD=(parseFloat(total)-parseFloat(descuento))/tipo_cambio;
@@ -724,6 +729,26 @@ function aplicarMontoCombinadoEfectivo(f){
   document.getElementById("efectivoRecibido").value=Math.round((monto_total_bolivianos)*100)/100;
   document.getElementById("efectivoRecibidoUSD").value=Math.round((monto_total_bolivianos/tipo_cambio)*100)/100;
   aplicarCambioEfectivo(f);
+}
+function marcarDesmarcar(f,elem){
+	 var i;
+      var j=0;
+	 if(elem.checked==true){      	       
+      for(i=0;i<=f.length-1;i++){
+       if(f.elements[i].type=='checkbox'){       
+		f.elements[i].checked=true;
+        }
+      }	
+    }else{
+		for(i=0;i<=f.length-1;i++){
+       if(f.elements[i].type=='checkbox'){       
+		f.elements[i].checked=false;
+        }
+      }	
+	}
+}
+function ver(elem){
+	//alert(elem.value);
 }
 function buscarMaterial(f, numMaterial){
 	f.materialActivo.value=numMaterial;
@@ -917,10 +942,70 @@ function mas(obj) {
 			}		
 			ajax.send(null);
 		}
-
-	}
-	
+	}	
 }
+
+function masMultiple(form) {
+		var banderaItems0=0;
+		console.log("bandera: "+banderaItems0);
+		var numFilas=num;
+		console.log("numFilas: "+numFilas);
+
+		menos(numFilas);
+		console.log("numFilasActualizado: "+numFilas);
+
+		var productosMultiples=new Array();		
+		for(i=0;i<=form.length-1;i++){
+    		if(form.elements[i].type=='checkbox'){  	   
+				if(form.elements[i].checked==true && form.elements[i].name.indexOf("idchk")!==-1 ){ 
+					cadena=form.elements[i].value;
+					console.log("i: "+i+" cadena: "+cadena+" name: "+form.elements[i].name);
+					productosMultiples.push(cadena);
+					banderaItems0=1;
+					num++;
+				}
+			}
+		}
+		num--;
+
+		console.log("bandera: "+banderaItems0);
+		if(banderaItems0==1){
+			num++;
+			div_material_linea=document.getElementById("fiel");			
+
+			/*recuperamos las cantidades de los otors productos*/
+			var inputs = $('form input[name^="cantidad_unitaria"]');
+			var arrayCantidades=[];
+			inputs.each(function() {
+			  var name = $(this).attr('name');
+			  var value = $(this).val();
+			  var index = name.charAt(name.length - 1);
+			  arrayCantidades.push([name,value,index]);
+			});
+			/*fin recuperar*/
+
+			ajax=nuevoAjax();
+			ajax.open("GET","ajaxMaterialVentasMultiple.php?codigo="+numFilas+"&productos_multiple="+productosMultiples,true);
+			ajax.onreadystatechange=function(){
+				if (ajax.readyState==4) {
+					div_material_linea.innerHTML=div_material_linea.innerHTML+ajax.responseText;
+				}
+				for (x=0;x<arrayCantidades.length;x++) {
+					console.log("Iniciando recorrido Matriz");
+					var name_set=arrayCantidades[x][0];
+					var value_set=arrayCantidades[x][1];
+					var index_set=arrayCantidades[x][2];
+					document.getElementById(name_set).value=value_set;
+					calculaMontoMaterial(index_set);
+				}
+			}		
+			ajax.send(null);
+		}
+		console.log("CONTROL NUM: "+num);
+		Hidden();
+	}	
+
+
 		
 function menos(numero) {
 	cantidad_items--;
@@ -1026,7 +1111,6 @@ function validar(f, ventaDebajoCosto){
 	var cantidadItems=num;
 	console.log("numero de items: "+cantidadItems);
 	console.log("MontoFinal: "+totalFinal);
-	var montoFinal
 
 	if(cantidadItems>0){
 		var item="";
@@ -1097,6 +1181,75 @@ function validar(f, ventaDebajoCosto){
    	return(false);
    }*/
 }
+
+function validarCotizacion(f){		
+	var cookieSucursal=leerCookie("global_agencia");	
+	var formularioSucursal=$("#sucursal_origen").val();
+	console.log("cookieSucursal: "+cookieSucursal+" formularioSucursal: "+formularioSucursal);
+
+	if(parseInt(cookieSucursal)!=parseInt(formularioSucursal)){
+		Swal.fire("NO PUEDE GUARDAR LA COTIZACION!!!.", "Error en sesion de Sucursal!!!!. Cierre la Ventana de Facturacion y vuelva a abrir la misma.", "error");		
+		return (false);
+	}
+
+	if($("#nitCliente").val()=="0"){
+		// errores++;
+		Swal.fire("Nit!", "Se requiere un número de NIT / CI / CEX válido", "warning");
+		// $("#pedido_realizado").val(0);		
+		return(false);
+	}
+
+	if($("#totalFinal").val()<=0){
+		Swal.fire("Monto Final!", "El Monto Final del documento no puede ser 0", "info");
+		return(false);
+	}
+	//alert(ventaDebajoCosto);
+	f.cantidad_material.value=num;
+	var cantidadItems=num;
+	console.log("numero de items: "+cantidadItems);
+	console.log("MontoFinal: "+totalFinal);
+
+	if(cantidadItems>0){
+		var item="";
+		var cantidad="";
+		var stock="";
+		var descuento="";
+		var monto_item="";
+		for(var i=1; i<=cantidadItems; i++){
+			console.log("valor i: "+i);
+			console.log("objeto materiales: "+document.getElementById("materiales"+i));
+			if(document.getElementById("materiales"+i)!=null){
+				item=parseFloat(document.getElementById("materiales"+i).value);
+				cantidad=parseFloat(document.getElementById("cantidad_unitaria"+i).value);
+				monto_item=parseFloat(document.getElementById("montoMaterial"+i).value);
+				
+				descuento=parseFloat(document.getElementById("descuentoProducto"+i).value);
+				precioUnit=parseFloat(document.getElementById("precio_unitario"+i).value);				
+				var costoUnit=parseFloat(document.getElementById("costoUnit"+i).value);
+		
+				console.log("materiales"+i+" valor: "+item);
+				console.log("stock: "+stock+" cantidad: "+cantidad+ "precio: "+precioUnit);
+
+				if(item==0){
+					alert("Debe escoger un item en la fila "+i);
+					return(false);
+				}
+
+				if( (cantidad<=0 || precioUnit<=0) || (Number.isNaN(cantidad)) || Number.isNaN(precioUnit) || (Number.isNaN(monto_item)) || monto_item<=0 ){
+					alert("La cantidad, Precio y Monto por Item no pueden estar vacios o ser <= 0.");
+					return(false);
+				}
+			}
+		}
+	}else{
+		alert("La cotización debe tener al menos 1 item.");
+		return(false);
+	}
+	f.action="guardarCotizacion.php";
+	f.submit();
+}
+
+
 
 function checkSubmit() {
     document.getElementById("btsubmit").value = "Enviando...";
@@ -1393,6 +1546,23 @@ function buscarKardexProducto(f, numMaterial){
 	window.open('rpt_inv_kardex.php?rpt_territorio=<?=$rpt_territorio?>&rpt_almacen=<?=$rpt_almacen?>&fecha_ini=<?=$fecha_inicio_kardex?>&fecha_fin=<?=$fecha_actual?>&tipo_item=2&rpt_item='+$("#materiales"+numMaterial).val()+'','','scrollbars=yes,status=no,toolbar=no,directories=no,menubar=no,resizable=yes,width=1000,height=800');		
 }
 
+var tablaBuscadorSucursales=null;
+function encontrarMaterial(numMaterial){
+	var cod_material = $("#materiales"+numMaterial).val();
+	var parametros={"cod_material":cod_material};
+	$.ajax({
+        type: "GET",
+        dataType: 'html',
+        url: "ajax_encontrar_productos.php",
+        data: parametros,
+        success:  function (resp) { 
+           // alert(resp);           
+        	$("#modalProductosCercanos").modal("show");
+        	$("#tabla_datosE").html(resp);   
+        }
+    });	
+}
+
 
 </script>
 
@@ -1463,15 +1633,34 @@ $respConf=mysqli_query($enlaceCon,$sqlConf);
 $datConf=mysqli_fetch_array($respConf);
 $ventaDebajoCosto=$datConf[0];
 //$ventaDebajoCosto=mysql_result($respConf,0,0);
+
+//SACAMOS LA CONFIGURACION PARA SABER SI MOSTRAR MENSAJES DE BIENVENIDA PANTALLA PRINCIPAL
+$banderaMensajesDoblePantalla=0;
+$mensajeBienvenida="";
+$mensajeVerifiquePrecios="";
+
+$banderaMensajesDoblePantalla=obtenerValorConfiguracion($enlaceCon,14);
+$mensajeBienvenida=obtenerValorConfiguracion($enlaceCon,15);
+$mensajeVerifiquePrecios=obtenerValorConfiguracion($enlaceCon,16);
+
+
 include("datosUsuario.php");
 
 if(isset($_GET['file'])){
 	unlink($_GET['file']);
 }
+
 ?>
 <nav class="mb-4 navbar navbar-expand-lg" style='background:#006db3 !important;color:white !important;'>
-                <a class="navbar-brand font-bold" href="#">VENTAS [<?php echo $fechaSistemaSesion?>][<b id="hora_sistema"><?php echo $horaSistemaSesion;?></b>] [<?php echo $nombreAlmacenSesion;?>]</a>
-                <div id="siat_error"></div>
+                <a class="navbar-brand font-bold" href="#">[<?php echo $fechaSistemaSesion?>][<b id="hora_sistema"><?php echo $horaSistemaSesion;?></b>] [<?php echo $nombreAlmacenSesion;?>]</a>
+                
+                <?php
+								if($banderaMensajesDoblePantalla==1){
+                ?>
+                <div id="siat_error" style="color:#FFDA33;padding:0px;border-radius:5px;font-weight:bold;margin-left:100px;height:10px;font-size:50px;"><?=$mensajeBienvenida;?></div>
+                <?php
+              	}
+                ?>
                 
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-4" aria-controls="navbarSupportedContent-4" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -1704,6 +1893,15 @@ while($dat2=mysqli_fetch_array($resp2)){
 </tr>
 
 </table>
+
+<?php
+if($banderaMensajesDoblePantalla==1){
+?>
+<div id="siat_error2" style="color:orangered;padding:10px;border-radius:5px;font-weight:bold;margin-left:400px;height:30px;font-size:30px;width:1000px;"><?=$mensajeVerifiquePrecios;?></div>
+<?php
+}
+?>
+
 <br>
 <input type="hidden" id="ventas_codigo"><!--para validar la funcion mas desde ventas-->
 
@@ -1721,8 +1919,8 @@ while($dat2=mysqli_fetch_array($resp2)){
 	</tr-->
 
 	<tr align="center">
-		<td width="8%">&nbsp;</td>
-		<td width="40%">Material</td>
+		<td width="10%">&nbsp;</td>
+		<td width="38%">Material</td>
 		<td width="8%">Stock</td>
 		<td width="8%">Cantidad</td>
 		<td width="8%">Precio </td>
@@ -1734,14 +1932,14 @@ while($dat2=mysqli_fetch_array($resp2)){
 </fieldset>
 
 <!--AQUI ESTA EL MODAL PARA LA BUSQUEDA DE PRODUCTOS-->
-<div id="divRecuadroExt" style="background-color:#666; position:absolute; width:1000px; height: 550px; top:30px; left:50px; visibility: hidden; opacity: .70; -moz-opacity: .70; filter:alpha(opacity=70); -webkit-border-radius: 20px; -moz-border-radius: 20px; z-index:2; overflow: auto;">
+<div id="divRecuadroExt" style="background-color:#666; position:absolute; width:1150px; height: 550px; top:30px; left:50px; visibility: hidden; opacity: .70; -moz-opacity: .70; filter:alpha(opacity=70); -webkit-border-radius: 20px; -moz-border-radius: 20px; z-index:2; overflow: auto;">
 </div>
 
-<div id="divboton" style="position: absolute; top:20px; left:1010px;visibility:hidden; text-align:center; z-index:3">
+<div id="divboton" style="position: absolute; top:20px; left:1160px;visibility:hidden; text-align:center; z-index:3">
 	<a href="javascript:Hidden();"><img src="imagenes/cerrar4.png" height="45px" width="45px"></a>
 </div>
 
-<div id="divProfileData" style="background-color:#FFF; width:950px; height:500px; position:absolute; top:50px; left:70px; -webkit-border-radius: 20px; 	-moz-border-radius: 20px; visibility: hidden; z-index:2; overflow: auto;">
+<div id="divProfileData" style="background-color:#FFF; width:1100px; height:500px; position:absolute; top:50px; left:70px; -webkit-border-radius: 20px; 	-moz-border-radius: 20px; visibility: hidden; z-index:2; overflow: auto;">
   	<div id="divProfileDetail" style="visibility:hidden; text-align:center">
 		<table align='center'>
 			<tr><th>Proveedor</th><th>Acci&oacute;n Terap&eacute;utica</th><th>Principio Activo</th></tr>
@@ -1790,7 +1988,10 @@ while($dat2=mysqli_fetch_array($resp2)){
 				<!--a href="#" class="btn btn-warning btn-fab float-right" title="Limpiar Formulario de Busqueda" data-toggle='tooltip' onclick="limpiarFormularioBusqueda();return false;"><i class="material-icons">cleaning_services</i></a-->
 			</td>
  			</tr>
-			
+			<tr>
+				<td colspan="3"><input type="button" class="boton2peque" onclick="javascript:masMultiple(this.form);" value="Incluir Productos Seleccionados">
+				</td>
+			</tr>
 		</table>		
 		<div id="divListaMateriales">
 		</div>
@@ -1799,6 +2000,26 @@ while($dat2=mysqli_fetch_array($resp2)){
 </div>
 <div style="height:200px;"></div>
 
+
+<?php
+
+//SACAMOS EL PORCENTAJE PARA LOS DESCUENTOS TOTALES DIAS ESPECIALES
+$confDescuentoHabilitado=0;
+$confDescuentoHabilitado=obtenerValorConfiguracion($enlaceCon,51);
+$descuentoTotalOferta=0;
+
+if($confDescuentoHabilitado==1){
+	$diaSemana=date("w"); //0 domingo 6 sabado
+	if($globalAgencia==1 && $diaSemana==2){
+		$descuentoTotalOferta=7;
+	}
+	if($globalAgencia==2 && $diaSemana==6){
+		$descuentoTotalOferta=7;
+	}	
+}
+
+
+?>
 
 <div class="pie-div">
 	<div class='float-right' style="padding-right:15px;"><a href='#' class='boton-plomo' style="width:10px !important;height:10px !important;font-size:10px !important;" id="boton_nota_remision" onclick="cambiarNotaRemision()">NR</a></div>
@@ -1819,7 +2040,7 @@ while($dat2=mysqli_fetch_array($resp2)){
 			<td><input type='number' style="background:#B0B4B3; width:120px;" name='efectivoRecibido' id='efectivoRecibido' readonly step="any" onChange='aplicarCambioEfectivo(form1);' onkeyup='aplicarCambioEfectivo(form1);' onkeydown='aplicarCambioEfectivo(form1);'></td>		
 		</tr>
 		<tr>
-			<td align='right' width='90%' style="font-weight:bold;color:red;font-size:12px;">Descuento %</td><td><input type='number' name='descuentoVentaPorcentaje' id='descuentoVentaPorcentaje' style="height:20px;font-size:19px;width:120px;color:red;" onChange='aplicarDescuentoPorcentaje(form1);' onkeyup='aplicarDescuentoPorcentaje(form1);' onkeydown='aplicarDescuentoPorcentaje(form1);' value="0" step='0.01'></td>
+			<td align='right' width='90%' style="font-weight:bold;color:red;font-size:12px;">Descuento %</td><td><input type='number' name='descuentoVentaPorcentaje' id='descuentoVentaPorcentaje' style="height:20px;font-size:19px;width:120px;color:red;" onChange='aplicarDescuentoPorcentaje(form1);' onkeyup='aplicarDescuentoPorcentaje(form1);' onkeydown='aplicarDescuentoPorcentaje(form1);' value="<?=$descuentoTotalOferta;?>" step='0.01'></td>
 			<td align='center' width='90%' style="color:#777B77;font-size:12px;"><b style="font-size:12px;color:#0691CD;">Cambio</b></td>
 		</tr>
 		<tr>
@@ -1851,7 +2072,7 @@ while($dat2=mysqli_fetch_array($resp2)){
 		</tr>
 		<tr>
 			<td align='right' width='90%' style="font-weight:bold;color:red;font-size:12px;">Monto Final</td>
-			<td><input type='number' name='totalFinalUSD' id='totalFinalUSD' readonly style="background:#189B22;height:20px;font-size:19px;width:120px;color:#fff;"> </td>
+			<td><input type='number' name='totalFinalUSD' id='totalFinalUSD' readonly style="background:#189B22;height:30px;font-size:27px;width:120px;color:#fff;"> </td>
 			<td><input type='number' name='cambioEfectivoUSD' id='cambioEfectivoUSD' readonly style="background:#4EC156;height:20px;font-size:19px;width:120px;"></td>
 		</tr>
 	</table>
@@ -1864,7 +2085,7 @@ while($dat2=mysqli_fetch_array($resp2)){
 
 if($banderaErrorFacturacion==0 || $tipoDocDefault!=1){
 	echo "<div class='divBotones2'>
-	        <input type='submit' class='boton' value='Guardar Venta' id='btsubmit' name='btsubmit' onClick='return validar(this.form, $ventaDebajoCosto)'>
+	        <input type='submit' class='boton-verde' value='Guardar Venta' id='btsubmit' name='btsubmit' onClick='return validar(this.form, $ventaDebajoCosto)'>
 					
 					<!--input type='button' class='boton2' value='Cancelar' onClick='location.href=\"navegador_ingresomateriales.php\"';-->
 					
@@ -1875,11 +2096,12 @@ if($banderaErrorFacturacion==0 || $tipoDocDefault!=1){
             <table style='width:330px;padding:0 !important;margin:0 !important;bottom:25px;position:fixed;left:100px;'>
             <tr>
                <td style='font-size:12px;color:#0691CD; font-weight:bold;'>EFECTIVO Bs.</td>
-               <td style='font-size:12px;color:#189B22; font-weight:bold;' class='d-none'>EFECTIVO $ USD</td>
-             </tr>
+               <td style='font-size:12px;color:#189B22; font-weight:bold;' class='d-none'>EFECTIVO $ USD</td
+            </tr>
              <tr>
                <td><input type='number' name='efectivoRecibidoUnido' onChange='aplicarMontoCombinadoEfectivo(form1);' onkeyup='aplicarMontoCombinadoEfectivo(form1);' onkeydown='aplicarMontoCombinadoEfectivo(form1);' id='efectivoRecibidoUnido' style='height:25px;font-size:18px;width:100%;' step='any'></td>
                <td class='d-none'><input type='number' name='efectivoRecibidoUnidoUSD' onChange='aplicarMontoCombinadoEfectivo(form1);' onkeyup='aplicarMontoCombinadoEfectivo(form1);' onkeydown='aplicarMontoCombinadoEfectivo(form1);' id='efectivoRecibidoUnidoUSD' style='height:25px;font-size:18px;width:100%;' step='any'></td>
+               <td><a href='#' class='btn btn-default btn-sm btn-fab' style='background:#FF0000' onclick='validarCotizacion(form1); return false;' id='boton_cotizacion' title='Guardar como Cotización' data-toggle='tooltip'><i class='material-icons'>file_download</i></a></td>
              </tr>
             </table>
 
@@ -2085,6 +2307,40 @@ if($banderaErrorFacturacion==0 || $tipoDocDefault!=1){
     </div>
   </div>
 </div>  
+<!--    end small modal -->
+
+<!-- small modal -->
+<div class="modal fade modal-primary" id="modalProductosCercanos" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content card">
+                <div class="card-header card-header-primary card-header-icon">
+                  <div class="card-icon">
+                    <i class="material-icons">place</i>
+                  </div>
+                  <h4 class="card-title text-primary font-weight-bold">Stock de Productos en Sucursales</h4>
+                  <button type="button" class="btn btn-danger btn-sm btn-fab float-right" data-dismiss="modal" aria-hidden="true" style="position:absolute;top:0px;right:0;">
+                    <i class="material-icons">close</i>
+                  </button>
+                </div>
+                <div class="card-body">
+                	<div class="form-group">
+												 <input type="text" class="form-control pull-right" style="width:20%" id="busqueda_sucursal" placeholder="Buscar Sucursal">
+									</div>
+									<br>
+                  <table class="table table-sm table-bordered" id='tabla_sucursal'>
+                    <thead>
+                      <tr style='background: #ADADAD;color:#000;'>
+                      	<th width='10%'>-</th>
+                    	</tr>
+                    </thead>
+                    <tbody id="tabla_datosE">
+                    </tbody>
+                  </table>
+                  <br><br>
+                </div>
+      </div>  
+    </div>
+  </div>
 <!--    end small modal -->
 
 

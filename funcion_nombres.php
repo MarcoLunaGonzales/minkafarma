@@ -16,6 +16,16 @@ function nombreProducto($enlaceCon,$codigo)
 	return($nombre_muestra);
 }
 
+function obtenerNombreProductoSimple($enlaceCon, $codigo){
+	$sql="select descripcion_material from material_apoyo where codigo_material=$codigo";
+	$resp=mysqli_query($enlaceCon,$sql);
+	$nombre="";
+	while($dat=mysqli_fetch_array($resp)){
+	$nombre=$dat[0];
+	}
+	return($nombre);
+}
+
 function nombreGestion($enlaceCon,$codigo)
 {	//require("conexionmysqli.php");
 	$sql="select g.`nombre_gestion` from `gestiones` g where g.`codigo_gestion`='$codigo'";
