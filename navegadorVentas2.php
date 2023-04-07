@@ -328,9 +328,6 @@ function ShowFacturarEditar(codVenta,numCorrelativo, codVendedor, codTipoPago){
     $('#edit_cod_tipopago').val(codTipoPago).trigger('click');
 }
 
-$( document ).ready(function() {
-    alert( "ready!" );
-});
 function HiddenFacturarEditar(){
 	document.getElementById('divRecuadroExt2_edit').style.visibility='hidden';
 	document.getElementById('divProfileData2_edit').style.visibility='hidden';
