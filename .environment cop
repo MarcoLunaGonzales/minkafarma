@@ -1,0 +1,19 @@
+[ Main settings ]
+DATABASE_DRIVER = mysql
+DATABASE_ENCODING = utf8
+
+[ parametros de conexion bd mysql ]
+DATABASE_HOST = localhost
+DATABASE_PORT = 3306
+DATABASE_NAME = minkafarma
+DATABASE_USER = root
+DATABASE_PASSWORD = 
+DATABASE_DESCRIPTION = DB LOCAL
+
+[ parametros de conexion envio de correos ]
+EMAIL_HOST = smtp.gmail.com
+EMAIL_USERNAME = facturacion@ibnorca.org
+EMAIL_PASSWORD = #1nst1tut0B0l1v14n04.0#9922
+EMAIL_SMTP_TYPE = tls
+EMAIL_PORT = 587
+EMAIL_FROM = facturacionsiat@altar.com
