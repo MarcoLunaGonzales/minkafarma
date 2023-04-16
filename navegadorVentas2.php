@@ -19,7 +19,7 @@ require("estilos_almacenes.inc");
         <script src="//code.jquery.com/jquery-1.11.0.min.js"></script> 
         <script type="text/javascript" src="js/bootstrap.js"></script>
         
-        <!--script type="text/javascript" src="lib/externos/jquery/jquery-1.4.4.min.js"></script>
+        <script type="text/javascript" src="lib/externos/jquery/jquery-1.4.4.min.js"></script>
         <script type="text/javascript" src="lib/externos/jquery/jquery-ui/minimo/jquery.ui.core.min.js"></script>
         <script type="text/javascript" src="lib/externos/jquery/jquery-ui/minimo/jquery.ui.widget.min.js"></script>
         <script type="text/javascript" src="lib/externos/jquery/jquery-ui/minimo/jquery.ui.button.min.js"></script>
@@ -28,7 +28,7 @@ require("estilos_almacenes.inc");
         <script type="text/javascript" src="lib/externos/jquery/jquery-ui/minimo/jquery.ui.position.min.js"></script>
         <script type="text/javascript" src="lib/externos/jquery/jquery-ui/minimo/jquery.ui.resizable.min.js"></script>
         <script type="text/javascript" src="lib/externos/jquery/jquery-ui/minimo/jquery.ui.dialog.min.js"></script>
-        <script type="text/javascript" src="lib/externos/jquery/jquery-ui/minimo/jquery.ui.datepicker.min.js"></script-->
+        <script type="text/javascript" src="lib/externos/jquery/jquery-ui/minimo/jquery.ui.datepicker.min.js"></script>
         <script type="text/javascript" src="lib/js/xlibPrototipo-v0.1.js"></script>
         <script type='text/javascript' language='javascript'>
 
