@@ -36,7 +36,17 @@ $fechaActual=date("Y-m-d");
 </td>
 
 <td align="center" width="10%">
-<input type="number" class="inputnumber" value="0" id="precio<?php echo $num;?>" name="precio<?php echo $num;?>" size="5" min="0" step="0.01" onKeyUp='calculaPrecioCliente(this,<?php echo $num;?>);' onChange='calculaPrecioCliente(this,<?php echo $num;?>);' required>
+<input type="number" class="inputnumber" value="0" id="precio_old<?php echo $num;?>" name="precio_old<?php echo $num;?>" size="5" min="0" step="0.01" onKeyUp='calculaPrecioCliente(this,<?php echo $num;?>);' onChange='calculaPrecioCliente(this,<?php echo $num;?>);' required>
+</td>
+
+<!-- Decuento Adicional -->
+<td align="center" width="10%">
+<input type="number" class="inputnumber" value="0" id="descuento_adicional<?php echo $num;?>" name="descuento_adicional<?php echo $num;?>" size="5" min="0" step="0.01" disabled>
+</td>
+
+<!-- Monto TOTAL -->
+<td align="center" width="10%">
+<input type="number" class="inputnumber" value="0" id="precio<?php echo $num;?>" name="precio<?php echo $num;?>" size="5" min="0" step="0.01" readonly>
 </td>
 
 <td align="center" width="10%">
@@ -46,6 +56,7 @@ $fechaActual=date("Y-m-d");
 <div id="divmargen<?php echo $num;?>" class="textopequenorojo2">-</div>
 <input type="hidden" name="margenlinea<?php echo $num;?>" id="margenlinea<?php echo $num;?>" value="0">
 </td>
+
 
 <!--td align="center" width="20%">
 <select name="ubicacion_estante<?php echo $num;?>">
@@ -71,7 +82,8 @@ $fechaActual=date("Y-m-d");
 ?>
 </select>
 </td-->
-<td align="center"  width="10%" ><input class="boton2peque" type="button" value="(-)" onclick="menos(<?php echo $num;?>)" size="5"/></td>
+<td align="center"  width="15%" >
+	<input class="boton2peque" type="button" value="(-)" onclick="menos(<?php echo $num;?>)" size="5"/></td>
 </tr>
 </table>
 
