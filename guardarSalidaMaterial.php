@@ -399,13 +399,19 @@ if($sql_inserta==1){
 					$mensaje="Transacción Exitosa :)";	
 					
 					if($tipoImpresion==0){$url="puente_impresion.php?codVenta=$codigo&tipodoc=$tipoDoc";}
-					else{$url="formatoFacturaOnLine.php?codVenta=$codigo";}
+					else{
+						//$url="formatoFacturaOnLine.php?codVenta=$codigo";
+						$url="dFacturaElectronica.php?codigo_salida=$codigo";
+					}
 					
 				}
 			}else{ //ESTO ES CUANDO HAY ERROR FACTURA
 				$mensaje="Factura emitida fuera de línea :(";				
 				if($tipoImpresion==0){$url="puente_impresion.php?codVenta=$codigo&tipodoc=$tipoDoc";}
-					else{$url="formatoFacturaOnLine.php?codVenta=$codigo";}
+					else{
+						//$url="formatoFacturaOnLine.php?codVenta=$codigo";
+						$url="dFacturaElectronica.php?codigo_salida=$codigo";
+					}
 			}
 
 			//SACAMOS LA VARIABLE PARA ENVIAR EL CORREO O NO SI ES 1 ENVIAMOS CORREO DESPUES DE LA TRANSACCION
@@ -439,7 +445,10 @@ if($sql_inserta==1){
 				}
 				/*DIRECCIONAMOS A LA URL CORRECTA TIPO DE IMPRESION*/
 				if($tipoImpresion==0){$url="puente_impresion.php?codVenta=$codigo&tipodoc=$tipoDoc";}
-				else{$url="formatoFacturaOnLine.php?codVenta=$codigo";}
+				else{
+						//$url="formatoFacturaOnLine.php?codVenta=$codigo";
+						$url="dFacturaElectronica.php?codigo_salida=$codigo";
+					}
 
 				echo "<script language='Javascript'>
 					Swal.fire({

@@ -172,7 +172,10 @@ function formatonumeroDec($valor) {
 }
 
 function formateaFechaVista($cadena_fecha)
-{	$cadena_formatonuevo=$cadena_fecha[6].$cadena_fecha[7].$cadena_fecha[8].$cadena_fecha[9]."-".$cadena_fecha[3].$cadena_fecha[4]."-".$cadena_fecha[0].$cadena_fecha[1];
+{	$cadena_formatonuevo="";
+	if($cadena_fecha!=""){
+		$cadena_formatonuevo=$cadena_fecha[6].$cadena_fecha[7].$cadena_fecha[8].$cadena_fecha[9]."-".$cadena_fecha[3].$cadena_fecha[4]."-".$cadena_fecha[0].$cadena_fecha[1];
+	}	
 	return($cadena_formatonuevo);
 }
 
@@ -459,13 +462,14 @@ function numeroCorrelativo($enlaceCon,$tipoDoc){
 
 
 function numeroCorrelativoCotizacion($enlaceCon,$tipoDoc){
+	$globalAlmacen=$_COOKIE['global_almacen'];
 	$sql="select IFNULL(max(nro_correlativo)+1,1) from cotizaciones where cod_tipo_doc='1' and cod_almacen='$globalAlmacen'";
 	$resp=mysqli_query($enlaceCon,$sql);
+	$codigo=0;
 	while($dat=mysqli_fetch_array($resp)){
-		$codigo=$dat[0];
-		$vectorCodigo = array($codigo,$banderaErrorFacturacion,0);
-		return $vectorCodigo;
+		$codigo = $dat[0];
 	}
+	return $codigo;
 }
 
 function unidadMedida($enlaceCon,$codigo){
@@ -720,7 +724,9 @@ function descargarPDFArqueoCajaVertical($nom,$html){
 
 function actualizarPrecios($enlaceCon, $codProducto, $arrayPrecios){
 	foreach ( $arrayPrecios as $clave => $valor ){
+	    
 	    //echo "ciudad: ".$clave." valor: ".$valor."<br>";
+	    
 	    $sqlVerificaPrecio="select count(*) from precios p where p.cod_precio=1 and p.codigo_material='$codProducto' and p.cod_ciudad='$clave'";
 		 $respVerificaPrecio=mysqli_query($enlaceCon, $sqlVerificaPrecio);
 	    $bandera=0;
@@ -735,7 +741,9 @@ function actualizarPrecios($enlaceCon, $codProducto, $arrayPrecios){
 	    	$sqlActPrecio="update precios set precio='$valor' where codigo_material='$codProducto' and cod_precio=1 and 
 	    		cod_ciudad='$clave'";
 	    }
+	    
 	    //echo $sqlActPrecio."<br>";
+	    
 	    $respPrecio=mysqli_query($enlaceCon,$sqlActPrecio);
 	}
 	return(1);

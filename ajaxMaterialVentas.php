@@ -1,5 +1,5 @@
 <?php 
-require_once('conexionmysqli2.inc');
+require_once('conexionmysqli.inc');
 
 $num=$_GET['codigo'];
 

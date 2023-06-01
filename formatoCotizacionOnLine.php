@@ -51,7 +51,10 @@ ini_set('display_errors', '1');
 $cod_ciudad=$_COOKIE["global_agencia"];
 $codigoVenta=$_GET["codigo"];
 
-
+$sqlEmpresa="select nombre, nit, direccion from datos_empresa";
+$respEmpresa=mysqli_query($enlaceCon,$sqlEmpresa);
+$datEmpresa=mysqli_fetch_array($respEmpresa);
+$nombreEmpresa=$datEmpresa[0];//$nombreEmpresa=mysql_result($respEmpresa,0,0);
 
 //consulta cuantos items tiene el detalle
 $sqlNro="select count(*) from `cotizaciones_detalle` s where s.`cod_salida_almacen`=$codigoVenta";
@@ -59,6 +62,9 @@ $respNro=mysqli_query($enlaceCon,$sqlNro);
 $nroItems=mysqli_result($respNro,0,0);
 
 $tamanoLargo=230+($nroItems*5)-5;
+
+$logoEmpresa=obtenerValorConfiguracion($enlaceCon,13);
+
 
 ?><div style="width:320;margin:0;padding-left:30px !important;padding-right:30px !important;height:<?=$tamanoLargo?>; font-family:Arial;">
 <?php	
@@ -114,23 +120,22 @@ $razonSocialCliente=strtoupper($razonSocialCliente);
 $fechaFactura=mysqli_result($respDatosFactura,0,5);
 
 $cod_funcionario=$_COOKIE["global_usuario"];
+
+$nroDocVenta=0;
 //datos documento
 
 
-$sqlDatosVenta="select DATE_FORMAT(s.fecha, '%d/%m/%Y'), t.`nombre`, c.`nombre_cliente`, s.`nro_correlativo`, s.descuento, s.hora_salida,s.monto_total,s.monto_final,s.monto_efectivo,s.monto_cambio,s.cod_chofer,s.cod_tipopago,s.cod_tipo_doc,s.fecha,(SELECT cod_ciudad from almacenes where cod_almacen=s.cod_almacen)as cod_ciudad,s.cod_cliente,(SELECT cufd from siat_cufd where codigo=s.siat_codigocufd) as cufd,siat_cuf,siat_complemento,s.siat_codigoPuntoVenta,s.siat_codigotipoemision,(SELECT descripcionLeyenda from siat_sincronizarlistaleyendasfactura where codigo=s.siat_cod_leyenda) as leyenda
-		from `cotizaciones` s, `tipos_docs` t, `clientes` c
-		where s.`cod_salida_almacenes`='$codigoVenta' and s.`cod_cliente`=c.`cod_cliente` and
-		s.`cod_tipo_doc`=t.`codigo`";
+$sqlDatosVenta="select DATE_FORMAT(s.fecha, '%d/%m/%Y'), s.`nro_correlativo`, s.descuento, s.hora_salida,s.monto_total,s.monto_final,s.monto_efectivo,s.monto_cambio,s.cod_chofer,s.cod_tipopago,s.cod_tipo_doc,s.fecha,(SELECT cod_ciudad from almacenes where cod_almacen=s.cod_almacen)as cod_ciudad,s.cod_cliente 
+		from `cotizaciones` s 
+		where s.`cod_salida_almacenes`='$codigoVenta'";
 $respDatosVenta=mysqli_query($enlaceCon,$sqlDatosVenta);
 $tipoPago=1;
 while($datDatosVenta=mysqli_fetch_array($respDatosVenta)){
 	$fechaVenta=$datDatosVenta[0];
-	$nombreTipoDoc=$datDatosVenta[1];
-	$nombreCliente=$datDatosVenta[2];
-	$nroDocVenta=$datDatosVenta[3];
-	$descuentoVenta=$datDatosVenta[4];
+	$nroDocVenta=$datDatosVenta[1];
+	$descuentoVenta=$datDatosVenta[2];
 	$descuentoVenta=redondear2($descuentoVenta);
-	$horaFactura=$datDatosVenta[5];
+	$horaFactura=$datDatosVenta[3];
 	$montoTotal2=$datDatosVenta['monto_total'];
 	$montoFinal2=$datDatosVenta['monto_final'];
 	$montoEfectivo2=$datDatosVenta['monto_efectivo'];
@@ -144,21 +149,14 @@ while($datDatosVenta=mysqli_fetch_array($respDatosVenta)){
 	$descuentoCabecera=$datDatosVenta['descuento'];
 	$cod_funcionario=$datDatosVenta['cod_chofer'];
 	$tipoPago=$datDatosVenta['cod_tipopago'];
-	$tipoDoc=$datDatosVenta['nombre'];
 	$codTipoDoc=$datDatosVenta['cod_tipo_doc'];
 
 	$fecha_salida=$datDatosVenta['fecha'];
 	$hora_salida=$datDatosVenta['hora_salida'];
 	$cod_ciudad_salida=$datDatosVenta['cod_ciudad'];
-	$cod_cliente=$datDatosVenta['cod_cliente'];
 
-	$nroCufd=$datDatosVenta['cufd'];
-	$cuf=$datDatosVenta['siat_cuf'];
-	$siat_complemento=$datDatosVenta['siat_complemento'];
-	$siat_codigopuntoventa=$datDatosVenta['siat_codigoPuntoVenta'];
-	$siat_codigotipoemision=$datDatosVenta['siat_codigotipoemision'];
-	$txt3=$datDatosVenta['leyenda'];
 }
+
 $sqlResponsable="select CONCAT(SUBSTRING_INDEX(nombres,' ', 1),' ',SUBSTR(paterno, 1,1),'.') from funcionarios where codigo_funcionario='".$cod_funcionario."'";
 $respResponsable=mysqli_query($enlaceCon,$sqlResponsable);
 $nombreFuncionario=mysqli_result($respResponsable,0,0);
@@ -219,10 +217,20 @@ $incremento=3;
 })();
 </script>
 
+<table align="center">
+<tr><td>
+	<img src="imagenes/<?=$logoEmpresa?>" style="margin: 0px;padding: 0;width: 150px;">
+</td></tr>
+</table>
+
 <center>
+<label class="arial-14"><b><?=$nombreEmpresa;?></b></label><br>
 <label class="arial-12"><?="COTIZACIÓN N° $nroDocVenta"?></label><br>
-<label class="arial-12"><?="NOMBRE: ".utf8_decode($razonSocialCliente).""?></label><br>
 <label class="arial-12"><?="FECHA: $fechaFactura $horaFactura"?></label><br>
+
+<label class="arial-12"><?="Responsable: ".utf8_decode($nombreFuncionario).""?></label><br>
+
+
 <label class="arial-12"><?="======================================"?></label><br>
 <table width="100%"><tr align="center" class="arial-12"><td width="15%"><?="CANT."?></td><td width="25%"><?="P.U."?></td><td align="right"  width="25%"><?="Desc."?></td><td width="35%"><?="IMPORTE"?></td></tr></table>
 <label class="arial-12"><?="======================================"?></label><br>

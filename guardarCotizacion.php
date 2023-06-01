@@ -30,8 +30,10 @@ $almacenOrigen=$_POST['almacen_origen'];
 $globalSucursal=$_POST['sucursal_origen'];
 
 
+/*INSERTAMOS TIPO DOC 1*/
+$tipoDoc=1;
 
-$tipoDoc=$_POST['tipoDoc'];
+
 if(!isset($_POST['no_venta'])){
    $almacenDestino=2;
    //$almacenOrigen=$global_almacen;
@@ -174,16 +176,21 @@ do {
 	$datCodSalida=mysqli_fetch_array($resp);
 	$codigo=$datCodSalida[0];
 
-	$vectorNroCorrelativo=numeroCorrelativoCotizacion($enlaceCon,1);
-	$nro_correlativo=$vectorNroCorrelativo[0];
+	$nro_correlativo=numeroCorrelativoCotizacion($enlaceCon,1);
+
+	//echo "nro correlativo: ".$nro_correlativo;
+
 	$cod_dosificacion=0;
+
 
 	$sql_inserta="INSERT INTO cotizaciones(cod_salida_almacenes, cod_almacen, cod_tiposalida, 
 		cod_tipo_doc, fecha, hora_salida, territorio_destino, almacen_destino, observaciones, estado_salida, nro_correlativo, salida_anulada, 
 		cod_cliente, monto_total, descuento, monto_final, razon_social, nit, cod_chofer, cod_vehiculo, monto_cancelado, cod_dosificacion,cod_tipopago, monto_efectivo, monto_cambio)
 		values ('$codigo', '$almacenOrigen', '$tipoSalida', '$tipoDoc', '$fecha', '$hora', '0', '$almacenDestino', 
 		'$observaciones', '1', '$nro_correlativo', 0, '$codCliente', '$totalVenta', '$descuentoVenta', '$totalFinal', '$razonSocial', '$nitCliente', '$usuarioVendedor', '$vehiculo',0,'$cod_dosificacion','$tipoVenta','$totalEfectivo','$totalCambio')";
+		
 		//echo $sql_inserta;
+		
 		$sql_inserta=mysqli_query($enlaceCon,$sql_inserta);
 
 	$contador++;

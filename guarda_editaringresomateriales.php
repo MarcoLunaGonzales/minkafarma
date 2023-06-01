@@ -5,19 +5,25 @@ require("estilos_almacenes.inc");
 require("funcionRecalculoCostos.php");
 require("funciones.php");
 
+ // error_reporting(E_ALL);
+ // ini_set('display_errors', '1');
+
+
 //HABILITAMOS LA BANDERA DE VENCIDOS PARA ACTUALIZAR EL PRECIO
 $banderaPrecioUpd=obtenerValorConfiguracion($enlaceCon,7);
 $banderaUpdPreciosSucursales=obtenerValorConfiguracion($enlaceCon,49);
 
 
+
 $codIngreso=$_POST["codIngreso"];
 $tipo_ingreso=$_POST['tipo_ingreso'];
-$nota_entrega=$_POST['nota_entrega'];
 $nro_factura=$_POST['nro_factura'];
 $observaciones=$_POST['observaciones'];
 $codSalida=$_POST['codSalida'];
 $cantidad_material=$_POST['cantidad_material'];
 $fecha_real=date("Y-m-d");
+
+$codSucursalIngreso=$_COOKIE['global_agencia'];
 
 $consulta="update ingreso_almacenes set cod_tipoingreso='$tipo_ingreso', nro_factura_proveedor='$nro_factura', 
 		observaciones='$observaciones' where cod_ingreso_almacen='$codIngreso'";
@@ -52,7 +58,7 @@ if($sql_inserta==1){
 			precio_bruto, costo_almacen, costo_actualizado, costo_actualizado_final, costo_promedio, precio_neto, cod_ubicacionestante, cod_ubicacionfila) 
 			values($codIngreso,'$cod_material',$cantidad,$cantidad,'$lote','$fechaVencimiento',$precioUnitario,$precioUnitario,$costo,$costo,$costo,$costo,'$ubicacionEstante','$ubicacionFila')";
 			
-			echo "bbb:$consulta";
+			//echo "bbb:$consulta";
 			
 			$sql_inserta2 = mysqli_query($enlaceCon,$consulta);
 			
@@ -65,13 +71,15 @@ if($sql_inserta==1){
 			if($banderaUpdPreciosSucursales==0){
 				$sqlSucursales=$sqlSucursales." where cod_ciudad='$codSucursalIngreso'";
 			}
-			echo $sqlSucursales;
+			//echo $sqlSucursales;
 			$respSucursales=mysqli_query($enlaceCon,$sqlSucursales);
 			while($datSucursales=mysqli_fetch_array($respSucursales)){
 				$codCiudadPrecio=$datSucursales[0];
 				$precioProductoModificar=$precioItem;
 				$arrayPreciosModificar[$codCiudadPrecio]=$precioProductoModificar;
 			}
+
+			//var_dump($arrayPreciosModificar);
 
 			
 			/*SOLO CUANDO ESTAN ACTIVADOS LOS CAMBIOS DE PRECIO Y EL TIPO DE INGRESO ES POR LABORATORIO*/
@@ -87,8 +95,10 @@ if($sql_inserta==1){
 				}
 								
 				//SI NO EXISTE EL PRECIO LO INSERTA CASO CONTRARIO VERIFICA QUE EL PRECIO DEL INGRESO SEA MAYOR AL ACTUAL PARA HACER EL UPDATE
+				//echo "PRECIO ACTUAL: ".$precioActual." PRECIO NUEVO : ".$precioItem."BANDERA PRECIO: ".$banderaPrecioUpd;
 				if($banderaPrecioUpd==1){
 					if($precioItem!=$precioActual){
+						//echo "ingresa a modificar";
 						$respModificarPrecios=actualizarPrecios($enlaceCon,$cod_material,$arrayPreciosModificar);
 					}
 				}

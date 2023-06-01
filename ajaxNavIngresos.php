@@ -12,22 +12,22 @@ $fechaIniBusqueda=formateaFechaVista($fechaIniBusqueda);
 $fechaFinBusqueda=formateaFechaVista($fechaFinBusqueda);
 
 echo "<center><table class='texto' width='100%'>";
-echo "<tr><th>&nbsp;</th><th>Nro. Ingreso</th><th>Nota de Ingreso</th><th>Fecha</th><th>Tipo de Ingreso</th>
+echo "<tr><th>&nbsp;</th><th>Nro. Ingreso</th><th>Nro. Factura Proveedor</th><th>Fecha</th><th>Tipo de Ingreso</th>
 <th>Proveedor</th>
 <th>Observaciones</th><th>&nbsp;</th></tr>";
 	
 //
 $consulta = "
-    SELECT i.cod_ingreso_almacen, i.fecha, i.hora_ingreso, ti.nombre_tipoingreso, i.observaciones, i.nota_entrega, i.nro_correlativo, i.ingreso_anulado,
+    SELECT i.cod_ingreso_almacen, i.fecha, i.hora_ingreso, ti.nombre_tipoingreso, i.observaciones, i.nro_factura_proveedor, i.nro_correlativo, i.ingreso_anulado,
 	(select p.nombre_proveedor from proveedores p where p.cod_proveedor=i.cod_proveedor) as proveedor
     FROM ingreso_almacenes i, tipos_ingreso ti
     WHERE i.cod_tipoingreso=ti.cod_tipoingreso
     AND i.cod_almacen='$global_almacen'";
 
 if($notaIngreso!="")
-   {$consulta = $consulta."AND i.nota_entrega='$notaIngreso' ";
+   {$consulta = $consulta."AND i.nro_correlativo='$notaIngreso' ";
    }
-if($fechaIniBusqueda!="--" && $fechaFinBusqueda!="--")
+if($fechaIniBusqueda!="" && $fechaFinBusqueda!="")
    {$consulta = $consulta."AND '$fechaIniBusqueda'<=i.fecha AND i.fecha<='$fechaFinBusqueda' ";
    }
 if($provBusqueda!=0){
@@ -35,7 +35,9 @@ if($provBusqueda!=0){
 }   
 $consulta = $consulta."ORDER BY i.nro_correlativo DESC";
 
+//echo $consulta;
 //
+
 $resp = mysqli_query($enlaceCon,$consulta);
 	
 while ($dat = mysqli_fetch_array($resp)) {
@@ -46,6 +48,11 @@ while ($dat = mysqli_fetch_array($resp)) {
     $nombre_tipoingreso = $dat[3];
     $obs_ingreso = $dat[4];
     $nota_entrega = $dat[5];
+
+    if($nota_entrega==0){
+        $nota_entrega="-";
+    }
+
     $nro_correlativo = $dat[6];
     $anulado = $dat[7];
 	$proveedor=$dat[8];
@@ -66,12 +73,12 @@ while ($dat = mysqli_fetch_array($resp)) {
         $color_fondo = "#ff8080";
         $chkbox = "<input type='checkbox' name='codigo' value='$codigo'>";
     }
-    if ($num_filas_movimiento == 0 and $anulado == 0) {
+    if ($num_filas_movimiento == 0 && $anulado == 0) {
         $color_fondo = "";
         $chkbox = "<input type='checkbox' name='codigo' value='$codigo'>";
     }
-	
-	if ($anio_ingreso != $globalGestionActual) {
+    //if ($anio_ingreso != $globalGestionActual) {
+    if ($anio_ingreso != 2023 ) {
         $chkbox = "";
     }
     echo "<tr bgcolor='$color_fondo'><td align='center'>$chkbox</td><td align='center'>$nro_correlativo</td><td align='center'>&nbsp;$nota_entrega</td>

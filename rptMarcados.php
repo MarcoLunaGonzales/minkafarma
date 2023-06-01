@@ -1,5 +1,5 @@
 <?php
-require("conexion.inc");
+require("conexionmysqli2.inc");
 require("estilos.inc");
 
 $fechaInicio=$_POST['exafinicial'];
@@ -11,11 +11,11 @@ echo "<h1>Reporte Marcados de Personal</h1>";
 $sqlPersonal="select distinct(f.codigo_funcionario), concat(f.paterno,' ',f.materno,' ',f.nombres) from marcados_personal m, funcionarios f
 where f.codigo_funcionario=m.cod_funcionario and 
 m.fecha_marcado BETWEEN '$fechaInicio' and '$fechaFinal'";
-$respPersonal=mysql_query($sqlPersonal);
+$respPersonal=mysqli_query($enlaceCon, $sqlPersonal);
 
 echo "<center><table class='texto'>";
 
-while($datPersonal=mysql_fetch_array($respPersonal)){
+while($datPersonal=mysqli_fetch_array($respPersonal)){
 	$codPersonal=$datPersonal[0];
 	$nombrePersonal=$datPersonal[1];
 	echo "<tr><th colspan='8'>$nombrePersonal<th></tr>";
@@ -32,11 +32,11 @@ while($datPersonal=mysql_fetch_array($respPersonal)){
 	while($fechaPivot<=$fechaFinal){
 		$sqlMarcados="select fecha_marcado from marcados_personal where fecha_marcado between '$fechaPivot 00:00:00' and '$fechaPivot 23:59:59' 
 		and cod_funcionario='$codPersonal'";
-		$respMarcados=mysql_query($sqlMarcados);
+		$respMarcados=mysqli_query($enlaceCon, $sqlMarcados);
 		echo "<tr><td>$fechaPivot</td>";
 		$contador=1;
 		
-		while($datMarcados=mysql_fetch_array($respMarcados)){
+		while($datMarcados=mysqli_fetch_array($respMarcados)){
 			$horaMarcado=$datMarcados[0];
 			list($fechaX, $horaX)=explode(' ',$horaMarcado);
 			$horaX=substr($horaX,0,-3);
