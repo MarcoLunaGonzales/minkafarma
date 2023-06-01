@@ -569,7 +569,19 @@ function guardarClientePrecio() {
 	<input type="text" class="form-codigo-barras" id="input_codigo_barras" placeholder="Ingrese el código de barras." autofocus autocomplete="off" hidden>
 </div> -->
 	<?php
-		// Obtener el CODIGO del registro antes de eliminarlo
+		// DETALLE DE DATOS GENERALES DEL CLIENTE 
+		// Nombre del Cliente
+		$query = "SELECT CONCAT(c.nombre_cliente, ' ', c.paterno) as cliente
+				FROM clientes c
+				WHERE cod_cliente = '".$cod_cliente."'";
+		$result = mysqli_query($enlaceCon, $query);
+		if (!$result) {
+			echo "Error al obtener el Observación del registro: " . mysqli_error($enlaceCon);
+			exit;
+		}
+		$row = mysqli_fetch_assoc($result);
+		$cliente 	 = empty($row['cliente'])?'':$row['cliente'];
+		// OBSERVACIONES DEL REGISTRO PRECIO_CLIENTE
 		$query = "SELECT cp.observaciones, CONCAT(c.nombre_cliente, ' ', c.paterno) as cliente
 				FROM clientes_precios cp
 				LEFT JOIN clientes c ON c.cod_cliente = cp.cod_cliente
@@ -580,7 +592,6 @@ function guardarClientePrecio() {
 			exit;
 		}
 		$row = mysqli_fetch_assoc($result);
-		$cliente 	 = empty($row['cliente'])?'':$row['cliente'];
 		$observacion = empty($row['observaciones'])?'':$row['observaciones'];
 	?>
 <center>
