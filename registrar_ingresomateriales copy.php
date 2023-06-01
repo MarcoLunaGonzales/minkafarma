@@ -351,7 +351,7 @@ function pressEnter(e, f){
 }
 function calculaMargen(preciocliente, index){
 	preciocliente=parseFloat(preciocliente.value);
-	var preciocompra=document.getElementById("precio"+index).value;
+	var preciocompra=document.getElementById('precio'+index).value;
 	var costo=parseFloat(preciocompra);
 	var cantidad=document.getElementById('cantidad_unitaria'+index).value;
 	var costounitario=parseFloat(costo)/parseFloat(cantidad);
@@ -370,14 +370,8 @@ function calculaMargen(preciocliente, index){
 	document.getElementById('divmargen'+index).innerHTML=margenNuevoF;
 }
 function calculaPrecioCliente(preciocompra, index){
-	// Ajuste Descuento Adicional
-	ajusteDescuento();
-	totalesMonto();
-
 	//alert('calculaPrecioCliente');
-	// var costo=preciocompra.value;
-	var costo = parseFloat(document.getElementById("precio"+index).value);
-	
+	var costo=preciocompra.value;
 	var margen=document.getElementById('margenlinea'+index).value;
 	var cantidad=document.getElementById('cantidad_unitaria'+index).value;
 	var costounitario=costo/cantidad;
@@ -393,7 +387,7 @@ function calculaPrecioCliente(preciocompra, index){
 	var margenNuevoF="M ["+ number_format((margenNuevo*100),0) + "%]";
 	document.getElementById('divmargen'+index).innerHTML=margenNuevoF;
 
-
+	totalesMonto();
 }
 
 function totalesMonto(){
@@ -415,55 +409,6 @@ function totalesMonto(){
 	var totalSD=montoTotal-descuentoTotal;
 	//alert(totalSD);
 	document.getElementById("totalCompraSD").value=totalSD;
-	
-}
-
-/*****************************************
- * Descuento Adicional a ITEMS
-*****************************************/
-function changeDescuentoAdicional(){
-	// Ajuste Descuento Adicional
-	ajusteDescuento();
-	// Ajuste Monto Total sin DESCUENTO ADICIONAL
-	totalesMonto();
-}
-
-/*****************************************
- * Ajuste de Descuento del Monto de Venta
-*****************************************/
-function ajusteDescuento(){
-	
-	var cantidadTotal=0;
-	var precioTotal=0;
-	var montoTotal=0;
-	// Total Monto sin descuento adicional
-	var monto_total_old = 0;
-    for(var ii=1;ii<=num;ii++){
-		if(document.getElementById('material'+ii)!=null){
-			monto_total_old += parseFloat(document.getElementById("precio_old"+ii).value);
-		}
-	}
-	// Detalle
-    for(var ii=1;ii<=num;ii++){
-		if(document.getElementById('material'+ii)!=null){
-			var precio 	    = document.getElementById("precio_old"+ii).value;
-			// Total Compra
-			var total_compra= monto_total_old;
-			// Descuento Adicional Superior
-			var desc_ad_sup = document.getElementById("descuento_adicional").value;
-
-			// Total Descuento ITEM
-			document.getElementById("descuento_adicional"+ii).value = Math.round((parseFloat(precio)/parseFloat(total_compra))*desc_ad_sup);
-
-			/*********************/
-			/*		TOTAL		 */
-			/*********************/
-			var item_descuento = document.getElementById("descuento_adicional"+ii).value;
-			var item_precio    = document.getElementById("precio_old"+ii).value;
-			document.getElementById("precio"+ii).value = item_precio - item_descuento;
-			
-		}
-	}
 	
 }
 
@@ -584,8 +529,8 @@ echo "</table><br>";
 			<table align="center"class="text" cellSpacing="1" cellPadding="2" width="100%" border="0" id="data0" style="border:#ccc 1px solid;">
 				<tr>
 					<th colspan="4"></th>
-					<th>Descuento Final 1</th>
-					<th colspan="2"><input type="text" id="descuento_adicional" value="0" onkeyup="changeDescuentoAdicional()"></th>
+					<th>Descuento Adicional</th>
+					<th colspan="2"><input type="text" id="descuento_adicional" value="0"></th>
 				</tr>
 				<tr>
 					<td align="center" colspan="7">
@@ -604,15 +549,10 @@ echo "</table><br>";
 					<td width="10%" align="center">Cantidad</td>
 					<!--td width="10%" align="center">Lote</td-->
 					<td width="10%" align="center">Vencimiento</td>
+
 					<td width="10%" align="center">Precio Distribuidor<br>(Total_item)</td>
-
-					<!-- Descuento Adicional -->
-					<td width="10%" align="center">Descuento Adicional</td>
-					<!-- Monto Total -->
-					<td width="10%" align="center">Total</td>
-
 					<td width="10%" align="center">Precio Cliente Final</td>
-					<td width="10%" align="center">Acción</td>
+					<td width="10%" align="center">&nbsp;</td>
 				</tr>
 			</table>
 
@@ -626,7 +566,7 @@ echo "</table><br>";
 				<td align='right'>Total Compra</td><td align='right'><input type='number' name='totalCompra' id='totalCompra' value='0' size='10' readonly></td>
 			</tr>
 			<tr>
-				<td align='right'>Descuento Final 2</td><td align='right'><input type='number' name='descuentoTotal' id='descuentoTotal' value='0' size='10' onKeyUp='totalesMonto();' required></td>
+				<td align='right'>Descuento</td><td align='right'><input type='number' name='descuentoTotal' id='descuentoTotal' value='0' size='10' onKeyUp='totalesMonto();' required></td>
 			</tr>
 			<tr>
 				<td align='right'>Total</td><td align='right'><input type='number' name='totalCompraSD' id='totalCompraSD' value='0' size='10' readonly></td>
