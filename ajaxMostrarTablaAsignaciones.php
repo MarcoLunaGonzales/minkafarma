@@ -8,11 +8,11 @@ JOIN funcionarios fu on fu.codigo_funcionario=f.codigo_funcionario
 JOIN usuarios_sistema u on u.codigo_funcionario=fu.codigo_funcionario
 JOIN ciudades c on c.cod_ciudad=f.cod_ciudad where f.codigo_funcionario='$personal'";
 
-echo $sql;
+//echo $sql;
 
 $resp=mysqli_query($enlaceCon,$sql);
 
-echo "";
+echo "<table>";
 echo "<tr class='bg-info text-white'><th colspan='6'>Sucursales Habilitadas</th></tr>";
 echo "<tr class='bg-info text-white'><th>Codigo</th><th>Personal</th><th>Usuario</th><th>CI</th><th>Sucursal</th><th></th></tr>";
 echo "";

@@ -35,6 +35,7 @@
 	echo "<br><table border=0 class='texto' align='center'>";
 	echo "<tr><th>&nbsp;</th><th>Codigo</th><th>Material</th><th>Cantidad</th><th>Lote</th><th>Fecha Vencimiento</th><th>Ubicacion</th><th>Precio Compra(Bs.)</th><th>Total(Bs.)</th></tr>";
 	$indice=1;
+	$totalIngreso=0;
 	while($dat_detalle=mysqli_fetch_array($resp_detalle))
 	{	$cod_material=$dat_detalle[0];
 		$cantidad_unitaria=$dat_detalle[1];
@@ -45,7 +46,11 @@
 		$fila=$dat_detalle[6];
 		
 		$totalValorItem=$cantidad_unitaria*$precioNeto;
-		
+		$totalIngreso+=$totalValorItem;
+
+		$totalValorItemF=formatonumeroDec($totalValorItem);
+
+
 		$cantidad_unitaria=redondear2($cantidad_unitaria);
 		$sql_nombre_material="select descripcion_material from material_apoyo where codigo_material='$cod_material'";
 		$resp_nombre_material=mysqli_query($enlaceCon,$sql_nombre_material);
@@ -58,9 +63,18 @@
 		<td align='center'>$loteProducto</td>
 		<td align='center'>$fechaVenc</td>
 		<td align='center'>$estante - $fila</td>
-		<td align='center'>$precioNeto</td><td align='center'>$totalValorItem</td></tr>";
+		<td align='center'>$precioNeto</td><td align='center'>$totalValorItemF</td></tr>";
 		$indice++;
 	}
+	$totalIngresoF=formatonumeroDec($totalIngreso);
+	echo "<tr>
+		<td align='center'>-</td>
+		<td align='center'>&nbsp;</td>
+		<td>&nbsp;</td><td align='center'>&nbsp;</td>
+		<td align='center'>&nbsp;</td>
+		<td align='center'>&nbsp;</td>
+		<td align='center'>&nbsp;</td>
+		<td align='center'>Total Compra [Bs.]</td><td align='center'>$totalIngresoF</td></tr>";
 	echo "</table>";
 	
 	echo "<center><a href='javascript:window.print();'><IMG border='no'

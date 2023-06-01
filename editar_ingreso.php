@@ -589,7 +589,7 @@ while($dat1=mysqli_fetch_array($resp1))
 </td>
 
 <td align="center" width="10%">
-<input type="number" class="inputnumber" value="<?=$precioTotalItem;?>" id="precio<?php echo $num;?>" name="precio<?php echo $num;?>" size="5" min="0" onKeyUp='calculaPrecioCliente(this,<?php echo $num;?>);' onChange='calculaPrecioCliente(this,<?php echo $num;?>);' required>
+<input type="number" class="inputnumber" value="<?=$precioTotalItem;?>" id="precio<?php echo $num;?>" name="precio<?php echo $num;?>" size="5" min="0" onKeyUp='calculaPrecioCliente(this,<?php echo $num;?>);' onChange='calculaPrecioCliente(this,<?php echo $num;?>);' step="0.01" required>
 </td>
 
 <td align="center" width="10%">

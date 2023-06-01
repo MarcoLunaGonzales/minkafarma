@@ -34,6 +34,12 @@ function nuevoAjax()
 }
 
 function listaMateriales(f){
+
+	var stock=0;
+	if($("#solo_stock").is(":checked")){
+		stock=1;
+	}
+
 	var contenedor;
 	var codTipo=f.itemTipoMaterial.value;
 	var nombreItem=f.itemNombreMaterial.value;
@@ -51,7 +57,7 @@ function listaMateriales(f){
 	}
 	
 	ajax=nuevoAjax();
-	ajax.open("GET", "ajaxListaMateriales.php?codTipo="+codTipo+"&nombreItem="+nombreItem+"&arrayItemsUtilizados="+arrayItemsUtilizados+"&tipoSalida="+tipoSalida,true);
+	ajax.open("GET", "ajaxListaMateriales.php?codTipo="+codTipo+"&nombreItem="+nombreItem+"&arrayItemsUtilizados="+arrayItemsUtilizados+"&tipoSalida="+tipoSalida+"&stock="+stock,true);
 	ajax.onreadystatechange=function() {
 		if (ajax.readyState==4) {
 			contenedor.innerHTML = ajax.responseText
@@ -238,8 +244,9 @@ function validar(f)
 		alert("El tipo de Documento no puede estar vacio.");
 		return(false);
 	}
-	if(almacenDestino==0){
-		alert("El Almacen Destino no puede estar vacio.");
+	/* Validamos el almacen cuando es traspaso. */
+	if(almacenDestino==0 && tipoSalida==1000){   
+ 		alert("El Almacen Destino no puede estar vacio.");
 		return(false);
 	}
 	if(cantidadItems>0){		
@@ -334,6 +341,9 @@ else
 <?php
 	$sql3="select cod_almacen, nombre_almacen from almacenes where cod_almacen<>'$global_almacen' order by nombre_almacen";
 	$resp3=mysqli_query($enlaceCon,$sql3);
+?>
+		<option value="0">--</option>
+<?php			
 	while($dat3=mysqli_fetch_array($resp3)){
 		$cod_almacen=$dat3[0];
 		$nombre_almacen="$dat3[1] $dat3[2] $dat3[3]";
@@ -386,14 +396,14 @@ echo "<script type='text/javascript' language='javascript'  src='dlcalendar.js'>
 
 
 
-<div id="divRecuadroExt" style="background-color:#666; position:absolute; width:800px; height: 400px; top:30px; left:150px; visibility: hidden; opacity: .70; -moz-opacity: .70; filter:alpha(opacity=70); -webkit-border-radius: 20px; -moz-border-radius: 20px; z-index:2; overflow: auto;">
+<div id="divRecuadroExt" style="background-color:#666; position:absolute; width:900px; height: 400px; top:30px; left:150px; visibility: hidden; opacity: .70; -moz-opacity: .70; filter:alpha(opacity=70); -webkit-border-radius: 20px; -moz-border-radius: 20px; z-index:2; overflow: auto;">
 </div>
 
-<div id="divboton" style="position: absolute; top:20px; left:920px;visibility:hidden; text-align:center; z-index:3">
+<div id="divboton" style="position: absolute; top:20px; left:980px;visibility:hidden; text-align:center; z-index:3">
 	<a href="javascript:Hidden();"><img src="imagenes/cerrar4.png" height="45px" width="45px"></a>
 </div>
 
-<div id="divProfileData" style="background-color:#FFF; width:750px; height:350px; position:absolute; top:50px; left:170px; -webkit-border-radius: 20px; 	-moz-border-radius: 20px; visibility: hidden; z-index:2; overflow: auto;">
+<div id="divProfileData" style="background-color:#FFF; width:850px; height:350px; position:absolute; top:50px; left:170px; -webkit-border-radius: 20px; 	-moz-border-radius: 20px; visibility: hidden; z-index:2; overflow: auto;">
   	<div id="divProfileDetail" style="visibility:hidden; text-align:center">
 		<table align='center'>
 			<tr><th>Linea</th><th>Material</th><th>&nbsp;</th></tr>
@@ -420,7 +430,14 @@ echo "<script type='text/javascript' language='javascript'  src='dlcalendar.js'>
 				<input type='button' class='boton' value='Buscar' onClick="listaMateriales(this.form)">
 			</td>
 			</tr>
-			
+			<tr>
+				<td>
+					<div class="custom-control custom-checkbox small float-left">
+                    	<input type="checkbox" class="" id="solo_stock" checked="">
+                    	<label class="text-dark font-weight-bold" for="solo_stock">&nbsp;&nbsp;&nbsp;Solo Productos con Stock</label>
+         			</div>
+				</td>
+			</tr>
 		</table>
 		<div id="divListaMateriales">
 		</div>

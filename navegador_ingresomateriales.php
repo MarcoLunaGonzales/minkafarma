@@ -206,7 +206,7 @@ $anulacionCodigo = $datConf[0];
 
 
 $consulta = "
-    SELECT i.cod_ingreso_almacen, i.fecha, i.hora_ingreso, ti.nombre_tipoingreso, i.observaciones, i.nota_entrega, i.nro_correlativo, i.ingreso_anulado,
+    SELECT i.cod_ingreso_almacen, i.fecha, i.hora_ingreso, ti.nombre_tipoingreso, i.observaciones, i.nro_factura_proveedor, i.nro_correlativo, i.ingreso_anulado,
 	(select p.nombre_proveedor from proveedores p where p.cod_proveedor=i.cod_proveedor) as proveedor
     FROM ingreso_almacenes i, tipos_ingreso ti
     WHERE i.cod_tipoingreso=ti.cod_tipoingreso
@@ -230,7 +230,7 @@ echo"&nbsp; <input type='button' value='Buscar' class='boton' onclick='ShowBusca
 
 echo "<div id='divCuerpo'>";
 echo "<br><center><table class='texto'>";
-echo "<tr><th>&nbsp;</th><th>Numero Ingreso</th><th>Nota de Ingreso</th><th>Fecha</th><th>Tipo de Ingreso</th>
+echo "<tr><th>&nbsp;</th><th>Numero Ingreso</th><th>Nro. Factura Proveedor</th><th>Fecha</th><th>Tipo de Ingreso</th>
 <th>Proveedor</th>
 <th>Observaciones</th><th>&nbsp;</th></tr>";
 while ($dat = mysqli_fetch_array($resp)) {
@@ -246,6 +246,11 @@ while ($dat = mysqli_fetch_array($resp)) {
     $nombre_tipoingreso = $dat[3];
     $obs_ingreso = $dat[4];
     $nota_entrega = $dat[5];
+
+    if($nota_entrega==0){
+        $nota_entrega="-";
+    }
+
     $nro_correlativo = $dat[6];
     $anulado = $dat[7];
 	$proveedor=$dat[8];
@@ -314,7 +319,7 @@ echo "</form>";
 				</td>
 			</tr>
 			<tr>
-				<td>Nota de Ingreso</td>
+				<td>Nro. de Ingreso</td>
 				<td>
 				<input type='text' name='notaIngreso' id="notaIngreso" class='texto'>
 				</td>

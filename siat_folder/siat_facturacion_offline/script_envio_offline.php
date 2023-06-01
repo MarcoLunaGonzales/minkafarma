@@ -2,7 +2,12 @@
 require("../../conexionmysqli2.inc");
 require("../funciones_siat.php");
 require("consultaEvento.php");
+
 $DatosConexion=verificarConexion();
+
+//definimos como conexion ==1
+$DatosConexion[0]==1; 
+
 if($DatosConexion[0]==1){
   $cod_tipoEmision=2;//tipo emision OFFLINE
   //    $sql="SELECT s.cod_salida_almacenes,a.nombre_almacen as sucursal, s.fecha, s.hora_salida, s.nro_correlativo,  
