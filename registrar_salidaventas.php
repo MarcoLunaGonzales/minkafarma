@@ -881,6 +881,35 @@ function setMateriales(f, cod, nombreMat){
 	document.getElementById("cantidad_unitaria"+numRegistro).focus();
 
 	actStock(numRegistro);
+	// Verificación de PRECIO CLIENTE
+	precioCliente(numRegistro, cod);
+}
+/**
+ * Verificación de Precio Cliente
+ */
+function precioCliente(numRegistro, item){
+	let cod_cliente  = $('#cliente').val();
+	let cod_producto = item;
+	let index 		 = numRegistro;
+	$('#cantidad_unitaria'+index).val(1);
+	if(cod_cliente != null || cod_cliente != '') {
+		$.ajax({
+			url: "clientePrecioSearch.php",
+			type: "POST",
+			dataType: 'json',
+			data: {
+				cod_cliente: cod_cliente,
+				cod_producto: cod_producto,
+			},
+			success:  function (resp) {
+				// Detalle de Respuesta de Precio Cliente
+				if(resp.status){
+					$('#tipoPrecio'+index).val(parseFloat(resp.data.porcentaje_aplicado));
+					$('#descuentoProducto'+index).val(resp.data.precio_aplicado);
+				}
+			}
+		});
+	}
 }
 		
 function precioNeto(fila){
