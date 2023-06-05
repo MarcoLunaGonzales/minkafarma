@@ -486,7 +486,8 @@ function ajusteDescuento(){
 			var item_descuento_unitario = parseFloat(document.getElementById("descuento_numero"+ii).value);
 			var item_descuento = parseFloat(document.getElementById("descuento_adicional"+ii).value);
 			var item_precio    = parseFloat(document.getElementById("precio_old"+ii).value);
-			document.getElementById("precio"+ii).value = item_precio - (item_descuento+item_descuento_unitario);
+			var total_final = item_precio - (item_descuento+item_descuento_unitario);
+			document.getElementById("precio"+ii).value = total_final.toFixed(2);
 			
 		}
 	}
