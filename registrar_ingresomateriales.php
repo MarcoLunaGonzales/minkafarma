@@ -369,22 +369,45 @@ function calculaMargen(preciocliente, index){
 	var margenNuevoF="M ["+ number_format((margenNuevo*100),0) + "%]";
 	document.getElementById('divmargen'+index).innerHTML=margenNuevoF;
 }
-function calculaPrecioCliente(preciocompra, index){
+// CALCULO DE DESCUENTOS EN PORCENTAJE
+function calcularDescuentoUnitario(tipo, index){
+	let precio_old = parseFloat(document.getElementById('precio_old'+index).value);
+	if(tipo == 0){
+		//  # Numerico
+		let descuento_numero = parseFloat(document.getElementById('descuento_numero'+index).value);
+		document.getElementById('descuento_porcentaje'+index).value = (descuento_numero/precio_old)*100;
+	}else{
+		//  % Porcentaje
+		let descuento_porcentaje = parseFloat(document.getElementById('descuento_porcentaje'+index).value);
+		document.getElementById('descuento_numero'+index).value = (descuento_porcentaje/100) * precio_old;
+	}
 	// Ajuste Descuento Adicional
 	ajusteDescuento();
+	// Ajuste Monto Total sin DESCUENTO ADICIONAL
 	totalesMonto();
+}
+// Calculo de montos TOTALES
+function calculaPrecioCliente(preciocompra, index){
+	/****************************************************************************/
+	// CALCULAR SUBTOTAL
+	var cantidad 		= parseFloat(document.getElementById('cantidad_unitaria'+index).value);
+	var precio_unitario = parseFloat(document.getElementById('precio_unitario'+index).value);
+	document.getElementById('precio_old'+index).value = (cantidad > 0 ? cantidad : 0) * (precio_unitario > 0 ? precio_unitario : 0);
+	/****************************************************************************/
 
 	//alert('calculaPrecioCliente');
 	// var costo=preciocompra.value;
-	var costo = parseFloat(document.getElementById("precio"+index).value);
-	
-	var margen=document.getElementById('margenlinea'+index).value;
-	var cantidad=document.getElementById('cantidad_unitaria'+index).value;
-	var costounitario=costo/cantidad;
+	// var costo = parseFloat(document.getElementById("precio"+index).value);
+	// var cantidad=document.getElementById('cantidad_unitaria'+index).value;
+	// var costounitario=costo/cantidad;
+	// console.log("costoUnitario: "+costounitario); // s dejo esta parte de codigo
+	// var preciocliente=costounitario+(costounitario*(margen/100));
 
-	console.log("costoUnitario: "+costounitario); // s dejo esta parte de codigo
-
-	var preciocliente=costounitario+(costounitario*(margen/100));
+	var margen		  = document.getElementById('margenlinea'+index).value;
+	var costounitario = precio_unitario;
+	var preciocliente=(costounitario + (costounitario*(margen/100)));
+	console.log('costounitario:'+costounitario)
+	console.log('(costounitario*(margen/100)):'+(costounitario*(margen/100)))
 	preciocliente=redondear(preciocliente,2);
 	preciocliente=number_format(preciocliente,2);
 	document.getElementById('preciocliente'+index).value=preciocliente;
@@ -393,7 +416,9 @@ function calculaPrecioCliente(preciocompra, index){
 	var margenNuevoF="M ["+ number_format((margenNuevo*100),0) + "%]";
 	document.getElementById('divmargen'+index).innerHTML=margenNuevoF;
 
-
+	// Ajuste Descuento Adicional
+	ajusteDescuento();
+	totalesMonto();
 }
 
 function totalesMonto(){
@@ -458,9 +483,10 @@ function ajusteDescuento(){
 			/*********************/
 			/*		TOTAL		 */
 			/*********************/
-			var item_descuento = document.getElementById("descuento_adicional"+ii).value;
-			var item_precio    = document.getElementById("precio_old"+ii).value;
-			document.getElementById("precio"+ii).value = item_precio - item_descuento;
+			var item_descuento_unitario = parseFloat(document.getElementById("descuento_numero"+ii).value);
+			var item_descuento = parseFloat(document.getElementById("descuento_adicional"+ii).value);
+			var item_precio    = parseFloat(document.getElementById("precio_old"+ii).value);
+			document.getElementById("precio"+ii).value = item_precio - (item_descuento+item_descuento_unitario);
 			
 		}
 	}
@@ -599,19 +625,23 @@ echo "</table><br>";
 					</td>				
 				</tr>				
 				<tr class="titulo_tabla" align="center">
-					<td width="10%" align="center">&nbsp;</td>
-					<td width="40%" align="center">Producto</td>
+					<td width="5%" align="center">&nbsp;</td>
+					<td width="30%" align="center">Producto</td>
 					<td width="10%" align="center">Cantidad</td>
+					<td width="10%" align="center">Precio</td>
 					<!--td width="10%" align="center">Lote</td-->
 					<td width="10%" align="center">Vencimiento</td>
-					<td width="10%" align="center">Precio Distribuidor<br>(Total_item)</td>
+					<!-- <td width="10%" align="center">Precio Distribuidor<br>(Total_item)</td> -->
+					<td width="10%" align="center">Subtotal</td>
 
+					<!-- Descuento Unitario -->
+					<td width="5%" align="center">Descuento<br>Unitario</td>
 					<!-- Descuento Adicional -->
-					<td width="10%" align="center">Descuento Adicional</td>
+					<td width="10%" align="center">Descuento<br>Adicional</td>
 					<!-- Monto Total -->
 					<td width="10%" align="center">Total</td>
 
-					<td width="10%" align="center">Precio Cliente Final</td>
+					<td width="10%" align="center">Precio<br>Cliente Final</td>
 					<td width="10%" align="center">Acción</td>
 				</tr>
 			</table>
@@ -623,13 +653,16 @@ echo "</table><br>";
 		
 		<table align="center"class="text" cellSpacing="1" cellPadding="2" width="100%" border="0" id="data0" style="border:#ccc 1px solid;">
 			<tr>
-				<td align='right'>Total Compra</td><td align='right'><input type='number' name='totalCompra' id='totalCompra' value='0' size='10' readonly></td>
+				<td align='right' width="90%">Total Compra</td>
+				<td align='right' width="10%"><input type='number' name='totalCompra' id='totalCompra' value='0' size='10' readonly></td>
 			</tr>
 			<tr>
-				<td align='right'>Descuento Final 2</td><td align='right'><input type='number' name='descuentoTotal' id='descuentoTotal' value='0' size='10' onKeyUp='totalesMonto();' required></td>
+				<td align='right' width="90%">Descuento Final 2</td>
+				<td align='right' width="10%"><input type='number' name='descuentoTotal' id='descuentoTotal' value='0' size='10' onKeyUp='totalesMonto();' required></td>
 			</tr>
 			<tr>
-				<td align='right'>Total</td><td align='right'><input type='number' name='totalCompraSD' id='totalCompraSD' value='0' size='10' readonly></td>
+				<td align='right' width="90%">Total</td>
+				<td align='right' width="10%"><input type='number' name='totalCompraSD' id='totalCompraSD' value='0' size='10' readonly></td>
 			</tr>
 		</table>
 

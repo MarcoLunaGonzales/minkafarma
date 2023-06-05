@@ -75,15 +75,32 @@ if($sql_inserta==1){
 			$precioUnitario=$precioBruto/$cantidad;
 			
 			$costo=$precioUnitario;
-						
+			
+			// Nuevo Campo Descuento Unitario
+			$descuento_unitario = $_POST["descuento_numero$i"];
 			
 			$consulta="insert into ingreso_detalle_almacenes(cod_ingreso_almacen, cod_material, cantidad_unitaria, cantidad_restante, lote, fecha_vencimiento, 
-			precio_bruto, costo_almacen, costo_actualizado, costo_actualizado_final, costo_promedio, precio_neto, cod_ubicacionestante, cod_ubicacionfila) 
-			values($codigo,'$cod_material',$cantidad,$cantidad,'$lote','$fechaVencimiento',$precioUnitario,$precioUnitario,$costo,$costo,$costo,$costo,'$ubicacionEstante','$ubicacionFila')";
+			precio_bruto, costo_almacen, costo_actualizado, costo_actualizado_final, costo_promedio, precio_neto, cod_ubicacionestante, cod_ubicacionfila, descuento_unitario) 
+			values($codigo,'$cod_material',$cantidad,$cantidad,'$lote','$fechaVencimiento',$precioUnitario,$precioUnitario,$costo,$costo,$costo,$costo,'$ubicacionEstante','$ubicacionFila','$descuento_unitario')";
 			//echo "bbb:$consulta";
 			$sql_inserta2 = mysqli_query($enlaceCon,$consulta);
 			
+			/********************************************************************/
+			/*			NUEVA ACTUALIZACIÓN CAMPO DESCUENTO_UNITARIO			*/
+			/********************************************************************/
+			$sqlUpdatePrecio  = "update precios set descuento_unitario='$descuento_unitario' where codigo_material='$cod_material' and cod_precio=1 and cod_ciudad='$codSucursalIngreso'";
+			$respUpdatePrecio = mysqli_query($enlaceCon,$sqlUpdatePrecio);
 			
+			/************************************************************************/
+			/*			NUEVO REGISTRO HISTORIAL CAMPO DESCUENTO_UNITARIO			*/
+			/************************************************************************/
+			$fecha_hora_cambio = date('Y-m-d H:i:s');
+			$consulta="INSERT INTO precios_historico(codigo_material,cod_precio,precio,cod_ciudad,descuento_unitario,fecha_hora_cambio) 
+			SELECT codigo_material,cod_precio,precio,cod_ciudad,descuento_unitario,'$fecha_hora_cambio'
+			FROM precios WHERE codigo_material='$cod_material' AND cod_precio = 1 AND cod_ciudad='$codSucursalIngreso'";
+			$sql_inserta2 = mysqli_query($enlaceCon,$consulta);
+			/************************************************************************/
+
 			$precioItem=$_POST["preciocliente$i"];
 			
 			//ARMAMOS EL ARRAY CON LOS PRECIOS
