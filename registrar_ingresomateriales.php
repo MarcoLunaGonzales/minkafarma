@@ -375,11 +375,13 @@ function calcularDescuentoUnitario(tipo, index){
 	if(tipo == 0){
 		//  # Numerico
 		let descuento_numero = parseFloat(document.getElementById('descuento_numero'+index).value);
-		document.getElementById('descuento_porcentaje'+index).value = (descuento_numero/precio_old)*100;
+		let total_descuento_numero = (descuento_numero/precio_old)*100;
+		document.getElementById('descuento_porcentaje'+index).value = total_descuento_numero.toFixed(2);
 	}else{
 		//  % Porcentaje
 		let descuento_porcentaje = parseFloat(document.getElementById('descuento_porcentaje'+index).value);
-		document.getElementById('descuento_numero'+index).value = (descuento_porcentaje/100) * precio_old;
+		let total_descuento_porcentaje = (descuento_porcentaje/100) * precio_old;
+		document.getElementById('descuento_numero'+index).value = total_descuento_porcentaje.toFixed(2);
 	}
 	// Ajuste Descuento Adicional
 	ajusteDescuento();
