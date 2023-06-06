@@ -3,6 +3,7 @@
 $indexGerencia=1;
 require "conexionmysqli.php";
 require("funciones.php");
+require("funcion_nombres.php");
 require("estilos_almacenes.inc");
 
 error_reporting(E_ALL);
@@ -569,11 +570,15 @@ function guardarClientePrecio() {
 	<input type="text" class="form-codigo-barras" id="input_codigo_barras" placeholder="Ingrese el código de barras." autofocus autocomplete="off" hidden>
 </div> -->
 	<?php
+
+		$nombreClienteX=nombreCliente($enlaceCon,$cod_cliente);
 		// Obtener el CODIGO del registro antes de eliminarlo
 		$query = "SELECT cp.observaciones, CONCAT(c.nombre_cliente, ' ', c.paterno) as cliente
 				FROM clientes_precios cp
 				LEFT JOIN clientes c ON c.cod_cliente = cp.cod_cliente
 				WHERE cp.cod_cliente = '".$cod_cliente."'";
+
+		//echo $query;
 		$result = mysqli_query($enlaceCon, $query);
 		if (!$result) {
 			echo "Error al obtener el Observación del registro: " . mysqli_error($enlaceCon);
@@ -584,7 +589,7 @@ function guardarClientePrecio() {
 		$observacion = empty($row['observaciones'])?'':$row['observaciones'];
 	?>
 <center>
-	<h4>Clientes Precios - <?= $cliente; ?></h4>
+	<h4>Registro de Precios por Cliente <br> Cliente: <?= $nombreClienteX; ?></h4>
 </center>
 <center>
 	<table border="0" class="texto">
