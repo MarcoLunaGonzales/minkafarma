@@ -29,7 +29,7 @@ $fechaActual=date("Y-m-d");
 
 <!-- PRECIO UNITARIO -->
 <td align="center" width="10%">
-<input type="number" class="inputnumber" min="1" max="1000000" id="precio_unitario<?php echo $num;?>" name="precio_unitario<?php echo $num;?>" size="5"  value="0" onKeyUp='calculaPrecioCliente(0, <?php echo $num;?>);' onChange='calculaPrecioCliente(0, <?php echo $num;?>);' required>
+<input type="number" class="inputnumber" min="0.01" max="1000000" id="precio_unitario<?php echo $num;?>" name="precio_unitario<?php echo $num;?>" size="5"  value="0" onKeyUp='calculaPrecioCliente(0, <?php echo $num;?>);' onChange='calculaPrecioCliente(0, <?php echo $num;?>);' step="0.01" required>
 </td>
 
 <!--td align="center" width="10%">
@@ -46,8 +46,8 @@ $fechaActual=date("Y-m-d");
 
 <!-- DESCUENTO UNITARIO -->
 <td align="center" width="5%">
-#<input type="number" class="inputnumber" min="1" max="1000000" id="descuento_numero<?php echo $num;?>" name="descuento_numero<?php echo $num;?>" size="5"  value="0" onKeyUp='calcularDescuentoUnitario(0, <?php echo $num;?>);' onChange='calcularDescuentoUnitario(0, <?php echo $num;?>);' required data-tipo="0">
-%<input type="number" class="inputnumber" min="1" max="1000000" id="descuento_porcentaje<?php echo $num;?>" name="descuento_porcentaje<?php echo $num;?>" size="5"  value="0" onKeyUp='calcularDescuentoUnitario(1, <?php echo $num;?>);' onChange='calcularDescuentoUnitario(1, <?php echo $num;?>);' required data-tipo="1">
+%<input type="number" class="inputnumber" min="1" max="1000000" id="descuento_porcentaje<?php echo $num;?>" name="descuento_porcentaje<?php echo $num;?>" size="5"  value="0" onKeyUp='calcularDescuentoUnitario(1, <?php echo $num;?>);' onChange='calcularDescuentoUnitario(1, <?php echo $num;?>);' step="0.01" required data-tipo="1">
+#<input type="number" class="inputnumber" min="0" max="1000000" id="descuento_numero<?php echo $num;?>" name="descuento_numero<?php echo $num;?>" size="5"  value="0" onKeyUp='calcularDescuentoUnitario(0, <?php echo $num;?>);' onChange='calcularDescuentoUnitario(0, <?php echo $num;?>);' step="0.01" required data-tipo="0">
 </td>
 
 <!-- Decuento Adicional -->

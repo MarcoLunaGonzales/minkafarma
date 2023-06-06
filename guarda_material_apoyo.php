@@ -42,7 +42,7 @@ cantidad_presentacion, principio_activo, cod_tipoventa, producto_controlado, acc
 $resp_inserta=mysqli_query($enlaceCon,$sql_inserta);
 
 
-$resp=actualizarPrecios($enlaceCon,$codigo,$arrayPrecios);
+$resp=actualizarPrecios($enlaceCon,$codigo,$arrayPrecios,0);
 
 if($resp_inserta){
 		echo "<script language='Javascript'>

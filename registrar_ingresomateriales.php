@@ -558,7 +558,7 @@ if($num_filas==1){
 }
 echo "<form action='guarda_ingresomateriales.php' method='post' name='form1' onsubmit='return checkSubmit();'>";
 echo "<table border='0' class='textotit' align='center'>
-		<tr><th>Registrar Ingreso de Materiales</th></tr>
+		<tr><th>Registrar Ingreso de Productos</th></tr>
 		<tr><th align='left'><span class='textopequenorojo' style='background-color:yellow;'><b>$txtUpdPrecios</b></span></th></tr>
 		</table><br>";
 echo "<table border='0' class='texto' cellspacing='0' align='center' width='90%' style='border:#ccc 1px solid;'>";
@@ -566,7 +566,7 @@ echo "<tr>
 	<th>Nro. Ingreso: <b>$nro_correlativo<b></th>";
 echo"<th>Fecha: <input type='text' disabled='true' class='texto' value='$fecha' id='fecha' size='10' name='fecha'></th>
 	<th>Tipo de Ingreso: ";
-$sql1="select cod_tipoingreso, nombre_tipoingreso from tipos_ingreso order by nombre_tipoingreso";
+$sql1="select cod_tipoingreso, nombre_tipoingreso from tipos_ingreso where cod_tipoingreso<>'999' order by nombre_tipoingreso";
 $resp1=mysqli_query($enlaceCon,$sql1);
 echo "<select name='tipo_ingreso' id='tipo_ingreso' class='texto'>";
 while($dat1=mysqli_fetch_array($resp1))
@@ -580,14 +580,10 @@ echo "<th>Factura:  <input type='number' class='texto' name='nro_factura' value=
 
 
 echo "<tr><th>Proveedor</th>";
-echo "<th colspan='3'>Observaciones</th></tr>";
-
-// $sql1="select p.cod_proveedor, concat(p.nombre_proveedor,' ',pl.nombre_linea_proveedor), pl.margen_precio from proveedores p, proveedores_lineas pl 
-// 			where p.cod_proveedor=pl.cod_proveedor and pl.estado=1 order by 2";
 $sql1="select p.cod_proveedor, concat(p.nombre_proveedor) from proveedores p 
 			order by 2";
 $resp1=mysqli_query($enlaceCon,$sql1);
-echo "<tr><td align='center'><select name='proveedor' id='proveedor' class='texto' style='width:200px' required>";
+echo "<th align='center'><select name='proveedor' id='proveedor' class='texto' style='width:200px' required>";
 echo "<option value=''>-</option>";
 while($dat1=mysqli_fetch_array($resp1))
 {   $codigo=$dat1[0];
@@ -596,8 +592,10 @@ while($dat1=mysqli_fetch_array($resp1))
 	
     echo "<option value='$codigo'>$nombre</option>";
 }
-echo "</select></td>";
-echo "<td colspan='4' align='center'><input type='text' class='texto' name='observaciones' value='$observaciones' size='40'></td></tr>";
+echo "</select></th>";
+
+echo "<th colspan='1'>Observaciones</th>";
+echo "<th colspan='1' align='center'><input type='text' class='texto' name='observaciones' value='$observaciones' size='40'></th></tr>";
 echo "</table><br>";
 ?>
         <div class="contenedor">
@@ -655,15 +653,15 @@ echo "</table><br>";
 		<table align="center"class="text" cellSpacing="1" cellPadding="2" width="100%" border="0" id="data0" style="border:#ccc 1px solid;">
 			<tr>
 				<td align='right' width="90%">Total Compra</td>
-				<td align='right' width="10%"><input type='number' name='totalCompra' id='totalCompra' value='0' size='10' readonly></td>
+				<td align='right' width="10%"><input type='number' name='totalCompra' id='totalCompra' value='0' size='10' step="0.01" readonly></td>
 			</tr>
 			<tr>
 				<td align='right' width="90%">Descuento Final 2</td>
-				<td align='right' width="10%"><input type='number' name='descuentoTotal' id='descuentoTotal' value='0' size='10' onKeyUp='totalesMonto();' required></td>
+				<td align='right' width="10%"><input type='number' name='descuentoTotal' id='descuentoTotal' value='0' size='10' onKeyUp='totalesMonto();' step="0.01" required></td>
 			</tr>
 			<tr>
 				<td align='right' width="90%">Total</td>
-				<td align='right' width="10%"><input type='number' name='totalCompraSD' id='totalCompraSD' value='0' size='10' readonly></td>
+				<td align='right' width="10%"><input type='number' name='totalCompraSD' id='totalCompraSD' value='0' size='10' step="0.01" readonly></td>
 			</tr>
 		</table>
 

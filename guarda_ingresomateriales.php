@@ -61,7 +61,10 @@ if($sql_inserta==1){
 		
 		if($cod_material!=0){
 			$cantidad=$_POST["cantidad_unitaria$i"];
-			$precioBruto=$_POST["precio$i"];
+
+			$precioBruto=$_POST["precio_unitario$i"];
+			$precioFinal=$_POST["precio$i"];
+			
 			$lote=$_POST["lote$i"];
 			$ubicacionEstante=$_POST["ubicacion_estante$i"];
 			$ubicacionFila=$_POST["ubicacion_fila$i"];
@@ -72,51 +75,34 @@ if($sql_inserta==1){
 
 			$fechaVencimiento=UltimoDiaMes($fechaVencimiento);
 
-			$precioUnitario=$precioBruto/$cantidad;
+			$precioUnitario=$precioFinal/$cantidad;
 			
 			$costo=$precioUnitario;
 			
 			// Nuevo Campo Descuento Unitario
-			$descuento_unitario = $_POST["descuento_numero$i"];
+			$descuento_unitario = $_POST["descuento_porcentaje$i"];
 			
 			$consulta="insert into ingreso_detalle_almacenes(cod_ingreso_almacen, cod_material, cantidad_unitaria, cantidad_restante, lote, fecha_vencimiento, 
 			precio_bruto, costo_almacen, costo_actualizado, costo_actualizado_final, costo_promedio, precio_neto, cod_ubicacionestante, cod_ubicacionfila, descuento_unitario) 
-			values($codigo,'$cod_material',$cantidad,$cantidad,'$lote','$fechaVencimiento',$precioUnitario,$precioUnitario,$costo,$costo,$costo,$costo,'$ubicacionEstante','$ubicacionFila','$descuento_unitario')";
+			values($codigo,'$cod_material',$cantidad,$cantidad,'$lote','$fechaVencimiento',$precioBruto,$precioUnitario,$costo,$costo,$costo,$costo,'$ubicacionEstante','$ubicacionFila','$descuento_unitario')";
 			//echo "bbb:$consulta";
 			$sql_inserta2 = mysqli_query($enlaceCon,$consulta);
 			
-			/********************************************************************/
-			/*			NUEVA ACTUALIZACIÓN CAMPO DESCUENTO_UNITARIO			*/
-			/********************************************************************/
-			$sqlUpdatePrecio  = "update precios set descuento_unitario='$descuento_unitario' where codigo_material='$cod_material' and cod_precio=1 and cod_ciudad='$codSucursalIngreso'";
-			$respUpdatePrecio = mysqli_query($enlaceCon,$sqlUpdatePrecio);
-			
-			/************************************************************************/
-			/*			NUEVO REGISTRO HISTORIAL CAMPO DESCUENTO_UNITARIO			*/
-			/************************************************************************/
-			$fecha_hora_cambio = date('Y-m-d H:i:s');
-			$consulta="INSERT INTO precios_historico(codigo_material,cod_precio,precio,cod_ciudad,descuento_unitario,fecha_hora_cambio) 
-			SELECT codigo_material,cod_precio,precio,cod_ciudad,descuento_unitario,'$fecha_hora_cambio'
-			FROM precios WHERE codigo_material='$cod_material' AND cod_precio = 1 AND cod_ciudad='$codSucursalIngreso'";
-			$sql_inserta2 = mysqli_query($enlaceCon,$consulta);
-			/************************************************************************/
+			$precioItem=$_POST["preciocliente$i"];			
 
-			$precioItem=$_POST["preciocliente$i"];
-			
 			//ARMAMOS EL ARRAY CON LOS PRECIOS
 			$arrayPreciosModificar=[];
 			$sqlSucursales="select cod_ciudad, descripcion from ciudades ";
 			if($banderaUpdPreciosSucursales==0){
 				$sqlSucursales=$sqlSucursales." where cod_ciudad='$codSucursalIngreso'";
 			}
-			echo $sqlSucursales;
+			//echo $sqlSucursales;
 			$respSucursales=mysqli_query($enlaceCon,$sqlSucursales);
 			while($datSucursales=mysqli_fetch_array($respSucursales)){
 				$codCiudadPrecio=$datSucursales[0];
 				$precioProductoModificar=$precioItem;
 				$arrayPreciosModificar[$codCiudadPrecio]=$precioProductoModificar;
 			}
-
 			
 			/*SOLO CUANDO ESTAN ACTIVADOS LOS CAMBIOS DE PRECIO Y EL TIPO DE INGRESO ES POR LABORATORIO*/
 			if($banderaPrecioUpd>0 && $tipo_ingreso==1000){
@@ -133,15 +119,27 @@ if($sql_inserta==1){
 				//SI NO EXISTE EL PRECIO LO INSERTA CASO CONTRARIO VERIFICA QUE EL PRECIO DEL INGRESO SEA MAYOR AL ACTUAL PARA HACER EL UPDATE
 				if($banderaPrecioUpd==1){
 					if($precioItem!=$precioActual){
-						$respModificarPrecios=actualizarPrecios($enlaceCon,$cod_material,$arrayPreciosModificar);
+						$respModificarPrecios=actualizarPrecios($enlaceCon,$cod_material,$arrayPreciosModificar,$descuento_unitario);
 					}
 				}
 				if($banderaPrecioUpd==2){
 					if($precioItem>$precioActual){
-						$respModificarPrecios=actualizarPrecios($enlaceCon,$cod_material,$arrayPreciosModificar);
+						$respModificarPrecios=actualizarPrecios($enlaceCon,$cod_material,$arrayPreciosModificar,$descuento_unitario);
 					}
 				}
 			}
+			
+			/************************************************************************/
+			/*			NUEVO REGISTRO HISTORIAL CAMPO DESCUENTO_UNITARIO			*/
+			/************************************************************************/
+			$fecha_hora_cambio = date('Y-m-d H:i:s');
+			$consulta="INSERT INTO precios_historico(codigo_material,cod_precio,precio,cod_ciudad,descuento_unitario,fecha_hora_cambio) 
+			SELECT codigo_material,cod_precio,precio,cod_ciudad,descuento_unitario,'$fecha_hora_cambio'
+			FROM precios WHERE codigo_material='$cod_material' AND cod_precio = 1 AND cod_ciudad='$codSucursalIngreso'";
+			$sql_inserta2 = mysqli_query($enlaceCon,$consulta);
+			/************************************************************************/
+
+
 			$aa=recalculaCostos($enlaceCon,$cod_material, $global_almacen);			
 		}
 	}

@@ -351,10 +351,15 @@ function ajaxPrecioItem(indice){
 	ajax.open("GET", "ajaxPrecioItem.php?codmat="+codmat+"&indice="+indice+"&tipoPrecio="+tipoPrecio,true);
 	ajax.onreadystatechange=function() {
 		if (ajax.readyState==4) {
-			var respuesta=ajax.responseText.split("#####");
+				var respuesta=ajax.responseText.split("#####");
 				contenedor.innerHTML = respuesta[0];				
-				document.getElementById("descuentoProducto"+indice).value=(respuesta[1]*parseFloat(cantidadUnitaria)); 
-	    calculaMontoMaterial(indice);
+				document.getElementById("descuentoProducto"+indice).value=(respuesta[1]*parseFloat(cantidadUnitaria));
+				if(respuesta[2]==0){
+					console.log("No aplica porcentaje para el producto");
+				}else{
+					document.getElementById("tipoPrecio"+indice).value=(respuesta[2]*parseFloat(cantidadUnitaria));
+				}
+	    	calculaMontoMaterial(indice);
 		}
 	}
 	ajax.send(null);

@@ -26,6 +26,11 @@ $codTipo=$_GET['codTipo'];
 $nombreItem=$_GET['nombreItem'];
 $globalAlmacen=$_COOKIE['global_almacen'];
 $itemsNoUtilizar=$_GET['arrayItemsUtilizados'];
+
+if($itemsNoUtilizar==""){
+	$itemsNoUtilizar=0;
+}
+
 $tipoSalida=$_GET['tipoSalida'];
 
 $fechaActual=date("Y-m-d");

@@ -14,7 +14,7 @@ for($i=0;$i<sizeof($arrayPrecios);$i++){
 	$arrayPreciosModificados[$codCiudad]=$precioValor;
 }
 
-$resp=actualizarPrecios($enlaceCon,$item,$arrayPreciosModificados);
+$resp=actualizarPrecios($enlaceCon,$item,$arrayPreciosModificados,0);
 
 
 echo "<img src='imagenes/guardarOK.png' width='30'><br>Precio Guardado!";

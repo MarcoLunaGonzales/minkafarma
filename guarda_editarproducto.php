@@ -49,7 +49,7 @@ for($i=0;$i<$n;$i++){
 }*/
 
 
-$resp=actualizarPrecios($enlaceCon,$codProducto,$arrayPrecios);
+$resp=actualizarPrecios($enlaceCon,$codProducto,$arrayPrecios,0);
 
 
 if($resp_inserta){

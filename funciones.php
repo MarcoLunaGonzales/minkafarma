@@ -722,7 +722,7 @@ function descargarPDFArqueoCajaVertical($nom,$html){
  $mydompdf->stream($nom.".pdf", array("Attachment" => false));
 }
 
-function actualizarPrecios($enlaceCon, $codProducto, $arrayPrecios){
+function actualizarPrecios($enlaceCon, $codProducto, $arrayPrecios, $descuento){
 	foreach ( $arrayPrecios as $clave => $valor ){
 	    
 	    //echo "ciudad: ".$clave." valor: ".$valor."<br>";
@@ -735,14 +735,14 @@ function actualizarPrecios($enlaceCon, $codProducto, $arrayPrecios){
 	    }
 
 	    if($bandera==0){    //insertamos
-	    	$sqlActPrecio="insert into precios (codigo_material, cod_precio, precio, cod_ciudad) values 
-	    	('$codProducto','1','$valor','$clave')";
+	    	$sqlActPrecio="insert into precios (codigo_material, cod_precio, precio, cod_ciudad, descuento_unitario) values 
+	    	('$codProducto','1','$valor','$clave','$descuento')";
 	    }elseif($bandera>0){
-	    	$sqlActPrecio="update precios set precio='$valor' where codigo_material='$codProducto' and cod_precio=1 and 
+	    	$sqlActPrecio="update precios set precio='$valor', descuento_unitario='$descuento' where codigo_material='$codProducto' and cod_precio=1 and 
 	    		cod_ciudad='$clave'";
-	    }
+	    }	    
 	    
-	    //echo $sqlActPrecio."<br>";
+	    //echo $sqlActPrecio."<br>";	    
 	    
 	    $respPrecio=mysqli_query($enlaceCon,$sqlActPrecio);
 	}
@@ -857,6 +857,16 @@ function obtenerVentaClienteCampania($enlaceCon, $codCliente, $fechaVenta){
 	}
 	$arrayCampania = array($abrevCampaniaHabilitada,$montoVenta);
 	return($arrayCampania);
+}
+
+function precioMayoristaSucursal($enlaceCon, $sucursal){
+	$sql="SELECT c.descuento_mayorista from ciudades c where c.cod_ciudad='$sucursal'";
+ 	$resp=mysqli_query($enlaceCon,$sql);
+   $descuento=0;				
+   while($detalle=mysqli_fetch_array($resp)){
+	   $descuento=$detalle[0];
+   }  
+   return $descuento;
 }
 
 ?>

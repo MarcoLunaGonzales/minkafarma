@@ -1,9 +1,17 @@
 <?php 
 require_once('conexionmysqli.inc');
+require_once('funciones.php');
+
+ // error_reporting(E_ALL);
+ // ini_set('display_errors', '1');
+
 
 $num=$_GET['codigo'];
 
 $globalAdmin=$_COOKIE["global_admin_cargo"];
+
+/*Esta Bandera trabaja con el precio con descuento si es 1 los saca de la tabla si es 0 es descuento manual*/
+$banderaPreciosDescuento=obtenerValorConfiguracion($enlaceCon,52);
 
 ?>
 
@@ -62,8 +70,12 @@ $globalAdmin=$_COOKIE["global_admin_cargo"];
 				}
 			}
 			echo "</select>";			
-		}elseif($globalAdmin==1){
-			echo "<input class='inputnumber' type='number' min='0' max='90' step='0.5' value='0' id='tipoPrecio$num' name='tipoPrecio$num' onKeyUp='ajaxPrecioItem(".$num.")' style='background:#ADF8FA;' >%";
+		}elseif($globalAdmin==1 || $banderaPreciosDescuento==1){
+			$txtDisabled="";
+			if($banderaPreciosDescuento==1){
+				$txtDisabled="readonly";
+			}
+			echo "<input class='inputnumber' type='number' min='0' max='90' step='0.01' value='0' id='tipoPrecio$num' name='tipoPrecio$num' onKeyUp='ajaxPrecioItem(".$num.")' style='background:#ADF8FA;' $txtDisabled >%";
 		}
 
 
