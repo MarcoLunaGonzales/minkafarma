@@ -394,7 +394,8 @@ function calculaPrecioCliente(preciocompra, index){
 	// CALCULAR SUBTOTAL
 	var cantidad 		= parseFloat(document.getElementById('cantidad_unitaria'+index).value);
 	var precio_unitario = parseFloat(document.getElementById('precio_unitario'+index).value);
-	document.getElementById('precio_old'+index).value = (cantidad > 0 ? cantidad : 0) * (precio_unitario > 0 ? precio_unitario : 0);
+	var total_subtotal  = (cantidad > 0 ? cantidad : 0) * (precio_unitario > 0 ? precio_unitario : 0);
+	document.getElementById('precio_old'+index).value = total_subtotal.toFixed(2);
 	/****************************************************************************/
 
 	//alert('calculaPrecioCliente');
