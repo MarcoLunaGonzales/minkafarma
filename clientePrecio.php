@@ -569,10 +569,11 @@ function guardarClientePrecio() {
 	<input class="boton" type="button" value="Add Item(+)" onclick="mas(this)" accesskey="a"/>&nbsp;&nbsp;&nbsp;
 	<input type="text" class="form-codigo-barras" id="input_codigo_barras" placeholder="Ingrese el código de barras." autofocus autocomplete="off" hidden>
 </div> -->
-	<?php
 
+	<?php
 		$nombreClienteX=nombreCliente($enlaceCon,$cod_cliente);
 		// Obtener el CODIGO del registro antes de eliminarlo
+
 		$query = "SELECT cp.observaciones, CONCAT(c.nombre_cliente, ' ', c.paterno) as cliente
 				FROM clientes_precios cp
 				LEFT JOIN clientes c ON c.cod_cliente = cp.cod_cliente
@@ -585,7 +586,6 @@ function guardarClientePrecio() {
 			exit;
 		}
 		$row = mysqli_fetch_assoc($result);
-		$cliente 	 = empty($row['cliente'])?'':$row['cliente'];
 		$observacion = empty($row['observaciones'])?'':$row['observaciones'];
 	?>
 <center>
