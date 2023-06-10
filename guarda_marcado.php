@@ -32,13 +32,13 @@ if($numFilas>0){
 		$respInsert=mysqli_query($enlaceCon, $sqlInsert);
 		
 		echo "<script language='Javascript'>
-			alert('MARCADO EXITOSO!!!!!!!. Bienvenido $nombreUsuario');
+			alert('MARCADO EXITOSO!!!!!!!. $nombreUsuario');
 			location.href='registrar_marcado.php';
 			</script>";
 	}
 }else{
 	echo "<script language='Javascript'>
-			alert('ERROR!!!!.');
+			alert('ERROR, No se registro el Marcado!!!!.');
 			location.href='registrar_marcado.php';
 			</script>";	
 }

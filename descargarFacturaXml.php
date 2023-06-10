@@ -6,7 +6,7 @@ if(isset($_GET['codVenta'])){
 }
 
 
-require "conexionmysqli2.inc";
+require "conexionmysqlipdf.inc";
 require_once "siat_folder/funciones_siat.php";  
 $facturaImpuestos=generarXMLFacturaVentaImpuestos($codSalida);
 

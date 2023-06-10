@@ -22,6 +22,21 @@
     color: #000000 !important;
     background-color: #ffffff !important;
   }
+   .boton-plomo
+{
+    text-decoration: none !important;
+    font-weight: 0 !important;
+    font-size: 10px !important;
+    color: #ffffFF !important;
+    background-color: #88898A !important;
+    border-radius: 3px !important;
+    border: 2px solid #88898A !important;
+}
+.boton-plomo:hover{
+    color: #000000 !important;
+    background-color: #ffffff !important;
+  }
+
 </style>
      <link rel="stylesheet" href="dist/css/demo.css" />
      <link rel="stylesheet" href="dist/mmenu.css" />
@@ -52,7 +67,7 @@ include("datosUsuario.php");
 		<?php echo $nombreTiendaRopa;?>
 		<div style="position:absolute; width:95%; height:50px; text-align:right; top:0px; font-size: 11px; font-weight: bold; color: #fff;">
 			[<?php echo $fechaSistemaSesion?>][<?php echo $horaSistemaSesion;?>]			
-            <button onclick="location.href='salir.php'" style="position:relative;z-index:99999;right:0px;" class="boton-azul">Salir</button>
+            <button onclick="location.href='salir.php'" style="position:relative;z-index:99999;right:0px;" class="boton-plomo">Salir del Sistema</button>
 		</div>
 		<div style="position:absolute; width:95%; height:50px; text-align:left; top:0px; font-size: 11px; font-weight: bold; color: #fff;">
 			[<?php echo $nombreUsuarioSesion?>][<?php echo $nombreAlmacenSesion;?>]

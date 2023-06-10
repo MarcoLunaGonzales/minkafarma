@@ -1,6 +1,6 @@
 <?php
 
-require("conexionmysqli.php");
+require("conexionmysqli2.inc");
 
 ob_clean(); // Limpiar el búfer de salida
 

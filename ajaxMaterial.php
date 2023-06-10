@@ -18,7 +18,7 @@ $fechaActual=date("Y-m-d");
 	<a href="javascript:buscarMaterial(form1, <?php echo $num;?>)" accesskey="B"><img src='imagenes/buscar2.png' title="Buscar Producto" width="30"></a>
 </td>
 
-<td width="30%" align="left"><?php echo $num;?>
+<td width="20%" align="left"><!--?php echo $num;?-->
 <input type="hidden" name="material<?php echo $num;?>" id="material<?php echo $num;?>" value="0">
 <div id="cod_material<?php echo $num;?>" class='textomedianorojo'>-</div>
 </td>
@@ -47,7 +47,7 @@ $fechaActual=date("Y-m-d");
 <!-- DESCUENTO UNITARIO -->
 <td align="center" width="5%">
 %<input type="number" class="inputnumber" min="1" max="1000000" id="descuento_porcentaje<?php echo $num;?>" name="descuento_porcentaje<?php echo $num;?>" size="5"  value="0" onKeyUp='calcularDescuentoUnitario(1, <?php echo $num;?>);' onChange='calcularDescuentoUnitario(1, <?php echo $num;?>);' step="0.01" required data-tipo="1">
-#<input type="number" class="inputnumber" min="0" max="1000000" id="descuento_numero<?php echo $num;?>" name="descuento_numero<?php echo $num;?>" size="5"  value="0" onKeyUp='calcularDescuentoUnitario(0, <?php echo $num;?>);' onChange='calcularDescuentoUnitario(0, <?php echo $num;?>);' step="0.01" required data-tipo="0">
+Bs.<input type="number" class="inputnumber" min="0" max="1000000" id="descuento_numero<?php echo $num;?>" name="descuento_numero<?php echo $num;?>" size="5"  value="0" onKeyUp='calcularDescuentoUnitario(0, <?php echo $num;?>);' onChange='calcularDescuentoUnitario(0, <?php echo $num;?>);' step="0.01" required data-tipo="0">
 </td>
 
 <!-- Decuento Adicional -->
@@ -61,7 +61,7 @@ $fechaActual=date("Y-m-d");
 </td>
 
 <td align="center" width="10%">
-<input type="number" class="inputnumber" value="0" id="preciocliente<?php echo $num;?>" name="preciocliente<?php echo $num;?>" size="4" min="0" step="0.01" onKeyUp='calculaMargen(this,<?php echo $num;?>);' onChange='calculaMargen(this,<?php echo $num;?>);' required>
+<input type="number" class="inputnumber" value="0" id="preciocliente<?php echo $num;?>" name="preciocliente<?php echo $num;?>" size="4" min="0" step="0.01" onKeyUp='calculaMargen(this,<?php echo $num;?>);' onChange='calculaMargen(this,<?php echo $num;?>);' style="height:20px;font-size:18px;width:80px;color:red;" required>
 </br>
 <div id="divpreciocliente<?php echo $num;?>" class="textopequenorojo">-</div>
 <div id="divmargen<?php echo $num;?>" class="textopequenorojo2">-</div>

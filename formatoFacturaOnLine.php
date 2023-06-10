@@ -27,9 +27,9 @@ require('funcion_nombres.php');
 require('NumeroALetras.php');
 include('phpqrcode/qrlib.php');
 
-error_reporting(E_ALL);
+/*error_reporting(E_ALL);
 ini_set('display_errors', '1');
-
+*/
 
 
 

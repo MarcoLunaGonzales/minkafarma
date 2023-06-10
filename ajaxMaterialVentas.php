@@ -1,5 +1,5 @@
 <?php 
-require_once('conexionmysqli.inc');
+require_once('conexionmysqli2.inc');
 require_once('funciones.php');
 
  // error_reporting(E_ALL);
@@ -15,10 +15,9 @@ $banderaPreciosDescuento=obtenerValorConfiguracion($enlaceCon,52);
 
 ?>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 <head>
-<link rel="STYLESHEET" type="text/css" href="stilos.css" />
+<!--link rel="STYLESHEET" type="text/css" href="stilos.css" /-->
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 
 <table border="0" align="center" width="100%"  class="texto" id="data<?php echo $num?>" >
@@ -56,26 +55,23 @@ $banderaPreciosDescuento=obtenerValorConfiguracion($enlaceCon,52);
 	<?php
 		if($globalAdmin==0){
 			$sql1="select codigo, nombre, abreviatura from tipos_precio where estado=1 order by 3";
-			//echo $sql1."XXXXXXXXXXXXXXXXXX";
 			$resp1=mysqli_query($enlaceCon,$sql1);
-			echo "<select name='tipoPrecio' class='texto".$num."' id='tipoPrecio".$num."' style='width:55px !important;float:left;' onchange='ajaxPrecioItem(".$num.")'>";
+			$txtPorcentajes=0;
 			while($dat=mysqli_fetch_array($resp1)){
 				$codigo=$dat[0];
 				$nombre=$dat[1];
 				$abreviatura=$dat[2];
-				if($codigo==$cod_precio){
-                 echo "<option value='$codigo' selected>$abreviatura %</option>";					 
-				}else{
-				echo "<option value='$codigo'>$abreviatura %</option>";					
-				}
+				$txtPorcentajes.="|".$abreviatura;
 			}
-			echo "</select>";			
+			echo "<input class='inputnumber' type='number' step='0.01' value='0' id='tipoPrecio$num' name='tipoPrecio$num' style='background:#ADF8FA;' readonly>%";	
 		}elseif($globalAdmin==1 || $banderaPreciosDescuento==1){
 			$txtDisabled="";
+			$actionDisabled="onKeyUp='ajaxPrecioItem(".$num.")'";
 			if($banderaPreciosDescuento==1){
 				$txtDisabled="readonly";
+				$actionDisabled="";
 			}
-			echo "<input class='inputnumber' type='number' min='0' max='90' step='0.01' value='0' id='tipoPrecio$num' name='tipoPrecio$num' onKeyUp='ajaxPrecioItem(".$num.")' style='background:#ADF8FA;' $txtDisabled >%";
+			echo "<input class='inputnumber' type='number' min='0' max='90' step='0.01' value='0' id='tipoPrecio$num' name='tipoPrecio$num' $actionDisabled style='background:#ADF8FA;' $txtDisabled required>%";
 		}
 
 

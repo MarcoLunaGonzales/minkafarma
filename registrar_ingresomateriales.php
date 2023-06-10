@@ -384,33 +384,39 @@ function calcularDescuentoUnitario(tipo, index){
 	// Ajuste Descuento Adicional
 	ajusteDescuento();
 	// Ajuste Monto Total sin DESCUENTO ADICIONAL
+	calculaPrecioCliente(0,index);
 	totalesMonto();
 }
 // Calculo de montos TOTALES
 function calculaPrecioCliente(preciocompra, index){
+	/************ banderaCalculoPrecio = 0 precionFinal   1 = precioCompra *******************/
+	var banderaCalculoPrecio = document.getElementById('bandera_calculo_precio').value;
 	/****************************************************************************/
 	// CALCULAR SUBTOTAL
 	var cantidad 		= parseFloat(document.getElementById('cantidad_unitaria'+index).value);
 	var precio_unitario = parseFloat(document.getElementById('precio_unitario'+index).value);
 	document.getElementById('precio_old'+index).value = (cantidad > 0 ? cantidad : 0) * (precio_unitario > 0 ? precio_unitario : 0);
+	var margen		  = document.getElementById('margenlinea'+index).value;
 	/****************************************************************************/
 
-	//alert('calculaPrecioCliente');
-	// var costo=preciocompra.value;
-	// var costo = parseFloat(document.getElementById("precio"+index).value);
-	// var cantidad=document.getElementById('cantidad_unitaria'+index).value;
-	// var costounitario=costo/cantidad;
-	// console.log("costoUnitario: "+costounitario); // s dejo esta parte de codigo
-	// var preciocliente=costounitario+(costounitario*(margen/100));
-
-	var margen		  = document.getElementById('margenlinea'+index).value;
-	var costounitario = precio_unitario;
-	var preciocliente=(costounitario + (costounitario*(margen/100)));
-	console.log('costounitario:'+costounitario)
-	console.log('(costounitario*(margen/100)):'+(costounitario*(margen/100)))
-	preciocliente=redondear(preciocliente,2);
-	preciocliente=number_format(preciocliente,2);
-	document.getElementById('preciocliente'+index).value=preciocliente;
+	if(banderaCalculoPrecio==0){
+		//var costo=preciocompra.value;
+		var costo = parseFloat(document.getElementById("precio"+index).value);
+		var costounitario=costo/cantidad;
+		console.log("costoUnitario: "+costounitario); // s dejo esta parte de codigo
+		var preciocliente=costounitario+(costounitario*(margen/100));
+		preciocliente=redondear(preciocliente,2);
+		preciocliente=number_format(preciocliente,2);
+		document.getElementById('preciocliente'+index).value=preciocliente;		
+	}else{
+		var costounitario = precio_unitario;
+		var preciocliente=(costounitario + (costounitario*(margen/100)));
+		console.log('costounitario:'+costounitario)
+		console.log('(costounitario*(margen/100)):'+(costounitario*(margen/100)))
+		preciocliente=redondear(preciocliente,2);
+		preciocliente=number_format(preciocliente,2);
+		document.getElementById('preciocliente'+index).value=preciocliente;
+	}
 
 	var margenNuevo=(preciocliente-costounitario)/costounitario;
 	var margenNuevoF="M ["+ number_format((margenNuevo*100),0) + "%]";
@@ -541,11 +547,19 @@ if($fecha=="")
 $banderaUpdPreciosSucursales=obtenerValorConfiguracion($enlaceCon,49);
 $txtUpdPrecios="";
 if($banderaUpdPreciosSucursales==0){
-	$txtUpdPrecios="Los precios seran actualizados solo en ESTA SUCURSAL.";
+	$txtUpdPrecios="*** Los precios seran actualizados solo en ESTA SUCURSAL.";
 }else{
-	$txtUpdPrecios="Los precios seran actualizados en TODAS LAS SUCURSALES del sistema.";
+	$txtUpdPrecios="*** Los precios seran actualizados en TODAS LAS SUCURSALES del sistema.";
 }
 
+$banderaCalculoPrecioFinal=obtenerValorConfiguracion($enlaceCon,52);
+if($banderaCalculoPrecioFinal!=1){$banderaCalculoPrecioFinal=0;}
+$txtCalculoPrecioFinal="";
+if($banderaCalculoPrecioFinal==1){
+	$txtCalculoPrecioFinal="*** El precio Cliente se calculará por Precio Compra ANTES de descuentos.";
+}else{
+	$txtCalculoPrecioFinal="*** El precio Cliente se calculará por Precio Compra DESPUÉS de descuentos.";
+}
 
 $global_almacen=$_COOKIE["global_almacen"];
 
@@ -557,9 +571,15 @@ if($num_filas==1){
 	$nro_correlativo=$dat[0];
 }
 echo "<form action='guarda_ingresomateriales.php' method='post' name='form1' onsubmit='return checkSubmit();'>";
+
+echo "<input type='hidden' name='bandera_calculo_precio' id='bandera_calculo_precio' value='$banderaCalculoPrecioFinal''>";
+
 echo "<table border='0' class='textotit' align='center'>
-		<tr><th>Registrar Ingreso de Productos</th></tr>
-		<tr><th align='left'><span class='textopequenorojo' style='background-color:yellow;'><b>$txtUpdPrecios</b></span></th></tr>
+		<tr><th></th><th>Registrar Ingreso de Productos</th><th></th></tr>
+		<tr><th align='left'><span class='textopequenorojo' style='background-color:yellow;'><b>$txtUpdPrecios</b></span></th>
+			<th></th>
+			<th align='left'><span class='textopequenorojo' style='background-color:aqua;'><b>$txtCalculoPrecioFinal</b></span></th>
+		</tr>
 		</table><br>";
 echo "<table border='0' class='texto' cellspacing='0' align='center' width='90%' style='border:#ccc 1px solid;'>";
 echo "<tr>
@@ -625,9 +645,9 @@ echo "</table><br>";
 				</tr>				
 				<tr class="titulo_tabla" align="center">
 					<td width="5%" align="center">&nbsp;</td>
-					<td width="30%" align="center">Producto</td>
+					<td width="20%" align="center">Producto</td>
 					<td width="10%" align="center">Cantidad</td>
-					<td width="10%" align="center">Precio</td>
+					<td width="10%" align="center">Precio<br>Unitario</td>
 					<!--td width="10%" align="center">Lote</td-->
 					<td width="10%" align="center">Vencimiento</td>
 					<!-- <td width="10%" align="center">Precio Distribuidor<br>(Total_item)</td> -->
@@ -641,7 +661,7 @@ echo "</table><br>";
 					<td width="10%" align="center">Total</td>
 
 					<td width="10%" align="center">Precio<br>Cliente Final</td>
-					<td width="10%" align="center">Acción</td>
+					<td width="10%" align="center">-</td>
 				</tr>
 			</table>
 

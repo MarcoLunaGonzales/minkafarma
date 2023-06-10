@@ -26,6 +26,8 @@ require('funciones.php');
 $codProducto=$_GET['cod_material'];
 $paginaRetorno=$_GET['pagina_retorno'];
 
+$globalAdmin=$_COOKIE["global_admin_cargo"];
+
 
 $sqlEdit="select m.codigo_material, m.descripcion_material, m.estado, m.cod_linea_proveedor, m.cod_forma_far, m.cod_empaque, 
 	m.cantidad_presentacion, m.principio_activo, m.cod_tipoventa, m.producto_controlado, m.accion_terapeutica, m.codigo_barras from material_apoyo m where m.codigo_material='$codProducto'";
@@ -185,10 +187,13 @@ if($productoControlado==0){
 }
 echo "</tr>";
 
-echo "<tr><th align='left'>Precio de Venta</th>";
-echo "<td align='left'>
-	$cadenaPrecios
-	</td></tr>";
+if($globalAdmin==1){
+	echo "<tr><th align='left'>Precio de Venta</th>";
+	echo "<td align='left'>
+		$cadenaPrecios
+	</td></tr>";	
+}
+
 
 echo "<tr><th>Codigo de Barras</th>";
 echo "<td><input type='text' name='codigo_barras' id='codigo_barras' value='$codigoBarras' size='40'  style='text-transform:uppercase;'></td>";

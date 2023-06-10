@@ -400,8 +400,8 @@ if($sql_inserta==1){
 					
 					if($tipoImpresion==0){$url="puente_impresion.php?codVenta=$codigo&tipodoc=$tipoDoc";}
 					else{
-						//$url="formatoFacturaOnLine.php?codVenta=$codigo";
-						$url="dFacturaElectronica.php?codigo_salida=$codigo";
+						$url="formatoFacturaOnLine.php?codVenta=$codigo";
+						//$url="dFacturaElectronica.php?codigo_salida=$codigo";
 					}
 					
 				}
@@ -409,8 +409,8 @@ if($sql_inserta==1){
 				$mensaje="Factura emitida fuera de línea :(";				
 				if($tipoImpresion==0){$url="puente_impresion.php?codVenta=$codigo&tipodoc=$tipoDoc";}
 					else{
-						//$url="formatoFacturaOnLine.php?codVenta=$codigo";
-						$url="dFacturaElectronica.php?codigo_salida=$codigo";
+						$url="formatoFacturaOnLine.php?codVenta=$codigo";
+						//$url="dFacturaElectronica.php?codigo_salida=$codigo";
 					}
 			}
 
@@ -446,8 +446,8 @@ if($sql_inserta==1){
 				/*DIRECCIONAMOS A LA URL CORRECTA TIPO DE IMPRESION*/
 				if($tipoImpresion==0){$url="puente_impresion.php?codVenta=$codigo&tipodoc=$tipoDoc";}
 				else{
-						//$url="formatoFacturaOnLine.php?codVenta=$codigo";
-						$url="dFacturaElectronica.php?codigo_salida=$codigo";
+						$url="formatoFacturaOnLine.php?codVenta=$codigo";
+						//$url="dFacturaElectronica.php?codigo_salida=$codigo";
 					}
 
 				echo "<script language='Javascript'>

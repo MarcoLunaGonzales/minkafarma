@@ -21,16 +21,24 @@ $lineaAnterior=$_POST['linea_anterior'];
 
 $arrayAccionTerapeutica=$_POST['arrayAccionTerapeutica'];
 
+$globalAdmin=$_COOKIE["global_admin_cargo"];
+
+
 /*RECUPERAMOS LOS PRECIOS*/
-$arrayPrecios=[];
-$sqlSucursales="select cod_ciudad, descripcion from ciudades order by 1";
-$respSucursales=mysqli_query($enlaceCon,$sqlSucursales);
-while($datSucursales=mysqli_fetch_array($respSucursales)){
-	$codCiudadPrecio=$datSucursales[0];
-	$nombreCiudadPrecio=$datSucursales[1];
-	$precioProducto=$_POST["precio_producto|".$codCiudadPrecio];
-	$arrayPrecios[$codCiudadPrecio]=$precioProducto;
+if($globalAdmin==1){
+	$arrayPrecios=[];
+	$sqlSucursales="select cod_ciudad, descripcion from ciudades order by 1";
+	$respSucursales=mysqli_query($enlaceCon,$sqlSucursales);
+	while($datSucursales=mysqli_fetch_array($respSucursales)){
+		$codCiudadPrecio=$datSucursales[0];
+		$nombreCiudadPrecio=$datSucursales[1];
+		$precioProducto=$_POST["precio_producto|".$codCiudadPrecio];
+		$arrayPrecios[$codCiudadPrecio]=$precioProducto;
+	}
+
+	$resp=actualizarPrecios($enlaceCon,$codProducto,$arrayPrecios,0);	
 }
+
 
 
 $sql_inserta="update material_apoyo set descripcion_material='$nombreProducto', cod_linea_proveedor='$codLinea', 
@@ -47,10 +55,6 @@ for($i=0;$i<$n;$i++){
 	$sql="insert into material_accionterapeutica (codigo_material, cod_accionterapeutica) values('$codProducto','$vectorAccionTer[$i]')";
 	$resp=mysqli_query($enlaceCon,$sql);
 }*/
-
-
-$resp=actualizarPrecios($enlaceCon,$codProducto,$arrayPrecios,0);
-
 
 if($resp_inserta){
 	

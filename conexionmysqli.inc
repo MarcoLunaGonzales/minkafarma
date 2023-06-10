@@ -3,7 +3,13 @@
 require_once 'config.php';
 
 if(!isset($_COOKIE["global_usuario"])){
-  ?><!-- <script type="text/javascript">$( document ).ready(function() {Swal.fire("ERROR!", "Inicie Sesion!", "error");/*window.close();*/});</script> --><?php
+  ?>
+  <script type="text/javascript">
+    $( document ).ready(function() {Swal.fire("ERROR!", "Inicie Sesion!", "error");
+      location.href="index.html";
+    });
+    </script>
+    <?php
 }
 
 

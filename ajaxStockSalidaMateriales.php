@@ -6,7 +6,7 @@ $codAlmacen = $_GET["codalm"];
 $indice = $_GET["indice"];
 
 
-require("conexionmysqli.php");
+require("conexionmysqli2.inc");
 //SACAMOS LA CONFIGURACION PARA LA  VALIDACION DE STOCKS
 $sqlConf="select valor_configuracion from configuraciones where id_configuracion=4";
 $respConf=mysqli_query($enlaceCon,$sqlConf);

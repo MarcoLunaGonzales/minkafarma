@@ -499,7 +499,7 @@ while ($dat = mysqli_fetch_array($resp)) {
         echo "<td  bgcolor='$color_fondo'><a href='notaSalida.php?codVenta=$codigo' target='_BLANK'><img src='imagenes/detalle.png' width='30' border='0' title='Factura Formato Pequeño'></a></td>";
     }
     else{
-        echo "<td  bgcolor='$color_fondo'><a href='formatoNotaRemisionOnLine.php?codVenta=$codigo' target='_BLANK'><img src='imagenes/factura1.jpg' width='30' border='0' title='Factura Formato Pequeño'></a>
+        echo "<td  bgcolor='$color_fondo'><a href='formatoNotaRemision.php?codVenta=$codigo' target='_BLANK'><img src='imagenes/factura1.jpg' width='30' border='0' title='Factura Formato Pequeño'></a>
         </td>";
         // Editar Datos
         echo "<td bgcolor='$color_fondo'>
