@@ -29,9 +29,13 @@ $banderaPreciosDescuento=obtenerValorConfiguracion($enlaceCon,52);
 	<a href="javascript:encontrarMaterial(<?php echo $num;?>)" class="btn btn-primary btn-sm btn-fab"><i class='material-icons float-left' title="Ver en otras Sucursales">place</i></a>
 </td>
 
-<td width="38%" align="center">
+<td width="33%" align="center">
 	<input type="hidden" name="materiales<?php echo $num;?>" id="materiales<?php echo $num;?>" value="0">
 	<div id="cod_material<?php echo $num;?>" class='textomedianonegro'>-</div>
+</td>
+
+<td width="5%" align="center">
+	<div id="fecha_vencimiento<?php echo $num;?>" class='textosmallazul'>-</div>
 </td>
 
 <td width="8%" align="center">

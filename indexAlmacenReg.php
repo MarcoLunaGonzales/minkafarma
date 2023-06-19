@@ -64,14 +64,14 @@ include("datosUsuario.php");
 
 	<div class="header">
 		<a href="#menu"><span></span></a>
-		<?php echo $nombreTiendaRopa;?>
-		<div style="position:absolute; width:95%; height:50px; text-align:right; top:0px; font-size: 11px; font-weight: bold; color: #fff;">
-			[<?php echo $fechaSistemaSesion?>][<?php echo $horaSistemaSesion;?>]			
-            <button onclick="location.href='salir.php'" style="position:relative;z-index:99999;right:0px;" class="boton-plomo">Salir del Sistema</button>
-		</div>
-		<div style="position:absolute; width:95%; height:50px; text-align:left; top:0px; font-size: 11px; font-weight: bold; color: #fff;">
-			[<?php echo $nombreUsuarioSesion?>][<?php echo $nombreAlmacenSesion;?>]
-		</div>
+		TuFarma - <?=$nombreEmpresa;?>
+		<div style="position:absolute; width:95%; height:50px; text-align:right; top:0px; font-size: 9px; font-weight: bold; color: #fff;">
+			[<?=$fechaSistemaSesion;?>][<?=$horaSistemaSesion;?>]
+			<button onclick="location.href='salir.php'" style="position:relative;z-index:99999;right:0px;" class="boton-plomo">Salir del Sistema</button>			
+		<div>
+		<div style="position:absolute; width:95%; height:50px; text-align:left; top:0px; font-size: 15px; font-weight: bold; color: #ffff00;">
+			[<?=$nombreUsuarioSesion;?>][<?=$nombreAlmacenSesion;?>]
+		<div>
 	</div>	
 	<div class="content">
 		<iframe src="inicio_almacenes.php" name="contenedorPrincipal" id="mainFrame"  style="top:50px;" border="1"></iframe>	
@@ -119,7 +119,7 @@ include("datosUsuario.php");
 					<li><span>Productos</span>
 						<ul>
 							<li><a href="rptOpProductos.php" target="contenedorPrincipal">Productos</a></li>
-							<li><a href="rptOpPrecios.php" target="contenedorPrincipal">Precios</a></li>
+							<li><a href="rptPrecios.php" target="_blank">Precios</a></li>
 						</ul>
 					</li>	
 					<li><span>Movimiento de Almacen</span>

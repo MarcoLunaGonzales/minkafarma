@@ -52,13 +52,13 @@ $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
 			echo "<br><table border=0 align='center' class='textomediano' width='70%'>
 			<thead>
 			<tr><th>&nbsp;</th><th>Codigo</th><th>Material</th>
-			<th>CantidadPresentacion</th><th>Cajas</th><th>Unidades</th><th>Costo</th></tr>
+			<th>CantidadPresentacion</th><th>Cajas</th><th>Unidades</th><th>Costo Unitario</th><th>Costo</th></tr>
 			</thead>";
 		}else{
 			echo "<br><table border=0 align='center' class='textomediano' width='70%'>
 			<thead>
 			<tr><th>&nbsp;</th><th>Codigo</th><th>Linea Proveedor</th><th>Material</th>
-			<th>CantidadPresentacion</th><th>Cajas</th><th>Unidades</th><th>Costo</th></tr>
+			<th>CantidadPresentacion</th><th>Cajas</th><th>Unidades</th><th>Costo Unitario</th><th>Costo</th></tr>
 			</thead>";
 		}
 
@@ -123,22 +123,15 @@ $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
 				if($cantidadPresentacion>0){
 					$stockUnidades=$stock2%$cantidadPresentacion;
 				}
-				$precioUnitario=precioVenta($enlaceCon,$codigo_item,$rpt_territorio);
-				$costoItem=$stock2*$precioUnitario;
-
-				/*SACAMOOS EL COSTO EN FUNCION DEL PRECIO 35 % Y 19%*/
-				if($rpt_territorio==1 || $rpt_territorio==2){   /*PARA FARMACIA PRINCIPAL MENOS EL 35%*/
-					$costoItem=(100*$costoItem)/135;
-				}
-				if($rpt_territorio==3){   /*PARA FARMACIA PRINCIPAL MENOS EL 35%*/
-					$costoItem=(100*$costoItem)/119;
-				}
-				
+				$precioUnitario=costoVenta($enlaceCon,$codigo_item,$rpt_territorio);
+				$costoItem=$stock2*$precioUnitario;				
 				
 				$costoItemF=formatonumeroDec($costoItem);
 				/*FIN COSTO*/
 		
-				$cadena_mostrar.="<td align='center'>$stockCajas</td><td align='center'>$stockUnidades</td><td align='center'>$costoItemF</td></tr>";
+				$cadena_mostrar.="<td align='center'>$stockCajas</td><td align='center'>$stockUnidades</td>
+				<td align='right'>$precioUnitario</td>
+				<td align='center'>$costoItemF</td></tr>";
 			}
 
 			$totalCosto=$totalCosto+$costoItem;

@@ -13,7 +13,9 @@ $datos_salidaorigen=mysqli_fetch_array($resp_datos_salidaorigen);
 $correlativo_salidaorigen=$datos_salidaorigen[0];
 $tipo_salidaorigen=$datos_salidaorigen[1];
 $nombre_almacen_origen=$datos_salidaorigen[2];
-echo "<form action='guarda_ingresomateriales.php' method='post'>";
+
+
+echo "<form action='guarda_ingresotransito.php' method='post'>";
 echo "<h1>Registrar Ingreso en Transito</h1>";
 echo "<center>
 	<table class='texto'>";
@@ -35,8 +37,8 @@ echo "</table><br>";
 
 echo "<table class='texto'>";
 
-$sql_detalle_salida="select cod_salida_almacen, cod_material, sum(cantidad_unitaria), costo_almacen
-from salida_detalle_almacenes where cod_salida_almacen='$codigo_registro' and cantidad_unitaria>0 
+$sql_detalle_salida="select s.cod_salida_almacen, s.cod_material, sum(s.cantidad_unitaria), s.costo_almacen, m.cantidad_presentacion
+from salida_detalle_almacenes s, material_apoyo m where s.cod_material=m.codigo_material and s.cod_salida_almacen='$codigo_registro' and cantidad_unitaria>0 
 group by cod_salida_almacen, cod_material";
 $resp_detalle_salida=mysqli_query($enlaceCon,$sql_detalle_salida);
 $cantidad_materiales=mysqli_num_rows($resp_detalle_salida);
@@ -51,6 +53,7 @@ while($dat_detalle_salida=mysqli_fetch_array($resp_detalle_salida))
 {	$cod_material=$dat_detalle_salida[1];
 	$cantidad_unitaria=$dat_detalle_salida[2];
 	$costo_almacen=$dat_detalle_salida[3];
+	$cantidadPresentacion=$dat_detalle_salida[4];
 
 	$cantidad_unitaria=redondear2($cantidad_unitaria);
 	
@@ -65,6 +68,8 @@ while($dat_detalle_salida=mysqli_fetch_array($resp_detalle_salida))
 	echo "<input type='hidden' value='$cod_material' name='material$indice_detalle'>";
 	echo "<input type='hidden' value='$cantidad_unitaria' name='cantidad_origen$indice_detalle'>";
 	echo "<input type='hidden' value='$costo_almacen' name='precio$indice_detalle'>";
+	echo "<input type='hidden' name='cantidadpresentacion$indice_detalle' id='cantidadpresentacion$indice_detalle' value='$cantidadPresentacion'>";
+	echo "<input type='hidden' name='precio_unitario$indice_detalle' id='precio_unitario$indice_detalle' value='0'>";
 	
 	echo "<td align='center'>$cantidad_unitaria</td>";
 	echo "<td><input type='number' name='cantidad_unitaria$indice_detalle' step='0.1' value='$cantidad_unitaria' class='texto' required></td>

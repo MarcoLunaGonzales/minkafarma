@@ -6,34 +6,64 @@ echo "<script language='JavaScript'>
 			rpt_almacen=f.rpt_almacen.value;
 			fecha_ini=f.exafinicial.value;
 			fecha_fin=f.exaffinal.value;
-			tipo_item=f.tipo_item.value;
 			rpt_item=f.rpt_item.value;
-			window.open('rptKardexCostos.php?rpt_territorio='+rpt_territorio+'&rpt_almacen='+rpt_almacen+'&fecha_ini='+fecha_ini+'&fecha_fin='+fecha_fin+'&tipo_item='+tipo_item+'&rpt_item='+rpt_item+'','','scrollbars=yes,status=no,toolbar=no,directories=no,menubar=no,resizable=yes,width=1000,height=800');			
+			window.open('rptKardexCostos.php?rpt_territorio='+rpt_territorio+'&rpt_almacen='+rpt_almacen+'&fecha_ini='+fecha_ini+'&fecha_fin='+fecha_fin+'&rpt_item='+rpt_item+'','','scrollbars=yes,status=no,toolbar=no,directories=no,menubar=no,resizable=yes,width=1000,height=800');			
 			return(true);
 		}
+
+		function nuevoAjax()
+		{	var xmlhttp=false;
+			try {
+					xmlhttp = new ActiveXObject('Msxml2.XMLHTTP');
+			} catch (e) {
+			try {
+				xmlhttp = new ActiveXObject('Microsoft.XMLHTTP');
+			} catch (E) {
+				xmlhttp = false;
+			}
+			}
+			if (!xmlhttp && typeof XMLHttpRequest!='undefined') {
+			xmlhttp = new XMLHttpRequest();
+			}
+			return xmlhttp;
+		}
+
+		function ajaxReporteItems(f){
+			var contenedor;
+			contenedor=document.getElementById('divItemReporte');
+			ajax=nuevoAjax();
+			var codProveedor=(f.rpt_proveedor.value);
+			ajax.open('GET', 'ajaxReporteItems.php?codProveedor='+codProveedor,true);
+			ajax.onreadystatechange=function() {
+				if (ajax.readyState==4) {
+					contenedor.innerHTML = ajax.responseText
+				}
+			}
+			ajax.send(null);
+		}
+
 		function envia_select(form){
 			form.submit();
 			return(true);
 		}
 		</script>";
-require("conexion.inc");
+
+require("conexionmysqli2.inc");
 require("estilos_almacenes.inc");
 
-$fecha_rptdefault=date("d/m/Y");
-echo "<table align='center' class='textotit'><tr><th>Reporte Kardex de Movimiento Costos</th></tr></table><br>";
+$fecha_rptdefault=date("Y-m-d");
+echo "<h1>Reporte Kardex de Movimiento Costos</h1>";
 echo"<form method='post' action='rptOpKardexCostos.php'>";
 
-	echo"\n<table class='texto' border='1' align='center' cellSpacing='0' width='50%'>\n";
+
+$rpt_territorio=$_POST["rpt_territorio"];
+
+	echo"<center><table class='texto'>";
 	echo "<tr><th align='left'>Territorio</th><td><select name='rpt_territorio' class='texto' onChange='envia_select(this.form)'>";
-	if($global_tipoalmacen==1)
-	{	$sql="select cod_ciudad, descripcion from ciudades order by descripcion";
-	}
-	else
-	{	$sql="select cod_ciudad, descripcion from ciudades where cod_ciudad='$global_agencia' order by descripcion";
-	}
-	$resp=mysql_query($sql);
+	$sql="select cod_ciudad, descripcion from ciudades order by descripcion";
+	$resp=mysqli_query($enlaceCon, $sql);
 	echo "<option value=''></option>";
-	while($dat=mysql_fetch_array($resp))
+	while($dat=mysqli_fetch_array($resp))
 	{	$codigo_ciudad=$dat[0];
 		$nombre_ciudad=$dat[1];
 		if($rpt_territorio==$codigo_ciudad)
@@ -46,8 +76,9 @@ echo"<form method='post' action='rptOpKardexCostos.php'>";
 	echo "</select></td></tr>";
 	echo "<tr><th align='left'>Almacen</th><td><select name='rpt_almacen' class='texto'>";
 	$sql="select cod_almacen, nombre_almacen from almacenes where cod_ciudad='$rpt_territorio'";
-	$resp=mysql_query($sql);
-	while($dat=mysql_fetch_array($resp))
+	echo $sql;
+	$resp=mysqli_query($enlaceCon, $sql);
+	while($dat=mysqli_fetch_array($resp))
 	{	$codigo_almacen=$dat[0];
 		$nombre_almacen=$dat[1];
 		if($rpt_almacen==$codigo_almacen)
@@ -58,19 +89,27 @@ echo"<form method='post' action='rptOpKardexCostos.php'>";
 		}
 	}
 	echo "</select></td></tr>";
-	echo "<tr><th align='left'>Tipo de Item:</th>";
-	echo "<td><select name='tipo_item' class='texto' onChange='envia_select(this.form)'>";
-	
-	echo "<option value='2'>Materiales</option>";
-	
+
+	echo "<tr><th align='left'>Grupo</th><td><select name='rpt_proveedor' class='texto' size='5' onChange='ajaxReporteItems(this.form);'>";
+	$sql="SELECT p.cod_proveedor, p.nombre_proveedor from proveedores p order by 2;";
+	$resp=mysqli_query($enlaceCon, $sql);
+	while($dat=mysqli_fetch_array($resp))
+	{	$codigo=$dat[0];
+		$nombre=$dat[1];
+		echo "<option value='$codigo'>$nombre</option>";
+	}
+	echo "</select></td></tr>";
 	echo "</tr>";
-	echo "<tr><th align='left'>Material</th><td><select name='rpt_item' class='texto'>";
-	
+
+
+	echo "<tr><th align='left'>Producto</th><td>
+	<div id='divItemReporte'>
+	<select name='rpt_item' class='texto'>";
 	$sql_item="select codigo_material, descripcion_material from material_apoyo where codigo_material<>0 order by descripcion_material";
 	
-	$resp=mysql_query($sql_item);
+	$resp=mysqli_query($enlaceCon, $sql_item);
 	echo "<option value=''></option>";
-	while($dat=mysql_fetch_array($resp))
+	while($dat=mysqli_fetch_array($resp))
 	{	$codigo_item=$dat[0];
 		if($tipo_item==1)
 		{	$nombre_item="$dat[1] $dat[2]";
@@ -85,25 +124,17 @@ echo"<form method='post' action='rptOpKardexCostos.php'>";
 		{	echo "<option value='$codigo_item'>$nombre_item</option>";
 		}
 	}
-	echo "</select></td></tr>";	
+	echo "</select></td>
+	</div>
+	</tr>";
+
+
 	echo "<tr><th align='left'>Fecha inicio:</th>";
-			echo" <TD bgcolor='#ffffff'><INPUT  type='text' class='texto' value='$fecha_rptdefault' id='exafinicial' size='10' name='exafinicial'>";
-    		echo" <IMG id='imagenFecha' src='imagenes/fecha.bmp'>";
-    		echo" <DLCALENDAR tool_tip='Seleccione la Fecha' ";
-    		echo" daybar_style='background-color: DBE1E7; font-family: verdana; color:000000;' ";
-    		echo" navbar_style='background-color: 7992B7; color:ffffff;' ";
-    		echo" input_element_id='exafinicial' ";
-    		echo" click_element_id='imagenFecha'></DLCALENDAR>";
+			echo" <TD bgcolor='#ffffff'><INPUT  type='date' class='texto' value='$fecha_rptdefault' id='exafinicial' size='10' name='exafinicial'>";
     		echo"  </TD>";
 	echo "</tr>";
 	echo "<tr><th align='left'>Fecha final:</th>";
-			echo" <TD bgcolor='#ffffff'><INPUT  type='text' class='texto' value='$fecha_rptdefault' id='exaffinal' size='10' name='exaffinal'>";
-    		echo" <IMG id='imagenFecha1' src='imagenes/fecha.bmp'>";
-    		echo" <DLCALENDAR tool_tip='Seleccione la Fecha' ";
-    		echo" daybar_style='background-color: DBE1E7; font-family: verdana; color:000000;' ";
-    		echo" navbar_style='background-color: 7992B7; color:ffffff;' ";
-    		echo" input_element_id='exaffinal' ";
-    		echo" click_element_id='imagenFecha1'></DLCALENDAR>";
+			echo" <TD bgcolor='#ffffff'><INPUT  type='date' class='texto' value='$fecha_rptdefault' id='exaffinal' size='10' name='exaffinal'>";
     		echo"  </TD>";
 	echo "</tr>";
 	

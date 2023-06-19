@@ -207,7 +207,7 @@ $anulacionCodigo = $datConf[0];
 
 $consulta = "
     SELECT i.cod_ingreso_almacen, i.fecha, i.hora_ingreso, ti.nombre_tipoingreso, i.observaciones, i.nro_factura_proveedor, i.nro_correlativo, i.ingreso_anulado,
-	(select p.nombre_proveedor from proveedores p where p.cod_proveedor=i.cod_proveedor) as proveedor
+	(select p.nombre_proveedor from proveedores p where p.cod_proveedor=i.cod_proveedor) as proveedor, i.cod_tipoingreso
     FROM ingreso_almacenes i, tipos_ingreso ti
     WHERE i.cod_tipoingreso=ti.cod_tipoingreso
     AND i.cod_almacen='$global_almacen'";
@@ -231,7 +231,7 @@ echo"&nbsp; <input type='button' value='Buscar' class='boton' onclick='ShowBusca
 echo "<div id='divCuerpo'>";
 echo "<br><center><table class='texto'>";
 echo "<tr><th>&nbsp;</th><th>Numero Ingreso</th><th>Nro. Factura Proveedor</th><th>Fecha</th><th>Tipo de Ingreso</th>
-<th>Proveedor</th>
+<th>Proveedor</th><th>Monto Compra</th>
 <th>Observaciones</th><th>&nbsp;</th></tr>";
 while ($dat = mysqli_fetch_array($resp)) {
     $codigo = $dat[0];
@@ -254,6 +254,22 @@ while ($dat = mysqli_fetch_array($resp)) {
     $nro_correlativo = $dat[6];
     $anulado = $dat[7];
 	$proveedor=$dat[8];
+    $codTipoIngreso=$dat[9];
+
+    $sqlMontoCompra="SELECT sum((i.cantidad_unitaria)*(i.costo_almacen)) from ingreso_detalle_almacenes i
+        where i.cod_ingreso_almacen='$codigo'";
+    //echo $sqlMontoCompra;
+    $respMontoCompra=mysqli_query($enlaceCon, $sqlMontoCompra);
+    $montoCompra=0;
+    if($datMontoCompra=mysqli_fetch_array($respMontoCompra)){
+        $montoCompra=$datMontoCompra[0];        
+    }
+    
+    if($montoCompra>0 && $codTipoIngreso==1000){
+        $montoCompraF=formatonumeroDec($montoCompra);
+    }else{
+        $montoCompraF="-";
+    }
 
 
     echo "<input type='hidden' name='fecha_ingreso$nro_correlativo' value='$fecha_ingreso_mostrar'>";
@@ -277,11 +293,17 @@ while ($dat = mysqli_fetch_array($resp)) {
     if ($anio_ingreso != 2023 ) {
         $chkbox = "";
     }
+    $urlDetalle="";
+    if($codTipoIngreso==1000){
+        $urlDetalle="navegador_detalleingresomateriales.php";
+    }else{
+        $urlDetalle="navegador_detalleingresomateriales2.php";
+    }
     echo "<tr bgcolor='$color_fondo'><td align='center'>$chkbox</td><td align='center'>$nro_correlativo</td><td align='center'>&nbsp;$nota_entrega</td>
-	<td align='center'>$fecha_ingreso_mostrar $hora_ingreso $anio_ingreso $globalGestionActual</td><td>$nombre_tipoingreso</td>
-	<td>&nbsp;$proveedor</td>
+	<td align='center'>$fecha_ingreso_mostrar $hora_ingreso</td><td>$nombre_tipoingreso</td>
+	<td>&nbsp;$proveedor</td><td align='right'>$montoCompraF</td>
 	<td>&nbsp;$obs_ingreso</td><td align='center'>
-	<a target='_BLANK' href='navegador_detalleingresomateriales.php?codigo_ingreso=$codigo'><img src='imagenes/icon_detail.png' border='0' width='30' heigth='30' alt='Ver Detalles del Ingreso'></a></td></tr>";
+	<a target='_BLANK' href='$urlDetalle?codigo_ingreso=$codigo'><img src='imagenes/icon_detail.png' border='0' width='30' heigth='30' alt='Ver Detalles del Ingreso'></a></td></tr>";
 }
 echo "</table></center><br>";
 echo "</div>";

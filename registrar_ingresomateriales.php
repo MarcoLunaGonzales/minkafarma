@@ -129,7 +129,8 @@ function setMateriales(f, cod, nombreMat, cantidadpresentacion, precio, margenli
 	var numRegistro=f.materialActivo.value;
 		
 	document.getElementById('material'+numRegistro).value=cod;
-	document.getElementById('cod_material'+numRegistro).innerHTML=nombreMat;
+	document.getElementById('cantidadpresentacion'+numRegistro).value=cantidadpresentacion;
+	document.getElementById('cod_material'+numRegistro).innerHTML=nombreMat+" - <span class='textomedianonegro'>CP:"+cantidadpresentacion+"</span>";
 	document.getElementById('divpreciocliente'+numRegistro).innerHTML=number_format(precio,2);
 	document.getElementById('margenlinea'+numRegistro).value=margenlinea;
 	
@@ -145,6 +146,7 @@ function setMaterialesSelec(f, cod, nombreMat, cantidadpresentacion, precio, mar
 	var numRegistro=f.materialActivo.value;
 //alert(numRegistro);
 	document.getElementById('material'+numRegistro).value=cod;
+	document.getElementById('cantidadpresentacion'+numRegistro).value=cantidadpresentacion;
 	document.getElementById('cod_material'+numRegistro).innerHTML=nombreMat;
 	document.getElementById('divpreciocliente'+numRegistro).innerHTML=number_format(precio,2);
 	document.getElementById('margenlinea'+numRegistro).value=margenlinea;
@@ -284,12 +286,103 @@ function fun13(cadIdOrg,cadIdDes)
 		console.log("bandera: "+banderaItems0);
 		if(banderaItems0==1){
 			num++;
-			div_material_linea=document.getElementById("fiel");			
+			div_material_linea=document.getElementById("fiel");
+
+			/*recuperamos las cantidades de los otros productos*/
+			var inputs = $('form input[name^="cantidad_unitaria"]');
+			var arrayCantidades=[];
+			inputs.each(function() {
+			  	var name = $(this).attr('name');
+			  	var value = $(this).val();
+			  	var partes = name.split("cantidad_unitaria");
+				var name_form = partes[0]; // Contiene todo antes de "cantidad_unitaria"
+				var index_form = partes[1]; // Contiene todo después de "cantidad_unitaria"
+			  	arrayCantidades.push([name,value,index_form]);
+			});
+			var inputs = $('form input[name^="precio_unitario"]');
+			var arrayPreciosCaja=[];
+			inputs.each(function() {
+			  	var name = $(this).attr('name');
+			  	var value = $(this).val();
+			  	var partes = name.split("precio_unitario");
+				var name_form = partes[0]; 
+				var index_form = partes[1];
+			  	arrayPreciosCaja.push([name,value,index_form]);
+			});
+			var inputs = $('form input[name^="fechaVenc"]');
+			var arrayFV=[];
+			inputs.each(function() {
+			  	var name = $(this).attr('name');
+			  	var value = $(this).val();
+			  	var partes = name.split("fechaVenc");
+				var name_form = partes[0]; 
+				var index_form = partes[1];
+			  	arrayFV.push([name,value,index_form]);
+			});
+			var inputs = $('form input[name^="descuento_porcentaje"]');
+			var arrayDescuentoPorcentaje=[];
+			inputs.each(function() {
+			  	var name = $(this).attr('name');
+			  	var value = $(this).val();
+			  	var partes = name.split("descuento_porcentaje");
+				var name_form = partes[0]; 
+				var index_form = partes[1];
+			  	arrayDescuentoPorcentaje.push([name,value,index_form]);
+			});
+			var inputs = $('form input[name^="preciocliente"]');
+			var arrayPrecioCliente=[];
+			inputs.each(function() {
+			  	var name = $(this).attr('name');
+			  	var value = $(this).val();
+			  	var partes = name.split("preciocliente");
+				var name_form = partes[0]; 
+				var index_form = partes[1];
+			  	arrayPrecioCliente.push([name,value,index_form]);
+			});
+			console.log("Array Recuperado Cantidad: "+arrayCantidades);
+			console.log("Array Recuperado Precios: "+arrayPreciosCaja);
+			console.log("Array Recuperado FV: "+arrayFV);
+			console.log("Array Recuperado Descuentos: "+arrayDescuentoPorcentaje);
+			console.log("Array Recuperado PrecioCliente: "+arrayPrecioCliente);
+			/*fin recuperar*/
+
 			ajax=nuevoAjax();
 			ajax.open("GET","ajaxMaterialesIngresoMultiple.php?codigo="+numFilas+"&productos_multiple="+productosMultiples,true);
 			ajax.onreadystatechange=function(){
 				if (ajax.readyState==4) {
 					div_material_linea.innerHTML=div_material_linea.innerHTML+ajax.responseText;
+				}
+				for (x=0;x<arrayCantidades.length;x++) {
+					console.log("Iniciando recorrido Matriz");
+					/*reponiendo cantidades*/
+					var name_set=arrayCantidades[x][0];
+					var value_set=arrayCantidades[x][1];
+					var index_set=arrayCantidades[x][2];
+					document.getElementById(name_set).value=value_set;
+					/*reponiendo preciosCaja*/
+					name_set=arrayPreciosCaja[x][0];
+					value_set=arrayPreciosCaja[x][1];
+					index_set=arrayPreciosCaja[x][2];
+					document.getElementById(name_set).value=value_set;
+					calculaPrecioCliente(value_set, index_set);
+					/*reponiendo FV*/
+					name_set=arrayFV[x][0];
+					value_set=arrayFV[x][1];
+					index_set=arrayFV[x][2];
+					document.getElementById(name_set).value=value_set;
+					/*reponiendo Descuento*/
+					name_set=arrayDescuentoPorcentaje[x][0];
+					value_set=arrayDescuentoPorcentaje[x][1];
+					index_set=arrayDescuentoPorcentaje[x][2];
+					document.getElementById(name_set).value=value_set;
+					calcularDescuentoUnitario(1,index_set);
+					/*reponiendo PrecioCliente*/
+					name_set=arrayPrecioCliente[x][0];
+					value_set=arrayPrecioCliente[x][1];
+					index_set=arrayPrecioCliente[x][2];
+					document.getElementById(name_set).value=value_set;
+					calculaMargen(document.getElementById(name_set),index_set);
+					console.log("PRECIOCLIENTE: "+name_set+" "+index_set);
 				}
 			}		
 			ajax.send(null);
@@ -349,11 +442,15 @@ function pressEnter(e, f){
 		return false;
 	}
 }
-function calculaMargen(preciocliente, index){
-	preciocliente=parseFloat(preciocliente.value);
+function calculaMargen(precioclienteForm, index){
+	preciocliente=parseFloat(precioclienteForm.value);
 	var preciocompra=document.getElementById("precio"+index).value;
 	var costo=parseFloat(preciocompra);
 	var cantidad=document.getElementById('cantidad_unitaria'+index).value;
+	var cantidad_presentacion=document.getElementById('cantidadpresentacion'+index).value;
+
+	cantidad=cantidad*cantidad_presentacion;
+	
 	var costounitario=parseFloat(costo)/parseFloat(cantidad);
 
 	console.log("preciocompra: "+preciocompra);
@@ -375,11 +472,13 @@ function calcularDescuentoUnitario(tipo, index){
 	if(tipo == 0){
 		//  # Numerico
 		let descuento_numero = parseFloat(document.getElementById('descuento_numero'+index).value);
-		document.getElementById('descuento_porcentaje'+index).value = (descuento_numero/precio_old)*100;
+		let total_descuento_numero = (descuento_numero/precio_old)*100;
+		document.getElementById('descuento_porcentaje'+index).value = total_descuento_numero.toFixed(2);
 	}else{
 		//  % Porcentaje
 		let descuento_porcentaje = parseFloat(document.getElementById('descuento_porcentaje'+index).value);
-		document.getElementById('descuento_numero'+index).value = (descuento_porcentaje/100) * precio_old;
+		let total_descuento_porcentaje = (descuento_porcentaje/100) * precio_old;
+		document.getElementById('descuento_numero'+index).value = total_descuento_porcentaje.toFixed(2);
 	}
 	// Ajuste Descuento Adicional
 	ajusteDescuento();
@@ -395,21 +494,25 @@ function calculaPrecioCliente(preciocompra, index){
 	// CALCULAR SUBTOTAL
 	var cantidad 		= parseFloat(document.getElementById('cantidad_unitaria'+index).value);
 	var precio_unitario = parseFloat(document.getElementById('precio_unitario'+index).value);
+	var cantidad_presentacion = parseFloat(document.getElementById('cantidadpresentacion'+index).value);
 	document.getElementById('precio_old'+index).value = (cantidad > 0 ? cantidad : 0) * (precio_unitario > 0 ? precio_unitario : 0);
 	var margen		  = document.getElementById('margenlinea'+index).value;
+
+	/*var total_subtotal  = (cantidad > 0 ? cantidad : 0) * (precio_unitario > 0 ? precio_unitario : 0);
+	document.getElementById('precio_old'+index).value = total_subtotal.toFixed(2);*/
 	/****************************************************************************/
 
 	if(banderaCalculoPrecio==0){
 		//var costo=preciocompra.value;
 		var costo = parseFloat(document.getElementById("precio"+index).value);
-		var costounitario=costo/cantidad;
+		var costounitario=(costo/cantidad)/cantidad_presentacion;
 		console.log("costoUnitario: "+costounitario); // s dejo esta parte de codigo
 		var preciocliente=costounitario+(costounitario*(margen/100));
 		preciocliente=redondear(preciocliente,2);
 		preciocliente=number_format(preciocliente,2);
 		document.getElementById('preciocliente'+index).value=preciocliente;		
 	}else{
-		var costounitario = precio_unitario;
+		var costounitario = precio_unitario / cantidad_presentacion;
 		var preciocliente=(costounitario + (costounitario*(margen/100)));
 		console.log('costounitario:'+costounitario)
 		console.log('(costounitario*(margen/100)):'+(costounitario*(margen/100)))
@@ -647,20 +750,20 @@ echo "</table><br>";
 					<td width="5%" align="center">&nbsp;</td>
 					<td width="20%" align="center">Producto</td>
 					<td width="10%" align="center">Cantidad</td>
-					<td width="10%" align="center">Precio<br>Unitario</td>
+					<td width="10%" align="center">Precio<br>Presentación</td>
 					<!--td width="10%" align="center">Lote</td-->
 					<td width="10%" align="center">Vencimiento</td>
 					<!-- <td width="10%" align="center">Precio Distribuidor<br>(Total_item)</td> -->
 					<td width="10%" align="center">Subtotal</td>
 
 					<!-- Descuento Unitario -->
-					<td width="5%" align="center">Descuento<br>Unitario</td>
+					<td width="5%" align="center">Desc.<br>Prod</td>
 					<!-- Descuento Adicional -->
-					<td width="10%" align="center">Descuento<br>Adicional</td>
+					<td width="10%" align="center">Desc.<br>Adicional</td>
 					<!-- Monto Total -->
 					<td width="10%" align="center">Total</td>
 
-					<td width="10%" align="center">Precio<br>Cliente Final</td>
+					<td width="10%" align="center">Precio<br>Cliente<br>Unitario</td>
 					<td width="10%" align="center">-</td>
 				</tr>
 			</table>
@@ -715,14 +818,12 @@ echo "<script type='text/javascript' language='javascript'  src='dlcalendar.js'>
 			<td><select name='itemTipoMaterial' id="itemTipoMaterial" class="textomedianorojo" style="width:300px">
 			
 			<?php
-			$sqlTipo="select pl.cod_linea_proveedor, CONCAT(p.nombre_proveedor,' - ',pl.nombre_linea_proveedor), pl.margen_precio from proveedores p, proveedores_lineas pl 
-			where p.cod_proveedor=pl.cod_proveedor and pl.estado=1 order by 2;";
+			$sqlTipo="select p.cod_proveedor, p.nombre_proveedor from proveedores p order by 2;";
 			$respTipo=mysqli_query($enlaceCon,$sqlTipo);
 			echo "<option value='0'>--</option>";
 			while($datTipo=mysqli_fetch_array($respTipo)){
 				$codTipoMat=$datTipo[0];
 				$nombreTipoMat=$datTipo[1];
-				$margenPrecio=$datTipo[2];
 				
 				echo "<option value=$codTipoMat>$nombreTipoMat</option>";
 			}

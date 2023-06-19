@@ -879,9 +879,15 @@ function Hidden(){
 }
 function setMateriales(f, cod, nombreMat){
 	var numRegistro=f.materialActivo.value;
+	var nombre_material_x, fecha_venc_x;
+	var datos_material=nombreMat.split("####");
+ 	nombre_material_x=datos_material[0];  
+ 	fecha_venc_x=datos_material[1];  
+
 	
 	document.getElementById('materiales'+numRegistro).value=cod;
-	document.getElementById('cod_material'+numRegistro).innerHTML=nombreMat;
+	document.getElementById('cod_material'+numRegistro).innerHTML=nombre_material_x;
+	document.getElementById('fecha_vencimiento'+numRegistro).innerHTML=fecha_venc_x;
 	
 	document.getElementById('divRecuadroExt').style.visibility='hidden';
 	document.getElementById('divProfileData').style.visibility='hidden';
@@ -1019,6 +1025,7 @@ function masMultiple(form) {
 			  var name = $(this).attr('name');
 			  var value = $(this).val();
 			  var index = name.charAt(name.length - 1);
+			  console.log("index: "+index);
 			  arrayCantidades.push([name,value,index]);
 			});
 			/*fin recuperar*/
@@ -1968,7 +1975,8 @@ if($banderaMensajesDoblePantalla==1){
 
 	<tr align="center">
 		<td width="10%">&nbsp;</td>
-		<td width="38%">Material</td>
+		<td width="33%">Material</td>
+		<td width="5%">FV</td>
 		<td width="8%">Stock</td>
 		<td width="8%">Cantidad</td>
 		<td width="8%">Precio </td>

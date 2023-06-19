@@ -111,7 +111,7 @@ include("datosUsuario.php");
 			</li-->
 			<li><span>Ingresos</span>
 				<ul>
-					<li><a href="navegador_ingresomateriales.php" target="contenedorPrincipal">Ingreso de Materiales</a></li>
+					<li><a href="navegador_ingresomateriales.php" target="_blank">Ingreso de Materiales</a></li>
 					<li><a href="navegador_ingresotransito.php" target="contenedorPrincipal">Ingreso de Productos en Transito</a></li>
 <!--li><a href="navegadorLiquidacionIngresos.php" target="contenedorPrincipal">Liquidacion de Ingresos</a></li-->
 				</ul>	
@@ -147,7 +147,7 @@ include("datosUsuario.php");
 				</ul>	
 			</li>	
 
-			<li><a href="registrar_ingresomateriales.php" target="contenedorPrincipal">Registrar Ingreso **</a></li>
+			<li><a href="registrar_ingresomateriales.php" target="_blank">Registrar Ingreso **</a></li>
 			<li><a href="registrar_salidaventas.php" target="_blank">Vender / Facturar **</a></li>
 			<li><a href="rptOpArqueoDiario.php?variableAdmin=1" target="contenedorPrincipal">Cierre de Caja</a></li>
 			<li><a href="cambiarSucursalSesion.php" target="contenedorPrincipal">Cambiar Almacen</a></li>
@@ -169,14 +169,14 @@ include("datosUsuario.php");
 							<!--li><a href="rptOCPagar.php" target="contenedorPrincipal">OC por Pagar</a></li-->
 						</ul>
 					</li>	
-					<!--li><span>Costos</span>
+					<li><span>Costos</span>
 						<ul>
 							<li><a href="rptOpKardexCostos.php" target="contenedorPrincipal">Kardex de Movimiento Precio Promedio</a></li>
-							<li><a href="rptOpKardexCostosPEPS.php" target="contenedorPrincipal">Kardex de Movimiento PEPS</a></li>
-							<li><a href="rptOpKardexCostosUEPS.php" target="contenedorPrincipal">Kardex de Movimiento UEPS</a></li>							
+							<!--li><a href="rptOpKardexCostosPEPS.php" target="contenedorPrincipal">Kardex de Movimiento PEPS</a></li>
+							<li><a href="rptOpKardexCostosUEPS.php" target="contenedorPrincipal">Kardex de Movimiento UEPS</a></li-->
 							<li><a href="rptOpExistenciasCostos.php" target="contenedorPrincipal">Existencias</a></li>							
 						</ul>
-					</li-->
+					</li>
 					<li><span>Ventas</span>
 						<ul>
 							<li><a href="rptOpVentasPorClientes.php" target="contenedorPrincipal">Ventas x Cliente</a></li>

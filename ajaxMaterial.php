@@ -20,21 +20,19 @@ $fechaActual=date("Y-m-d");
 
 <td width="20%" align="left"><!--?php echo $num;?-->
 <input type="hidden" name="material<?php echo $num;?>" id="material<?php echo $num;?>" value="0">
+<input type="hidden" name="cantidadpresentacion<?php echo $num;?>" id="cantidadpresentacion<?php echo $num;?>" value="0">
 <div id="cod_material<?php echo $num;?>" class='textomedianorojo'>-</div>
 </td>
+
 <!-- CANTIDAD -->
 <td align="center" width="10%">
-<input type="number" class="inputnumber" min="1" max="1000000" id="cantidad_unitaria<?php echo $num;?>" name="cantidad_unitaria<?php echo $num;?>" size="5"  value="0" onKeyUp='calculaPrecioCliente(0, <?php echo $num;?>);' onChange='calculaPrecioCliente(0, <?php echo $num;?>);' required>
+<input type="number" class="inputnumber" min="1" max="1000000" id="cantidad_unitaria<?php echo $num;?>" name="cantidad_unitaria<?php echo $num;?>" size="5"  value="" onKeyUp='calculaPrecioCliente(0, <?php echo $num;?>);' onChange='calculaPrecioCliente(0, <?php echo $num;?>);' required>
 </td>
 
 <!-- PRECIO UNITARIO -->
 <td align="center" width="10%">
 <input type="number" class="inputnumber" min="0.01" max="1000000" id="precio_unitario<?php echo $num;?>" name="precio_unitario<?php echo $num;?>" size="5"  value="0" onKeyUp='calculaPrecioCliente(0, <?php echo $num;?>);' onChange='calculaPrecioCliente(0, <?php echo $num;?>);' step="0.01" required>
 </td>
-
-<!--td align="center" width="10%">
-<input type="text" class="textoform" id="lote<?php echo $num;?>" name="lote<?php echo $num;?>" size="10" value="0" required>
-</td-->
 
 <td align="center" width="10%">
 <input type="date" class="textoform" min="<?php echo $fechaActual; ?>" id="fechaVenc<?php echo $num;?>" name="fechaVenc<?php echo $num;?>" size="5" required>
@@ -46,7 +44,7 @@ $fechaActual=date("Y-m-d");
 
 <!-- DESCUENTO UNITARIO -->
 <td align="center" width="5%">
-%<input type="number" class="inputnumber" min="1" max="1000000" id="descuento_porcentaje<?php echo $num;?>" name="descuento_porcentaje<?php echo $num;?>" size="5"  value="0" onKeyUp='calcularDescuentoUnitario(1, <?php echo $num;?>);' onChange='calcularDescuentoUnitario(1, <?php echo $num;?>);' step="0.01" required data-tipo="1">
+%<input type="number" class="inputnumber" min="0" max="1000000" id="descuento_porcentaje<?php echo $num;?>" name="descuento_porcentaje<?php echo $num;?>" size="5"  value="0" onKeyUp='calcularDescuentoUnitario(1, <?php echo $num;?>);' onChange='calcularDescuentoUnitario(1, <?php echo $num;?>);' step="0.01" required data-tipo="1">
 Bs.<input type="number" class="inputnumber" min="0" max="1000000" id="descuento_numero<?php echo $num;?>" name="descuento_numero<?php echo $num;?>" size="5"  value="0" onKeyUp='calcularDescuentoUnitario(0, <?php echo $num;?>);' onChange='calcularDescuentoUnitario(0, <?php echo $num;?>);' step="0.01" required data-tipo="0">
 </td>
 

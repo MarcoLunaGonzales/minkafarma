@@ -693,6 +693,35 @@ function precioProductoSucursal($enlaceCon,$item,$sucursal){
 	return($precio);
 }
 
+function precioProductoSucursalCalculado($enlaceCon,$item,$sucursal){
+	//require("conexionmysqli.php");
+	$fechaActual=date("Y-m-d");
+
+	$porcentajeVentaProd=obtenerValorConfiguracion($enlaceCon, 53);
+ 	$porcentajePrecioMayorista=precioMayoristaSucursal($enlaceCon,$sucursal);
+
+	$sql="SELECT p.precio, p.descuento_unitario from precios p where p.`codigo_material`='$item' and p.`cod_precio`='1' 
+				and p.cod_ciudad='$sucursal'";	
+	$resp=mysqli_query($enlaceCon,$sql);
+	$precio=0;
+	$descuentoUnitario=0;
+	$descuentoUnitarioBs=0;
+ 	if (mysqli_num_rows($resp)>0){ 
+		$dat=mysqli_fetch_array($resp);
+		$precio=$dat[0];
+		$descuentoUnitario=$dat[1];
+	}
+	if($descuentoUnitario>0){
+		$descuentoUnitario=$descuentoUnitario*($porcentajeVentaProd/100);
+	}
+	$descuentoUnitario=$descuentoUnitario+$porcentajePrecioMayorista;
+	if($descuentoUnitario>0){
+		$descuentoUnitarioBs=$precio*($descuentoUnitario/100);
+	}
+	$precio=$precio-$descuentoUnitarioBs;
+	return($precio);
+}
+
 function margenLinea($enlaceCon,$item){
 	//require("conexionmysqli.php");
 	$fechaActual=date("Y-m-d");
@@ -739,6 +768,32 @@ function actualizarPrecios($enlaceCon, $codProducto, $arrayPrecios, $descuento){
 	    	('$codProducto','1','$valor','$clave','$descuento')";
 	    }elseif($bandera>0){
 	    	$sqlActPrecio="update precios set precio='$valor', descuento_unitario='$descuento' where codigo_material='$codProducto' and cod_precio=1 and 
+	    		cod_ciudad='$clave'";
+	    }	    
+	    
+	    //echo $sqlActPrecio."<br>";	    
+	    
+	    $respPrecio=mysqli_query($enlaceCon,$sqlActPrecio);
+	}
+	return(1);
+}
+
+function actualizarPreciosConPorcentajes($enlaceCon, $codProducto, $arrayPrecios, $arrayPorcentajes){
+	foreach ( $arrayPrecios as $clave => $valor ){
+	    $sqlVerificaPrecio="select count(*) from precios p where p.cod_precio=1 and p.codigo_material='$codProducto' and p.cod_ciudad='$clave'";
+		 $respVerificaPrecio=mysqli_query($enlaceCon, $sqlVerificaPrecio);
+	    $bandera=0;
+	    if($datVerificaPrecio=mysqli_fetch_array($respVerificaPrecio)){
+	    	$bandera=$datVerificaPrecio[0];
+	    }
+
+	    $porcentajePrecio=$arrayPorcentajes[$clave];
+	    
+	    if($bandera==0){    //insertamos
+	    	$sqlActPrecio="insert into precios (codigo_material, cod_precio, precio, cod_ciudad, descuento_unitario) values 
+	    	('$codProducto','1','$valor','$clave','$porcentajePrecio')";
+	    }elseif($bandera>0){
+	    	$sqlActPrecio="update precios set precio='$valor', descuento_unitario='$porcentajePrecio' where codigo_material='$codProducto' and cod_precio=1 and 
 	    		cod_ciudad='$clave'";
 	    }	    
 	    
@@ -869,4 +924,48 @@ function precioMayoristaSucursal($enlaceCon, $sucursal){
    return $descuento;
 }
 
+function obtenerFechaVencimiento($enlaceCon, $almacen, $codProducto){
+	$sql="SELECT DATE_FORMAT(id.fecha_vencimiento, '%m/%Y')as fecha_vencimiento from ingreso_almacenes i, ingreso_detalle_almacenes id
+		where i.cod_ingreso_almacen=id.cod_ingreso_almacen and i.cod_almacen='$almacen' 
+		and i.ingreso_anulado=0 and id.cantidad_restante>0 and i.cod_tipoingreso in (1000,1003) and id.cod_material='$codProducto' 
+		and id.fecha_vencimiento not in ('1969-12-30','0000-00-00')
+		order by id.fecha_vencimiento asc limit 0,1";
+ 	$resp=mysqli_query($enlaceCon,$sql);
+   $fechaVencimiento="";				
+   if($detalle=mysqli_fetch_array($resp)){
+	   $fechaVencimiento=$detalle[0];
+   }  
+   return $fechaVencimiento;
+}
+
+function obtenerSaldoKardexAnterior($enlaceCon, $rpt_almacen, $rpt_item, $fecha){
+	//desde esta parte viene el reporte en si
+	$costoInicialKardex=0;
+	$fecha_iniconsulta=$fecha;
+	//aqui sacamos las existencias a una fecha
+	$sql="select sum(id.cantidad_unitaria), sum(id.cantidad_unitaria*id.costo_almacen)as costo FROM ingreso_almacenes i, ingreso_detalle_almacenes id
+	where i.cod_ingreso_almacen=id.cod_ingreso_almacen and i.cod_almacen='$rpt_almacen' and
+	i.ingreso_anulado=0 and id.cod_material='$rpt_item' and i.fecha<'$fecha_iniconsulta'";
+	
+	//echo $sql;
+	
+	$resp=mysqli_query($enlaceCon, $sql);
+	$dat_existencias_afecha=mysqli_fetch_array($resp);
+	$cantidad_ingresada_afecha=$dat_existencias_afecha[0];
+	$costoIngresosAnterior=$dat_existencias_afecha[1];
+	
+	$sql_salidas_afecha="select sum(sd.cantidad_unitaria), sum(sd.cantidad_unitaria*sd.costo_almacen)as costo from salida_almacenes s, salida_detalle_almacenes sd
+	where s.cod_salida_almacenes=sd.cod_salida_almacen and s.cod_almacen='$rpt_almacen' and
+	s.salida_anulada=0 and sd.cod_material='$rpt_item' and s.fecha<'$fecha_iniconsulta'";
+	//echo $sql_salidas_afecha;
+	$resp_salidas_afecha=mysqli_query($enlaceCon, $sql_salidas_afecha);
+	$dat_salidas_afecha=mysqli_fetch_array($resp_salidas_afecha);
+	$cantidad_sacada_afecha=$dat_salidas_afecha[0];
+	$costoSalidasAnterior=$dat_salidas_afecha[1];
+	$cantidad_inicial_kardex=$cantidad_ingresada_afecha-$cantidad_sacada_afecha;
+	$costoInicialKardex=$costoIngresosAnterior-$costoSalidasAnterior;
+
+	$vectorKardexAnterior=array($cantidad_inicial_kardex,$costoInicialKardex);
+	return($vectorKardexAnterior);
+}
 ?>

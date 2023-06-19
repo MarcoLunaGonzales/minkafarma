@@ -19,13 +19,13 @@ $itemsNoUtilizar="0";
 	$sql="select m.codigo_material, m.descripcion_material, m.cantidad_presentacion, 
 	(select concat(p.nombre_proveedor)
 	from proveedores p, proveedores_lineas pl where p.cod_proveedor=pl.cod_proveedor and pl.cod_linea_proveedor=m.cod_linea_proveedor)	
-	from material_apoyo m where estado=1 
+	from material_apoyo m, proveedores_lineas pl where pl.cod_linea_proveedor=m.cod_linea_proveedor and m.estado=1 
 		and m.codigo_material not in ($itemsNoUtilizar)";
 	if($nombreItem!=""){
-		$sql=$sql. " and descripcion_material like '%$nombreItem%'";
+		$sql=$sql. " and m.descripcion_material like '%$nombreItem%'";
 	}
 	if($codTipo!=0){
-		$sql=$sql. " and cod_linea_proveedor = '$codTipo' ";
+		$sql=$sql. " and pl.cod_proveedor = '$codTipo' ";
 	}
 	$sql=$sql." order by 2";
 	$resp=mysqli_query($enlaceCon,$sql);
@@ -36,6 +36,7 @@ $itemsNoUtilizar="0";
 			$cont++;
 			$codigo=$dat[0];
 			$nombre=$dat[1];
+			$nombre=str_replace("," ,"", $nombre);
 			$nombre=addslashes($nombre);
 			$cantidadPresentacion=$dat[2];
 			$linea=$dat[3];

@@ -5,6 +5,11 @@ require("estilos_almacenes.inc");
 require("funcionRecalculoCostos.php");
 require("funciones.php");
 
+
+ error_reporting(E_ALL);
+ ini_set('display_errors', '1');
+
+
 //HABILITAMOS LA BANDERA DE VENCIDOS PARA ACTUALIZAR EL PRECIO
 $banderaPrecioUpd=obtenerValorConfiguracion($enlaceCon,7);
 
@@ -60,35 +65,62 @@ if($sql_inserta==1){
 		$cod_material = $_POST["material$i"];
 		
 		if($cod_material!=0){
+			$cantidadPresentacion=$_POST["cantidadpresentacion$i"];
+
+			//La Cantidad llega en Cantidad Presentacion
 			$cantidad=$_POST["cantidad_unitaria$i"];
+			$cantidad=$cantidad*$cantidadPresentacion;
+
 
 			$precioBruto=$_POST["precio_unitario$i"];
-			$precioFinal=$_POST["precio$i"];
 			
-			$lote=$_POST["lote$i"];
-			$ubicacionEstante=$_POST["ubicacion_estante$i"];
-			$ubicacionFila=$_POST["ubicacion_fila$i"];
+			$precioBruto=$precioBruto/$cantidadPresentacion;
+			
+			$precioFinal=0;
+			if(isset($_POST["precio$i"])){
+				$precioFinal=$_POST["precio$i"];
+			}
+			
+			$lote="0";
+
+			//$ubicacionEstante=$_POST["ubicacion_estante$i"];
+			//$ubicacionFila=$_POST["ubicacion_fila$i"];
+			
 			if($lote==""){
 				$lote=0;
 			}
-			$fechaVencimiento=$_POST["fechaVenc$i"];
 
-			$fechaVencimiento=UltimoDiaMes($fechaVencimiento);
+			$fechaVencimiento="";
+			if(isset($_POST["fechaVenc$i"])){
+				$fechaVencimiento=$_POST["fechaVenc$i"];
+				$fechaVencimiento=UltimoDiaMes($fechaVencimiento);
+			}
 
-			$precioUnitario=$precioFinal/$cantidad;
+
+			//El precioUnitario llega en Cantidad de Presentacion
+			$precioUnitario=0;
+			if($precioFinal>0){
+				$precioUnitario=($precioFinal/$cantidad);
+			}
 			
 			$costo=$precioUnitario;
 			
 			// Nuevo Campo Descuento Unitario
-			$descuento_unitario = $_POST["descuento_porcentaje$i"];
+			$descuento_unitario=0;
+			if(isset($_POST["descuento_porcentaje$i"])){
+				$descuento_unitario = $_POST["descuento_porcentaje$i"];
+			}
 			
 			$consulta="insert into ingreso_detalle_almacenes(cod_ingreso_almacen, cod_material, cantidad_unitaria, cantidad_restante, lote, fecha_vencimiento, 
 			precio_bruto, costo_almacen, costo_actualizado, costo_actualizado_final, costo_promedio, precio_neto, cod_ubicacionestante, cod_ubicacionfila, descuento_unitario) 
-			values($codigo,'$cod_material',$cantidad,$cantidad,'$lote','$fechaVencimiento',$precioBruto,$precioUnitario,$costo,$costo,$costo,$costo,'$ubicacionEstante','$ubicacionFila','$descuento_unitario')";
+			values($codigo,'$cod_material',$cantidad,$cantidad,'$lote','$fechaVencimiento',$precioBruto,$precioUnitario,$costo,$costo,$costo,$costo,'0','0','$descuento_unitario')";
 			//echo "bbb:$consulta";
 			$sql_inserta2 = mysqli_query($enlaceCon,$consulta);
 			
-			$precioItem=$_POST["preciocliente$i"];			
+			$precioItem=0;			
+			if(isset($_POST["preciocliente$i"])){
+				$precioItem=$_POST["preciocliente$i"];			
+			}
 
 			//ARMAMOS EL ARRAY CON LOS PRECIOS
 			$arrayPreciosModificar=[];
@@ -154,7 +186,7 @@ if($sql_inserta==1){
 	echo "<script language='Javascript'>
 		alert('EXISTIO UN ERROR EN LA TRANSACCION, POR FAVOR CONTACTE CON EL ADMINISTRADOR.');
 		location.href='navegador_ingresomateriales.php';
-		</script>";	
+		</script>";
 }
 
 ?>

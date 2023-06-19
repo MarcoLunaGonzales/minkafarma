@@ -66,6 +66,7 @@ include("datosUsuario.php");
 				<ul>
 					<li><a href="navegador_ingresomateriales.php" target="contenedorPrincipal">Ingreso de Materiales</a></li>
 					<!--li><a href="navegadorLiquidacionIngresos.php" target="contenedorPrincipal">Liquidacion de Ingresos</a></li-->
+					<li><a href="navegador_ingresotransito.php" target="contenedorPrincipal">Ingreso de Productos en Transito</a></li>
 				</ul>	
 			</li>
 			<li><span>Salidas</span>
@@ -94,6 +95,7 @@ include("datosUsuario.php");
 			<li><a href="registrar_salidaventas.php" target="_blank">Vender / Facturar **</a></li>
 			<li><a href="rptOpArqueoDiario.php?variableAdmin=1" target="contenedorPrincipal">Cierre de Caja</a></li>
 			<li><a href="cambiarSucursalSesion.php" target="contenedorPrincipal">Cambiar Almacen</a></li>
+			<li><a href="rptOpProcesarCostos.php" target="contenedorPrincipal">Procesar Costos</a></li>
 
 			<li><span>Reportes</span>
 				<ul>
@@ -117,10 +119,18 @@ include("datosUsuario.php");
 							<!--li><a href="rptOpKardexCliente.php" target="contenedorPrincipal">Kardex x Cliente</a></li-->
 						</ul>	
 					</li>
+					<li><span>Costos</span>
+						<ul>
+							<li><a href="rptOpKardexCostos.php" target="contenedorPrincipal">Kardex de Movimiento Precio Promedio</a></li>
+							<!--li><a href="rptOpKardexCostosPEPS.php" target="contenedorPrincipal">Kardex de Movimiento PEPS</a></li>
+							<li><a href="rptOpKardexCostosUEPS.php" target="contenedorPrincipal">Kardex de Movimiento UEPS</a></li-->
+							<li><a href="rptOpExistenciasCostos.php" target="contenedorPrincipal">Existencias</a></li>	
+							<li><a href="rptOpUtilidadesDocItem.php" target="contenedorPrincipal">Costo Ventas x Documento e Item</a></li>							
+						</ul>
+					</li>
 					<li><span>Reportes Contables</span>
 						<ul>
 							<li><a href="rptOpLibroVentas.php" target="contenedorPrincipal">Libro de Ventas</a></li>
-							<li><a href="rptOpExistenciasCostos.php" target="contenedorPrincipal">Existencias Valorado</a></li>
 						</ul>	
 					</li>
 				</ul>

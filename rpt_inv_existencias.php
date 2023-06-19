@@ -1,12 +1,15 @@
 <?php
 
- error_reporting(E_ALL);
- ini_set('display_errors', '1');
 //header("Content-type: application/vnd.ms-excel");
 //header("Content-Disposition: attachment; filename=archivo.xls");
 require('estilos_reportes_almacencentral.php');
 require('function_formatofecha.php');
+require('funcion_nombres.php');
 require('conexionmysqli2.inc');
+
+ error_reporting(E_ALL);
+ ini_set('display_errors', '1');
+
 
 $rpt_territorio=$_GET["rpt_territorio"];
 $rpt_almacen=$_GET["rpt_almacen"];
@@ -14,6 +17,19 @@ $rpt_ver=$_GET["rpt_ver"];
 $rpt_fecha=$_GET["rpt_fecha"];
 $rptOrdenar=$_GET["rpt_ordenar"];
 $rptDistribuidor=$_GET["rpt_distribuidor"];
+$rptTipoImpresion=$_GET["rpt_tipo_impresion"];
+
+$array_proveedores=explode(",", $rptDistribuidor);
+$nombreProveedor="";
+for ($i=0; $i <count($array_proveedores) ; $i++) { 
+	$codigo_proveedor=$array_proveedores[$i];
+	$nombreProveedor.=obtenerNombreProveedor($codigo_proveedor)." - ";
+}
+//recortamos la cadena
+$tamanioCadenaDistribuidor=strlen($nombreProveedor);
+if($tamanioCadenaDistribuidor>300){
+	$nombreProveedor=substr($nombreProveedor, 0, 300)." ...";  // devuelve "abcde"
+}
 
 $rpt_fecha=cambia_formatofecha($rpt_fecha);
 $fecha_reporte=date("d/m/Y");
@@ -28,7 +44,8 @@ $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
 	$resp_nombre_almacen=mysqli_query($enlaceCon, $sql_nombre_almacen);
 	$datos_nombre_almacen=mysqli_fetch_array($resp_nombre_almacen);
 	$nombre_almacen=$datos_nombre_almacen[0];
-		echo "<table align='center' class='textotit' width='70%'><tr><td align='center'>Reporte Existencias Almacen<br>Territorio: <strong>$nombre_territorio</strong> Nombre Almacen: <strong>$nombre_almacen</strong> <br>Existencias a Fecha: <strong>$rpt_fecha</strong><br>$txt_reporte</th></tr></table>";
+		echo "<table align='center' class='textotit' width='70%'><tr><td align='center'>Reporte Existencias Almacen<br>Territorio: <strong>$nombre_territorio</strong> Nombre Almacen: <strong>$nombre_almacen</strong> <br>Existencias a Fecha: <strong>$rpt_fecha</strong><br>$txt_reporte <br>
+		Distribuidor: <small><small><small><b>$nombreProveedor</b></small></small></small></th></tr></table>";
 		//desde esta parte viene el reporte en si
 		
 		if($rptOrdenar==1){
@@ -46,14 +63,28 @@ $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
 		if($rptOrdenar==1){
 			echo "<br><table border=0 align='center' class='textomediano' width='70%'>
 			<thead>
-			<tr><th>&nbsp;</th><th>Codigo</th><th>Material</th>
-			<th>CantidadPresentacion</th><th>Cajas</th><th>Unidades</th></tr>
+			<tr><th>&nbsp;</th><th>Codigo</th><th>Material</th>";
+			if($rptTipoImpresion==0){
+				echo "<th>CantidadPresentacion</th>";
+			}
+			echo "<th>Cajas</th><th>Unidades</th>";
+			if($rptTipoImpresion==1){
+				echo "<th>Fisico</th><th>Observaciones</th>";
+			}
+			echo "</tr>
 			</thead>";
 		}else{
 			echo "<br><table border=0 align='center' class='textomediano' width='70%'>
 			<thead>
-			<tr><th>&nbsp;</th><th>Codigo</th><th>Linea Proveedor</th><th>Material</th>
-			<th>CantidadPresentacion</th><th>Cajas</th><th>Unidades</th></tr>
+			<tr><th>&nbsp;</th><th>Codigo</th><th>Linea Proveedor</th><th>Material</th>";
+			if($rptTipoImpresion==0){
+				echo "<th>CantidadPresentacion</th>";
+			}
+			echo"<th>Cajas</th><th>Unidades</th>";
+			if($rptTipoImpresion==1){
+				echo "<th>Fisico</th><th>Observaciones</th>";
+			}
+			echo"</tr>
 			</thead>";
 		}
 
@@ -67,9 +98,15 @@ $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
 			$nombreLinea=$datos_item[3];
 			
 			if($rptOrdenar==1){
-				$cadena_mostrar="<tr><td>$indice</td><td>$codigo_item</td><td>$nombre_item</td><td>$cantidadPresentacion</td>";
+				$cadena_mostrar="<tr><td>$indice</td><td>$codigo_item</td><td>$nombre_item</td>";
+				if($rptTipoImpresion==0){
+					$cadena_mostrar.="<th>$cantidadPresentacion</th>";
+				}
 			}else{
-				$cadena_mostrar="<tr><td>$indice</td><td>$codigo_item</td><td>$nombreLinea</td><td>$nombre_item</td><td>$cantidadPresentacion</td>";				
+				$cadena_mostrar="<tr><td>$indice</td><td>$codigo_item</td><td>$nombreLinea</td><td>$nombre_item</td>";
+				if($rptTipoImpresion==0){
+					$cadena_mostrar.="<th>$cantidadPresentacion</th>";
+				}
 			}
 
 			
@@ -107,7 +144,11 @@ $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
 					$stockCajas=0;
 				}
 				$stockUnidades=$stock2%$cantidadPresentacion;
-				$cadena_mostrar.="<td align='center'>$stockCajas</td><td align='center'>$stockUnidades</td></tr>";
+				$cadena_mostrar.="<td align='center'>$stockCajas</td><td align='center'>$stockUnidades</td>";
+				if($rptTipoImpresion==1){
+					$cadena_mostrar.="<th>&nbsp;</th><th>&nbsp;</th>";
+				}
+				$cadena_mostrar.="</tr>";
 			}
 			
 			
