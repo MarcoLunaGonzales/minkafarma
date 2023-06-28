@@ -882,11 +882,12 @@ function Hidden(){
 }
 function setMateriales(f, cod, nombreMat){
 	var numRegistro=f.materialActivo.value;
-	var nombre_material_x, fecha_venc_x;
+	var nombre_material_x, fecha_venc_x, cantidad_presentacionx, venta_solo_cajax;
 	var datos_material=nombreMat.split("####");
  	nombre_material_x=datos_material[0];  
  	fecha_venc_x=datos_material[1];  
-
+ 	cantidad_presentacionx=datos_material[2];
+ 	venta_solo_cajax=datos_material[3];
 	
 	document.getElementById('materiales'+numRegistro).value=cod;
 	document.getElementById('cod_material'+numRegistro).innerHTML=nombre_material_x;
@@ -897,7 +898,14 @@ function setMateriales(f, cod, nombreMat){
 	document.getElementById('divProfileDetail').style.visibility='hidden';
 	document.getElementById('divboton').style.visibility='hidden';
 	
+	if(venta_solo_cajax==1){
+		document.getElementById("cantidad_unitaria"+numRegistro).step=cantidad_presentacionx;
+		document.getElementById("cantidad_unitaria"+numRegistro).min=cantidad_presentacionx;
+		document.getElementById("div_venta_caja"+numRegistro).innerHTML="Venta x Caja";
+		console.log('cambiando a venta por caja.'+cantidad_presentacionx);
+	}
 	document.getElementById("cantidad_unitaria"+numRegistro).focus();
+
 
 	actStock(numRegistro);
 	// Verificación de PRECIO CLIENTE

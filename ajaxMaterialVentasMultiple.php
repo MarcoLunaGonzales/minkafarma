@@ -74,6 +74,7 @@ echo "</td></div>";
 
 <td align="center" width="8%">
 	<input class="inputnumber" type="number" value="" min="1" id="cantidad_unitaria<?php echo $num;?>" onKeyUp='calculaMontoMaterial(<?php echo $num;?>);' name="cantidad_unitaria<?php echo $num;?>" onChange='calculaMontoMaterial(<?php echo $num;?>);' required>
+	<div id="div_venta_caja<?=$num;?>" class="textosmallazul"></div>
 </td>
 
 
