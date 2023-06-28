@@ -482,9 +482,9 @@ function calcularDescuentoUnitario(tipo, index){
 	}
 	// Ajuste Descuento Adicional
 	ajusteDescuento();
+	totalesMonto();
 	// Ajuste Monto Total sin DESCUENTO ADICIONAL
 	calculaPrecioCliente(0,index);
-	totalesMonto();
 }
 // Calculo de montos TOTALES
 function calculaPrecioCliente(preciocompra, index){
@@ -733,7 +733,7 @@ echo "</table><br>";
 				<tr>
 					<th colspan="4"></th>
 					<th>Descuento Final 1</th>
-					<th colspan="2"><input type="text" id="descuento_adicional" value="0" onkeyup="changeDescuentoAdicional()"></th>
+					<th colspan="2"><input type="text" id="descuento_adicional" name="descuento_adicional" value="0" onkeyup="changeDescuentoAdicional()"></th>
 				</tr>
 				<tr>
 					<td align="center" colspan="7">
