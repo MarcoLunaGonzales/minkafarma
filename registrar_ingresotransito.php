@@ -6,13 +6,21 @@ require("funciones.php");
 $fecha=date("Y-m-d");
 $hora=date("H:i");
 
-$sql_datos_salidaorigen="select s.nro_correlativo, s.cod_tiposalida, a.nombre_almacen from salida_almacenes s, almacenes a
+$globalCiudad=$_COOKIE["global_agencia"];
+$globalAlmacen=$_COOKIE["global_almacen"];
+
+ error_reporting(E_ALL);
+ ini_set('display_errors', '1');
+
+$sql_datos_salidaorigen="select s.nro_correlativo, s.cod_tiposalida, a.nombre_almacen, a.cod_ciudad from salida_almacenes s, almacenes a
 where a.cod_almacen=s.cod_almacen and s.cod_salida_almacenes='$codigo_registro'";
 $resp_datos_salidaorigen=mysqli_query($enlaceCon,$sql_datos_salidaorigen);
 $datos_salidaorigen=mysqli_fetch_array($resp_datos_salidaorigen);
 $correlativo_salidaorigen=$datos_salidaorigen[0];
 $tipo_salidaorigen=$datos_salidaorigen[1];
 $nombre_almacen_origen=$datos_salidaorigen[2];
+$codSucursalOrigen=$datos_salidaorigen[3];
+$observaciones="";
 
 
 echo "<form action='guarda_ingresotransito.php' method='post'>";
@@ -45,9 +53,12 @@ $cantidad_materiales=mysqli_num_rows($resp_detalle_salida);
 
 echo "<input type='hidden' name='codigo_salida' value='$codigo_registro'>";
 echo "<input type='hidden' name='cantidad_material' value='$cantidad_materiales'>";
-echo "<tr><th width='5%'>&nbsp;</th><th width='45%'>Material</th><th width='25%'>Cantidad de Origen</th><th>Cantidad Recibida</th></tr>";
+echo "<tr><th width='5%'>&nbsp;</th><th width='30%'>Material</th><th width='20%'>Cantidad de Origen</th><th width='20%'>Cantidad Recibida</th><th width='25%'>Obs</th></tr>";
 
 $indice_detalle=1;
+
+/* Esta bandera es para cuando falta un precio de origen no pueda guardarse el mismo */
+$banderaErrorPrecios=0;
 
 while($dat_detalle_salida=mysqli_fetch_array($resp_detalle_salida))
 {	$cod_material=$dat_detalle_salida[1];
@@ -64,6 +75,24 @@ while($dat_detalle_salida=mysqli_fetch_array($resp_detalle_salida))
 	$dat_materiales=mysqli_fetch_array($resp_materiales);
 	$nombre_material="$dat_materiales[1]";
 
+	/*************************************************/
+	/*** Verificar los Precios en origen y Destino ***/
+	/*************************************************/
+	$precioSucursalOrigen=precioProductoSucursal($enlaceCon, $cod_material, $codSucursalOrigen);
+	$precioSucursalOrigenF=formatonumeroDec($precioSucursalOrigen);
+	$precioSucursalDestino=precioProductoSucursal($enlaceCon, $cod_material, $globalCiudad);
+	$txtObsPrecios="";
+	if($precioSucursalOrigen>0 && $precioSucursalDestino==0){
+		$txtObsPrecios="<span style='color: blue;'>El precio de la sucursal se actualizará a $precioSucursalOrigenF</span>";
+	}
+	if($precioSucursalOrigen==0 && $precioSucursalDestino==0){
+		$txtObsPrecios="<span style='color: red'>El producto no tiene precio registrado. Consultar con el administrador del sistema.</span>";
+		$banderaErrorPrecios=1;	
+	}
+	/*************************************************/
+	/*** Fin Verificar los Precios en origen y Destino ***/
+	/*************************************************/
+
 	echo "<td>$nombre_material</td>";
 	echo "<input type='hidden' value='$cod_material' name='material$indice_detalle'>";
 	echo "<input type='hidden' value='$cantidad_unitaria' name='cantidad_origen$indice_detalle'>";
@@ -72,8 +101,9 @@ while($dat_detalle_salida=mysqli_fetch_array($resp_detalle_salida))
 	echo "<input type='hidden' name='precio_unitario$indice_detalle' id='precio_unitario$indice_detalle' value='0'>";
 	
 	echo "<td align='center'>$cantidad_unitaria</td>";
-	echo "<td><input type='number' name='cantidad_unitaria$indice_detalle' step='0.1' value='$cantidad_unitaria' class='texto' required></td>
-	</tr>";
+	echo "<td><input type='number' name='cantidad_unitaria$indice_detalle' step='0.1' value='$cantidad_unitaria' class='texto' required></td>";
+	echo "<td>$txtObsPrecios</td>";
+	echo "</tr>";
 	$indice_detalle++;
 }
 echo "</table></center>";
@@ -82,10 +112,14 @@ $indice_detalle--;
 echo "<input type='hidden' name='cantidad_material' value='$indice_detalle'>";
 echo "<input type='hidden' name='cod_salida' value='$codigo_registro'>";
 
-echo "<div class='divBotones'>
-<input type='submit' class='boton' value='Guardar'>
-<input type='button' class='boton2' value='Cancelar' onClick='location.href=\"navegador_ingresotransito.php\"'>
-</div>";
+if($banderaErrorPrecios==0){
+	echo "<div class='divBotones'>
+	<input type='submit' class='boton' value='Guardar'>
+	<input type='button' class='boton2' value='Cancelar' onClick='location.href=\"navegador_ingresotransito.php\"'>
+	</div>";	
+}
+
+
 echo "</form>";
 echo "</div></body>";
 echo "<script type='text/javascript' language='javascript'  src='dlcalendar.js'></script>";

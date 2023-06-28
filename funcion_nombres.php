@@ -214,7 +214,8 @@ function obtenerNombreSucursalAgrupado($sucursales){
 	}
 	return($nombre);
 }
-function obtenerNombreProveedor($codigo){
+
+/*function obtenerNombreProveedor($codigo){
   $estilosVenta=1;
   require("conexionmysqli2.inc");
   $sql_detalle="SELECT nombre_proveedor from proveedores where cod_proveedor='$codigo'";
@@ -225,6 +226,9 @@ function obtenerNombreProveedor($codigo){
   } 
   mysqli_close($enlaceCon); 
   return $proveedor;
-}
+}*/
+
+
+
 
 ?>

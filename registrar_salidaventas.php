@@ -359,6 +359,9 @@ function ajaxPrecioItem(indice){
 				}else{
 					document.getElementById("tipoPrecio"+indice).value=(respuesta[2]*parseFloat(cantidadUnitaria));
 				}
+				if(respuesta[3]!=""){
+					document.getElementById("divMensajeOferta"+indice).innerHTML=respuesta[3];
+				}
 	    	calculaMontoMaterial(indice);
 		}
 	}

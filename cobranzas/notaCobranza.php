@@ -1,30 +1,36 @@
 <?php
+
+require("conexionmysqlipdf.inc");
+
 require('fpdf.php');
-require("conexion.inc");
+
 require("funciones.php");
 
+
+ error_reporting(E_ALL);
+ ini_set('display_errors', '1');
 
 class PDF extends FPDF
 { 	
 	
 	function Header()
-	{
+	{		
 		$codCobro=$_GET['codCobro'];
 		$sqlEmp="select cod_empresa, nombre, nit, direccion, ciudad from datos_empresa";
-		$respEmp=mysql_query($sqlEmp);
+		$respEmp=mysqli_query($enlaceCon, $sqlEmp);
 
-		$nombreEmpresa=mysql_result($respEmp,0,1);
-		$nitEmpresa=mysql_result($respEmp,0,2);
-		$direccionEmpresa=mysql_result($respEmp,0,3);
-		$ciudadEmpresa=mysql_result($respEmp,0,4);
+		$nombreEmpresa=mysqli_result($respEmp,0,1);
+		$nitEmpresa=mysqli_result($respEmp,0,2);
+		$direccionEmpresa=mysqli_result($respEmp,0,3);
+		$ciudadEmpresa=mysqli_result($respEmp,0,4);
 	
 		//datos documento				
 		$sqlDatos="select c.`cod_cobro`, c.`fecha_cobro`,c.`observaciones`,c.`monto_cobro`,
 		(select cl.`nombre_cliente` from clientes cl where c.`cod_cliente` = cl.`cod_cliente`), 
 		c.nro_cobro, (select g.nombre_gestion from gestiones g where g.cod_gestion=c.cod_gestion) 
 		from `cobros_cab` c order by c.`cod_cobro` desc";
-		$respDatos=mysql_query($sqlDatos);
-		while($datDatos=mysql_fetch_array($respDatos)){
+		$respDatos=mysqli_query($enlaceCon, $sqlDatos);
+		while($datDatos=mysqli_fetch_array($respDatos)){
 			$fechaCobro=$datDatos[1];
 			$obsNota=$datDatos[2];
 			$montoCobro=$datDatos[3];
@@ -107,10 +113,10 @@ $sql_detalle="select cd.`nro_doc`, cd.`monto_detalle`, td.`abreviatura`, s.`nro_
 	where c.`cod_cobro`=cd.`cod_cobro` and cd.`cod_venta`=s.`cod_salida_almacenes` and 
 	c.`cod_cobro`='$codCobro' and td.`codigo`=s.`cod_tipo_doc`";		
 	
-$resp_detalle=mysql_query($sql_detalle);
+$resp_detalle=mysqli_query($enlaceCon, $sql_detalle);
 $montoTotal=0;
 $indice=1;
-while($dat_detalle=mysql_fetch_array($resp_detalle))
+while($dat_detalle=mysqli_fetch_array($resp_detalle))
 {	$nroDoc=$dat_detalle[0];
 	$montoDet=$dat_detalle[1];
 	$nroVenta=$dat_detalle[2]."-".$dat_detalle[3];
@@ -136,7 +142,7 @@ while($dat_detalle=mysql_fetch_array($resp_detalle))
 
 //FIN DETALLE
 
-$pdf->Output();
+//$pdf->Output();
 
 
 ?>

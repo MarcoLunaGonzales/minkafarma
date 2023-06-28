@@ -44,7 +44,7 @@ $banderaMostrarFV=obtenerValorConfiguracion($enlaceCon,20);
 
 	$sql="select m.codigo_material, m.descripcion_material,
 	(select concat(p.nombre_proveedor,'-',pl.nombre_linea_proveedor)as nombre_proveedor
-	from proveedores p, proveedores_lineas pl where p.cod_proveedor=pl.cod_proveedor and pl.cod_linea_proveedor=m.cod_linea_proveedor), m.principio_activo, m.accion_terapeutica
+	from proveedores p, proveedores_lineas pl where p.cod_proveedor=pl.cod_proveedor and pl.cod_linea_proveedor=m.cod_linea_proveedor), m.principio_activo, m.accion_terapeutica, m.bandera_venta_unidades
 	from material_apoyo m where estado=1 and m.codigo_material not in ($itemsNoUtilizar)";
 	if($codigoMat!=""){
 		$sql=$sql. " and codigo_material='$codigoMat'";
@@ -85,6 +85,7 @@ $banderaMostrarFV=obtenerValorConfiguracion($enlaceCon,20);
 			$linea=$dat[2];
 			$principioActivo=$dat[3];
 			$accionTerapeutica=$dat[4];
+			$ventaSoloCajas=$dat[5];
 			
 			$nombre=addslashes($nombre);
 			$linea=addslashes($linea);

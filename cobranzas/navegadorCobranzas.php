@@ -2,28 +2,31 @@
     <head>
         <title>Busqueda</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link href="lib/externos/jquery/jquery-ui/completo/jquery-ui-1.8.9.custom.css" rel="stylesheet" type="text/css"/>
-        <link href="lib/css/paneles.css" rel="stylesheet" type="text/css"/>
-        <script type="text/javascript" src="lib/externos/jquery/jquery-1.4.4.min.js"></script>
-        <script type="text/javascript" src="lib/externos/jquery/jquery-ui/minimo/jquery.ui.core.min.js"></script>
-        <script type="text/javascript" src="lib/externos/jquery/jquery-ui/minimo/jquery.ui.widget.min.js"></script>
-        <script type="text/javascript" src="lib/externos/jquery/jquery-ui/minimo/jquery.ui.button.min.js"></script>
-        <script type="text/javascript" src="lib/externos/jquery/jquery-ui/minimo/jquery.ui.mouse.min.js"></script>
-        <script type="text/javascript" src="lib/externos/jquery/jquery-ui/minimo/jquery.ui.draggable.min.js"></script>
-        <script type="text/javascript" src="lib/externos/jquery/jquery-ui/minimo/jquery.ui.position.min.js"></script>
-        <script type="text/javascript" src="lib/externos/jquery/jquery-ui/minimo/jquery.ui.resizable.min.js"></script>
-        <script type="text/javascript" src="lib/externos/jquery/jquery-ui/minimo/jquery.ui.dialog.min.js"></script>
-        <script type="text/javascript" src="lib/externos/jquery/jquery-ui/minimo/jquery.ui.datepicker.min.js"></script>
-        <script type="text/javascript" src="lib/js/xlibPrototipo-v0.1.js"></script>
+        <link href="../lib/externos/jquery/jquery-ui/completo/jquery-ui-1.8.9.custom.css" rel="stylesheet" type="text/css"/>
+        <link href="../lib/css/paneles.css" rel="stylesheet" type="text/css"/>
+        <script type="text/javascript" src="../lib/externos/jquery/jquery-1.4.4.min.js"></script>
+        <script type="text/javascript" src="../lib/externos/jquery/jquery-ui/minimo/jquery.ui.core.min.js"></script>
+        <script type="text/javascript" src="../lib/externos/jquery/jquery-ui/minimo/jquery.ui.widget.min.js"></script>
+        <script type="text/javascript" src="../lib/externos/jquery/jquery-ui/minimo/jquery.ui.button.min.js"></script>
+        <script type="text/javascript" src="../lib/externos/jquery/jquery-ui/minimo/jquery.ui.mouse.min.js"></script>
+        <script type="text/javascript" src="../lib/externos/jquery/jquery-ui/minimo/jquery.ui.draggable.min.js"></script>
+        <script type="text/javascript" src="../lib/externos/jquery/jquery-ui/minimo/jquery.ui.position.min.js"></script>
+        <script type="text/javascript" src="../lib/externos/jquery/jquery-ui/minimo/jquery.ui.resizable.min.js"></script>
+        <script type="text/javascript" src="../lib/externos/jquery/jquery-ui/minimo/jquery.ui.dialog.min.js"></script>
+        <script type="text/javascript" src="../lib/externos/jquery/jquery-ui/minimo/jquery.ui.datepicker.min.js"></script>
+        <script type="text/javascript" src="../lib/js/xlibPrototipo-v0.1.js"></script>
+        <link href="../stilos.css" rel='stylesheet' type='text/css'>
         <script type='text/javascript' language='javascript'>
+
+
 function funOk(codReg,funOkConfirm)
-{   $.get("programas/ingresos/frmConfirmarCodigoIngreso.php","codigo="+codReg, function(inf1) {
+{   $.get("../programas/ingresos/frmConfirmarCodigoIngreso.php","codigo="+codReg, function(inf1) {
         dlgAC("#pnldlgAC","Codigo de confirmacion",inf1,function(){
             var cad1=$("input#idtxtcodigo").val();
             var cad2=$("input#idtxtclave").val();
             if(cad1!="" && cad2!="") {
                 dlgEsp.setVisible(true);
-                $.get("programas/ingresos/validacionCodigoConfirmar.php","codigo="+cad1+"&clave="+cad2, function(inf2) {
+                $.get("../programas/ingresos/validacionCodigoConfirmar.php","codigo="+cad1+"&clave="+cad2, function(inf2) {
                     inf2=xtrim(inf2);
                     dlgEsp.setVisible(false);
                     if(inf2=="" || inf2=="OK") {
@@ -77,11 +80,10 @@ function anular_pago(f)
 <form method='post' name='form1' action=''>
 <?php
 
-require("conexion.inc");
-require('function_formatofecha.php');
-require("estilos_almacenes.inc");
-require('home_almacen.php');
-require('funciones.php');
+require('../conexionmysqli2.inc');
+require('../function_formatofecha.php');
+require('../home_almacen.php');
+require('../funciones.php');
 
 
 echo "<h1>Registro de Cobranzas</h1>";
@@ -109,9 +111,9 @@ echo "<table border='1' cellspacing='0' class='textomini'><tr><th>Leyenda:</th><
 from `cobros_cab` c
 order by c.`cod_cobro` desc limit 0, 100";
 		
-	$resp = mysql_query($consulta);
+	$resp = mysqli_query($enlaceCon, $consulta);
 
-	while ($dat = mysql_fetch_array($resp)) {
+	while ($dat = mysqli_fetch_array($resp)) {
 		$codPago = $dat[0];
 		$fechaPago= $dat[1];
 		$observaciones=$dat[2];
@@ -139,7 +141,7 @@ order by c.`cod_cobro` desc limit 0, 100";
 		<td align='center'>$fechaPago</td>
 		<td align='center'>$montoPago</td>
 		<td>&nbsp;$observaciones</td>
-		<td><a href='notaCobranza.php?codCobro=$codPago' target='_blank'><img src='imagenes/icon_detail.png' alt='Detalle' width='30' heigth='30'></a></td>
+		<td><a href='notaCobranza.php?codCobro=$codPago' target='_blank'><img src='../imagenes/icon_detail.png' alt='Detalle' width='30' heigth='30'></a></td>
 		</tr>";
 	}
 	echo "</table></center><br>";

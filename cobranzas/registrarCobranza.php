@@ -1,9 +1,11 @@
 <html>
     <head>
         <title>Busqueda</title>
-        <script type="text/javascript" src="lib/externos/jquery/jquery-1.4.4.min.js"></script>
-        <script type="text/javascript" src="dlcalendar.js"></script>
+        <script type="text/javascript" src="../lib/externos/jquery/jquery-1.4.4.min.js"></script>
+        <script type="text/javascript" src="../dlcalendar.js"></script>
+        <link href="../stilos.css" rel='stylesheet' type='text/css'>
         <script type='text/javascript' language='javascript'>
+
 function nuevoAjax()
 {	var xmlhttp=false;
 	try {
@@ -86,9 +88,8 @@ function solonumeros(e)
 	</script>
 <?php
 
-require("conexion.inc");
+require("../conexionmysqli.inc");
 
-require("estilos_almacenes.inc");
 ?>
 <body>
 <form action='guardarCobranza.php' method='post' name='form1'>
@@ -98,14 +99,14 @@ require("estilos_almacenes.inc");
 <tr><th>Cliente</th><th>Fecha Pago</th><th>Observaciones</th></tr>
 <?php
 $sql1="select cod_cliente, nombre_cliente from clientes order by 2";
-$resp1=mysql_query($sql1);
+$resp1=mysqli_query($enlaceCon, $sql1);
 ?>
 <tr>
 <td align='center'>
 <select name='cliente' id='cliente' class='texto' onChange="ajaxCargarDeudas();">
 	<option value="0">Seleccione una opcion</option>
 <?php
-while($dat1=mysql_fetch_array($resp1))
+while($dat1=mysqli_fetch_array($resp1))
 {   $codigo=$dat1[0];
     $nombre=$dat1[1];
 ?>
@@ -118,7 +119,7 @@ $fecha=date("d/m/Y");
 </td>
 <td>
 <input type='text' class='texto' value='<?php echo $fecha; ?>' id='fecha' size='10' name='fecha'>
-<img id='imagenFecha' src='imagenes/fecha.bmp'>
+<img id='imagenFecha' src='../imagenes/fecha.bmp'>
 </td>
 <td>
 <input type='text' class='texto' value="" id='observaciones' size='40' name='observaciones'>
@@ -135,14 +136,6 @@ $fecha=date("d/m/Y");
 		<tr><th>Nro. OC</th><th>Fecha OC</th><th>Monto OC</th><th>A Cuenta</th><th>Saldo OC</th><th>Monto a Pagar</th><th>Nro. Doc. Pago</th></tr>
 	</table>
 </div>
-
-
-<table align='center'>
-	<tr>
-	<td><a href='navegador_pagos.php'><img  border='0'src='imagenes/back.png' width='25' height='25'>Volver Atras</a>
-	</td>
-	</tr>
-</table>
 
 
 <center><input type='button' class='boton' value='Guardar' onClick='validar(this.form)'></center>

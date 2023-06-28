@@ -15,6 +15,7 @@ $cantidadPresentacion=$_POST['cantidadPresentacion'];
 $principioActivo=$_POST['principioActivo'];
 $codTipoVenta=$_POST['codTipoVenta'];
 $productoControlado=$_POST['producto_controlado'];
+$ventaSoloCajas=$_POST['venta_solo_caja'];
 $accionTerapeutica=$_POST['accion_terapeutica'];
 $codigoBarras=$_POST['codigo_barras'];
 $lineaAnterior=$_POST['linea_anterior'];
@@ -43,7 +44,7 @@ if($globalAdmin==1){
 
 $sql_inserta="update material_apoyo set descripcion_material='$nombreProducto', cod_linea_proveedor='$codLinea', 
 cod_forma_far='$codForma', cod_empaque='$codEmpaque', cantidad_presentacion='$cantidadPresentacion', 
-principio_activo='$principioActivo', cod_tipoventa='$codTipoVenta', producto_controlado='$productoControlado', accion_terapeutica='$accionTerapeutica', codigo_barras='$codigoBarras' where codigo_material='$codProducto'";
+principio_activo='$principioActivo', cod_tipoventa='$codTipoVenta', producto_controlado='$productoControlado', accion_terapeutica='$accionTerapeutica', codigo_barras='$codigoBarras', bandera_venta_unidades='$ventaSoloCajas' where codigo_material='$codProducto'";
 //echo $sql_inserta;
 $resp_inserta=mysqli_query($enlaceCon,$sql_inserta);
 

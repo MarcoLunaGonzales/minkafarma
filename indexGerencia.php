@@ -144,9 +144,18 @@ include("datosUsuario.php");
 				<ul>
 					<li><a href="campanias/list.php" target="contenedorPrincipal">Campañas</a></li>					
 					<li><a href="navegadorCotizaciones.php" target="contenedorPrincipal">Cotizaciones</a></li>					
+					<li><a href="ofertas/list.php" target="contenedorPrincipal">Ofertas</a></li>					
 				</ul>	
 			</li>	
-
+			
+			<li><span>Cobranzas</span>
+				<ul>
+					<li><a href="cobranzas/navegadorCobranzas.php" target="contenedorPrincipal">Listado de Cobranzas</a></li>
+					<li><a href="cobranzas/rptOpCobranzas.php" target="contenedorPrincipal">Reporte de Cobros</a></li>
+					<li><a href="cobranzas/rptOpCuentasCobrar.php" target="contenedorPrincipal">Reporte Cuentas x Cobrar</a></li>
+				</ul>	
+			</li>
+			
 			<li><a href="registrar_ingresomateriales.php" target="_blank">Registrar Ingreso **</a></li>
 			<li><a href="registrar_salidaventas.php" target="_blank">Vender / Facturar **</a></li>
 			<li><a href="rptOpArqueoDiario.php?variableAdmin=1" target="contenedorPrincipal">Cierre de Caja</a></li>

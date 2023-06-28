@@ -15,20 +15,9 @@ echo "<script language='JavaScript'>
 			if(rpt_tipo_impresion==1){
 				window.open('rpt_inv_kardex.php?rpt_territorio='+rpt_territorio+'&rpt_almacen='+rpt_almacen+'&fecha_ini='+fecha_ini+'&fecha_fin='+fecha_fin+'&tipo_item='+tipo_item+'&rpt_item='+rpt_item+'','','scrollbars=yes,status=no,toolbar=no,directories=no,menubar=no,resizable=yes,width=1200,height=800');
 			}else{
-				window.open('rpt_inv_kardex_costo.php?rpt_territorio='+rpt_territorio+'&rpt_almacen='+rpt_almacen+'&fecha_ini='+fecha_ini+'&fecha_fin='+fecha_fin+'&tipo_item='+tipo_item+'&rpt_item='+rpt_item+'','','scrollbars=yes,status=no,toolbar=no,directories=no,menubar=no,resizable=yes');
+				window.open('rptKardexCostos.php?rpt_territorio='+rpt_territorio+'&rpt_almacen='+rpt_almacen+'&fecha_ini='+fecha_ini+'&fecha_fin='+fecha_fin+'&tipo_item='+tipo_item+'&rpt_item='+rpt_item+'','','scrollbars=yes,status=no,toolbar=no,directories=no,menubar=no,resizable=yes');
 			}
 						
-			return(true);
-		}
-		function envia_formulario_xls(f)
-		{	var rpt_territorio, rpt_almacen,tipo_ingreso,fecha_ini, fecha_fin, tipo_item, rpt_item;
-			rpt_territorio=f.rpt_territorio.value;
-			rpt_almacen=f.rpt_almacen.value;
-			fecha_ini=f.exafinicial.value;
-			fecha_fin=f.exaffinal.value;
-			tipo_item=f.tipo_item.value;
-			rpt_item=f.rpt_item.value;
-			window.open('rpt_inv_kardex_xls.php?rpt_territorio='+rpt_territorio+'&rpt_almacen='+rpt_almacen+'&fecha_ini='+fecha_ini+'&fecha_fin='+fecha_fin+'&tipo_item='+tipo_item+'&rpt_item='+rpt_item+'','','scrollbars=yes,status=no,toolbar=no,directories=no,menubar=no,resizable=yes,width=1000,height=800');			
 			return(true);
 		}
 		function envia_select(form){
@@ -85,6 +74,8 @@ function buscarProductoReporte(){
 $global_agencia=$_COOKIE['global_agencia'];
 $fecha_rptdefault=date("d/m/Y");
 
+$rptValorado=$_GET["rpt_valorado"];
+
 echo "<h1>Reporte Kardex de Existencia Fisica</h1><br>";
 echo"<body onLoad='cargalistadoAlmacenes();'>";
 
@@ -133,32 +124,24 @@ echo"<form method='post' action='rpt_op_inv_kardex.php'>";
 	
 	echo "</select> <a href='#' onclick='modalBusquedaProducto()' class='btn btn-warning btn-fab btn-sm float-right'><i class='material-icons'>search</i></a></td></tr>";	
 
+
 	echo "<tr><th align='left'>Fecha inicio:</th>";
-			echo" <TD bgcolor='#ffffff'><INPUT  type='text' class='texto' value='$fecha_rptdefault' id='exafinicial' size='10' name='exafinicial'>";
-    		echo" <IMG id='imagenFecha' src='imagenes/fecha.bmp'>";
-    		echo" <DLCALENDAR tool_tip='Seleccione la Fecha' ";
-    		echo" daybar_style='background-color: DBE1E7; font-family: verdana; color:000000;' ";
-    		echo" navbar_style='background-color: 7992B7; color:ffffff;' ";
-    		echo" input_element_id='exafinicial' ";
-    		echo" click_element_id='imagenFecha'></DLCALENDAR>";
+			echo" <TD bgcolor='#ffffff'><INPUT  type='date' class='texto' value='$fecha_rptdefault' id='exafinicial' size='10' name='exafinicial'>";
     		echo"  </TD>";
 	echo "</tr>";
 	echo "<tr><th align='left'>Fecha final:</th>";
-			echo" <TD bgcolor='#ffffff'><INPUT  type='text' class='texto' value='$fecha_rptdefault' id='exaffinal' size='10' name='exaffinal'>";
-    		echo" <IMG id='imagenFecha1' src='imagenes/fecha.bmp'>";
-    		echo" <DLCALENDAR tool_tip='Seleccione la Fecha' ";
-    		echo" daybar_style='background-color: DBE1E7; font-family: verdana; color:000000;' ";
-    		echo" navbar_style='background-color: 7992B7; color:ffffff;' ";
-    		echo" input_element_id='exaffinal' ";
-    		echo" click_element_id='imagenFecha1'></DLCALENDAR>";
+			echo" <TD bgcolor='#ffffff'><INPUT  type='date' class='texto' value='$fecha_rptdefault' id='exaffinal' size='10' name='exaffinal'>";
     		echo"  </TD>";
 	echo "</tr>";
+
 	echo "<tr><th align='left'>Tipo Kardex</th>";
 	echo "<td><select name='rpt_tipo_impresion' class='form-control' data-style='btn btn-default'>";
-	echo "<option value='1'>NORMAL</option>";
-		if(($_COOKIE['global_agencia']==-1||$_COOKIE['global_usuario']==-1)&&$_COOKIE['global_usuario']!=2047){
-			echo "<option value='2'>VALORADO</option>";		
-		}	
+	
+	if($rptValorado==1){
+		echo "<option value='2'>VALORADO</option>";		
+	}else{
+		echo "<option value='1'>NORMAL</option>";
+	}	
 	echo "</tr>";
 	
 	echo"\n </table><br>";
