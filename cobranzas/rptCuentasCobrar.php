@@ -1,9 +1,14 @@
+<link href="../stilos.css" rel='stylesheet' type='text/css'>
+
 <?php
-require('estilos_reportes_almacencentral.php');
-require('function_formatofecha.php');
-require('conexion.inc');
-require('funcion_nombres.php');
-require('funciones.php');
+require('../function_formatofecha.php');
+require('../conexionmysqli2.inc');
+require('../funcion_nombres.php');
+require('../funciones.php');
+
+// error_reporting(E_ALL);
+// ini_set('display_errors', '1');
+
 
 $fecha_fin=$_GET['fecha_fin'];
 $fecha_ini=$_GET['fecha_ini'];
@@ -16,7 +21,7 @@ $rpt_territorio=$_GET['rpt_territorio'];
 
 $fecha_reporte=date("d/m/Y");
 
-$nombre_territorio=nombreTerritorio($rpt_territorio);
+$nombre_territorio=nombreTerritorio($enlaceCon, $rpt_territorio);
 
 echo "<table align='center' class='textotit' width='100%'><tr><td align='center'>Reporte de Cuentas x Cobrar
 	<br>Territorio: $nombre_territorio <br> De: $fecha_ini A: $fecha_fin
@@ -38,7 +43,7 @@ from `salida_almacenes` s, clientes c where s.`monto_final` >
          and cb.cod_estado<>2 and cb.fecha_cobro between '$fecha_iniconsulta' and
                '$fecha_finconsulta'
       ) and s.`cod_cliente` = c.`cod_cliente` and
-      s.`salida_anulada` = 0 and s.cod_almacen=1000 and s.cod_tiposalida=1001 and 
+      s.`salida_anulada` = 0 and s.cod_almacen=1000 and s.cod_tiposalida=1001 and s.cod_tipopago=4 and 
       s.`fecha` between '$fecha_iniconsulta' and
       '$fecha_finconsulta'
 order by c.nombre_cliente,
@@ -47,7 +52,9 @@ order by c.nombre_cliente,
 
 //echo $sql;
 
-$resp=mysql_query($sql);
+
+
+$resp=mysqli_query($enlaceCon, $sql);
 
 echo "<br><table cellspacing='0' border=1 align='center' class='texto' width='100%'>
 <tr>
@@ -60,7 +67,7 @@ echo "<br><table cellspacing='0' border=1 align='center' class='texto' width='10
 </tr>";
 
 $totalxCobrar=0;
-while($datos=mysql_fetch_array($resp)){	
+while($datos=mysqli_fetch_array($resp)){	
 	$codSalida=$datos[0];
 	$nroVenta=$datos[1];
 	$fechaVenta=$datos[2];
@@ -98,6 +105,4 @@ echo "<tr>
 </tr>";
 
 echo "</table>";
-include("imprimirInc.php");
-
 ?>

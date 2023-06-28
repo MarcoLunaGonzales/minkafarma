@@ -75,12 +75,13 @@ $banderaPreciosDescuento=obtenerValorConfiguracion($enlaceCon,52);
 				$txtDisabled="readonly";
 				$actionDisabled="";
 			}
-			echo "<input class='inputnumber' type='number' min='0' max='90' step='0.01' value='0' id='tipoPrecio$num' name='tipoPrecio$num' $actionDisabled style='background:#ADF8FA;' $txtDisabled required>%";
+			echo "<input class='inputnumber' type='number' min='0' max='90' step='0.01' value='0' id='tipoPrecio$num' name='tipoPrecio$num' style='background:#ADF8FA;' readonly>%";
 		}
 
 
 			?>
-	<input class="inputnumber" type="number" value="0" id="descuentoProducto<?php echo $num;?>" name="descuentoProducto<?php echo $num;?>" onKeyUp='calculaMontoMaterial(<?php echo $num;?>);' onChange='calculaMontoMaterial(<?php echo $num;?>);' step="0.01" style='background:#ADF8FA;' readonly>
+	<input class="inputnumber" type="number" value="0" id="descuentoProducto<?php echo $num;?>" name="descuentoProducto<?php echo $num;?>" step="0.01" style='background:#ADF8FA;' readonly>
+	<div id="divMensajeOferta<?=$num;?>" class="textosmallazul"></div>
 </td>
 
 <td align="center" width="8%">

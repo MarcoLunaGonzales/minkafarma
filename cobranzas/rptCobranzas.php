@@ -1,14 +1,16 @@
+<link href="../stilos.css" rel='stylesheet' type='text/css'>
 <?php
-require('estilos_reportes_almacencentral.php');
-require('function_formatofecha.php');
-require('conexion.inc');
-require('funcion_nombres.php');
-require('funciones.php');
+require('../function_formatofecha.php');
+require('../conexionmysqli2.inc');
+require('../funcion_nombres.php');
+require('../funciones.php');
+
+ error_reporting(E_ALL);
+ ini_set('display_errors', '1');
 
 
 $fecha_ini=$_GET['fecha_ini'];
 $fecha_fin=$_GET['fecha_fin'];
-$rpt_ver=$_GET['rpt_ver'];
 $rpt_cliente=$_GET['rpt_cliente'];
 
 
@@ -21,7 +23,7 @@ $rpt_territorio=$_GET['rpt_territorio'];
 
 $fecha_reporte=date("d/m/Y");
 
-$nombre_territorio=nombreTerritorio($rpt_territorio);
+$nombre_territorio=nombreTerritorio($enlaceCon, $rpt_territorio);
 
 echo "<table align='center' class='textotit' width='100%'><tr><td align='center'>Reporte Cobranzas
 	<br>Territorio: $nombre_territorio <br> De: $fecha_ini A: $fecha_fin
@@ -35,7 +37,7 @@ if($rpt_cliente!=0){
 	$sql=$sql." and cl.cod_cliente in ($rpt_cliente)";
 }
 $sql=$sql." order by 1";
-$resp=mysql_query($sql);
+$resp=mysqli_query($enlaceCon, $sql);
 
 echo "<br><table cellspacing='0' border=1 align='center' class='texto' width='100%'>
 <tr>
@@ -49,7 +51,7 @@ echo "<br><table cellspacing='0' border=1 align='center' class='texto' width='10
 </tr>";
 
 $totalCobro=0;
-while($datos=mysql_fetch_array($resp)){	
+while($datos=mysqli_fetch_array($resp)){	
 	$codCobro=$datos[0];
 	$fecha=$datos[1];
 	$nroCobro=$datos[2];
@@ -85,5 +87,4 @@ echo "<tr>
 </tr>";
 
 echo "</table>";
-include("imprimirInc.php");
 ?>

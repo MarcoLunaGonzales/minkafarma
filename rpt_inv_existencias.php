@@ -5,6 +5,7 @@
 require('estilos_reportes_almacencentral.php');
 require('function_formatofecha.php');
 require('funcion_nombres.php');
+require('funciones.php');
 require('conexionmysqli2.inc');
 
  error_reporting(E_ALL);

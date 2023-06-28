@@ -48,6 +48,7 @@ echo "<center><table class='textomediano'>
 <th>Fecha</th>
 <th>Nro</th>
 <th>Vendedor</th>
+<th>Codigo</th>
 <th>Material</th>
 <th>Glosa</th>
 <th>Cantidad</th>
@@ -114,7 +115,7 @@ while($datos=mysqli_fetch_array($resp)){
 	<td>$fecha</td>
 	<td>$nroNota</td>
 	<td>$nombreVendedor</td>
-
+	<td>$codItem</td>
 	<td>$nombreItem</td>
 	<td>$observacionesNota</td>
 	<td>$cantidadFormat</td>
@@ -137,6 +138,7 @@ echo "<tr>
 	<td>&nbsp;</td>
 	<td>&nbsp;</td>
 	<td>&nbsp;</td>
+	<td>&nbsp;</td>	
 	<td>&nbsp;</td>	
 	<th>Total:</td>
 	<th>$totalCostoFormat</th>

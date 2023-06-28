@@ -17,6 +17,9 @@ $numJS=$_GET['codigo'];
 $arrayProductos=$_GET['productos_multiple'];
 $fechaActual=date("Y-m-d");
 
+/*Esta Bandera es para la validacion de stocks*/
+$banderaValidacionStock=obtenerValorConfiguracion($enlaceCon,4);
+
 $arrayProductosX=explode(",",$arrayProductos);
 
 $codigoProductoX=0;
@@ -48,16 +51,26 @@ for( $j=0;$j<=sizeof($arrayProductosX)-1;$j++ ){
 	<a href="javascript:encontrarMaterial(<?php echo $num;?>)" class="btn btn-primary btn-sm btn-fab"><i class='material-icons float-left' title="Ver en otras Sucursales">place</i></a>   	    
 </td>
 
-<td width="38%" align="center">
+<td width="33%" align="center">
 	<input type="hidden" name="materiales<?php echo $num;?>" id="materiales<?php echo $num;?>" value="<?=$codigoProductoX;?>">
 	<div id="cod_material<?php echo $num;?>" class='textomedianonegro'><?=$nombreProductoX;?> - <?=$lineaProductoX;?></div>
 </td>
 
-<td width="8%" align="center">
-	<div id='idstock<?php echo $num;?>'>
-		<input type='text' id='stock<?php echo $num;?>' name='stock<?php echo $num;?>' value='<?=$stockProductoX;?>' readonly size='4'>
-	</div>
+<td width="5%" align="center">
+	<div id="fecha_vencimiento<?php echo $num;?>" class='textosmallazul'>-</div>
 </td>
+
+<?php
+echo "<td><div id='idstock<?php echo $num;?>'>";
+$stockProducto=0;
+if( $banderaValidacionStock==0 || ($banderaValidacionStock==2 && $stockProductoX<=0) ){
+	echo "<input type='text' id='stock$num' name='stock$num' value='-' readonly size='4' style='background:red;'>
+	<span style='color:red;font-size:20px;'>S:$stockProductoX</span>";
+}elseif( $banderaValidacionStock==1 || ($banderaValidacionStock==2 && $stockProductoX>0) ){
+	echo "<input type='text' id='stock$num' name='stock$num' value='$stockProductoX' readonly size='4'>";
+}
+echo "</td></div>";
+?>
 
 <td align="center" width="8%">
 	<input class="inputnumber" type="number" value="" min="1" id="cantidad_unitaria<?php echo $num;?>" onKeyUp='calculaMontoMaterial(<?php echo $num;?>);' name="cantidad_unitaria<?php echo $num;?>" onChange='calculaMontoMaterial(<?php echo $num;?>);' required>
@@ -73,28 +86,14 @@ for( $j=0;$j<=sizeof($arrayProductosX)-1;$j++ ){
 <td align="center" width="15%">
 	<?php
 		if($globalAdmin==0){
-			$sql1="select codigo, nombre, abreviatura from tipos_precio where estado=1 order by 3";
-			//echo $sql1."XXXXXXXXXXXXXXXXXX";
-			$resp1=mysqli_query($enlaceCon,$sql1);
-			echo "<select name='tipoPrecio' class='texto".$num."' id='tipoPrecio".$num."' style='width:55px !important;float:left;' onchange='ajaxPrecioItem(".$num.")'>";
-			while($dat=mysqli_fetch_array($resp1)){
-				$codigo=$dat[0];
-				$nombre=$dat[1];
-				$abreviatura=$dat[2];
-				if($codigo==$cod_precio){
-                 echo "<option value='$codigo' selected>$abreviatura %</option>";					 
-				}else{
-				echo "<option value='$codigo'>$abreviatura %</option>";					
-				}
-			}
-			echo "</select>";			
+			echo "<input class='inputnumber' type='number' min='0' max='90' step='0.01' value='0' id='tipoPrecio$num' name='tipoPrecio$num' style='background:#ADF8FA;' >%";		
 		}elseif($globalAdmin==1){
-			echo "<input class='inputnumber' type='number' min='0' max='90' step='0.5' value='0' id='tipoPrecio$num' name='tipoPrecio$num' onKeyUp='ajaxPrecioItem(".$num.")' style='background:#ADF8FA;' >%";
+			echo "<input class='inputnumber' type='number' min='0' max='90' step='0.01' value='0' id='tipoPrecio$num' name='tipoPrecio$num' style='background:#ADF8FA;' >%";
 		}
 
 
 			?>
-	<input class="inputnumber" type="number" value="0" id="descuentoProducto<?php echo $num;?>" name="descuentoProducto<?php echo $num;?>" onKeyUp='calculaMontoMaterial(<?php echo $num;?>);' onChange='calculaMontoMaterial(<?php echo $num;?>);' step="0.01" style='background:#ADF8FA;' readonly>
+	<input class="inputnumber" type="number" value="0" id="descuentoProducto<?php echo $num;?>" name="descuentoProducto<?php echo $num;?>" step="0.01" style='background:#ADF8FA;' readonly>
 </td>
 
 <td align="center" width="8%">

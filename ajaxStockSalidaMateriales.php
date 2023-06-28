@@ -15,7 +15,6 @@ $banderaValidacionStock=$datConf[0];
 
 $stockProducto=0;
 
-
 $stockProducto=stockProducto($enlaceCon,$codAlmacen, $codMaterial);
 
 if( $banderaValidacionStock==0 || ($banderaValidacionStock==2 && $stockProducto<=0) ){

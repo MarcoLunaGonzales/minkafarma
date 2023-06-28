@@ -4,15 +4,27 @@ require_once 'conexionmysqli.inc';
 require('estilos.inc');
 
 ?>
-<head>
-    <!--script src="//code.jquery.com/jquery-3.1.1.min.js"></script>
-    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
-    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <link href="autoComplete/tokenize2.css" rel="stylesheet" />
-    <script src="autoComplete/tokenize2.js"></script>
-    <link href="autoComplete/demo.css" rel="stylesheet" /-->
-</head>
+<style>
+	input[type=radio]
+	{
+	  /* Double-sized Checkboxes */
+	  -ms-transform: scale(2); /* IE */
+	  -moz-transform: scale(2); /* FF */
+	  -webkit-transform: scale(2); /* Safari and Chrome */
+	  -o-transform: scale(2); /* Opera */
+	  transform: scale(2);
+	  padding: 10px;
+	}
+
+	/* Might want to wrap a span around your checkbox text */
+	.radiotext
+	{
+	  /* Checkbox text */
+	  font-size: 110%;
+	  display: inline;
+	}
+
+</style>
 
 <script language='Javascript'>
 	function validar(f){
@@ -113,8 +125,15 @@ echo "</tr>";
 
 echo "<tr><th>Producto Controlado</th>";
 echo "<td>
-		<input type='radio' name='producto_controlado' value='0' checked>NO
-        <input type='radio' name='producto_controlado' value='1'>SI
+		<input type='radio' name='producto_controlado' value='0' checked><span class='radiotext'>&nbsp;&nbsp; NO &nbsp;&nbsp;</span>
+        <input type='radio' name='producto_controlado' value='1'><span class='radiotext'>&nbsp; &nbsp;  SI &nbsp;&nbsp;</span>
+</td>";
+echo "</tr>";
+
+echo "<tr><th>Restringir Venta a Caja (Cantidad de Presentación)</th>";
+echo "<td>
+		<input type='radio' name='venta_solo_caja' value='0' checked><span class='radiotext'>&nbsp;&nbsp; NO &nbsp;&nbsp;</span>
+        <input type='radio' name='venta_solo_caja' value='1'><span class='radiotext'>&nbsp; &nbsp;  SI &nbsp;&nbsp;</span>
 </td>";
 echo "</tr>";
 
