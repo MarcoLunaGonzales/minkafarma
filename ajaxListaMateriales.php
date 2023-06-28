@@ -44,7 +44,7 @@ $banderaMostrarFV=obtenerValorConfiguracion($enlaceCon,20);
 
 	$sql="select m.codigo_material, m.descripcion_material,
 	(select concat(p.nombre_proveedor,'-',pl.nombre_linea_proveedor)as nombre_proveedor
-	from proveedores p, proveedores_lineas pl where p.cod_proveedor=pl.cod_proveedor and pl.cod_linea_proveedor=m.cod_linea_proveedor), m.principio_activo, m.accion_terapeutica, m.bandera_venta_unidades
+	from proveedores p, proveedores_lineas pl where p.cod_proveedor=pl.cod_proveedor and pl.cod_linea_proveedor=m.cod_linea_proveedor), m.principio_activo, m.accion_terapeutica, m.bandera_venta_unidades, m.cantidad_presentacion
 	from material_apoyo m where estado=1 and m.codigo_material not in ($itemsNoUtilizar)";
 	if($codigoMat!=""){
 		$sql=$sql. " and codigo_material='$codigoMat'";
@@ -86,6 +86,7 @@ $banderaMostrarFV=obtenerValorConfiguracion($enlaceCon,20);
 			$principioActivo=$dat[3];
 			$accionTerapeutica=$dat[4];
 			$ventaSoloCajas=$dat[5];
+			$cantidadPresentacion=$dat[6];
 			
 			$nombre=addslashes($nombre);
 			$linea=addslashes($linea);
@@ -131,7 +132,7 @@ $banderaMostrarFV=obtenerValorConfiguracion($enlaceCon,20);
 			  	if($stockProducto>0){
 					$stockProducto="<b class='textograndenegro' style='color:#C70039'>".$stockProducto."</b>";
 			  	}
-				echo "<tr><td><input type='checkbox' id='idchk$cont' name='idchk$cont' value='$datosProd' onchange='ver(this)' ></td><td>$codigo</td><td><div class='textograndenegro'><a href='javascript:setMateriales(form1, $codigo, \"$nombre - $linea ($codigo)####$txtFechaVencimiento \")'>$nombre</a></div></td>
+				echo "<tr><td><input type='checkbox' id='idchk$cont' name='idchk$cont' value='$datosProd' onchange='ver(this)' ></td><td>$codigo</td><td><div class='textograndenegro'><a href='javascript:setMateriales(form1, $codigo, \"$nombre - $linea ($codigo)####$txtFechaVencimiento####$cantidadPresentacion####$ventaSoloCajas \")'>$nombre</a></div></td>
 				<td>$linea</td>
 				<td><small>$principioActivo</small></td>
 				<td><small>$accionTerapeutica</small></td>
