@@ -42,6 +42,9 @@ $createdDate=date("Y-m-d H:i:s");
 
 $fecha_real=date("Y-m-d");
 
+$descuentoAdicional = $_POST['descuento_adicional'];
+$descuentoTotal 	= $_POST['descuentoTotal'];
+
 
 if($tipo_ingreso==1003){
 	$codSalida=$_POST['cod_salida'];
@@ -54,8 +57,8 @@ if($tipo_ingreso==1003){
 
 $consulta="insert into ingreso_almacenes (cod_ingreso_almacen,cod_almacen,cod_tipoingreso,fecha,hora_ingreso,observaciones,cod_salida_almacen,
 nota_entrega,nro_correlativo,ingreso_anulado,cod_tipo_compra,cod_orden_compra,nro_factura_proveedor,factura_proveedor,estado_liquidacion,
-cod_proveedor,created_by,modified_by,created_date,modified_date) 
-values($codigo,$global_almacen,$tipo_ingreso,'$fecha_real','$hora_sistema','$observaciones','0','$nota_entrega','$nro_correlativo',0,0,0,$nro_factura,0,0,'$proveedor','$createdBy','0','$createdDate','')";
+cod_proveedor,created_by,modified_by,created_date,modified_date,descuento_adicional,descuento_adicional2) 
+values($codigo,$global_almacen,$tipo_ingreso,'$fecha_real','$hora_sistema','$observaciones','0','$nota_entrega','$nro_correlativo',0,0,0,$nro_factura,0,0,'$proveedor','$createdBy','0','$createdDate','', '$descuentoAdicional','$descuentoTotal')";
 
 $sql_inserta = mysqli_query($enlaceCon,$consulta);
 //echo "aaaa:$consulta";
@@ -73,19 +76,22 @@ if($sql_inserta==1){
 
 
 			$precioBruto=$_POST["precio_unitario$i"];
-			
 			$precioBruto=$precioBruto/$cantidadPresentacion;
-			
+
+			// $precioFinal=0;
+			// if(isset($_POST["precio$i"])){
+			// 	$precioFinal=$_POST["precio$i"];
+			// }
 			$precioFinal=0;
-			if(isset($_POST["precio$i"])){
-				$precioFinal=$_POST["precio$i"];
+			if(isset($_POST["precio_old$i"])){
+				$precioFinal=$_POST["precio_old$i"];
 			}
 			
-			$lote="0";
 
 			//$ubicacionEstante=$_POST["ubicacion_estante$i"];
 			//$ubicacionFila=$_POST["ubicacion_fila$i"];
 			
+			$lote = empty($_POST["lote$i"])?'':$_POST["lote$i"];
 			if($lote==""){
 				$lote=0;
 			}
@@ -113,7 +119,7 @@ if($sql_inserta==1){
 			
 			$consulta="insert into ingreso_detalle_almacenes(cod_ingreso_almacen, cod_material, cantidad_unitaria, cantidad_restante, lote, fecha_vencimiento, 
 			precio_bruto, costo_almacen, costo_actualizado, costo_actualizado_final, costo_promedio, precio_neto, cod_ubicacionestante, cod_ubicacionfila, descuento_unitario) 
-			values($codigo,'$cod_material',$cantidad,$cantidad,'$lote','$fechaVencimiento',$precioBruto,$precioUnitario,$costo,$costo,$costo,$costo,'0','0','$descuento_unitario')";
+			values($codigo,'$cod_material',$cantidad,$cantidad,'$lote','$fechaVencimiento',$precioUnitario,$precioUnitario,$costo,$costo,$costo,$costo,'0','0','$descuento_unitario')";
 			//echo "bbb:$consulta";
 			$sql_inserta2 = mysqli_query($enlaceCon,$consulta);
 			

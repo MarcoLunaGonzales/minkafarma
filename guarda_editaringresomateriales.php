@@ -20,13 +20,16 @@ $tipo_ingreso=$_POST['tipo_ingreso'];
 $nro_factura=$_POST['nro_factura'];
 $observaciones=$_POST['observaciones'];
 $codSalida=$_POST['codSalida'];
-$cantidad_material=$_POST['cantidad_material'];
+// $cantidad_material=$_POST['cantidad_material'];
 $fecha_real=date("Y-m-d");
+
+$descuentoAdicional = $_POST['descuento_adicional'];
+$descuentoTotal 	= $_POST['descuentoTotal'];
 
 $codSucursalIngreso=$_COOKIE['global_agencia'];
 
 $consulta="update ingreso_almacenes set cod_tipoingreso='$tipo_ingreso', nro_factura_proveedor='$nro_factura', 
-		observaciones='$observaciones' where cod_ingreso_almacen='$codIngreso'";
+		observaciones='$observaciones', descuento_adicional ='$descuentoAdicional', descuento_adicional2 ='$descuentoTotal' where cod_ingreso_almacen='$codIngreso'";
 $sql_inserta = mysqli_query($enlaceCon, $consulta);
 
 $sqlDel="delete from ingreso_detalle_almacenes where cod_ingreso_almacen='$codIngreso'";
@@ -37,33 +40,62 @@ if($sql_inserta==1){
 		$cod_material = $_POST["material$i"];
 		
 		if($cod_material!=0){
+			// $cantidad=$_POST["cantidad_unitaria$i"];
+			// $precioBruto=$_POST["precio$i"];
+			// $lote=$_POST["lote$i"];
+			// $ubicacionEstante=$_POST["ubicacion_estante$i"];
+			// $ubicacionFila=$_POST["ubicacion_fila$i"];
+			
+			$cantidadPresentacion=$_POST["cantidadpresentacion$i"];
+			//La Cantidad llega en Cantidad Presentacion
 			$cantidad=$_POST["cantidad_unitaria$i"];
-			$precioBruto=$_POST["precio$i"];
-			$lote=$_POST["lote$i"];
-			$ubicacionEstante=$_POST["ubicacion_estante$i"];
-			$ubicacionFila=$_POST["ubicacion_fila$i"];
+			$cantidad=$cantidad*$cantidadPresentacion;
+
+			$precioBruto=$_POST["precio_unitario$i"];
+			$precioBruto=$precioBruto/$cantidadPresentacion;
+
+			$precioFinal=0;
+			if(isset($_POST["precio_old$i"])){
+				$precioFinal=$_POST["precio_old$i"];
+			}
+
+			$lote = empty($_POST["lote$i"])?'':$_POST["lote$i"];
 			if($lote==""){
 				$lote=0;
 			}
-			$fechaVencimiento=$_POST["fechaVenc$i"];
 
-			$fechaVencimiento=UltimoDiaMes($fechaVencimiento);
+			$fechaVencimiento="";
+			if(isset($_POST["fechaVenc$i"])){
+				$fechaVencimiento=$_POST["fechaVenc$i"];
+				$fechaVencimiento=UltimoDiaMes($fechaVencimiento);
+			}
 
-			$precioUnitario=$precioBruto/$cantidad;
-			
+			// $precioUnitario=$precioBruto/$cantidad;			
+			// $costo=$precioUnitario;
+			//El precioUnitario llega en Cantidad de Presentacion
+			$precioUnitario=0;
+			if($precioFinal>0){
+				$precioUnitario=($precioFinal/$cantidad);
+			}
 			$costo=$precioUnitario;
 						
 			
+			// Nuevo Campo Descuento Unitario
+			$descuento_unitario=0;
+			if(isset($_POST["descuento_porcentaje$i"])){
+				$descuento_unitario = $_POST["descuento_porcentaje$i"];
+			}
+			
 			$consulta="insert into ingreso_detalle_almacenes(cod_ingreso_almacen, cod_material, cantidad_unitaria, cantidad_restante, lote, fecha_vencimiento, 
-			precio_bruto, costo_almacen, costo_actualizado, costo_actualizado_final, costo_promedio, precio_neto, cod_ubicacionestante, cod_ubicacionfila) 
-			values($codIngreso,'$cod_material',$cantidad,$cantidad,'$lote','$fechaVencimiento',$precioUnitario,$precioUnitario,$costo,$costo,$costo,$costo,'$ubicacionEstante','$ubicacionFila')";
-			
+			precio_bruto, costo_almacen, costo_actualizado, costo_actualizado_final, costo_promedio, precio_neto, cod_ubicacionestante, cod_ubicacionfila, descuento_unitario) 
+			values($codIngreso,'$cod_material',$cantidad,$cantidad,'$lote','$fechaVencimiento',$precioUnitario,$precioUnitario,$costo,$costo,$costo,$costo,'0','0','$descuento_unitario')";
 			//echo "bbb:$consulta";
-			
 			$sql_inserta2 = mysqli_query($enlaceCon,$consulta);
 			
-			
-			$precioItem=$_POST["preciocliente$i"];
+			$precioItem=0;			
+			if(isset($_POST["preciocliente$i"])){
+				$precioItem=$_POST["preciocliente$i"];			
+			}
 			
 			//ARMAMOS EL ARRAY CON LOS PRECIOS
 			$arrayPreciosModificar=[];
@@ -99,15 +131,26 @@ if($sql_inserta==1){
 				if($banderaPrecioUpd==1){
 					if($precioItem!=$precioActual){
 						//echo "ingresa a modificar";
-						$respModificarPrecios=actualizarPrecios($enlaceCon,$cod_material,$arrayPreciosModificar);
+						$respModificarPrecios=actualizarPrecios($enlaceCon,$cod_material,$arrayPreciosModificar,$descuento_unitario);
 					}
 				}
 				if($banderaPrecioUpd==2){
 					if($precioItem>$precioActual){
-						$respModificarPrecios=actualizarPrecios($enlaceCon,$cod_material,$arrayPreciosModificar);
+						$respModificarPrecios=actualizarPrecios($enlaceCon,$cod_material,$arrayPreciosModificar,$descuento_unitario);
 					}
 				}
 			}
+			
+			/************************************************************************/
+			/*			NUEVO REGISTRO HISTORIAL CAMPO DESCUENTO_UNITARIO			*/
+			/************************************************************************/
+			$fecha_hora_cambio = date('Y-m-d H:i:s');
+			$consulta="INSERT INTO precios_historico(codigo_material,cod_precio,precio,cod_ciudad,descuento_unitario,fecha_hora_cambio) 
+			SELECT codigo_material,cod_precio,precio,cod_ciudad,descuento_unitario,'$fecha_hora_cambio'
+			FROM precios WHERE codigo_material='$cod_material' AND cod_precio = 1 AND cod_ciudad='$codSucursalIngreso'";
+			$sql_inserta2 = mysqli_query($enlaceCon,$consulta);
+			/************************************************************************/
+			
 			$aa=recalculaCostos($enlaceCon,$cod_material, $global_almacen);			
 		}
 	}
