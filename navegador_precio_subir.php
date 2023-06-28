@@ -155,15 +155,26 @@ $(document).ready(function() {
 			type: "POST",
 			dataType: "json",
 			data: {
+				// items: JSON.stringify(datos)
 				items: datos
 			},
-			success: function(response) {
+			success: function(data) {
 				// La solicitud se ha completado correctamente
-				console.log(response);
+				// var data = JSON.parse(response);
+				console.log(data)
+				if (data.status) {
+					alert(data.message);
+					// Recargar la página después de 5 segundos
+					setTimeout(function() {
+						location.reload();
+					}, 3000);
+				} else {
+					alert(data.message);
+				}
 			},
 			error: function(xhr, status, error) {
 				// Manejar el error en caso de que ocurra
-				console.error(error);
+				console.log('Error de registro');
 			}
 		});
     });
