@@ -498,6 +498,8 @@ function calculaPrecioCliente(preciocompra, index){
 	document.getElementById('precio_old'+index).value = (cantidad > 0 ? cantidad : 0) * (precio_unitario > 0 ? precio_unitario : 0);
 	var margen		  = document.getElementById('margenlinea'+index).value;
 
+	console.log("cantidad: "+cantidad+" precio: "+precio_unitario);
+
 	/*var total_subtotal  = (cantidad > 0 ? cantidad : 0) * (precio_unitario > 0 ? precio_unitario : 0);
 	document.getElementById('precio_old'+index).value = total_subtotal.toFixed(2);*/
 	/****************************************************************************/
@@ -506,15 +508,16 @@ function calculaPrecioCliente(preciocompra, index){
 		//var costo=preciocompra.value;
 		var costo = parseFloat(document.getElementById("precio"+index).value);
 		var costounitario=(costo/cantidad)/cantidad_presentacion;
-		console.log("costoUnitario: "+costounitario); // s dejo esta parte de codigo
+		console.log("costoUnitario1: "+costounitario); // s dejo esta parte de codigo
 		var preciocliente=costounitario+(costounitario*(margen/100));
+		console.log("preciocliente1: "+preciocliente); // s dejo esta parte de codigo
 		preciocliente=redondear(preciocliente,2);
 		preciocliente=number_format(preciocliente,2);
 		document.getElementById('preciocliente'+index).value=preciocliente;		
 	}else{
 		var costounitario = precio_unitario / cantidad_presentacion;
 		var preciocliente=(costounitario + (costounitario*(margen/100)));
-		console.log('costounitario:'+costounitario)
+		console.log('costounitario2:'+costounitario)
 		console.log('(costounitario*(margen/100)):'+(costounitario*(margen/100)))
 		preciocliente=redondear(preciocliente,2);
 		preciocliente=number_format(preciocliente,2);
