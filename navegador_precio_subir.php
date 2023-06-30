@@ -6,15 +6,22 @@ ini_set('post_max_size','100M');
 	require("funcion_nombres.php");
 	// DATOS
 	$cod_ciudad 	 = $_COOKIE['global_agencia'];
+	$globalAlmacen 	 = $_COOKIE['global_almacen'];
 	$codProveedor	 = $_GET['codProveedor'];
+	// TIpo de selección de items 
+	// 0 = TODO
+	// 1 = STOCK
+	$tipo_seleccion  = $_GET['tipo'];
+	$titulo_tipo 	 = $tipo_seleccion == 0 ? 'TODO' : 'STOCK' ;
 	$nombreProveedor = nombreProveedor($enlaceCon,$codProveedor,$enlaceCon);
 ?>
 <!-- GLOBAL - Codigo de Ciudad -->
 <input type="hidden" id="cod_ciudad" value="<?=$cod_ciudad;?>">
 <center>
-	<h3>Incremento de Precios - Proveedor [<?= $nombreProveedor; ?>]</h3>
+	<h3>Incremento de Precios (<?= $titulo_tipo; ?>) - Proveedor [<?= $nombreProveedor; ?>]</h3>
 	<label for="incremento" class="text-danger"><b>% Porcentaje de Incremento:</b></label>
 	<input type="text" id="incremento" name="incremento" value="0">
+	<button type="button" class="btn btn-warning" id="aplicar_incremento">Aplicar</button>
 </center>
 
 <center>
@@ -28,7 +35,7 @@ ini_set('post_max_size','100M');
 				<th>Precio Actual(Bs.)</th>
 				<th>Stock</th>
 				<th class="text-center">Precio Nuevo(Bs.)</th>
-				<th class="text-center">Porcentaje de Incremento(Bs.)</th>
+				<th class="text-center">Porcentaje de Incremento(%)</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -63,7 +70,7 @@ ini_set('post_max_size','100M');
 						$precio1	= $datPrecio[0];
 						$precio1	= redondear2($precio1);
 					}
-			
+					if($tipo_seleccion == 0 || ($tipo_seleccion == 1 && $stock_producto > 0)){
 			?>
 			<tr>
 				<td><?= $nro; ?></td>
@@ -78,16 +85,17 @@ ini_set('post_max_size','100M');
 					<!-- CODIGO MATERIAL -->
 					<input type="hidden" value="<?=$codigo_material;?>" id="cod_material<?=$codigo_material;?>">
 					<!-- PRECIO ACTUAL -->
-					<input type="hidden" value="<?=$codigo_material;?>" id="precio_actual<?=$codigo_material;?>">
+					<input type="hidden" value="<?=$precio1;?>" id="precio_actual<?=$codigo_material;?>">
 				</td>
 				<td align="center">
-					<input type="text" value="0" id="precio_nuevo<?=$codigo_material;?>">
+					<input type="text" value="0" id="precio_nuevo<?=$codigo_material;?>" class="precio_nuevo_cambio" data-codigo_material="<?=$codigo_material;?>">
 				</td>
 				<td align="center">
 					<input type="text" value="0" id="precio_incremento<?=$codigo_material;?>" readonly="">
 				</td>
 			</tr>
 			<?php
+					}
 					$nro++;
 				} 	
 			?>
@@ -103,9 +111,9 @@ $(document).ready(function() {
     /**
 	 * PROCESO DE INCREMENTO DE PRECIO EN PORCENTAJE
 	 **/
-    $("#incremento").keyup(function() {
+    $("#aplicar_incremento").on('click',function() {
         // Obtener el valor del campo #incremento
-        var porcentajeIncremento = parseFloat($(this).val());
+        var porcentajeIncremento = parseFloat($('#incremento').val());
         
         // Verificar si el valor es NaN (no es un número) o está vacío
         if (isNaN(porcentajeIncremento) || porcentajeIncremento === "") {
@@ -122,9 +130,13 @@ $(document).ready(function() {
             
             // Calcular el nuevo precio y el porcentaje de incremento
             var nuevoPrecio = precioActual + (precioActual * (porcentajeIncremento / 100));
-            var incremento  = nuevoPrecio - precioActual;
-            
-            // Actualizar los valores en los campos correspondientes
+            // Precio diferencia del Actual con el Nuevo en porcentaje(%)
+            if (precioActual !== 0) {
+            	incremento = ((nuevoPrecio - precioActual) / precioActual) * 100;
+			} else {
+				incremento = 0; // o cualquier otro valor predeterminado que desees
+			}
+			// Actualizar los valores en los campos correspondientes
             precioNuevoInput.val(nuevoPrecio.toFixed(2));
             precioIncrementoInput.val(incremento.toFixed(2));
         });
@@ -161,7 +173,7 @@ $(document).ready(function() {
 			success: function(data) {
 				// La solicitud se ha completado correctamente
 				// var data = JSON.parse(response);
-				console.log(data)
+				// console.log(data)
 				if (data.status) {
 					alert(data.message);
 					// Recargar la página después de 5 segundos
@@ -177,6 +189,24 @@ $(document).ready(function() {
 				console.log('Error de registro');
 			}
 		});
+    })
+    /**
+     * Modificación de precio Nuevo Manualmente
+     **/
+    $(".precio_nuevo_cambio").keyup(function(){
+    	let precio_nuevo = $(this).val() !== '' ? parseFloat($(this).val()) : 0;
+    	let codigo_material = $(this).data('codigo_material');
+    	let precio_actual   = $('#precio_actual' + codigo_material).val();
+    	let incremento 		= 0;
+
+        if (precio_actual == '0' && precio_nuevo >= 0) {
+        	incremento = 100;
+		} else if (precio_actual !== 0) {
+        	incremento = ((precio_nuevo - precio_actual) / precio_actual) * 100;
+		} else {
+			incremento = 0; // o cualquier otro valor predeterminado que desees
+		}
+    	$('#precio_incremento' + codigo_material).val(incremento.toFixed(2));
     });
 });
 </script>

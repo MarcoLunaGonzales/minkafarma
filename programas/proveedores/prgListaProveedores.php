@@ -11,7 +11,9 @@ echo "<div class='divBotones'><input class='boton' type='button' value='Adiciona
 echo "<br>";
 echo "<center><table class='texto'>";
 echo "<tr>";
-echo "<th>&nbsp;</th><th>Codigo</th><th>Nombre</th><th>Direccion</th><th>Telefono 1</th><th>Telefono 2</th><th>Contacto</th><th>Detalle Lineas</th><th>Ver Lineas</th><th>Incrementar Precio</th>";
+echo "<th>&nbsp;</th><th>Codigo</th><th>Nombre</th><th>Direccion</th><th>Telefono 1</th><th>Telefono 2</th><th>Contacto</th><th>Detalle Lineas</th><th>Ver Lineas</th>
+		<th>Incrementar Precios Todo</th>
+		<th>Incrementar Precios solo con Stock</th>";
 echo "</tr>";
 $consulta="
     SELECT p.cod_proveedor, p.nombre_proveedor, p.direccion, p.telefono1, p.telefono2, p.contacto
@@ -43,9 +45,10 @@ while($reg=mysqli_fetch_array($rs))
 	<td>$telefono2</td><td>$contacto</td>
 	<td>$txtLineas</td>";
 	
-    echo "<td><a href='navegadorLineasDistribuidores.php?codProveedor=$codProv'><img src='../../imagenes/detalle.png' width='40' title='Ver Lineas'></a></td>";
-	echo "<td><a href='../../navegador_precio_subir.php?codProveedor=$codProv' target='_BLANK'><img src='../../imagenes/edit.png' width='35' title='Incrementar Precio'></a></td>";
-    echo "</tr>";
+   echo "<td><a href='navegadorLineasDistribuidores.php?codProveedor=$codProv'><img src='../../imagenes/detalle.png' width='40' title='Ver Lineas'></a></td>";
+	echo "<td align='center'><a href='../../navegador_precio_subir.php?codProveedor=$codProv&tipo=0' target='_BLANK'><img src='../../imagenes/edit.png' width='35' title='Incrementar Precio Todo'></a></td>";
+	echo "<td align='center'><a href='../../navegador_precio_subir.php?codProveedor=$codProv&tipo=1' target='_BLANK'><img src='../../imagenes/factura1.jpg' width='35' title='Incrementar Precio Stock'></a></td>";
+   echo "</tr>";
    }
 echo "</table>";
 echo "<input type='hidden' id='idtotal' value='$cont' >";
