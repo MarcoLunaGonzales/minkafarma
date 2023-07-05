@@ -1,16 +1,23 @@
 <?php 
 require_once('conexionmysqli2.inc');
+require_once('funciones.php');
+
+ // error_reporting(E_ALL);
+ // ini_set('display_errors', '1');
+
 
 $num=$_GET['codigo'];
 
 $globalAdmin=$_COOKIE["global_admin_cargo"];
 
+/*Esta Bandera trabaja con el precio con descuento si es 1 los saca de la tabla si es 0 es descuento manual*/
+$banderaPreciosDescuento=obtenerValorConfiguracion($enlaceCon,52);
+
 ?>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 <head>
-<link rel="STYLESHEET" type="text/css" href="stilos.css" />
+<!--link rel="STYLESHEET" type="text/css" href="stilos.css" /-->
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 
 <table border="0" align="center" width="100%"  class="texto" id="data<?php echo $num?>" >
@@ -22,9 +29,13 @@ $globalAdmin=$_COOKIE["global_admin_cargo"];
 	<a href="javascript:encontrarMaterial(<?php echo $num;?>)" class="btn btn-primary btn-sm btn-fab"><i class='material-icons float-left' title="Ver en otras Sucursales">place</i></a>
 </td>
 
-<td width="38%" align="center">
+<td width="33%" align="center">
 	<input type="hidden" name="materiales<?php echo $num;?>" id="materiales<?php echo $num;?>" value="0">
 	<div id="cod_material<?php echo $num;?>" class='textomedianonegro'>-</div>
+</td>
+
+<td width="5%" align="center">
+	<div id="fecha_vencimiento<?php echo $num;?>" class='textosmallazul'>-</div>
 </td>
 
 <td width="8%" align="center">
@@ -35,6 +46,7 @@ $globalAdmin=$_COOKIE["global_admin_cargo"];
 
 <td align="center" width="8%">
 	<input class="inputnumber" type="number" value="" min="1" id="cantidad_unitaria<?php echo $num;?>" onKeyUp='calculaMontoMaterial(<?php echo $num;?>);' name="cantidad_unitaria<?php echo $num;?>" onChange='calculaMontoMaterial(<?php echo $num;?>);' required> 
+	<div id="div_venta_caja<?=$num;?>" class="textosmallazul"></div>
 </td>
 
 
@@ -48,27 +60,29 @@ $globalAdmin=$_COOKIE["global_admin_cargo"];
 	<?php
 		if($globalAdmin==0){
 			$sql1="select codigo, nombre, abreviatura from tipos_precio where estado=1 order by 3";
-			//echo $sql1."XXXXXXXXXXXXXXXXXX";
 			$resp1=mysqli_query($enlaceCon,$sql1);
-			echo "<select name='tipoPrecio' class='texto".$num."' id='tipoPrecio".$num."' style='width:55px !important;float:left;' onchange='ajaxPrecioItem(".$num.")'>";
+			$txtPorcentajes=0;
 			while($dat=mysqli_fetch_array($resp1)){
 				$codigo=$dat[0];
 				$nombre=$dat[1];
 				$abreviatura=$dat[2];
-				if($codigo==$cod_precio){
-                 echo "<option value='$codigo' selected>$abreviatura %</option>";					 
-				}else{
-				echo "<option value='$codigo'>$abreviatura %</option>";					
-				}
+				$txtPorcentajes.="|".$abreviatura;
 			}
-			echo "</select>";			
-		}elseif($globalAdmin==1){
-			echo "<input class='inputnumber' type='number' min='0' max='90' step='0.5' value='0' id='tipoPrecio$num' name='tipoPrecio$num' onKeyUp='ajaxPrecioItem(".$num.")' style='background:#ADF8FA;' >%";
+			echo "<input class='inputnumber' type='number' step='0.01' value='0' id='tipoPrecio$num' name='tipoPrecio$num' style='background:#ADF8FA;' readonly>%";	
+		}elseif($globalAdmin==1 || $banderaPreciosDescuento==1){
+			$txtDisabled="";
+			$actionDisabled="onKeyUp='ajaxPrecioItem(".$num.")'";
+			if($banderaPreciosDescuento==1){
+				$txtDisabled="readonly";
+				$actionDisabled="";
+			}
+			echo "<input class='inputnumber' type='number' min='0' max='90' step='0.01' value='0' id='tipoPrecio$num' name='tipoPrecio$num' style='background:#ADF8FA;' readonly>%";
 		}
 
 
 			?>
-	<input class="inputnumber" type="number" value="0" id="descuentoProducto<?php echo $num;?>" name="descuentoProducto<?php echo $num;?>" onKeyUp='calculaMontoMaterial(<?php echo $num;?>);' onChange='calculaMontoMaterial(<?php echo $num;?>);' step="0.01" style='background:#ADF8FA;' readonly>
+	<input class="inputnumber" type="number" value="0" id="descuentoProducto<?php echo $num;?>" name="descuentoProducto<?php echo $num;?>" step="0.01" style='background:#ADF8FA;' readonly>
+	<div id="divMensajeOferta<?=$num;?>" class="textosmallazul"></div>
 </td>
 
 <td align="center" width="8%">

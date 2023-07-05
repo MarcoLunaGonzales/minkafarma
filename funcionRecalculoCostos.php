@@ -118,7 +118,7 @@ function recalculaCostos($enlaceCon,$codigoItem,$rpt_almacen){
 		$suma_ingresos=0;
 		$suma_salidas=0;
 		echo "<table>";
-		for($indice=1;$indice<=$zz;$indice++)
+		for($indice=1;$indice < $zz;$indice++)
 		{	$fecha_consulta=$vector_final_fechas[$indice];
 			//hacemos la consulta para ingresos
 			$sql_ingresos="select i.nro_correlativo, id.cantidad_unitaria, i.observaciones, ti.nombre_tipoingreso, 

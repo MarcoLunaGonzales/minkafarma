@@ -64,8 +64,10 @@ $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
 	<strong>$fecha_fin</strong><br>Item: <strong>($rpt_item) $nombre_item</strong><br>$txt_reporte</th></tr></table>";
 
 	//desde esta parte viene el reporte en si
-	$fecha_iniconsulta=cambia_formatofecha($fecha_ini);
-	$fecha_finconsulta=cambia_formatofecha($fecha_fin);
+	
+	$fecha_iniconsulta=$fecha_ini;
+	$fecha_finconsulta=$fecha_fin;
+
 	//aqui sacamos las existencias a una fecha
 	$sql="select sum(id.cantidad_unitaria) FROM ingreso_almacenes i, ingreso_detalle_almacenes id
 	where i.cod_ingreso_almacen=id.cod_ingreso_almacen and i.cod_almacen='$rpt_almacen' and

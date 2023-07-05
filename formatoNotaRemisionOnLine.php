@@ -27,8 +27,10 @@ require('funcion_nombres.php');
 require('NumeroALetras.php');
 include('phpqrcode/qrlib.php');
 
-error_reporting(E_ALL);
-ini_set('display_errors', '1');
+
+
+/*error_reporting(E_ALL);
+ini_set('display_errors', '1');*/
 
 
 
@@ -116,9 +118,9 @@ $cod_funcionario=$_COOKIE["global_usuario"];
 //datos documento
 
 
-$sqlDatosVenta="select DATE_FORMAT(s.fecha, '%d/%m/%Y'), t.`nombre`, c.`nombre_cliente`, s.`nro_correlativo`, s.descuento, s.hora_salida,s.monto_total,s.monto_final,s.monto_efectivo,s.monto_cambio,s.cod_chofer,s.cod_tipopago,s.cod_tipo_doc,s.fecha,(SELECT cod_ciudad from almacenes where cod_almacen=s.cod_almacen)as cod_ciudad,s.cod_cliente,(SELECT cufd from siat_cufd where codigo=s.siat_codigocufd) as cufd,siat_cuf,siat_complemento,s.siat_codigoPuntoVenta,s.siat_codigotipoemision,(SELECT descripcionLeyenda from siat_sincronizarlistaleyendasfactura where codigo=s.siat_cod_leyenda) as leyenda
-		from `salida_almacenes` s, `tipos_docs` t, `clientes` c
-		where s.`cod_salida_almacenes`='$codigoVenta' and s.`cod_cliente`=c.`cod_cliente` and
+$sqlDatosVenta="select DATE_FORMAT(s.fecha, '%d/%m/%Y'), t.`nombre`, 'nomcli', s.`nro_correlativo`, s.descuento, s.hora_salida,s.monto_total,s.monto_final,s.monto_efectivo,s.monto_cambio,s.cod_chofer,s.cod_tipopago,s.cod_tipo_doc,s.fecha,(SELECT cod_ciudad from almacenes where cod_almacen=s.cod_almacen)as cod_ciudad,s.cod_cliente,(SELECT cufd from siat_cufd where codigo=s.siat_codigocufd) as cufd,siat_cuf,siat_complemento,s.siat_codigoPuntoVenta,s.siat_codigotipoemision,(SELECT descripcionLeyenda from siat_sincronizarlistaleyendasfactura where codigo=s.siat_cod_leyenda) as leyenda
+		from `salida_almacenes` s, `tipos_docs` t
+		where s.`cod_salida_almacenes`='$codigoVenta' and
 		s.`cod_tipo_doc`=t.`codigo`";
 $respDatosVenta=mysqli_query($enlaceCon,$sqlDatosVenta);
 $tipoPago=1;

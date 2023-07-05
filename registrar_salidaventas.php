@@ -351,10 +351,18 @@ function ajaxPrecioItem(indice){
 	ajax.open("GET", "ajaxPrecioItem.php?codmat="+codmat+"&indice="+indice+"&tipoPrecio="+tipoPrecio,true);
 	ajax.onreadystatechange=function() {
 		if (ajax.readyState==4) {
-			var respuesta=ajax.responseText.split("#####");
+				var respuesta=ajax.responseText.split("#####");
 				contenedor.innerHTML = respuesta[0];				
-				document.getElementById("descuentoProducto"+indice).value=(respuesta[1]*parseFloat(cantidadUnitaria)); 
-	    calculaMontoMaterial(indice);
+				document.getElementById("descuentoProducto"+indice).value=(respuesta[1]*parseFloat(cantidadUnitaria));
+				if(respuesta[2]==0){
+					console.log("No aplica porcentaje para el producto");
+				}else{
+					document.getElementById("tipoPrecio"+indice).value=(respuesta[2]*parseFloat(cantidadUnitaria));
+				}
+				if(respuesta[3]!=""){
+					document.getElementById("divMensajeOferta"+indice).innerHTML=respuesta[3];
+				}
+	    	calculaMontoMaterial(indice);
 		}
 	}
 	ajax.send(null);
@@ -537,13 +545,18 @@ function calculaMontoMaterial(indice){
 		cantidadUnitaria=0;
 	}
 	var precioUnitario=document.getElementById("precio_unitario"+indice).value;
-	var descuentoUnitario=document.getElementById("descuentoProducto"+indice).value;
+	var porcentajeDescuentoUnitario=document.getElementById("tipoPrecio"+indice).value;
 
-	console.log("calculo: CU: "+cantidadUnitaria+" PU: "+precioUnitario+" DU: "+descuentoUnitario);
-	
+	var descuentoUnitario=(parseFloat(cantidadUnitaria)*parseFloat(precioUnitario)) * (parseFloat(porcentajeDescuentoUnitario)/100);
+	descuentoUnitario=Math.round(descuentoUnitario*100)/100;
+
+	console.log("calculo: CU: "+cantidadUnitaria+" PU: "+precioUnitario+" DUPorc: "+porcentajeDescuentoUnitario+" DU:"+descuentoUnitario);
+	//var descuentoUnitario=document.getElementById("descuentoProducto"+indice).value;
+
 	var montoUnitario=(parseFloat(cantidadUnitaria)*parseFloat(precioUnitario)) - (parseFloat(descuentoUnitario));
-	montoUnitario=Math.round(montoUnitario*100)/100
-		
+	montoUnitario=Math.round(montoUnitario*100)/100;
+	
+	document.getElementById("descuentoProducto"+indice).value=descuentoUnitario;
 	document.getElementById("montoMaterial"+indice).value=montoUnitario;
 	
 	totales();
@@ -869,18 +882,61 @@ function Hidden(){
 }
 function setMateriales(f, cod, nombreMat){
 	var numRegistro=f.materialActivo.value;
+	var nombre_material_x, fecha_venc_x, cantidad_presentacionx, venta_solo_cajax;
+	var datos_material=nombreMat.split("####");
+ 	nombre_material_x=datos_material[0];  
+ 	fecha_venc_x=datos_material[1];  
+ 	cantidad_presentacionx=datos_material[2];
+ 	venta_solo_cajax=datos_material[3];
 	
 	document.getElementById('materiales'+numRegistro).value=cod;
-	document.getElementById('cod_material'+numRegistro).innerHTML=nombreMat;
+	document.getElementById('cod_material'+numRegistro).innerHTML=nombre_material_x;
+	document.getElementById('fecha_vencimiento'+numRegistro).innerHTML=fecha_venc_x;
 	
 	document.getElementById('divRecuadroExt').style.visibility='hidden';
 	document.getElementById('divProfileData').style.visibility='hidden';
 	document.getElementById('divProfileDetail').style.visibility='hidden';
 	document.getElementById('divboton').style.visibility='hidden';
 	
+	if(venta_solo_cajax==1){
+		document.getElementById("cantidad_unitaria"+numRegistro).step=cantidad_presentacionx;
+		document.getElementById("cantidad_unitaria"+numRegistro).min=cantidad_presentacionx;
+		document.getElementById("div_venta_caja"+numRegistro).innerHTML="Venta x Caja";
+		console.log('cambiando a venta por caja.'+cantidad_presentacionx);
+	}
 	document.getElementById("cantidad_unitaria"+numRegistro).focus();
 
+
 	actStock(numRegistro);
+	// Verificación de PRECIO CLIENTE
+	precioCliente(numRegistro, cod);
+}
+/**
+ * Verificación de Precio Cliente
+ */
+function precioCliente(numRegistro, item){
+	let cod_cliente  = $('#cliente').val();
+	let cod_producto = item;
+	let index 		 = numRegistro;
+	$('#cantidad_unitaria'+index).val(1);
+	if(cod_cliente != null || cod_cliente != '') {
+		$.ajax({
+			url: "clientePrecioSearch.php",
+			type: "POST",
+			dataType: 'json',
+			data: {
+				cod_cliente: cod_cliente,
+				cod_producto: cod_producto,
+			},
+			success:  function (resp) {
+				// Detalle de Respuesta de Precio Cliente
+				if(resp.status){
+					$('#tipoPrecio'+index).val(parseFloat(resp.data.porcentaje_aplicado));
+					$('#descuentoProducto'+index).val(resp.data.precio_aplicado);
+				}
+			}
+		});
+	}
 }
 		
 function precioNeto(fila){
@@ -980,6 +1036,7 @@ function masMultiple(form) {
 			  var name = $(this).attr('name');
 			  var value = $(this).val();
 			  var index = name.charAt(name.length - 1);
+			  console.log("index: "+index);
 			  arrayCantidades.push([name,value,index]);
 			});
 			/*fin recuperar*/
@@ -1643,6 +1700,14 @@ $banderaMensajesDoblePantalla=obtenerValorConfiguracion($enlaceCon,14);
 $mensajeBienvenida=obtenerValorConfiguracion($enlaceCon,15);
 $mensajeVerifiquePrecios=obtenerValorConfiguracion($enlaceCon,16);
 
+/*Visualizacion de precios descuento y mayorista*/
+$banderaPreciosDescuento=obtenerValorConfiguracion($enlaceCon,52);
+$porcentajePrecioMayorista=precioMayoristaSucursal($enlaceCon,$globalAgencia);
+$txtPrecioMayorista="";
+if($banderaPreciosDescuento==1){
+	$txtPrecioMayorista="[Precio Mayorista:".$porcentajePrecioMayorista."%]";
+}
+
 
 include("datosUsuario.php");
 
@@ -1653,6 +1718,7 @@ if(isset($_GET['file'])){
 ?>
 <nav class="mb-4 navbar navbar-expand-lg" style='background:#006db3 !important;color:white !important;'>
                 <a class="navbar-brand font-bold" href="#">[<?php echo $fechaSistemaSesion?>][<b id="hora_sistema"><?php echo $horaSistemaSesion;?></b>] [<?php echo $nombreAlmacenSesion;?>]</a>
+                <span style='background:#FFDA33 !important;color:yellow;font-size:20px; !important;'><?=$txtPrecioMayorista;?></span>
                 
                 <?php
 								if($banderaMensajesDoblePantalla==1){
@@ -1808,7 +1874,6 @@ while($dat2=mysqli_fetch_array($resp2)){
 		<!-- style="font-size: 20px;color:#9D09BB"-->		
 	</div>
 	<input type='hidden' name='complemento' id='complemento' value='' class="form-control" placeholder="COMPLEMENTO" style="text-transform:uppercase;position:absolute;width:160px !important;background:#D2FFE8;" onkeyup="javascript:this.value=this.value.toUpperCase();" > 
-	
 	</td>	
 	<td colspan="2">
 		<div id='divRazonSocial'>
@@ -1824,16 +1889,17 @@ while($dat2=mysqli_fetch_array($resp2)){
           </span>
 		  
 	</td>
-	<td align='center' id='divCliente' width="20%">			
-	<select name='cliente' class='selectpicker form-control' data-live-search="true" id='cliente' onChange='ajaxRazonSocialCliente(this.form);' required data-style="btn btn-rose">
-		
-		<option value='146'>NO REGISTRADO</option>
-
-	</select>
+	<td align='center' id='divCliente' width="20%">	
+		<!--span class="input-group-btn" style="position:absolute;width:100px !important;"-->		
+			<select name='cliente' class='selectpicker form-control' data-live-search="true" id='cliente' onChange='ajaxRazonSocialCliente(this.form);' required data-style="btn btn-rose">
+				<option value='146'>NO REGISTRADO</option>
+			</select>
+			<input type='text' name='observaciones' id='observaciones' value='' class="form-control" placeholder="Observaciones" style="text-transform:uppercase;position:absolute;width:300px !important;">
+		<!--/span-->
 	</td>
 	<td>	
 		<a href="#" title="Editar Cliente" data-toggle='tooltip' onclick="editarDatosClienteRegistro(); return false;" class="btn btn-primary btn-round btn-sm text-white btn-fab"><i class="material-icons">edit</i></a>
-	<a href="#" title="Registrar Nuevo Cliente" data-toggle='tooltip' onclick="registrarNuevoCliente(); return false;" class="btn btn-success btn-round btn-sm text-white circle" id="button_nuevo_cliente">+</a>
+		<a href="#" title="Registrar Nuevo Cliente" data-toggle='tooltip' onclick="registrarNuevoCliente(); return false;" class="btn btn-success btn-round btn-sm text-white circle" id="button_nuevo_cliente">+</a>
 
 	</td>
 
@@ -1920,7 +1986,8 @@ if($banderaMensajesDoblePantalla==1){
 
 	<tr align="center">
 		<td width="10%">&nbsp;</td>
-		<td width="38%">Material</td>
+		<td width="33%">Material</td>
+		<td width="5%">FV</td>
 		<td width="8%">Stock</td>
 		<td width="8%">Cantidad</td>
 		<td width="8%">Precio </td>

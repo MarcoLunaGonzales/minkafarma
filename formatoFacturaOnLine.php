@@ -27,9 +27,9 @@ require('funcion_nombres.php');
 require('NumeroALetras.php');
 include('phpqrcode/qrlib.php');
 
-error_reporting(E_ALL);
+/*error_reporting(E_ALL);
 ini_set('display_errors', '1');
-
+*/
 
 
 
@@ -57,7 +57,7 @@ $sqlNro="select count(*) from `salida_detalle_almacenes` s where s.`cod_salida_a
 $respNro=mysqli_query($enlaceCon,$sqlNro);
 $nroItems=mysqli_result($respNro,0,0);
 
-$tamanoLargo=300+($nroItems*5)-5;
+$tamanoLargo=400+($nroItems*10)-10;
 
 ?><div style="width:320;margin:0;padding-left:30px !important;padding-right:30px !important;height:<?=$tamanoLargo?>; font-family:Arial;">
 <?php	

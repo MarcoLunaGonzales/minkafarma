@@ -4,12 +4,13 @@ require("estilos_almacenes.inc");
 
 echo "<script language='JavaScript'>
 		function envia_formulario(f)
-		{	var rpt_territorio, rpt_almacen, tipo_item, rpt_ver, rpt_fecha, rpt_ordenar;
+		{	var rpt_territorio, rpt_almacen, tipo_item, rpt_ver, rpt_fecha, rpt_ordenar, rpt_tipo_impresion;
 			rpt_territorio=f.rpt_territorio.value;
 			rpt_almacen=f.rpt_almacen.value;
 			rpt_ver=f.rpt_ver.value;
 			rpt_fecha=f.rpt_fecha.value;
 			rpt_ordenar=f.rpt_ordenar.value;
+			rpt_tipo_impresion=f.rpt_tipo_impresion.value;
 			
 			var rpt_distribuidor=new Array();
 			var j=0;
@@ -20,7 +21,7 @@ echo "<script language='JavaScript'>
 				}
 			}
 
-			window.open('rpt_inv_existencias.php?rpt_territorio='+rpt_territorio+'&rpt_almacen='+rpt_almacen+'&rpt_ver='+rpt_ver+'&rpt_fecha='+rpt_fecha+'&rpt_ordenar='+rpt_ordenar+'&rpt_distribuidor='+rpt_distribuidor,'','scrollbars=yes,status=no,toolbar=no,directories=no,menubar=no,resizable=yes,width=1000,height=800');
+			window.open('rpt_inv_existencias.php?rpt_territorio='+rpt_territorio+'&rpt_almacen='+rpt_almacen+'&rpt_ver='+rpt_ver+'&rpt_fecha='+rpt_fecha+'&rpt_ordenar='+rpt_ordenar+'&rpt_distribuidor='+rpt_distribuidor+'&rpt_tipo_impresion='+rpt_tipo_impresion,'','scrollbars=yes,status=no,toolbar=no,directories=no,menubar=no,resizable=yes,width=1000,height=800');
 
 			return(true);
 		}
@@ -96,7 +97,16 @@ echo"<form method='post' action=''>";
 	echo "<option value='2'>Con Existencia</option>";
 	echo "<option value='3'>Sin existencia</option>";
 	echo "</tr>";
-	$fecha_rptdefault=date("d/m/Y");
+
+	echo "<tr><th align='left'>Tipo de Impresión</th>";
+	echo "<td><select name='rpt_tipo_impresion' class='texto'>";
+		echo "<option value='0'>NORMAL</option>";
+		echo "<option value='1'>PARA INVENTARIO</option>";	
+	echo "</select></td>";
+	echo "</tr>";
+
+
+	$fecha_rptdefault=date("d/m/Y");	
 	echo "<tr><th align='left'>Existencias a fecha:</th>";
 			echo" <TD bgcolor='#ffffff'><INPUT  type='text' class='texto' value='$fecha_rptdefault' id='rpt_fecha' size='10' name='rpt_fecha'>";
     		echo" <IMG id='imagenFecha' src='imagenes/fecha.bmp'>";

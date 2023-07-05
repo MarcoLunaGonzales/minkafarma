@@ -456,7 +456,7 @@ echo "<div class='divBotones'>
 echo "<br>";
 
 echo "<div id='divCuerpo'><center><table class='texto'>";
-echo "<tr><th>&nbsp;</th><th>Nro. Doc</th><th>Fecha/hora<br>Venta</th><th>Vendedor</th><th>TipoPago</th><th>Razon Social</th><th>NIT</th><th>Observaciones</th><th>Imprimir Factura</th><th>Documento SIAT</th>";
+echo "<tr><th>&nbsp;</th><th>Nro. Doc</th><th>Fecha/hora<br>Venta</th><th>Vendedor</th><th>TipoPago</th><th>Razon Social</th><th>NIT</th><th>Monto</th><th>Observaciones</th><th>Imprimir Factura</th><th>Documento SIAT</th>";
     echo "</tr>";
     
 echo "<input type='hidden' name='global_almacen' value='$global_almacen' id='global_almacen'>";
@@ -467,7 +467,8 @@ $consulta = "
     s.estado_salida, s.nro_correlativo, s.salida_anulada, s.almacen_destino, 
     (select c.nombre_cliente from clientes c where c.cod_cliente = s.cod_cliente), s.cod_tipo_doc, razon_social, nit,
     (select t.nombre_tipopago from tipos_pago t where t.cod_tipopago=s.cod_tipopago)as tipopago,siat_estado_facturacion,
-    (select concat(f.paterno, ' ', f.nombres) from funcionarios f where f.codigo_funcionario=s.cod_chofer)as vendedor
+    (select concat(f.paterno, ' ', f.nombres) from funcionarios f where f.codigo_funcionario=s.cod_chofer)as vendedor,
+    s.monto_final
     FROM salida_almacenes s, tipos_salida ts 
     WHERE s.cod_tiposalida = ts.cod_tiposalida AND s.cod_almacen = '$global_almacen' and s.cod_tiposalida=1001 
     and s.cod_tipo_doc in (1,4)";
@@ -511,6 +512,8 @@ while ($dat = mysqli_fetch_array($resp)) {
     $nitCli=$dat[13];
     $tipoPago=$dat[14];
     $nombreVendedor=$dat[16];
+    $montoVenta=$dat[17];
+    $montoVentaFormat=formatonumeroDec($montoVenta);
     
     echo "<input type='hidden' name='fecha_salida$nro_correlativo' value='$fecha_salida_mostrar'>";
     
@@ -556,7 +559,9 @@ while ($dat = mysqli_fetch_array($resp)) {
     echo "<td align='center'>$stikea$nombreTipoDoc-$nro_correlativo $stikec</td>";
     echo "<td align='center'>$stikea$fecha_salida_mostrar $hora_salida$stikec</td>";
     echo "<td>$stikea $nombreVendedor $stikec</td>";
-    echo "<td>$stikea $tipoPago $stikec</td><td>$stikea &nbsp;$razonSocial $stikec</td><td>$stikea&nbsp;$nitCli $stikec</td><td>$stikea &nbsp;$obs_salida $stikec</td>";
+    echo "<td>$stikea $tipoPago $stikec</td><td>$stikea &nbsp;$razonSocial $stikec</td><td>$stikea&nbsp;$nitCli $stikec</td>
+    <td>$stikea&nbsp;$montoVentaFormat $stikec</td>
+    <td>$stikea &nbsp;$obs_salida $stikec</td>";
     $url_notaremision = "navegador_detallesalidamuestras.php?codigo_salida=$codigo";    
     
     $urlConversionFactura="convertNRToFactura.php?codVenta=$codigo";    
@@ -574,7 +579,7 @@ while ($dat = mysqli_fetch_array($resp)) {
         default:$color_fondo="#12A4DF";break;      
     }
     if($codTipoDoc==1){
-        echo "<td  bgcolor='$color_fondo'><a href='formatoFactura.php?codVenta=$codigo' target='_BLANK'><img src='imagenes/factura1.jpg' width='30' border='0' title='Factura Formato Pequeño'></a></td>";
+        echo "<td  bgcolor='$color_fondo'><a href='formatoFacturaOnLine.php?codVenta=$codigo' target='_BLANK'><img src='imagenes/factura1.jpg' width='30' border='0' title='Factura Formato Pequeño'></a></td>";
     }else{
         echo "<td  bgcolor='$color_fondo'><a href='formatoNotaRemision2.php?codVenta=$codigo' target='_BLANK'><img src='imagenes/factura1.jpg' width='30' border='0' title='Factura Formato Pequeño'></a></td>";
     }

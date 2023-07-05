@@ -12,6 +12,7 @@ $cantidadPresentacion=$_POST['cantidadPresentacion'];
 $principioActivo=$_POST['principioActivo'];
 $codTipoVenta=$_POST['codTipoVenta'];
 $productoControlado=$_POST['producto_controlado'];
+$ventaSoloCajas=$_POST['venta_solo_caja'];
 //$arrayAccionTerapeutica=$_POST['arrayAccionTerapeutica'];
 $accionTerapeutica=$_POST['accion_terapeutica'];
 $codigoBarras=$_POST['codigo_barras'];
@@ -36,13 +37,13 @@ $codigo=$dat[0];
 //$codigo=mysql_result($resp,0,0);
 
 $sql_inserta="insert into material_apoyo(codigo_material, descripcion_material, estado, cod_linea_proveedor, cod_forma_far, cod_empaque,
-cantidad_presentacion, principio_activo, cod_tipoventa, producto_controlado, accion_terapeutica, codigo_barras) values ($codigo,'$nombreProducto','1','$codLinea','$codForma','$codEmpaque',
-'$cantidadPresentacion','$principioActivo','$codTipoVenta','$productoControlado','$accionTerapeutica','$codigoBarras')";
+cantidad_presentacion, principio_activo, cod_tipoventa, producto_controlado, accion_terapeutica, codigo_barras, bandera_venta_unidades) values ($codigo,'$nombreProducto','1','$codLinea','$codForma','$codEmpaque',
+'$cantidadPresentacion','$principioActivo','$codTipoVenta','$productoControlado','$accionTerapeutica','$codigoBarras','$ventaSoloCajas')";
 //echo $sql_inserta;
 $resp_inserta=mysqli_query($enlaceCon,$sql_inserta);
 
 
-$resp=actualizarPrecios($enlaceCon,$codigo,$arrayPrecios);
+$resp=actualizarPrecios($enlaceCon,$codigo,$arrayPrecios,0);
 
 if($resp_inserta){
 		echo "<script language='Javascript'>

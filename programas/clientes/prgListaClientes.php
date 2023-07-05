@@ -38,7 +38,7 @@ while($reg=mysqli_fetch_array($rs))
     $nomArea = $reg["descripcion"];
     echo "<tr>";
     echo "<td><input type='checkbox' id='idchk$cont' value='$codCliente' ></td><td>$nomCliente</td><td>$nitCliente</td><td>$dirCliente</td><td>$nomArea</td>
-          <td align='center'><a href='../../clientesPrecio.php?cod_personal=$codCliente' title='Precio cliente'><img src='../../imagenes/edit.png' width='25'></a></td>";
+    <td><a href='../../clientePrecio.php?cod_cliente=$codCliente' title='Precios Clientes' class='text-dark'><i class='material-icons'>description</i></a></td>";
     echo "</tr>";
    }
 echo "</table>";

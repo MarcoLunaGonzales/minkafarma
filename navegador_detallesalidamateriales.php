@@ -51,7 +51,7 @@
 
 	echo "<table border='0' class='texto' cellspacing='0' width='90%' align='center'>";
 	
-	echo "<tr><th>Codigo</th><th>Material</th><th>Lote</th><th>Vencimiento</th>
+	echo "<tr><th>Codigo</th><th>Material</th><th>Vencimiento</th>
 	<th>Cantidad</th></tr>";
 	
 	//echo "<tr><td colspan='4'>&nbsp;</td></tr>";
@@ -73,6 +73,7 @@
 		$loteProducto=$dat_detalle[2];
 		$fechaVencimiento=$dat_detalle[3];
 		$cantidad_unitaria=$dat_detalle[4];
+		$cantidad_unitariaF=formatonumero($cantidad_unitaria);
 		$precioUnitario=$dat_detalle[5];
 		$precioUnitario=redondear2($precioUnitario);
 		$descuentoUnitario=$dat_detalle[6];
@@ -83,9 +84,8 @@
 		echo "<tr>
 			<td class='bordeNegroTdMod'>$cod_material</td>
 			<td class='bordeNegroTdMod'>$nombre_material</td>
-			<td align='center' class='bordeNegroTdMod'>$loteProducto</td>
 			<td align='center' class='bordeNegroTdMod'>$fechaVencimiento</td>
-			<td class='bordeNegroTdMod'>$cantidad_unitaria</td>
+			<td class='bordeNegroTdMod' align='right'>$cantidad_unitariaF</td>
 		</tr>";
 		$indice++;
 		$montoTotal=$montoTotal+$montoUnitario;

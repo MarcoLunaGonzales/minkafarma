@@ -4,7 +4,7 @@
 <tr>
 <th><input type='checkbox' id='selecTodo'  onchange="marcarDesmarcar(form1,this)" ></th><th>Codigo</th><th>Producto</th><th>Linea</th><th>Principio Activo</th><th>Accion Terapeutica</th><th>Stock</th><th>Precio</th></tr>
 <?php
-require("conexionmysqli.php");
+require("conexionmysqli2.inc");
 require("funciones.php");
 
 $codigoMat=0;
@@ -26,6 +26,11 @@ $codTipo=$_GET['codTipo'];
 $nombreItem=$_GET['nombreItem'];
 $globalAlmacen=$_COOKIE['global_almacen'];
 $itemsNoUtilizar=$_GET['arrayItemsUtilizados'];
+
+if($itemsNoUtilizar==""){
+	$itemsNoUtilizar=0;
+}
+
 $tipoSalida=$_GET['tipoSalida'];
 
 $fechaActual=date("Y-m-d");
@@ -33,14 +38,13 @@ $fechaActual=date("Y-m-d");
 $indexFila=0;
 
 //SACAMOS LA CONFIGURACION PARA LA SALIDA POR VENCIMIENTO
-$sqlConf="select valor_configuracion from configuraciones where id_configuracion=5";
-$respConf=mysqli_query($enlaceCon,$sqlConf);
-$datConf=mysqli_fetch_array($respConf);
-$tipoSalidaVencimiento=$datConf[0];//$tipoSalidaVencimiento=mysql_result($respConf,0,0);
+$tipoSalidaVencimiento=obtenerValorConfiguracion($enlaceCon,5);
+//Bandera para mostrar la Fecha de Vencimiento en la Factura o no
+$banderaMostrarFV=obtenerValorConfiguracion($enlaceCon,20);
 
 	$sql="select m.codigo_material, m.descripcion_material,
 	(select concat(p.nombre_proveedor,'-',pl.nombre_linea_proveedor)as nombre_proveedor
-	from proveedores p, proveedores_lineas pl where p.cod_proveedor=pl.cod_proveedor and pl.cod_linea_proveedor=m.cod_linea_proveedor), m.principio_activo, m.accion_terapeutica
+	from proveedores p, proveedores_lineas pl where p.cod_proveedor=pl.cod_proveedor and pl.cod_linea_proveedor=m.cod_linea_proveedor), m.principio_activo, m.accion_terapeutica, m.bandera_venta_unidades, m.cantidad_presentacion
 	from material_apoyo m where estado=1 and m.codigo_material not in ($itemsNoUtilizar)";
 	if($codigoMat!=""){
 		$sql=$sql. " and codigo_material='$codigoMat'";
@@ -81,6 +85,8 @@ $tipoSalidaVencimiento=$datConf[0];//$tipoSalidaVencimiento=mysql_result($respCo
 			$linea=$dat[2];
 			$principioActivo=$dat[3];
 			$accionTerapeutica=$dat[4];
+			$ventaSoloCajas=$dat[5];
+			$cantidadPresentacion=$dat[6];
 			
 			$nombre=addslashes($nombre);
 			$linea=addslashes($linea);
@@ -90,9 +96,7 @@ $tipoSalidaVencimiento=$datConf[0];//$tipoSalidaVencimiento=mysql_result($respCo
 			}else{
 				$stockProducto=stockProducto($enlaceCon,$globalAlmacen, $codigo);
 			}
-			
-			//$ubicacionProducto=ubicacionProducto($enlaceCon,$globalAlmacen, $codigo);
-					
+								
 			$datosProd=$codigo."|".$nombre."|".$linea;
 		
 
@@ -112,13 +116,23 @@ $tipoSalidaVencimiento=$datConf[0];//$tipoSalidaVencimiento=mysql_result($respCo
                     $mostrarFila=0;
 				 }  	              
 			}
+
+			/*Mostrar la Fecha de Vencimiento*/
+			$txtFechaVencimiento="-";
+			if($banderaMostrarFV==1){
+				$txtFechaVencimiento=obtenerFechaVencimiento($enlaceCon, $globalAlmacen, $codigo);
+				//$txtFechaVencimiento="<span class='textogranderojo'><small>$txtFechaVencimiento</small></span>";
+				$txtFechaVencimiento="<small><b>$txtFechaVencimiento</b></small>";
+			}
+			/*Fin Fecha de Vencimiento*/
+
 			if($mostrarFila==1){
 				$indexFila++;
 
 			  	if($stockProducto>0){
 					$stockProducto="<b class='textograndenegro' style='color:#C70039'>".$stockProducto."</b>";
 			  	}
-				echo "<tr><td><input type='checkbox' id='idchk$cont' name='idchk$cont' value='$datosProd' onchange='ver(this)' ></td><td>$codigo</td><td><div class='textograndenegro'><a href='javascript:setMateriales(form1, $codigo, \"$nombre - $linea ($codigo)\")'>$nombre</a></div></td>
+				echo "<tr><td><input type='checkbox' id='idchk$cont' name='idchk$cont' value='$datosProd' onchange='ver(this)' ></td><td>$codigo</td><td><div class='textograndenegro'><a href='javascript:setMateriales(form1, $codigo, \"$nombre - $linea ($codigo)####$txtFechaVencimiento####$cantidadPresentacion####$ventaSoloCajas \")'>$nombre</a></div></td>
 				<td>$linea</td>
 				<td><small>$principioActivo</small></td>
 				<td><small>$accionTerapeutica</small></td>

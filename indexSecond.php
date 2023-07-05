@@ -66,11 +66,17 @@ include("datosUsuario.php");
 		<div id="panel-menu">
 		
 		<ul>
-			<!--li><span>Ingresos</span>
+			<li><span>Datos Generales</span>
 				<ul>
-					<li><a href="navegador_ingresomateriales.php" target="contenedorPrincipal">Ingreso de Productos</a></li>
+					<li><a href="navegador_material.php" target="contenedorPrincipal">Productos</a></li>
+				</ul>
+			</li>
+			<li><span>Ingresos</span>
+				<ul>
+					<li><a href="navegador_ingresomateriales.php" target="contenedorPrincipal">Ingreso de Materiales</a></li>
+					<li><a href="navegador_ingresotransito.php" target="contenedorPrincipal">Ingreso de Productos en Transito</a></li>
 				</ul>	
-			</li-->
+			</li>
 			<li><span>Salidas</span>
 				<ul>
 					<li><a href="navegador_salidamateriales.php" target="contenedorPrincipal">Listado de Traspasos & Salidas</a></li>

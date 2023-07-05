@@ -172,7 +172,10 @@ function formatonumeroDec($valor) {
 }
 
 function formateaFechaVista($cadena_fecha)
-{	$cadena_formatonuevo=$cadena_fecha[6].$cadena_fecha[7].$cadena_fecha[8].$cadena_fecha[9]."-".$cadena_fecha[3].$cadena_fecha[4]."-".$cadena_fecha[0].$cadena_fecha[1];
+{	$cadena_formatonuevo="";
+	if($cadena_fecha!=""){
+		$cadena_formatonuevo=$cadena_fecha[6].$cadena_fecha[7].$cadena_fecha[8].$cadena_fecha[9]."-".$cadena_fecha[3].$cadena_fecha[4]."-".$cadena_fecha[0].$cadena_fecha[1];
+	}	
 	return($cadena_formatonuevo);
 }
 
@@ -459,13 +462,14 @@ function numeroCorrelativo($enlaceCon,$tipoDoc){
 
 
 function numeroCorrelativoCotizacion($enlaceCon,$tipoDoc){
+	$globalAlmacen=$_COOKIE['global_almacen'];
 	$sql="select IFNULL(max(nro_correlativo)+1,1) from cotizaciones where cod_tipo_doc='1' and cod_almacen='$globalAlmacen'";
 	$resp=mysqli_query($enlaceCon,$sql);
+	$codigo=0;
 	while($dat=mysqli_fetch_array($resp)){
-		$codigo=$dat[0];
-		$vectorCodigo = array($codigo,$banderaErrorFacturacion,0);
-		return $vectorCodigo;
+		$codigo = $dat[0];
 	}
+	return $codigo;
 }
 
 function unidadMedida($enlaceCon,$codigo){
@@ -689,6 +693,50 @@ function precioProductoSucursal($enlaceCon,$item,$sucursal){
 	return($precio);
 }
 
+function precioProductoSucursalMasDescuento($enlaceCon,$item,$sucursal){
+	//require("conexionmysqli.php");
+	$fechaActual=date("Y-m-d");
+	$sql="SELECT p.precio, p.descuento_unitario from precios p where p.codigo_material='$item' and p.cod_precio='1' 
+				and p.cod_ciudad='$sucursal'";	
+	$resp=mysqli_query($enlaceCon,$sql);
+ 	$arrayPrecios=[0,0];
+ 	if (mysqli_num_rows($resp)>0){ 
+		$dat=mysqli_fetch_array($resp);
+		$arrayPrecios[0]=$dat[0];
+		$arrayPrecios[1]=$dat[1];
+	}
+	return($arrayPrecios);
+}
+
+function precioProductoSucursalCalculado($enlaceCon,$item,$sucursal){
+	//require("conexionmysqli.php");
+	$fechaActual=date("Y-m-d");
+
+	$porcentajeVentaProd=obtenerValorConfiguracion($enlaceCon, 53);
+ 	$porcentajePrecioMayorista=precioMayoristaSucursal($enlaceCon,$sucursal);
+
+	$sql="SELECT p.precio, p.descuento_unitario from precios p where p.`codigo_material`='$item' and p.`cod_precio`='1' 
+				and p.cod_ciudad='$sucursal'";	
+	$resp=mysqli_query($enlaceCon,$sql);
+	$precio=0;
+	$descuentoUnitario=0;
+	$descuentoUnitarioBs=0;
+ 	if (mysqli_num_rows($resp)>0){ 
+		$dat=mysqli_fetch_array($resp);
+		$precio=$dat[0];
+		$descuentoUnitario=$dat[1];
+	}
+	if($descuentoUnitario>0){
+		$descuentoUnitario=$descuentoUnitario*($porcentajeVentaProd/100);
+	}
+	$descuentoUnitario=$descuentoUnitario+$porcentajePrecioMayorista;
+	if($descuentoUnitario>0){
+		$descuentoUnitarioBs=$precio*($descuentoUnitario/100);
+	}
+	$precio=$precio-$descuentoUnitarioBs;
+	return($precio);
+}
+
 function margenLinea($enlaceCon,$item){
 	//require("conexionmysqli.php");
 	$fechaActual=date("Y-m-d");
@@ -718,9 +766,11 @@ function descargarPDFArqueoCajaVertical($nom,$html){
  $mydompdf->stream($nom.".pdf", array("Attachment" => false));
 }
 
-function actualizarPrecios($enlaceCon, $codProducto, $arrayPrecios){
+function actualizarPrecios($enlaceCon, $codProducto, $arrayPrecios, $descuento){
 	foreach ( $arrayPrecios as $clave => $valor ){
+	    
 	    //echo "ciudad: ".$clave." valor: ".$valor."<br>";
+	    
 	    $sqlVerificaPrecio="select count(*) from precios p where p.cod_precio=1 and p.codigo_material='$codProducto' and p.cod_ciudad='$clave'";
 		 $respVerificaPrecio=mysqli_query($enlaceCon, $sqlVerificaPrecio);
 	    $bandera=0;
@@ -729,13 +779,41 @@ function actualizarPrecios($enlaceCon, $codProducto, $arrayPrecios){
 	    }
 
 	    if($bandera==0){    //insertamos
-	    	$sqlActPrecio="insert into precios (codigo_material, cod_precio, precio, cod_ciudad) values 
-	    	('$codProducto','1','$valor','$clave')";
+	    	$sqlActPrecio="insert into precios (codigo_material, cod_precio, precio, cod_ciudad, descuento_unitario) values 
+	    	('$codProducto','1','$valor','$clave','$descuento')";
 	    }elseif($bandera>0){
-	    	$sqlActPrecio="update precios set precio='$valor' where codigo_material='$codProducto' and cod_precio=1 and 
+	    	$sqlActPrecio="update precios set precio='$valor', descuento_unitario='$descuento' where codigo_material='$codProducto' and cod_precio=1 and 
 	    		cod_ciudad='$clave'";
+	    }	    
+	    
+	    //echo $sqlActPrecio."<br>";	    
+	    
+	    $respPrecio=mysqli_query($enlaceCon,$sqlActPrecio);
+	}
+	return(1);
+}
+
+function actualizarPreciosConPorcentajes($enlaceCon, $codProducto, $arrayPrecios, $arrayPorcentajes){
+	foreach ( $arrayPrecios as $clave => $valor ){
+	    $sqlVerificaPrecio="select count(*) from precios p where p.cod_precio=1 and p.codigo_material='$codProducto' and p.cod_ciudad='$clave'";
+		 $respVerificaPrecio=mysqli_query($enlaceCon, $sqlVerificaPrecio);
+	    $bandera=0;
+	    if($datVerificaPrecio=mysqli_fetch_array($respVerificaPrecio)){
+	    	$bandera=$datVerificaPrecio[0];
 	    }
-	    //echo $sqlActPrecio."<br>";
+
+	    $porcentajePrecio=$arrayPorcentajes[$clave];
+	    
+	    if($bandera==0){    //insertamos
+	    	$sqlActPrecio="insert into precios (codigo_material, cod_precio, precio, cod_ciudad, descuento_unitario) values 
+	    	('$codProducto','1','$valor','$clave','$porcentajePrecio')";
+	    }elseif($bandera>0){
+	    	$sqlActPrecio="update precios set precio='$valor', descuento_unitario='$porcentajePrecio' where codigo_material='$codProducto' and cod_precio=1 and 
+	    		cod_ciudad='$clave'";
+	    }	    
+	    
+	    //echo $sqlActPrecio."<br>";	    
+	    
 	    $respPrecio=mysqli_query($enlaceCon,$sqlActPrecio);
 	}
 	return(1);
@@ -849,6 +927,331 @@ function obtenerVentaClienteCampania($enlaceCon, $codCliente, $fechaVenta){
 	}
 	$arrayCampania = array($abrevCampaniaHabilitada,$montoVenta);
 	return($arrayCampania);
+}
+
+function precioMayoristaSucursal($enlaceCon, $sucursal){
+	$sql="SELECT c.descuento_mayorista from ciudades c where c.cod_ciudad='$sucursal'";
+ 	$resp=mysqli_query($enlaceCon,$sql);
+   $descuento=0;				
+   while($detalle=mysqli_fetch_array($resp)){
+	   $descuento=$detalle[0];
+   }  
+   return $descuento;
+}
+
+function obtenerFechaVencimiento($enlaceCon, $almacen, $codProducto){
+	$sql="SELECT DATE_FORMAT(id.fecha_vencimiento, '%m/%Y')as fecha_vencimiento from ingreso_almacenes i, ingreso_detalle_almacenes id
+		where i.cod_ingreso_almacen=id.cod_ingreso_almacen and i.cod_almacen='$almacen' 
+		and i.ingreso_anulado=0 and id.cantidad_restante>0 and i.cod_tipoingreso in (1000,1003) and id.cod_material='$codProducto' 
+		and id.fecha_vencimiento not in ('1969-12-30','0000-00-00')
+		order by id.fecha_vencimiento asc limit 0,1";
+ 	$resp=mysqli_query($enlaceCon,$sql);
+   $fechaVencimiento="";				
+   if($detalle=mysqli_fetch_array($resp)){
+	   $fechaVencimiento=$detalle[0];
+   }  
+   return $fechaVencimiento;
+}
+
+function obtenerSaldoKardexAnterior($enlaceCon, $rpt_almacen, $rpt_item, $fecha){
+	//desde esta parte viene el reporte en si
+	$costoInicialKardex=0;
+	$fecha_iniconsulta=$fecha;
+	//aqui sacamos las existencias a una fecha
+	$sql="select sum(id.cantidad_unitaria), sum(id.cantidad_unitaria*id.costo_almacen)as costo FROM ingreso_almacenes i, ingreso_detalle_almacenes id
+	where i.cod_ingreso_almacen=id.cod_ingreso_almacen and i.cod_almacen='$rpt_almacen' and
+	i.ingreso_anulado=0 and id.cod_material='$rpt_item' and i.fecha<'$fecha_iniconsulta'";
+	
+	//echo $sql;
+	
+	$resp=mysqli_query($enlaceCon, $sql);
+	$dat_existencias_afecha=mysqli_fetch_array($resp);
+	$cantidad_ingresada_afecha=$dat_existencias_afecha[0];
+	$costoIngresosAnterior=$dat_existencias_afecha[1];
+	
+	$sql_salidas_afecha="select sum(sd.cantidad_unitaria), sum(sd.cantidad_unitaria*sd.costo_almacen)as costo from salida_almacenes s, salida_detalle_almacenes sd
+	where s.cod_salida_almacenes=sd.cod_salida_almacen and s.cod_almacen='$rpt_almacen' and
+	s.salida_anulada=0 and sd.cod_material='$rpt_item' and s.fecha<'$fecha_iniconsulta'";
+	//echo $sql_salidas_afecha;
+	$resp_salidas_afecha=mysqli_query($enlaceCon, $sql_salidas_afecha);
+	$dat_salidas_afecha=mysqli_fetch_array($resp_salidas_afecha);
+	$cantidad_sacada_afecha=$dat_salidas_afecha[0];
+	$costoSalidasAnterior=$dat_salidas_afecha[1];
+	$cantidad_inicial_kardex=$cantidad_ingresada_afecha-$cantidad_sacada_afecha;
+	$costoInicialKardex=$costoIngresosAnterior-$costoSalidasAnterior;
+
+	$vectorKardexAnterior=array($cantidad_inicial_kardex,$costoInicialKardex);
+	return($vectorKardexAnterior);
+}
+
+
+function obtenerNombreDesDiasRegistrados($codigo){
+  $cantidad=obtenerTotalDias();
+  require("conexionmysqli2.inc");
+  $sql_detalle="SELECT cod_dia from tipos_precio_dias where cod_tipoprecio='$codigo'";
+  $i=0;
+  $diasArray=[];				
+  $resp=mysqli_query($enlaceCon,$sql_detalle);
+  while($detalle=mysqli_fetch_array($resp)){	
+  	   $diasArray[$i]=obtenerNombreDia($detalle[0]);
+       $i++;  		
+  }  
+  if(count($diasArray)==$cantidad){
+  	return "TODOS";
+  }else if(count($diasArray)==0){
+  	return "NINGUNO";
+  }else{
+  	return implode(", ",$diasArray);
+  }
+}
+function obtenerNombreDesCiudadesRegistrados($codigo){
+  $cantidad=obtenerTotalCiudades();
+  require("conexionmysqli2.inc");
+  $sql_detalle="SELECT cod_ciudad from tipos_precio_ciudad where cod_tipoprecio='$codigo'";
+  $i=0;
+  $ciudadArray=[];				
+  $resp=mysqli_query($enlaceCon,$sql_detalle);
+  while($detalle=mysqli_fetch_array($resp)){	
+  	   $ciudadArray[$i]=obtenerNombreCiudad($detalle[0]);
+       $i++;  		
+  }  
+  if(count($ciudadArray)==$cantidad){
+  	return "TODOS";
+  }else if(count($ciudadArray)==0){
+  	return "NINGUNO";
+  }else{
+  	return implode(", ",$ciudadArray);
+  }
+}
+
+function obtenerNombreDesCiudadesRegistradosGeneral($codigo){
+  $cantidad=obtenerTotalCiudades();
+  require("conexionmysqli2.inc");
+  $sql_detalle="SELECT cod_ciudad from tipos_preciogeneral_ciudad where cod_tipoprecio='$codigo'";
+  $i=0;
+  $ciudadArray=[];				
+  $resp=mysqli_query($enlaceCon,$sql_detalle);
+  while($detalle=mysqli_fetch_array($resp)){	
+  	   $ciudadArray[$i]=obtenerNombreCiudad($detalle[0]);
+       $i++;  		
+  }  
+  if(count($ciudadArray)==$cantidad){
+  	return "TODOS";
+  }else if(count($ciudadArray)==0){
+  	return "NINGUNO";
+  }else{
+  	return implode(", ",$ciudadArray);
+  }
+}
+
+function obtenerNombreDesCiudadesRegistradosCampanaGeneral($codigo){
+  $cantidad=obtenerTotalCiudades();
+  require("conexionmysqli2.inc");
+  $sql_detalle="SELECT cod_ciudad from campana_general_ciudad where cod_campana='$codigo'";
+  $i=0;
+  $ciudadArray=[];				
+  $resp=mysqli_query($enlaceCon,$sql_detalle);
+  while($detalle=mysqli_fetch_array($resp)){	
+  	   $ciudadArray[$i]=obtenerNombreCiudad($detalle[0]);
+       $i++;  		
+  }  
+  if(count($ciudadArray)==$cantidad){
+  	return "TODOS";
+  }else if(count($ciudadArray)==0){
+  	return "NINGUNO";
+  }else{
+  	return implode(", ",$ciudadArray);
+  }
+}
+
+
+
+function obtenerTotalDias(){
+	require("conexionmysqli2.inc");
+  $sql_detalle="SELECT count(*) cantidad from dias where estado=1";
+  $cantidad=0;				
+  $resp=mysqli_query($enlaceCon,$sql_detalle);
+  while($detalle=mysqli_fetch_array($resp)){	
+       $cantidad=$detalle[0];   		
+  }  
+  return $cantidad;
+}
+function obtenerTotalCiudades(){
+	require("conexionmysqli2.inc");
+  $sql_detalle="SELECT count(*) cantidad from ciudades where cod_estadoreferencial=1";
+  $cantidad=0;				
+  $resp=mysqli_query($enlaceCon,$sql_detalle);
+  while($detalle=mysqli_fetch_array($resp)){	
+       $cantidad=$detalle[0];   		
+  }  
+  return $cantidad;
+}
+function obtenerNombreDiaCompleto($dia){
+	require("conexionmysqli2.inc");
+  $sql_detalle="SELECT nombre from dias where codigo='$dia'";
+  $abrev="";				
+  $resp=mysqli_query($enlaceCon,$sql_detalle);
+  while($detalle=mysqli_fetch_array($resp)){	
+       $abrev=$detalle[0];   		
+  }  
+  return $abrev;
+}
+
+function obtenerNombreDia($dia){
+	require("conexionmysqli2.inc");
+  $sql_detalle="SELECT abreviatura2 from dias where codigo='$dia'";
+  $abrev="";				
+  $resp=mysqli_query($enlaceCon,$sql_detalle);
+  while($detalle=mysqli_fetch_array($resp)){	
+       $abrev=$detalle[0];   		
+  }  
+  return $abrev;
+}
+
+function obtenerNombreDesLineasRegistrados($codigo){
+  $cantidad=obtenerTotalLineas();
+  require("conexionmysqli2.inc");
+  $sql_detalle="SELECT cod_linea_proveedor from tipos_precio_lineas where cod_tipoprecio='$codigo'";
+  $i=0;
+  $lineaArray=[];				
+  $resp=mysqli_query($enlaceCon,$sql_detalle);
+  while($detalle=mysqli_fetch_array($resp)){	
+  	   $lineaArray[$i]=obtenerNombreProveedorLinea($detalle[0]);
+       $i++;  		
+  }  
+  if(count($lineaArray)==$cantidad){
+  	return "TODOS";
+  }else if(count($lineaArray)==0){
+  	return "NINGUNO";
+  }else{
+  	return implode(", ",$lineaArray);
+  }
+}
+
+function obtenerNombreProveedorLinea($codigo){
+	$estilosVenta=1;
+	require("conexionmysqli2.inc");
+  $sql_detalle="SELECT nombre_linea_proveedor from proveedores_lineas where cod_linea_proveedor='$codigo'";
+  $linea="";				
+  $resp=mysqli_query($enlaceCon,$sql_detalle);
+  while($detalle=mysqli_fetch_array($resp)){	
+       $linea=$detalle[0];   		
+  }  
+  mysqli_close($enlaceCon);
+  return $linea;
+}
+
+function obtenerNombreDesProdRegistrados($codigo){
+  $cantidad=obtenerTotalProd();
+  require("conexionmysqli2.inc");
+  $sql_detalle="SELECT cod_material from tipos_precio_productos where cod_tipoprecio='$codigo'";
+  $i=0;
+  $lineaArray=[];				
+  $resp=mysqli_query($enlaceCon,$sql_detalle);
+  while($detalle=mysqli_fetch_array($resp)){	
+  	   $lineaArray[$i]=obtenerNombreProductoLinea($detalle[0]);
+       $i++;  		
+  }  
+  if(count($lineaArray)==$cantidad){
+  	return "TODOS";
+  }else if(count($lineaArray)==0){
+  	return "NINGUNO";
+  }else{
+  	return implode(", ",$lineaArray);
+  }
+}
+function obtenerNombreDesProdRegistradosCampana($codigo){
+  $cantidad=obtenerTotalProd();
+  require("conexionmysqli2.inc");
+  $sql_detalle="SELECT cod_material from campana_general_productos where cod_campana='$codigo'";
+  $i=0;
+  $lineaArray=[];				
+  $resp=mysqli_query($enlaceCon,$sql_detalle);
+  while($detalle=mysqli_fetch_array($resp)){	
+  	   $lineaArray[$i]=obtenerNombreProductoLinea($detalle[0]);
+       $i++;  		
+  }  
+  if(count($lineaArray)==$cantidad){
+  	return "TODOS";
+  }else if(count($lineaArray)==0){
+  	return "NINGUNO";
+  }else{
+  	return implode(", ",$lineaArray);
+  }
+}
+
+function obtenerTotalProd(){
+	require("conexionmysqli2.inc");
+  $sql_detalle="SELECT count(*) cantidad from material_apoyo where estado=1";
+  $cantidad=0;				
+  $resp=mysqli_query($enlaceCon,$sql_detalle);
+  while($detalle=mysqli_fetch_array($resp)){	
+       $cantidad=$detalle[0];   		
+  }  
+  return $cantidad;
+}
+
+function obtenerNombreProductoLinea($codigo){
+	$estilosVenta=1;
+	require("conexionmysqli2.inc");
+  $sql_detalle="SELECT descripcion_material from material_apoyo where codigo_material='$codigo'";
+  $linea="";				
+  $resp=mysqli_query($enlaceCon,$sql_detalle);
+  while($detalle=mysqli_fetch_array($resp)){	
+       $linea=$detalle[0];   		
+  }  
+  mysqli_close($enlaceCon);
+  return $linea;
+}
+
+function obtenerNombreCiudad($ciudad){
+	require("conexionmysqli2.inc");
+  $sql_detalle="SELECT descripcion from ciudades where cod_ciudad='$ciudad'";
+  $nombre="";				
+  $resp=mysqli_query($enlaceCon,$sql_detalle);
+  while($detalle=mysqli_fetch_array($resp)){	
+       $nombre=$detalle[0];   		
+  }  
+  return $nombre;
+}
+
+
+function obtenerDescripcionMotivo($codigo,$ninguna){
+  require("conexionmysqli2.inc");
+  $sql_detalle="SELECT descripcion from observaciones_clase where codigo='$codigo'";
+  $nombre="";
+  if($ninguna==1){
+  	$nombre="OBSERVACIÓN ESPECÍFICA";
+  }
+  $resp=mysqli_query($enlaceCon,$sql_detalle);
+  while($detalle=mysqli_fetch_array($resp)){	
+       $nombre=$detalle[0];   		
+  }  
+  return $nombre;
+}
+function obtenerNombreProveedorDeLinea($codigo){
+  $estilosVenta=1;
+  require("conexionmysqli2.inc");
+  $sql_detalle="SELECT p.nombre_proveedor from proveedores p join proveedores_lineas l where l.cod_linea_proveedor='$codigo'";
+  $proveedor="";				
+  $resp=mysqli_query($enlaceCon,$sql_detalle);
+  while($detalle=mysqli_fetch_array($resp)){	
+       $proveedor=$detalle[0];   		
+  } 
+  mysqli_close($enlaceCon); 
+  return $proveedor;
+}
+function obtenerNombreProveedor($codigo){
+  $estilosVenta=1;
+  require("conexionmysqli2.inc");
+  $sql_detalle="SELECT nombre_proveedor from proveedores where cod_proveedor='$codigo'";
+  $proveedor="";				
+  $resp=mysqli_query($enlaceCon,$sql_detalle);
+  while($detalle=mysqli_fetch_array($resp)){	
+       $proveedor=$detalle[0];   		
+  } 
+  mysqli_close($enlaceCon); 
+  return $proveedor;
 }
 
 ?>

@@ -1,9 +1,8 @@
 <?php
 require('fpdf.php');
-require('conexionmysqli2.inc');
+require('conexionmysqlipdf.inc');
 require('funciones.php');
 require('NumeroALetras.php');
-
 
 $codigoVenta=$_GET["codVenta"];
 
@@ -22,6 +21,10 @@ $pdf->SetFont('Arial','',10);
 
 $y=0;
 $incremento=3;
+
+/*error_reporting(E_ALL);
+ini_set('display_errors', '1');*/
+
 
 //desde aca
 $sqlConf="select id, valor from configuracion_facturas where id=1";
@@ -57,6 +60,7 @@ $respConf=mysqli_query($enlaceCon,$sqlConf);
 $txt3=mysqli_result($respConf,0,1);
 
 
+
 $sqlConf="select id, valor from configuracion_facturas where id=9";
 $respConf=mysqli_query($enlaceCon,$sqlConf);
 $nitEmpresa=mysqli_result($respConf,0,1);
@@ -89,8 +93,9 @@ while($datDatosVenta=mysqli_fetch_array($respDatosVenta)){
 
 }
 
-$pdf->SetXY(0,$y+3);		$pdf->Cell(0,0,$nombre1,0,0,"C");
-$pdf->SetXY(0,$y+6);		$pdf->Cell(0,0,$nombre2,0,0,"C");
+
+//$pdf->SetXY(0,$y+3);		$pdf->Cell(0,0,$nombre1,0,0,"C");
+//$pdf->SetXY(0,$y+6);		$pdf->Cell(0,0,$nombre2,0,0,"C");
 
 $pdf->SetXY(0,$y+9);		$pdf->Cell(0,0,"$nombreTipoDoc Nro. $nroDocVenta", 0,0,"C");
 $pdf->SetXY(0,$y+12);		$pdf->Cell(0,0,"-------------------------------------------------------------------------------", 0,0,"C");
@@ -108,6 +113,8 @@ $pdf->SetXY(10,$y+48);		$pdf->Cell(0,0,"ITEM");
 $pdf->SetXY(35,$y+48);		$pdf->Cell(0,0,"Cant.");
 $pdf->SetXY(50,$y+48);		$pdf->Cell(0,0,"Importe");
 $pdf->SetXY(0,$y+52);		$pdf->Cell(0,0,"=================================================================================",0,0,"C");
+
+
 
 $sqlDetalle="select m.codigo_material, sum(s.`cantidad_unitaria`), m.`descripcion_material`, s.`precio_unitario`, 
 		sum(s.`descuento_unitario`), sum(s.`monto_unitario`) from `salida_detalle_almacenes` s, `material_apoyo` m where 
@@ -159,9 +166,11 @@ $pdf->SetXY(45,$y+$yyy+4);		$pdf->Cell(20,5,$descuentoVenta,0,0,"R");
 $pdf->SetXY(25,$y+$yyy+8);		$pdf->Cell(25,5,"Total Final:",0,0,"R");
 $pdf->SetXY(45,$y+$yyy+8);		$pdf->Cell(20,5,$montoFinal,0,0,"R");
 
-list($montoEntero, $montoDecimal) = explode('.', $montoFinal);
-if($montoDecimal==""){
-	$montoDecimal="00";
+$arrayDecimal=explode('.', $montoFinal);
+if(count($arrayDecimal)>1){
+	list($montoEntero, $montoDecimal) = explode('.', $montoFinal);
+}else{
+	list($montoEntero,$montoDecimal)=array($montoFinal,0);
 }
 
 $pdf->SetFont('Arial','',7);
@@ -174,7 +183,6 @@ if($montoEfectivo2!=0){
 	$pdf->SetXY(4,$y+$yyy+25);		$pdf->Cell(68,0,"Efectivo:  $montoEfectivo2 Cambio:  $montoCambio2",0,0,"C");	
 }
 
-
-
 $pdf->Output();
+
 ?>

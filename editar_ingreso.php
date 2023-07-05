@@ -144,7 +144,9 @@ function setMateriales(f, cod, nombreMat, cantidadpresentacion, precio, margenli
 	var numRegistro=f.materialActivo.value;
 		
 	document.getElementById('material'+numRegistro).value=cod;
-	document.getElementById('cod_material'+numRegistro).innerHTML=nombreMat;
+	document.getElementById('cantidadpresentacion'+numRegistro).value=cantidadpresentacion;
+	// document.getElementById('cod_material'+numRegistro).innerHTML=nombreMat;
+	document.getElementById('cod_material'+numRegistro).innerHTML=nombreMat+" - <span class='textomedianonegro'>CP:"+cantidadpresentacion+"</span>";
 	document.getElementById('divpreciocliente'+numRegistro).innerHTML=number_format(precio,2);
 	document.getElementById('margenlinea'+numRegistro).value=margenlinea;
 	
@@ -363,24 +365,68 @@ function calculaMargen(preciocliente, index){
 	var margenNuevoF="M ["+ number_format((margenNuevo*100),0) + "%]";
 	document.getElementById('divmargen'+index).innerHTML=margenNuevoF;
 }
+// CALCULO DE DESCUENTOS EN PORCENTAJE
+function calcularDescuentoUnitario(tipo, index){
+	let precio_old = parseFloat(document.getElementById('precio_old'+index).value);
+	if(tipo == 0){
+		//  # Numerico
+		let descuento_numero = parseFloat(document.getElementById('descuento_numero'+index).value);
+		let total_descuento_numero = (descuento_numero/precio_old)*100;
+		document.getElementById('descuento_porcentaje'+index).value = total_descuento_numero.toFixed(2);
+	}else{
+		//  % Porcentaje
+		let descuento_porcentaje = parseFloat(document.getElementById('descuento_porcentaje'+index).value);
+		let total_descuento_porcentaje = (descuento_porcentaje/100) * precio_old;
+		document.getElementById('descuento_numero'+index).value = total_descuento_porcentaje.toFixed(2);
+	}
+	// Ajuste Descuento Adicional
+	ajusteDescuento();
+	totalesMonto();
+	// Ajuste Monto Total sin DESCUENTO ADICIONAL
+	calculaPrecioCliente(0,index);
+}
+// Calculo de montos TOTALES
 function calculaPrecioCliente(preciocompra, index){
-	//alert('calculaPrecioCliente');
-	var costo=preciocompra.value;
-	var margen=document.getElementById('margenlinea'+index).value;
-	var cantidad=document.getElementById('cantidad_unitaria'+index).value;
-	var costounitario=costo/cantidad;
+	/************ banderaCalculoPrecio = 0 precionFinal   1 = precioCompra *******************/
+	var banderaCalculoPrecio = document.getElementById('bandera_calculo_precio').value;
+	/****************************************************************************/
+	// CALCULAR SUBTOTAL
+	var cantidad 		= parseFloat(document.getElementById('cantidad_unitaria'+index).value);
+	var precio_unitario = parseFloat(document.getElementById('precio_unitario'+index).value);
+	var cantidad_presentacion = parseFloat(document.getElementById('cantidadpresentacion'+index).value);
+	document.getElementById('precio_old'+index).value = (cantidad > 0 ? cantidad : 0) * (precio_unitario > 0 ? precio_unitario : 0);
+	var margen		  = document.getElementById('margenlinea'+index).value;
 
-	console.log("costoUnitario: "+costounitario); // s dejo esta parte de codigo
+	/*var total_subtotal  = (cantidad > 0 ? cantidad : 0) * (precio_unitario > 0 ? precio_unitario : 0);
+	document.getElementById('precio_old'+index).value = total_subtotal.toFixed(2);*/
+	/****************************************************************************/
 
-	var preciocliente=costounitario+(costounitario*(margen/100));
-	preciocliente=redondear(preciocliente,1);
-	preciocliente=number_format(preciocliente,2);
-	document.getElementById('preciocliente'+index).value=preciocliente;
+	if(banderaCalculoPrecio==0){
+		//var costo=preciocompra.value;
+		var costo = parseFloat(document.getElementById("precio"+index).value);
+		var costounitario=(costo/cantidad)/cantidad_presentacion;
+		console.log(costounitario)
+		console.log("costoUnitario: "+costounitario); // s dejo esta parte de codigo
+		var preciocliente=costounitario+(costounitario*(margen/100));
+		// preciocliente=redondear(preciocliente,2);
+		preciocliente=number_format(preciocliente,2);
+		document.getElementById('preciocliente'+index).value=preciocliente;		
+	}else{
+		var costounitario = precio_unitario / cantidad_presentacion;
+		var preciocliente=(costounitario + (costounitario*(margen/100)));
+		console.log('costounitario:'+costounitario)
+		console.log('(costounitario*(margen/100)):'+(costounitario*(margen/100)))
+		// preciocliente=redondear(preciocliente,2);
+		preciocliente=number_format(preciocliente,2);
+		document.getElementById('preciocliente'+index).value=preciocliente;
+	}
 
 	var margenNuevo=(preciocliente-costounitario)/costounitario;
 	var margenNuevoF="M ["+ number_format((margenNuevo*100),0) + "%]";
 	document.getElementById('divmargen'+index).innerHTML=margenNuevoF;
 
+	// Ajuste Descuento Adicional
+	ajusteDescuento();
 	totalesMonto();
 }
 
@@ -403,6 +449,58 @@ function totalesMonto(){
 	var totalSD=montoTotal-descuentoTotal;
 	//alert(totalSD);
 	document.getElementById("totalCompraSD").value=totalSD;
+	
+}
+
+
+/*****************************************
+ * Descuento Adicional a ITEMS
+*****************************************/
+function changeDescuentoAdicional(){
+	// Ajuste Descuento Adicional
+	ajusteDescuento();
+	// Ajuste Monto Total sin DESCUENTO ADICIONAL
+	totalesMonto();
+}
+
+/*****************************************
+ * Ajuste de Descuento del Monto de Venta
+*****************************************/
+function ajusteDescuento(){
+	
+	var cantidadTotal=0;
+	var precioTotal=0;
+	var montoTotal=0;
+	// Total Monto sin descuento adicional
+	var monto_total_old = 0;
+    for(var ii=1;ii<=num;ii++){
+		if(document.getElementById('material'+ii)!=null){
+			monto_total_old += parseFloat(document.getElementById("precio_old"+ii).value);
+		}
+	}
+	// Detalle
+    for(var ii=1;ii<=num;ii++){
+		if(document.getElementById('material'+ii)!=null){
+			var precio 	    = document.getElementById("precio_old"+ii).value;
+			// Total Compra
+			var total_compra= monto_total_old;
+			// Descuento Adicional Superior
+			var desc_ad_sup = document.getElementById("descuento_adicional").value;
+
+			// Total Descuento ITEM
+			document.getElementById("descuento_adicional"+ii).value = Math.round((parseFloat(precio)/parseFloat(total_compra))*desc_ad_sup);
+
+			/*********************/
+			/*		TOTAL		 */
+			/*********************/
+			var item_descuento_unitario = parseFloat(document.getElementById("descuento_numero"+ii).value);
+			var item_descuento = parseFloat(document.getElementById("descuento_adicional"+ii).value);
+			var item_precio    = parseFloat(document.getElementById("precio_old"+ii).value);
+			var total_final = item_precio - (item_descuento+item_descuento_unitario);
+			document.getElementById("precio"+ii).value = total_final.toFixed(2);
+			
+		}
+	}
 	
 }
 
@@ -452,18 +550,70 @@ if($fecha=="")
 {   $fecha=date("d/m/Y");
 }
 
+$banderaUpdPreciosSucursales=obtenerValorConfiguracion($enlaceCon,49);
+$txtUpdPrecios="";
+if($banderaUpdPreciosSucursales==0){
+	$txtUpdPrecios="*** Los precios seran actualizados solo en ESTA SUCURSAL.";
+}else{
+	$txtUpdPrecios="*** Los precios seran actualizados en TODAS LAS SUCURSALES del sistema.";
+}
+
+$banderaCalculoPrecioFinal=obtenerValorConfiguracion($enlaceCon,52);
+if($banderaCalculoPrecioFinal!=1){$banderaCalculoPrecioFinal=0;}
+$txtCalculoPrecioFinal="";
+if($banderaCalculoPrecioFinal==1){
+	$txtCalculoPrecioFinal="*** El precio Cliente se calculará por Precio Compra ANTES de descuentos.";
+}else{
+	$txtCalculoPrecioFinal="*** El precio Cliente se calculará por Precio Compra DESPUÉS de descuentos.";
+}
+
 ?>
 <form action='guarda_editaringresomateriales.php' method='post' name='form1'>
+<input type='hidden' name='bandera_calculo_precio' id='bandera_calculo_precio' value='<?=$banderaCalculoPrecioFinal;?>'>
 <input type="hidden" name="codIngreso" value="<?php echo $codIngresoEditar;?>" id="codIngreso">
 
 <table border='0' class='textotit' align='center'>
-	<tr><th>Editar Ingreso de Materiales</th></tr>
-	<tr><th align='left'><span class='textopequenorojo' style='background-color:yellow;'><b><?=$txtUpdPrecios;?></b></span></th></tr>
+	<tr>
+		<th></th>
+		<th>Editar Ingreso de Materiales</th>
+		<th></th>
+	</tr>
+	<tr>
+		<th align='left'><span class='textopequenorojo' style='background-color:yellow;'><b><?=$txtUpdPrecios;?></b></span></th>
+		<th></th>
+		<th align='left'><span class='textopequenorojo' style='background-color:aqua;'><b><?=$txtCalculoPrecioFinal;?></b></span></th>
+	</tr>
 </table><br>
 <?php
 
-$sqlIngreso="select i.`nro_correlativo`, i.`fecha`, i.`cod_tipoingreso`, i.`nota_entrega`, i.`nro_factura_proveedor`, 
-		i.`observaciones` from `ingreso_almacenes` i where i.`cod_ingreso_almacen` = $codIngresoEditar" ;
+$sqlIngreso="SELECT
+			i.`nro_correlativo`,
+			i.`fecha`,
+			i.`cod_tipoingreso`,
+			i.`nota_entrega`,
+			i.`nro_factura_proveedor`,
+			i.`observaciones`,
+			i.`descuento_adicional`,
+			IFNULL(
+				(
+					SELECT
+					COALESCE(
+						(SUM((ida.cantidad_unitaria*ida.precio_bruto))),
+						0
+					)
+					FROM ingreso_detalle_almacenes ida
+					LEFT JOIN material_apoyo m ON m.codigo_material = ida.cod_material
+					WHERE ida.cod_ingreso_almacen = i.cod_ingreso_almacen
+				),
+				0
+			) AS monto_total,
+			i.`descuento_adicional2`
+			FROM
+			`ingreso_almacenes` i
+			WHERE
+			i.`cod_ingreso_almacen` = '$codIngresoEditar'
+			" ;
+			
 $respIngreso=mysqli_query($enlaceCon, $sqlIngreso);
 while($datIngreso=mysqli_fetch_array($respIngreso)){
 	$nroCorrelativo=$datIngreso[0];
@@ -472,6 +622,9 @@ while($datIngreso=mysqli_fetch_array($respIngreso)){
 	$notaEntrega=$datIngreso[3];
 	$nroFacturaProv=$datIngreso[4];
 	$obsIngreso=$datIngreso[5];
+	$cabDescuentoAdicional=$datIngreso[6];
+	$cabMontoTotal=$datIngreso[7];			// Suma Total sin Descuendo Adicional ni Descuento Unitario
+	$cabDescuentoTotal=empty($datIngreso[8])?0:$datIngreso[8];
 }
 
 ?>
@@ -511,6 +664,11 @@ while($dat1=mysqli_fetch_array($resp1))
 		<fieldset id="fiel" style="width:98%;border:0;" >
 			<table align="center"class="text" cellSpacing="1" cellPadding="2" width="100%" border="0" id="data0" style="border:#ccc 1px solid;">
 				<tr>
+					<th colspan="4"></th>
+					<th>Descuento Final 1</th>
+					<th colspan="2"><input type="text" id="descuento_adicional" name="descuento_adicional" value="<?=$cabDescuentoAdicional?>" onkeyup="changeDescuentoAdicional()"></th>
+				</tr>
+				<tr>
 					<td align="center" colspan="6">
 						<input class="boton" type="button" value="Nuevo Item (+)" onclick="mas(this)" />
 					</td>
@@ -521,20 +679,30 @@ while($dat1=mysqli_fetch_array($resp1))
 					</td>				
 				</tr>				
 				<tr class="titulo_tabla" align="center">
-					<td width="10%" align="center">&nbsp;</td>
-					<td width="40%" align="center">Producto</td>
+					<td width="5%" align="center">&nbsp;</td>
+					<td width="20%" align="center">Producto</td>
 					<td width="10%" align="center">Cantidad</td>
+					<td width="10%" align="center">Precio<br>Presentación</td>
 					<!--td width="10%" align="center">Lote</td-->
 					<td width="10%" align="center">Vencimiento</td>
-					<td width="10%" align="center">Precio Distribuidor<br>(Total_item)</td>
-					<td width="10%" align="center">Precio Cliente Final</td>
-					<td width="10%" align="center">&nbsp;</td>
+					<!-- <td width="10%" align="center">Precio Distribuidor<br>(Total_item)</td> -->
+					<td width="10%" align="center">Subtotal</td>
+
+					<!-- Descuento Unitario -->
+					<td width="5%" align="center">Desc.<br>Prod</td>
+					<!-- Descuento Adicional -->
+					<td width="10%" align="center">Desc.<br>Adicional</td>
+					<!-- Monto Total -->
+					<td width="10%" align="center">Total</td>
+
+					<td width="10%" align="center">Precio<br>Cliente<br>Unitario</td>
+					<td width="10%" align="center">-</td>
 				</tr>
 			</table>
 			
 			<?php
 			$sqlDetalle="select id.`cod_material`, m.`descripcion_material`, id.`cantidad_unitaria`, id.`precio_bruto`, id.`precio_neto`, 
-				lote, fecha_vencimiento
+				lote, fecha_vencimiento, m.cantidad_presentacion, id.costo_almacen, id.descuento_unitario
 				from `ingreso_detalle_almacenes` id, `material_apoyo` m where
 				id.`cod_material`=m.`codigo_material` and id.`cod_ingreso_almacen`='$codIngresoEditar' order by 2";
 			$respDetalle=mysqli_query($enlaceCon, $sqlDetalle);
@@ -548,6 +716,10 @@ while($dat1=mysqli_fetch_array($resp1))
 				$precioNeto=$datDetalle[4];
 				$loteMaterial=$datDetalle[5];
 				$fechaVencimiento=$datDetalle[6];
+				$cantidadPresentacion=$datDetalle[7];
+				$costoAlmacen=$datDetalle[8];
+				// Descuento unitario en %
+				$descuentoUnitario=$datDetalle[9];
 				$num=$indiceMaterial;
 
 				$precioTotalItem=$precioBruto*$cantidadMaterial;
@@ -567,17 +739,26 @@ while($dat1=mysqli_fetch_array($resp1))
 <table border="0" align="center" cellSpacing="1" cellPadding="1" width="100%" style="border:#ccc 1px solid;" id="data<?php echo $num?>" >
 <tr bgcolor="#FFFFFF">
 
-<td width="10%" align="center">
+<td width="5%" align="center">
 	<a href="javascript:buscarMaterial(form1, <?php echo $num;?>)" accesskey="B"><img src='imagenes/buscar2.png' title="Buscar Producto" width="30"></a>
 </td>
 
-<td width="40%" align="center">
-<input type="hidden" name="material<?php echo $num;?>" id="material<?php echo $num;?>" value="<?php echo $codMaterial;?>">
-<div id="cod_material<?php echo $num;?>" class='textomedianorojo'><?php echo $nombreMaterial;?></div>
+<td width="20%" align="left">
+	<input type="hidden" name="cantidadpresentacion<?php echo $num;?>" id="cantidadpresentacion<?php echo $num;?>" value="<?php echo $cantidadPresentacion;?>">
+	<input type="hidden" name="material<?php echo $num;?>" id="material<?php echo $num;?>" value="<?php echo $codMaterial;?>">
+	<div id="cod_material<?php echo $num;?>" class='textomedianorojo'>
+		<?php echo $nombreMaterial;?><span class="textomedianonegro"> - CP:<?php echo $cantidadPresentacion;?></span>
+	</div>
 </td>
-
+<!-- CANTIDAD -->
 <td align="center" width="10%">
-<input type="number" class="inputnumber" min="1" max="1000000" id="cantidad_unitaria<?php echo $num;?>" name="cantidad_unitaria<?php echo $num;?>" size="5" value="<?php echo $cantidadMaterial;?>" required>
+	<?php $cantidaUnitaria = $cantidadMaterial/$cantidadPresentacion; ?>
+	<input type="number" class="inputnumber" min="1" max="1000000" id="cantidad_unitaria<?php echo $num;?>" name="cantidad_unitaria<?php echo $num;?>" size="5" value="<?= $cantidaUnitaria;?>" required onkeyup="calculaPrecioCliente(0, <?php echo $num;?>);">
+</td>
+<!-- PRECIO UNITARIO -->
+<td align="center" width="10%">
+	<?php $precioUnitario = ($cantidadMaterial*$precioBruto) / $cantidaUnitaria; ?>
+	<input type="number" class="inputnumber" min="0.01" max="1000000" id="precio_unitario<?php echo $num;?>" name="precio_unitario<?php echo $num;?>" size="5" value="<?php echo $precioUnitario;?>" onkeyup="calculaPrecioCliente(0, <?php echo $num;?>);" onchange="calculaPrecioCliente(0, <?php echo $num;?>);" step="0.01" required="">
 </td>
 
 <!--td align="center" width="10%">
@@ -587,17 +768,36 @@ while($dat1=mysqli_fetch_array($resp1))
 <td align="center" width="10%">
 <input type="date" class="textoform" min="<?=$fechaActual;?>" id="fechaVenc<?php echo $num;?>" name="fechaVenc<?php echo $num;?>" size="5" value="<?php echo $fechaVencimiento;?>" required>
 </td>
-
+<!-- SUBTOTAL -->
 <td align="center" width="10%">
-<input type="number" class="inputnumber" value="<?=$precioTotalItem;?>" id="precio<?php echo $num;?>" name="precio<?php echo $num;?>" size="5" min="0" onKeyUp='calculaPrecioCliente(this,<?php echo $num;?>);' onChange='calculaPrecioCliente(this,<?php echo $num;?>);' required>
+	<?php $subTotal = round($cantidaUnitaria * $precioUnitario);?>
+<input type="number" class="inputnumber" value="<?php echo $subTotal;?>" id="precio_old<?php echo $num;?>" name="precio_old<?php echo $num;?>" size="5" min="0" step="0.01" onkeyup="calculaPrecioCliente(this,2);" onchange="calculaPrecioCliente(this,2);" required="">
+</td>
+<!-- DESCUENTO UNITARIO -->
+<td align="center" width="5%">
+	%<input type="number" class="inputnumber" min="0" max="1000000" id="descuento_porcentaje<?php echo $num;?>" name="descuento_porcentaje<?php echo $num;?>" size="5" value="<?php echo round($descuentoUnitario);?>" onkeyup="calcularDescuentoUnitario(1, <?php echo $num;?>);" onchange="calcularDescuentoUnitario(1, <?php echo $num;?>);" step="0.01" required="" data-tipo="1">
+	<?php $descuentoNumero = round(($subTotal*($descuentoUnitario/100)),2); ?>
+	Bs.<input type="number" class="inputnumber" min="0" max="1000000" id="descuento_numero<?php echo $num;?>" name="descuento_numero<?php echo $num;?>" size="5" value="<?php echo $descuentoNumero;?>" onkeyup="calcularDescuentoUnitario(0, <?php echo $num;?>);" onchange="calcularDescuentoUnitario(0, <?php echo $num;?>);" step="0.01" required="" data-tipo="0">
+</td>
+<!-- DESCUENTO ADICIONAL -->
+<td align="center" width="10%">
+	<?php $subDescuentoAdicional = round(($subTotal/$cabMontoTotal)*$cabDescuentoAdicional); ?>
+	<input type="number" class="inputnumber" value="<?= $subDescuentoAdicional; ?>" id="descuento_adicional<?php echo $num;?>" name="descuento_adicional<?php echo $num;?>" size="5" min="0" step="0.01" disabled="">
 </td>
 
+<!-- TOTAL -->
 <td align="center" width="10%">
-<input type="number" class="inputnumber" value="<?=$precioProducto;?>" id="preciocliente<?php echo $num;?>" name="preciocliente<?php echo $num;?>" size="4" min="0" step="0.01" onKeyUp='calculaMargen(this,<?php echo $num;?>);' onChange='calculaMargen(this,<?php echo $num;?>);' required>
-</br>
-<div id="divpreciocliente<?php echo $num;?>" class="textopequenorojo"><?=$precioProducto;?></div>
-<div id="divmargen<?php echo $num;?>" class="textopequenorojo2">M:[<?=$margenLinea;?>]</div>
-<input type="hidden" name="margenlinea<?php echo $num;?>" id="margenlinea<?php echo $num;?>" value="<?=$margenLinea;?>">
+	<?php $precioTotal = $subTotal - $subDescuentoAdicional - $descuentoNumero; ?>
+	<input type="number" class="inputnumber" value="<?=$precioTotal;?>" id="precio<?php echo $num;?>" name="precio<?php echo $num;?>" size="5" min="0" onKeyUp='calculaPrecioCliente(this,<?php echo $num;?>);' onChange='calculaPrecioCliente(this,<?php echo $num;?>);' step="0.01" required>
+</td>
+
+<!-- PRECIO CLIENTE -->
+<td align="center" width="10%">
+	<input type="number" class="inputnumber" value="<?=$precioProducto;?>" id="preciocliente<?php echo $num;?>" name="preciocliente<?php echo $num;?>" size="4" min="0" step="0.01" onKeyUp='calculaMargen(this,<?php echo $num;?>);' onChange='calculaMargen(this,<?php echo $num;?>);' required>
+	</br>
+	<div id="divpreciocliente<?php echo $num;?>" class="textopequenorojo"><?=$precioProducto;?></div>
+	<div id="divmargen<?php echo $num;?>" class="textopequenorojo2">M:[<?=$margenLinea;?>]</div>
+	<input type="hidden" name="margenlinea<?php echo $num;?>" id="margenlinea<?php echo $num;?>" value="<?=$margenLinea;?>">
 </td>
 
 <td align="center"  width="10%" ><input class="boton2peque" type="button" value="(-)" onclick="menos(<?php echo $num;?>)" size="5"/></td>
@@ -612,18 +812,20 @@ while($dat1=mysqli_fetch_array($resp1))
 			?>			
 	</fieldset>
 
-<table align="center"class="text" cellSpacing="1" cellPadding="2" width="80%" border="0" id="data0" style="border:#ccc 1px solid;">
-	<tr>
-		<td align='right'>Total Compra</td><td align='right'><input type='number' name='totalCompra' id='totalCompra' value='0' size='10' readonly></td>
-	</tr>
-	<tr>
-		<td align='right'>Descuento</td><td align='right'><input type='number' name='descuentoTotal' id='descuentoTotal' value='0' size='10' onKeyUp='totalesMonto();' required></td>
-	</tr>
-	<tr>
-		<td align='right'>Total</td><td align='right'><input type='number' name='totalCompraSD' id='totalCompraSD' value='0' size='10' readonly></td>
-	</tr>
-</table>
-
+	<table align="center"class="text" cellSpacing="1" cellPadding="2" width="100%" border="0" id="data0" style="border:#ccc 1px solid;">
+			<tr>
+				<td align='right' width="90%">Total Compra</td>
+				<td align='right' width="10%"><input type='number' name='totalCompra' id='totalCompra' value='0' size='10' step="0.01" readonly></td>
+			</tr>
+			<tr>
+				<td align='right' width="90%">Descuento Final 2</td>
+				<td align='right' width="10%"><input type='number' name='descuentoTotal' id='descuentoTotal' value='<?=$cabDescuentoTotal;?>' size='10' onKeyUp='totalesMonto();' step="0.01" required></td>
+			</tr>
+			<tr>
+				<td align='right' width="90%">Total</td>
+				<td align='right' width="10%"><input type='number' name='totalCompraSD' id='totalCompraSD' value='0' size='10' step="0.01" readonly></td>
+			</tr>
+		</table>
 
 <?php
 

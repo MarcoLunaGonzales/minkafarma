@@ -129,7 +129,8 @@ function setMateriales(f, cod, nombreMat, cantidadpresentacion, precio, margenli
 	var numRegistro=f.materialActivo.value;
 		
 	document.getElementById('material'+numRegistro).value=cod;
-	document.getElementById('cod_material'+numRegistro).innerHTML=nombreMat;
+	document.getElementById('cantidadpresentacion'+numRegistro).value=cantidadpresentacion;
+	document.getElementById('cod_material'+numRegistro).innerHTML=nombreMat+" - <span class='textomedianonegro'>CP:"+cantidadpresentacion+"</span>";
 	document.getElementById('divpreciocliente'+numRegistro).innerHTML=number_format(precio,2);
 	document.getElementById('margenlinea'+numRegistro).value=margenlinea;
 	
@@ -145,6 +146,7 @@ function setMaterialesSelec(f, cod, nombreMat, cantidadpresentacion, precio, mar
 	var numRegistro=f.materialActivo.value;
 //alert(numRegistro);
 	document.getElementById('material'+numRegistro).value=cod;
+	document.getElementById('cantidadpresentacion'+numRegistro).value=cantidadpresentacion;
 	document.getElementById('cod_material'+numRegistro).innerHTML=nombreMat;
 	document.getElementById('divpreciocliente'+numRegistro).innerHTML=number_format(precio,2);
 	document.getElementById('margenlinea'+numRegistro).value=margenlinea;
@@ -284,12 +286,103 @@ function fun13(cadIdOrg,cadIdDes)
 		console.log("bandera: "+banderaItems0);
 		if(banderaItems0==1){
 			num++;
-			div_material_linea=document.getElementById("fiel");			
+			div_material_linea=document.getElementById("fiel");
+
+			/*recuperamos las cantidades de los otros productos*/
+			var inputs = $('form input[name^="cantidad_unitaria"]');
+			var arrayCantidades=[];
+			inputs.each(function() {
+			  	var name = $(this).attr('name');
+			  	var value = $(this).val();
+			  	var partes = name.split("cantidad_unitaria");
+				var name_form = partes[0]; // Contiene todo antes de "cantidad_unitaria"
+				var index_form = partes[1]; // Contiene todo después de "cantidad_unitaria"
+			  	arrayCantidades.push([name,value,index_form]);
+			});
+			var inputs = $('form input[name^="precio_unitario"]');
+			var arrayPreciosCaja=[];
+			inputs.each(function() {
+			  	var name = $(this).attr('name');
+			  	var value = $(this).val();
+			  	var partes = name.split("precio_unitario");
+				var name_form = partes[0]; 
+				var index_form = partes[1];
+			  	arrayPreciosCaja.push([name,value,index_form]);
+			});
+			var inputs = $('form input[name^="fechaVenc"]');
+			var arrayFV=[];
+			inputs.each(function() {
+			  	var name = $(this).attr('name');
+			  	var value = $(this).val();
+			  	var partes = name.split("fechaVenc");
+				var name_form = partes[0]; 
+				var index_form = partes[1];
+			  	arrayFV.push([name,value,index_form]);
+			});
+			var inputs = $('form input[name^="descuento_porcentaje"]');
+			var arrayDescuentoPorcentaje=[];
+			inputs.each(function() {
+			  	var name = $(this).attr('name');
+			  	var value = $(this).val();
+			  	var partes = name.split("descuento_porcentaje");
+				var name_form = partes[0]; 
+				var index_form = partes[1];
+			  	arrayDescuentoPorcentaje.push([name,value,index_form]);
+			});
+			var inputs = $('form input[name^="preciocliente"]');
+			var arrayPrecioCliente=[];
+			inputs.each(function() {
+			  	var name = $(this).attr('name');
+			  	var value = $(this).val();
+			  	var partes = name.split("preciocliente");
+				var name_form = partes[0]; 
+				var index_form = partes[1];
+			  	arrayPrecioCliente.push([name,value,index_form]);
+			});
+			console.log("Array Recuperado Cantidad: "+arrayCantidades);
+			console.log("Array Recuperado Precios: "+arrayPreciosCaja);
+			console.log("Array Recuperado FV: "+arrayFV);
+			console.log("Array Recuperado Descuentos: "+arrayDescuentoPorcentaje);
+			console.log("Array Recuperado PrecioCliente: "+arrayPrecioCliente);
+			/*fin recuperar*/
+
 			ajax=nuevoAjax();
 			ajax.open("GET","ajaxMaterialesIngresoMultiple.php?codigo="+numFilas+"&productos_multiple="+productosMultiples,true);
 			ajax.onreadystatechange=function(){
 				if (ajax.readyState==4) {
 					div_material_linea.innerHTML=div_material_linea.innerHTML+ajax.responseText;
+				}
+				for (x=0;x<arrayCantidades.length;x++) {
+					console.log("Iniciando recorrido Matriz");
+					/*reponiendo cantidades*/
+					var name_set=arrayCantidades[x][0];
+					var value_set=arrayCantidades[x][1];
+					var index_set=arrayCantidades[x][2];
+					document.getElementById(name_set).value=value_set;
+					/*reponiendo preciosCaja*/
+					name_set=arrayPreciosCaja[x][0];
+					value_set=arrayPreciosCaja[x][1];
+					index_set=arrayPreciosCaja[x][2];
+					document.getElementById(name_set).value=value_set;
+					calculaPrecioCliente(value_set, index_set);
+					/*reponiendo FV*/
+					name_set=arrayFV[x][0];
+					value_set=arrayFV[x][1];
+					index_set=arrayFV[x][2];
+					document.getElementById(name_set).value=value_set;
+					/*reponiendo Descuento*/
+					name_set=arrayDescuentoPorcentaje[x][0];
+					value_set=arrayDescuentoPorcentaje[x][1];
+					index_set=arrayDescuentoPorcentaje[x][2];
+					document.getElementById(name_set).value=value_set;
+					calcularDescuentoUnitario(1,index_set);
+					/*reponiendo PrecioCliente*/
+					name_set=arrayPrecioCliente[x][0];
+					value_set=arrayPrecioCliente[x][1];
+					index_set=arrayPrecioCliente[x][2];
+					document.getElementById(name_set).value=value_set;
+					calculaMargen(document.getElementById(name_set),index_set);
+					console.log("PRECIOCLIENTE: "+name_set+" "+index_set);
 				}
 			}		
 			ajax.send(null);
@@ -349,11 +442,15 @@ function pressEnter(e, f){
 		return false;
 	}
 }
-function calculaMargen(preciocliente, index){
-	preciocliente=parseFloat(preciocliente.value);
+function calculaMargen(precioclienteForm, index){
+	preciocliente=parseFloat(precioclienteForm.value);
 	var preciocompra=document.getElementById("precio"+index).value;
 	var costo=parseFloat(preciocompra);
 	var cantidad=document.getElementById('cantidad_unitaria'+index).value;
+	var cantidad_presentacion=document.getElementById('cantidadpresentacion'+index).value;
+
+	cantidad=cantidad*cantidad_presentacion;
+	
 	var costounitario=parseFloat(costo)/parseFloat(cantidad);
 
 	console.log("preciocompra: "+preciocompra);
@@ -369,31 +466,71 @@ function calculaMargen(preciocliente, index){
 	var margenNuevoF="M ["+ number_format((margenNuevo*100),0) + "%]";
 	document.getElementById('divmargen'+index).innerHTML=margenNuevoF;
 }
-function calculaPrecioCliente(preciocompra, index){
+// CALCULO DE DESCUENTOS EN PORCENTAJE
+function calcularDescuentoUnitario(tipo, index){
+	let precio_old = parseFloat(document.getElementById('precio_old'+index).value);
+	if(tipo == 0){
+		//  # Numerico
+		let descuento_numero = parseFloat(document.getElementById('descuento_numero'+index).value);
+		let total_descuento_numero = (descuento_numero/precio_old)*100;
+		document.getElementById('descuento_porcentaje'+index).value = total_descuento_numero.toFixed(2);
+	}else{
+		//  % Porcentaje
+		let descuento_porcentaje = parseFloat(document.getElementById('descuento_porcentaje'+index).value);
+		let total_descuento_porcentaje = (descuento_porcentaje/100) * precio_old;
+		document.getElementById('descuento_numero'+index).value = total_descuento_porcentaje.toFixed(2);
+	}
 	// Ajuste Descuento Adicional
 	ajusteDescuento();
 	totalesMonto();
+	// Ajuste Monto Total sin DESCUENTO ADICIONAL
+	calculaPrecioCliente(0,index);
+}
+// Calculo de montos TOTALES
+function calculaPrecioCliente(preciocompra, index){
+	/************ banderaCalculoPrecio = 0 precionFinal   1 = precioCompra *******************/
+	var banderaCalculoPrecio = document.getElementById('bandera_calculo_precio').value;
+	/****************************************************************************/
+	// CALCULAR SUBTOTAL
+	var cantidad 		= parseFloat(document.getElementById('cantidad_unitaria'+index).value);
+	var precio_unitario = parseFloat(document.getElementById('precio_unitario'+index).value);
+	var cantidad_presentacion = parseFloat(document.getElementById('cantidadpresentacion'+index).value);
+	document.getElementById('precio_old'+index).value = (cantidad > 0 ? cantidad : 0) * (precio_unitario > 0 ? precio_unitario : 0);
+	var margen		  = document.getElementById('margenlinea'+index).value;
 
-	//alert('calculaPrecioCliente');
-	// var costo=preciocompra.value;
-	var costo = parseFloat(document.getElementById("precio"+index).value);
-	
-	var margen=document.getElementById('margenlinea'+index).value;
-	var cantidad=document.getElementById('cantidad_unitaria'+index).value;
-	var costounitario=costo/cantidad;
+	console.log("cantidad: "+cantidad+" precio: "+precio_unitario);
 
-	console.log("costoUnitario: "+costounitario); // s dejo esta parte de codigo
+	/*var total_subtotal  = (cantidad > 0 ? cantidad : 0) * (precio_unitario > 0 ? precio_unitario : 0);
+	document.getElementById('precio_old'+index).value = total_subtotal.toFixed(2);*/
+	/****************************************************************************/
 
-	var preciocliente=costounitario+(costounitario*(margen/100));
-	preciocliente=redondear(preciocliente,2);
-	preciocliente=number_format(preciocliente,2);
-	document.getElementById('preciocliente'+index).value=preciocliente;
+	if(banderaCalculoPrecio==0){
+		//var costo=preciocompra.value;
+		var costo = parseFloat(document.getElementById("precio"+index).value);
+		var costounitario=(costo/cantidad)/cantidad_presentacion;
+		console.log("costoUnitario1: "+costounitario); // s dejo esta parte de codigo
+		var preciocliente=costounitario+(costounitario*(margen/100));
+		console.log("preciocliente1: "+preciocliente); // s dejo esta parte de codigo
+		preciocliente=redondear(preciocliente,2);
+		preciocliente=number_format(preciocliente,2);
+		document.getElementById('preciocliente'+index).value=preciocliente;		
+	}else{
+		var costounitario = precio_unitario / cantidad_presentacion;
+		var preciocliente=(costounitario + (costounitario*(margen/100)));
+		console.log('costounitario2:'+costounitario)
+		console.log('(costounitario*(margen/100)):'+(costounitario*(margen/100)))
+		preciocliente=redondear(preciocliente,2);
+		preciocliente=number_format(preciocliente,2);
+		document.getElementById('preciocliente'+index).value=preciocliente;
+	}
 
 	var margenNuevo=(preciocliente-costounitario)/costounitario;
 	var margenNuevoF="M ["+ number_format((margenNuevo*100),0) + "%]";
 	document.getElementById('divmargen'+index).innerHTML=margenNuevoF;
 
-
+	// Ajuste Descuento Adicional
+	ajusteDescuento();
+	totalesMonto();
 }
 
 function totalesMonto(){
@@ -458,9 +595,11 @@ function ajusteDescuento(){
 			/*********************/
 			/*		TOTAL		 */
 			/*********************/
-			var item_descuento = document.getElementById("descuento_adicional"+ii).value;
-			var item_precio    = document.getElementById("precio_old"+ii).value;
-			document.getElementById("precio"+ii).value = item_precio - item_descuento;
+			var item_descuento_unitario = parseFloat(document.getElementById("descuento_numero"+ii).value);
+			var item_descuento = parseFloat(document.getElementById("descuento_adicional"+ii).value);
+			var item_precio    = parseFloat(document.getElementById("precio_old"+ii).value);
+			var total_final = item_precio - (item_descuento+item_descuento_unitario);
+			document.getElementById("precio"+ii).value = total_final.toFixed(2);
 			
 		}
 	}
@@ -514,11 +653,19 @@ if($fecha=="")
 $banderaUpdPreciosSucursales=obtenerValorConfiguracion($enlaceCon,49);
 $txtUpdPrecios="";
 if($banderaUpdPreciosSucursales==0){
-	$txtUpdPrecios="Los precios seran actualizados solo en ESTA SUCURSAL.";
+	$txtUpdPrecios="*** Los precios seran actualizados solo en ESTA SUCURSAL.";
 }else{
-	$txtUpdPrecios="Los precios seran actualizados en TODAS LAS SUCURSALES del sistema.";
+	$txtUpdPrecios="*** Los precios seran actualizados en TODAS LAS SUCURSALES del sistema.";
 }
 
+$banderaCalculoPrecioFinal=obtenerValorConfiguracion($enlaceCon,52);
+if($banderaCalculoPrecioFinal!=1){$banderaCalculoPrecioFinal=0;}
+$txtCalculoPrecioFinal="";
+if($banderaCalculoPrecioFinal==1){
+	$txtCalculoPrecioFinal="*** El precio Cliente se calculará por Precio Compra ANTES de descuentos.";
+}else{
+	$txtCalculoPrecioFinal="*** El precio Cliente se calculará por Precio Compra DESPUÉS de descuentos.";
+}
 
 $global_almacen=$_COOKIE["global_almacen"];
 
@@ -530,16 +677,22 @@ if($num_filas==1){
 	$nro_correlativo=$dat[0];
 }
 echo "<form action='guarda_ingresomateriales.php' method='post' name='form1' onsubmit='return checkSubmit();'>";
+
+echo "<input type='hidden' name='bandera_calculo_precio' id='bandera_calculo_precio' value='$banderaCalculoPrecioFinal''>";
+
 echo "<table border='0' class='textotit' align='center'>
-		<tr><th>Registrar Ingreso de Materiales</th></tr>
-		<tr><th align='left'><span class='textopequenorojo' style='background-color:yellow;'><b>$txtUpdPrecios</b></span></th></tr>
+		<tr><th></th><th>Registrar Ingreso de Productos</th><th></th></tr>
+		<tr><th align='left'><span class='textopequenorojo' style='background-color:yellow;'><b>$txtUpdPrecios</b></span></th>
+			<th></th>
+			<th align='left'><span class='textopequenorojo' style='background-color:aqua;'><b>$txtCalculoPrecioFinal</b></span></th>
+		</tr>
 		</table><br>";
 echo "<table border='0' class='texto' cellspacing='0' align='center' width='90%' style='border:#ccc 1px solid;'>";
 echo "<tr>
 	<th>Nro. Ingreso: <b>$nro_correlativo<b></th>";
 echo"<th>Fecha: <input type='text' disabled='true' class='texto' value='$fecha' id='fecha' size='10' name='fecha'></th>
 	<th>Tipo de Ingreso: ";
-$sql1="select cod_tipoingreso, nombre_tipoingreso from tipos_ingreso order by nombre_tipoingreso";
+$sql1="select cod_tipoingreso, nombre_tipoingreso from tipos_ingreso where cod_tipoingreso<>'999' order by nombre_tipoingreso";
 $resp1=mysqli_query($enlaceCon,$sql1);
 echo "<select name='tipo_ingreso' id='tipo_ingreso' class='texto'>";
 while($dat1=mysqli_fetch_array($resp1))
@@ -553,14 +706,10 @@ echo "<th>Factura:  <input type='number' class='texto' name='nro_factura' value=
 
 
 echo "<tr><th>Proveedor</th>";
-echo "<th colspan='3'>Observaciones</th></tr>";
-
-// $sql1="select p.cod_proveedor, concat(p.nombre_proveedor,' ',pl.nombre_linea_proveedor), pl.margen_precio from proveedores p, proveedores_lineas pl 
-// 			where p.cod_proveedor=pl.cod_proveedor and pl.estado=1 order by 2";
 $sql1="select p.cod_proveedor, concat(p.nombre_proveedor) from proveedores p 
 			order by 2";
 $resp1=mysqli_query($enlaceCon,$sql1);
-echo "<tr><td align='center'><select name='proveedor' id='proveedor' class='texto' style='width:200px' required>";
+echo "<th align='center'><select name='proveedor' id='proveedor' class='texto' style='width:200px' required>";
 echo "<option value=''>-</option>";
 while($dat1=mysqli_fetch_array($resp1))
 {   $codigo=$dat1[0];
@@ -569,8 +718,10 @@ while($dat1=mysqli_fetch_array($resp1))
 	
     echo "<option value='$codigo'>$nombre</option>";
 }
-echo "</select></td>";
-echo "<td colspan='4' align='center'><input type='text' class='texto' name='observaciones' value='$observaciones' size='40'></td></tr>";
+echo "</select></th>";
+
+echo "<th colspan='1'>Observaciones</th>";
+echo "<th colspan='1' align='center'><input type='text' class='texto' name='observaciones' value='$observaciones' size='40'></th></tr>";
 echo "</table><br>";
 ?>
         <div class="contenedor">
@@ -585,7 +736,7 @@ echo "</table><br>";
 				<tr>
 					<th colspan="4"></th>
 					<th>Descuento Final 1</th>
-					<th colspan="2"><input type="text" id="descuento_adicional" value="0" onkeyup="changeDescuentoAdicional()"></th>
+					<th colspan="2"><input type="text" id="descuento_adicional" name="descuento_adicional" value="0" onkeyup="changeDescuentoAdicional()"></th>
 				</tr>
 				<tr>
 					<td align="center" colspan="7">
@@ -599,20 +750,24 @@ echo "</table><br>";
 					</td>				
 				</tr>				
 				<tr class="titulo_tabla" align="center">
-					<td width="10%" align="center">&nbsp;</td>
-					<td width="40%" align="center">Producto</td>
+					<td width="5%" align="center">&nbsp;</td>
+					<td width="20%" align="center">Producto</td>
 					<td width="10%" align="center">Cantidad</td>
+					<td width="10%" align="center">Precio<br>Presentación</td>
 					<!--td width="10%" align="center">Lote</td-->
 					<td width="10%" align="center">Vencimiento</td>
-					<td width="10%" align="center">Precio Distribuidor<br>(Total_item)</td>
+					<!-- <td width="10%" align="center">Precio Distribuidor<br>(Total_item)</td> -->
+					<td width="10%" align="center">Subtotal</td>
 
+					<!-- Descuento Unitario -->
+					<td width="5%" align="center">Desc.<br>Prod</td>
 					<!-- Descuento Adicional -->
-					<td width="10%" align="center">Descuento Adicional</td>
+					<td width="10%" align="center">Desc.<br>Adicional</td>
 					<!-- Monto Total -->
 					<td width="10%" align="center">Total</td>
 
-					<td width="10%" align="center">Precio Cliente Final</td>
-					<td width="10%" align="center">Acción</td>
+					<td width="10%" align="center">Precio<br>Cliente<br>Unitario</td>
+					<td width="10%" align="center">-</td>
 				</tr>
 			</table>
 
@@ -623,13 +778,16 @@ echo "</table><br>";
 		
 		<table align="center"class="text" cellSpacing="1" cellPadding="2" width="100%" border="0" id="data0" style="border:#ccc 1px solid;">
 			<tr>
-				<td align='right'>Total Compra</td><td align='right'><input type='number' name='totalCompra' id='totalCompra' value='0' size='10' readonly></td>
+				<td align='right' width="90%">Total Compra</td>
+				<td align='right' width="10%"><input type='number' name='totalCompra' id='totalCompra' value='0' size='10' step="0.01" readonly></td>
 			</tr>
 			<tr>
-				<td align='right'>Descuento Final 2</td><td align='right'><input type='number' name='descuentoTotal' id='descuentoTotal' value='0' size='10' onKeyUp='totalesMonto();' required></td>
+				<td align='right' width="90%">Descuento Final 2</td>
+				<td align='right' width="10%"><input type='number' name='descuentoTotal' id='descuentoTotal' value='0' size='10' onKeyUp='totalesMonto();' step="0.01" required></td>
 			</tr>
 			<tr>
-				<td align='right'>Total</td><td align='right'><input type='number' name='totalCompraSD' id='totalCompraSD' value='0' size='10' readonly></td>
+				<td align='right' width="90%">Total</td>
+				<td align='right' width="10%"><input type='number' name='totalCompraSD' id='totalCompraSD' value='0' size='10' step="0.01" readonly></td>
 			</tr>
 		</table>
 
@@ -663,14 +821,12 @@ echo "<script type='text/javascript' language='javascript'  src='dlcalendar.js'>
 			<td><select name='itemTipoMaterial' id="itemTipoMaterial" class="textomedianorojo" style="width:300px">
 			
 			<?php
-			$sqlTipo="select pl.cod_linea_proveedor, CONCAT(p.nombre_proveedor,' - ',pl.nombre_linea_proveedor), pl.margen_precio from proveedores p, proveedores_lineas pl 
-			where p.cod_proveedor=pl.cod_proveedor and pl.estado=1 order by 2;";
+			$sqlTipo="select p.cod_proveedor, p.nombre_proveedor from proveedores p order by 2;";
 			$respTipo=mysqli_query($enlaceCon,$sqlTipo);
 			echo "<option value='0'>--</option>";
 			while($datTipo=mysqli_fetch_array($respTipo)){
 				$codTipoMat=$datTipo[0];
 				$nombreTipoMat=$datTipo[1];
-				$margenPrecio=$datTipo[2];
 				
 				echo "<option value=$codTipoMat>$nombreTipoMat</option>";
 			}

@@ -137,7 +137,7 @@ function enviar_buscador(){
 		(select e.nombre_empaque from empaques e where e.cod_empaque=m.cod_empaque), 
 		(select f.nombre_forma_far from formas_farmaceuticas f where f.cod_forma_far=m.cod_forma_far), 
 		(select pl.nombre_linea_proveedor from proveedores p, proveedores_lineas pl where p.cod_proveedor=pl.cod_proveedor and pl.cod_linea_proveedor=m.cod_linea_proveedor),
-		(select t.nombre_tipoventa from tipos_venta t where t.cod_tipoventa=m.cod_tipoventa), m.cantidad_presentacion, m.principio_activo 
+		(select t.nombre_tipoventa from tipos_venta t where t.cod_tipoventa=m.cod_tipoventa), m.cantidad_presentacion, m.principio_activo, bandera_venta_unidades
 		from material_apoyo m
 		where m.estado='1' ";
 	if($vista==1)
@@ -145,7 +145,7 @@ function enviar_buscador(){
 		(select e.nombre_empaque from empaques e where e.cod_empaque=m.cod_empaque), 
 		(select f.nombre_forma_far from formas_farmaceuticas f where f.cod_forma_far=m.cod_forma_far), 
 		(select pl.nombre_linea_proveedor from proveedores p, proveedores_lineas pl where p.cod_proveedor=pl.cod_proveedor and pl.cod_linea_proveedor=m.cod_linea_proveedor),
-		(select t.nombre_tipoventa from tipos_venta t where t.cod_tipoventa=m.cod_tipoventa), m.cantidad_presentacion, m.principio_activo 
+		(select t.nombre_tipoventa from tipos_venta t where t.cod_tipoventa=m.cod_tipoventa), m.cantidad_presentacion, m.principio_activo, bandera_venta_unidades
 		from material_apoyo m
 		where m.estado='0' ";
 	}
@@ -191,7 +191,7 @@ function enviar_buscador(){
 	
 	echo "<center><table class='texto'>";
 	echo "<tr><th>Indice</th><th>Nombre Producto</th>
-		<th>Cant.Presentacion</th><th>Linea Distribuidor</th>
+		<th>Presentacion</th><th>Venta Solo<br> Caja Entera</th><th>Distribuidor</th>
 		<th>Precio</th><th>Principio Activo</th><th>&nbsp;</th></tr>";
 	
 	$indice_tabla=1;
@@ -206,6 +206,11 @@ function enviar_buscador(){
 		$tipoVenta=$dat[6];
 		$cantPresentacion=$dat[7];
 		$principioActivo=$dat[8];
+		$ventaSoloCajas=$dat[9];
+		$imgVentaSoloCajas="-";
+		if($ventaSoloCajas==1){
+			$imgVentaSoloCajas="<img src='imagenes/bien.jpg' width='20'>";
+		}
 
 		$precioProducto=precioProducto($enlaceCon,$codigo);
 		$precioProducto=formatonumeroDec($precioProducto);
@@ -224,6 +229,7 @@ function enviar_buscador(){
 		echo "<tr><td align='center'>$indice_tabla</td>
 		<td>$nombreProd</td>
 		<td>$cantPresentacion</td>
+		<td>$imgVentaSoloCajas</td>
 		<td>$nombreLinea</td>
 		<td>$precioProducto</td>
 		<td>$principioActivo</td>

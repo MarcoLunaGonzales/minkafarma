@@ -79,11 +79,11 @@ if($globalAdmin==1){
                 </div>
               </div>
               <div class="card-body">
-                    <button type="button" class="btn btn-danger" onclick="ajustarPrecios(this.form)">Ajustar Precio</button>
+                    <button type="button" class="btn btn-danger" onclick="ajustarPrecios(this.form)">Ver Precios</button>
                     <?php
                     if($globalAdmin==1){
                     ?>
-                    <button type="button" class="btn btn-info" onclick="ajustarStocks(this.form)">Ajustar Stock</button><?php
+                    <button type="button" class="btn btn-info" onclick="ajustarStocks(this.form)">Ver Stock</button><?php
                     }
                     ?>  
               </div>

@@ -1,99 +1,29 @@
-<script language='JavaScript'>
-
-function nuevoAjax()
-{	var xmlhttp=false;
-	try {
-			xmlhttp = new ActiveXObject('Msxml2.XMLHTTP');
-	} catch (e) {
-	try {
-		xmlhttp = new ActiveXObject('Microsoft.XMLHTTP');
-	} catch (E) {
-		xmlhttp = false;
-	}
-	}
-	if (!xmlhttp && typeof XMLHttpRequest!='undefined') {
- 	xmlhttp = new XMLHttpRequest();
-	}
-	return xmlhttp;
-}	
-
-function cambiaPrecio(f, id, codigo, precio, tipoPrecio){
-	var contenedor;
-	contenedor = document.getElementById(id);
-	ajax=nuevoAjax();
-	ajax.open('GET', 'ajaxCambiaPrecio.php?codigo='+codigo+'&precio='+precio+'&id='+id+'&tipoPrecio='+tipoPrecio,true);
-	ajax.onreadystatechange=function() {
-		if (ajax.readyState==4) {
-			contenedor.innerHTML = ajax.responseText
-		}
-	}
-	ajax.send(null)
-}
-
-function guardaAjaxPrecio(combo, codigo, id, tipoPrecio){
-	var contenedor;
-	var precio=combo.value;
-	contenedor = document.getElementById(id);
-	ajax=nuevoAjax();
-	ajax.open('GET', 'ajaxGuardaPrecio.php?codigo='+codigo+'&precio='+precio+'&tipoPrecio='+tipoPrecio,true);
-	ajax.onreadystatechange=function() {
-		if (ajax.readyState==4) {
-			contenedor.innerHTML = ajax.responseText
-		}
-	}
-	ajax.send(null)
-}
-
-function ShowBuscar(){
-	document.getElementById('divRecuadroExt').style.visibility='visible';
-	document.getElementById('divProfileData').style.visibility='visible';
-	document.getElementById('divProfileDetail').style.visibility='visible';
-}
-
-function HiddenBuscar(){
-	document.getElementById('divRecuadroExt').style.visibility='hidden';
-	document.getElementById('divProfileData').style.visibility='hidden';
-	document.getElementById('divProfileDetail').style.visibility='hidden';
-}		
-
-function ajaxBuscarItems(f){
-	var nombreItem, tipoItem;
-	nombreItem=document.getElementById("nombreItem").value;
-	tipoItem=document.getElementById("tipo_material").value;
-
-	var contenedor;
-	contenedor = document.getElementById('divCuerpo');
-	ajax=nuevoAjax();
-
-	ajax.open("GET", "ajaxBuscarItems.php?nombreItem="+nombreItem+"&tipoItem="+tipoItem,true);
-	ajax.onreadystatechange=function() {
-		if (ajax.readyState==4) {
-			contenedor.innerHTML = ajax.responseText;
-			HiddenBuscar();
-		}
-	}
-	ajax.send(null)
-}
-
-</script>
 <?php
 
 	require("conexionmysqli.inc");
 	require("estilos_almacenes.inc");
 	require("funciones.php");
+	require("funcion_nombres.php");
 
 	error_reporting(E_ALL);
- ini_set('display_errors', '1');
-
+ 	ini_set('display_errors', '1');
 
 
 	$almacenReporte=$_COOKIE["global_almacen"];
 	$codigoCiudadGlobal=$_COOKIE["global_agencia"];
 
 
+
+	$nombreCiudad=nombreTerritorio($enlaceCon,$codigoCiudadGlobal);
+
+ 	//PORCENTAJE DE DESCUENTO APLICADO AL PRECIO
+ 	$porcentajeVentaProd=obtenerValorConfiguracion($enlaceCon, 53);
+ 	$porcentajePrecioMayorista=precioMayoristaSucursal($enlaceCon,$codigoCiudadGlobal);
+
 	echo "<form method='POST' action='guardarPrecios.php' name='form1'>";
 	
 	echo "<h1>Reporte de Precios</h1>";
+	echo "<h1>$nombreCiudad</h1>";
 	
 	
 	//echo "<div class='divBotones'><input type='button' value='Buscar' class='boton' onclick='ShowBuscar()'></div>";
@@ -103,9 +33,9 @@ function ajaxBuscarItems(f){
 	$resp=mysqli_query($enlaceCon, $sql);
 	
 	echo "<center><table class='texto'>";
-	echo "<tr><th>Proveedor</th><th>Material</th>
-	<th>Existencias</th>
-	<th>Precio</th>
+	echo "<tr><th>Proveedor</th><th>Material</th>";
+	//<th>Existencias</th>
+	echo "<th>Precio</th>
 	</tr>";
 	$indice=1;
 	$precio1=0;
@@ -115,16 +45,16 @@ function ajaxBuscarItems(f){
 		$nombreMaterial=$dat[1];
 		$nombreProveedor=$dat[2];
 
-		$stockProducto=stockProducto($enlaceCon, $almacenReporte, $codigo);
-		$precioProducto=precioProductoSucursal($enlaceCon,$codigo,$codigoCiudadGlobal);
+		//$stockProducto=stockProducto($enlaceCon, $almacenReporte, $codigo);
+		$precioProducto=precioProductoSucursalCalculado($enlaceCon,$codigo,$codigoCiudadGlobal);
 
 		$precioProductoF=formatonumeroDec($precioProducto);
 		$indice++;
 
-		if($stockProducto>0){
+		if($precioProducto>0){
 			echo "<tr><td>$nombreProveedor</td>";
 			echo "<td>$nombreMaterial</td>";
-			echo "<td align='right'>$stockProducto</td>";
+			//echo "<td align='right'>$stockProducto</td>";
 			echo "<td align='right'><div id='1$codigo'>$precioProductoF</div></td>";
 			echo "</tr>";			
 		}

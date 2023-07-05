@@ -281,10 +281,10 @@ echo "<input type='hidden' name='fecha_sistema' value='$fecha_sistema'>";
 
 echo "<h1>Listado de Salidas</h1>";
 echo "<table border='1' class='textomini' cellspacing='0' width='90%'><tr><th>Leyenda:</th>
-<th>Salidas Despachadas a otras agencias</th><td bgcolor='#bbbbbb' width='5%'></td>
-<th>Salidas recepcionadas</th><td bgcolor='#33ccff' width='5%'></td>
+<th>Salidas a otras Sucursales</th><td bgcolor='#bbbbbb' width='5%'></td>
+<th>Salidas Recepcionadas</th><td bgcolor='#33ccff' width='5%'></td>
 <th>Salidas Anuladas</th><td bgcolor='#ff8080' width='5%'></td>
-<th>Salidas locales</th><td bgcolor='#66ff99' width='5%'></td>
+<th>Salidas Locales</th><td bgcolor='#66ff99' width='5%'></td>
 <td bgcolor='' width='10%'>&nbsp;</td></tr></table><br>";
 //
 echo "<div class='divBotones'>

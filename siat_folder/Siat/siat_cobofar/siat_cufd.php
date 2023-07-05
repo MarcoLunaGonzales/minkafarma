@@ -65,7 +65,10 @@ class CufdTest
 			if($cufdAnt==""){									
 				$servCodigos->cuis = $cuis;		
 				//$servCodigos->cuis = 'C5ACBC6F';
-				$resCufd = $servCodigos->cufd($codigoPuntoVenta, $codigoSucursal);				
+				$resCufd = $servCodigos->cufd($codigoPuntoVenta, $codigoSucursal);		
+
+				//echo $resCufd;
+
 				$cufd=$resCufd->RespuestaCufd->codigo;
 				if($cufdAnt=="" && $cufd!=""){
 					//echo $cufd;

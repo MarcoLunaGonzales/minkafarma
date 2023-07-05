@@ -409,7 +409,7 @@ echo "<div class='divBotones'>
         
 echo "<center><table class='texto'>";
 echo "<tr><th>&nbsp;</th><th>Nro. Doc</th><th>Fecha/hora<br>Registro Salida</th><th>Vendedor</th><th>TipoPago</th>
-    <th>Razon Social</th><th>NIT</th><th>Observaciones</th><th>Editar</th><th>Imprimir</th></tr>";
+    <th>Razon Social</th><th>NIT</th><th>Monto</th><th>Observaciones</th><th>Imprimir</th><th>Editar</br>DatosVenta</th></tr>";
     
 echo "<input type='hidden' name='global_almacen' value='$global_almacen' id='global_almacen'>";
 
@@ -421,7 +421,7 @@ $consulta = "
     (select concat(f.paterno,' ',f.nombres) from funcionarios f where f.codigo_funcionario=s.cod_chofer)as vendedor,
     (select t.nombre_tipopago from tipos_pago t where t.cod_tipopago=s.cod_tipopago)as tipopago,
     s.cod_chofer,
-    s.cod_tipopago
+    s.cod_tipopago, s.monto_final
     FROM salida_almacenes s, tipos_salida ts 
     WHERE s.cod_tiposalida = ts.cod_tiposalida AND s.cod_almacen = '$global_almacen' and s.cod_tiposalida=1001 and 
     s.cod_tipo_doc not in (1,4) ";
@@ -467,6 +467,9 @@ while ($dat = mysqli_fetch_array($resp)) {
     $codVendedor = $dat[16];
     $codTipoPago = $dat[17];
 
+    $montoVenta = $dat[18];
+    $montoVentaFormat=formatonumeroDec($montoVenta);
+
     echo "<input type='hidden' name='fecha_salida$nro_correlativo' value='$fecha_salida_mostrar'>";
     
     $sqlEstadoColor="select color from estados_salida where cod_estado='$estado_almacen'";
@@ -488,17 +491,8 @@ while ($dat = mysqli_fetch_array($resp)) {
     echo "<td align='center'>$fecha_salida_mostrar $hora_salida</td>";
     echo "<td>$vendedor</td>";
     echo "<td>$tipoPago</td>";
-    echo "<td>&nbsp;$razonSocial</td><td>&nbsp;$nitCli</td><td>&nbsp;$obs_salida</td>";
+    echo "<td>&nbsp;$razonSocial</td><td>&nbsp;$nitCli</td><td>&nbsp;$montoVentaFormat</td><td>&nbsp;$obs_salida</td>";
     $url_notaremision = "navegador_detallesalidamuestras.php?codigo_salida=$codigo";    
-    
-    // Editar Datos
-    echo "<td bgcolor='$color_fondo'>
-            <a href='#' onClick='ShowFacturarEditar($codigo,$nro_correlativo, $codVendedor, $codTipoPago);'>
-            <img src='imagenes/icon_detail.png' width='30' border='0' title='Editar'></a>
-        </td>";
-
-
-    $htmlTipoPago="<a href='#' title='Cambiar Tipo de Pago' onclick='cambiarTipoPago($codigo)'><img src='imagenes/tarjetacredito2.png' width='60px'></a>";
 
     /*echo "<td bgcolor='$color_fondo'><a href='javascript:llamar_preparado(this.form, $estado_preparado, $codigo)'>
         <img src='imagenes/icon_detail.png' width='30' border='0' title='Detalle'></a></td>";
@@ -509,7 +503,11 @@ while ($dat = mysqli_fetch_array($resp)) {
     }
     else{
         echo "<td  bgcolor='$color_fondo'><a href='formatoNotaRemision.php?codVenta=$codigo' target='_BLANK'><img src='imagenes/factura1.jpg' width='30' border='0' title='Factura Formato Pequeño'></a>
-        $htmlTipoPago
+        </td>";
+        // Editar Datos
+        echo "<td bgcolor='$color_fondo'>
+            <a href='#' onClick='ShowFacturarEditar($codigo,$nro_correlativo, $codVendedor, $codTipoPago);'>
+            <img src='imagenes/change.png' width='30' border='0' title='Cambiar Vendedor / Tipo Pago'></a>
         </td>";
         //echo "<td  bgcolor='$color_fondo'><a href='notaSalida.php?codVenta=$codigo' target='_BLANK'><img src='imagenes/detalle.png' width='30' border='0' title='Factura Formato Pequeño'></a></td>";
     }

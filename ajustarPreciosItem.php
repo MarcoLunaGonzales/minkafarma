@@ -43,9 +43,18 @@ function modifPreciosAjax(indice){
     	}
   	}
 
+	var arrayPorcentajes=new Array();
+  	for(i=0; i<elementos.length; i++){
+    	var cadenaBuscar="porcentaje|"+indice+"|";
+    	if(elementos[i].name.indexOf(cadenaBuscar) != -1){
+    		console.log(elementos[i].value);
+    		arrayPorcentajes.push(elementos[i].value+"|"+elementos[i].name);
+    	}
+  	}
+
 	contenedor = document.getElementById('contenedor_'+indice);
 	ajax=nuevoAjax();
-	ajax.open("GET", "ajaxGuardarPrecios.php?item="+item+"&precios="+arrayPrecios,true);
+	ajax.open("GET", "ajaxGuardarPrecios.php?item="+item+"&precios="+arrayPrecios+"&porcentajes="+arrayPorcentajes,true);
 	ajax.onreadystatechange=function() {
 		if (ajax.readyState==4) {
 			contenedor.innerHTML = ajax.responseText
@@ -118,13 +127,20 @@ function modifPreciosAjax(indice){
 		while($datSucursales=mysqli_fetch_array($respSucursales)){
 			$codCiudadPrecio=$datSucursales[0];
 			$nombreCiudadPrecio=$datSucursales[1];
-			$sqlPrecios="select precio from precios where cod_precio=1 and cod_ciudad='$codCiudadPrecio' and codigo_material='$codigo'";
+			$sqlPrecios="select precio, descuento_unitario from precios where cod_precio=1 and cod_ciudad='$codCiudadPrecio' and codigo_material='$codigo'";
 			//echo $sqlPrecios;
 			$respPrecios=mysqli_query($enlaceCon,$sqlPrecios);
 			$precio1=mysqli_result($respPrecios,0,0);
 			$precio1=redondear2($precio1);
+			$porcentajeDescuento=mysqli_result($respPrecios,0,1);
+			if($porcentajeDescuento==""){
+				$porcentajeDescuento=0;
+			}
 			
-			$cadenaPrecios.="<th align='center'><input type='text' size='5' value='$precio1' id='precio|$indice|$codCiudadPrecio' name='precio|$indice|$codCiudadPrecio'></th>";
+			$cadenaPrecios.="<th align='center'>
+				<input type='text' size='5' value='$precio1' id='precio|$indice|$codCiudadPrecio' name='precio|$indice|$codCiudadPrecio'>
+				<br>
+				<input type='text' size='3' value='$porcentajeDescuento' id='porcentaje|$indice|$codCiudadPrecio' name='porcentaje|$indice|$codCiudadPrecio' style='background:#ADF8FA;''>%</th>";
 		}
 		$stockProducto=stockProducto($enlaceCon, $globalAlmacen, $codigo);
 		

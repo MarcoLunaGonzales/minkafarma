@@ -22,6 +22,21 @@
     color: #000000 !important;
     background-color: #ffffff !important;
   }
+   .boton-plomo
+{
+    text-decoration: none !important;
+    font-weight: 0 !important;
+    font-size: 12spx !important;
+    color: #ffffFF !important;
+    background-color: #88898A !important;
+    border-radius: 3px !important;
+    border: 2px solid #88898A !important;
+}
+.boton-plomo:hover{
+    color: #000000 !important;
+    background-color: #ffffff !important;
+  }
+
 </style>
      <link rel="stylesheet" href="dist/css/demo.css" />
      <link rel="stylesheet" href="dist/mmenu.css" />
@@ -36,7 +51,8 @@ include("datosUsuario.php");
 		<a href="#menu"><span></span></a>
 		TuFarma - <?=$nombreEmpresa;?>
 		<div style="position:absolute; width:95%; height:50px; text-align:right; top:0px; font-size: 9px; font-weight: bold; color: #fff;">
-			[<?=$fechaSistemaSesion;?>][<?=$horaSistemaSesion;?>]			
+			[<?=$fechaSistemaSesion;?>][<?=$horaSistemaSesion;?>]
+			<button onclick="location.href='salir.php'" style="position:relative;z-index:99999;right:0px;" class="boton-plomo">Salir del Sistema</button>			
 		<div>
 		<div style="position:absolute; width:95%; height:50px; text-align:left; top:0px; font-size: 15px; font-weight: bold; color: #ffff00;">
 			[<?=$nombreUsuarioSesion;?>][<?=$nombreAlmacenSesion;?>]
@@ -95,7 +111,7 @@ include("datosUsuario.php");
 			</li-->
 			<li><span>Ingresos</span>
 				<ul>
-					<li><a href="navegador_ingresomateriales.php" target="contenedorPrincipal">Ingreso de Materiales</a></li>
+					<li><a href="navegador_ingresomateriales.php" target="_blank">Ingreso de Materiales</a></li>
 					<li><a href="navegador_ingresotransito.php" target="contenedorPrincipal">Ingreso de Productos en Transito</a></li>
 <!--li><a href="navegadorLiquidacionIngresos.php" target="contenedorPrincipal">Liquidacion de Ingresos</a></li-->
 				</ul>	
@@ -128,10 +144,19 @@ include("datosUsuario.php");
 				<ul>
 					<li><a href="campanias/list.php" target="contenedorPrincipal">Campañas</a></li>					
 					<li><a href="navegadorCotizaciones.php" target="contenedorPrincipal">Cotizaciones</a></li>					
+					<li><a href="ofertas/list.php" target="contenedorPrincipal">Ofertas</a></li>					
 				</ul>	
 			</li>	
-
-			<li><a href="registrar_ingresomateriales.php" target="contenedorPrincipal">Registrar Ingreso **</a></li>
+			
+			<li><span>Cobranzas</span>
+				<ul>
+					<li><a href="cobranzas/navegadorCobranzas.php" target="contenedorPrincipal">Listado de Cobranzas</a></li>
+					<li><a href="cobranzas/rptOpCobranzas.php" target="contenedorPrincipal">Reporte de Cobros</a></li>
+					<li><a href="cobranzas/rptOpCuentasCobrar.php" target="contenedorPrincipal">Reporte Cuentas x Cobrar</a></li>
+				</ul>	
+			</li>
+			
+			<li><a href="registrar_ingresomateriales.php" target="_blank">Registrar Ingreso **</a></li>
 			<li><a href="registrar_salidaventas.php" target="_blank">Vender / Facturar **</a></li>
 			<li><a href="rptOpArqueoDiario.php?variableAdmin=1" target="contenedorPrincipal">Cierre de Caja</a></li>
 			<li><a href="cambiarSucursalSesion.php" target="contenedorPrincipal">Cambiar Almacen</a></li>
@@ -153,14 +178,14 @@ include("datosUsuario.php");
 							<!--li><a href="rptOCPagar.php" target="contenedorPrincipal">OC por Pagar</a></li-->
 						</ul>
 					</li>	
-					<!--li><span>Costos</span>
+					<li><span>Costos</span>
 						<ul>
 							<li><a href="rptOpKardexCostos.php" target="contenedorPrincipal">Kardex de Movimiento Precio Promedio</a></li>
-							<li><a href="rptOpKardexCostosPEPS.php" target="contenedorPrincipal">Kardex de Movimiento PEPS</a></li>
-							<li><a href="rptOpKardexCostosUEPS.php" target="contenedorPrincipal">Kardex de Movimiento UEPS</a></li>							
+							<!--li><a href="rptOpKardexCostosPEPS.php" target="contenedorPrincipal">Kardex de Movimiento PEPS</a></li>
+							<li><a href="rptOpKardexCostosUEPS.php" target="contenedorPrincipal">Kardex de Movimiento UEPS</a></li-->
 							<li><a href="rptOpExistenciasCostos.php" target="contenedorPrincipal">Existencias</a></li>							
 						</ul>
-					</li-->
+					</li>
 					<li><span>Ventas</span>
 						<ul>
 							<li><a href="rptOpVentasPorClientes.php" target="contenedorPrincipal">Ventas x Cliente</a></li>
