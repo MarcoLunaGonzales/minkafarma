@@ -630,9 +630,18 @@ function guardarClientePrecio() {
 	// Obtener el detalle de un registro específico
 	$codigo_registro = 1; // Código del registro que deseas obtener el detalle
 
-	$query = "SELECT cpd.* 
+	// $query = "SELECT cpd.* 
+	// 			FROM clientes_precios cp
+	// 			LEFT JOIN clientes_preciosdetalle cpd ON cpd.cod_clienteprecio = cp.codigo 
+	// 			LEFT JOIN material_apoyo m ON m.codigo_material = cpd.cod_producto 
+	// 			WHERE cp.cod_cliente = '".$cod_cliente."'
+	// 			ORDER BY cpd.codigo ASC";
+				
+	$query = "SELECT cpd.*, m.codigo_material, m.descripcion_material, (select concat(p.nombre_proveedor,'-',pl.nombre_linea_proveedor)as nombre_proveedor
+	from proveedores p, proveedores_lineas pl where p.cod_proveedor=pl.cod_proveedor and pl.cod_linea_proveedor=m.cod_linea_proveedor) as detalle_proveedor
 				FROM clientes_precios cp
 				LEFT JOIN clientes_preciosdetalle cpd ON cpd.cod_clienteprecio = cp.codigo 
+				LEFT JOIN material_apoyo m ON m.codigo_material = cpd.cod_producto 
 				WHERE cp.cod_cliente = '".$cod_cliente."'
 				ORDER BY cpd.codigo ASC";
 	$result = mysqli_query($enlaceCon, $query);
@@ -658,7 +667,7 @@ function guardarClientePrecio() {
 
 			<td width="38%" align="center">
 				<input type="hidden" name="materiales<?=$cantidad_total;?>" id="materiales<?=$cantidad_total;?>" value="<?=$row['cod_producto'];?>" class="materiales">
-				<div id="cod_material1" class="textomedianonegro">KETOFIN-LC KETOROLACO 20 MG. X 30 TAB - LC FARMA-GLOBELA PHARMA (9062)</div>
+				<div id="cod_material1" class="textomedianonegro"><?=$row['descripcion_material'];?> - <?=$row['detalle_proveedor'];?> (<?=$row['codigo_material'];?>)</div>
 			</td>
 
 			<td align="center" width="8%">
