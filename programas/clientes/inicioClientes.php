@@ -65,7 +65,13 @@ function adicionarCliente() {
     var mail = $("#mail").val();
     var area = $("#area").val();
     var fact = $("#fact").val();
-    var parms="nomcli="+nomcli+"&nit="+nit+"&dir="+dir+"&tel1="+tel1+"&mail="+mail+"&area="+area+"&fact="+fact+"";
+    
+    var apellidos = $("#apellidos").val();
+    var ci        = $("#ci").val();
+    var genero    = $("#genero").val();
+    var edad      = $("#edad").val();
+    var parms="nomcli="+nomcli+"&nit="+nit+"&dir="+dir+"&tel1="+tel1+"&mail="+mail+"&area="+area+"&fact="+fact+"&apcli="+apellidos+"&ci="+ci+"&genero="+genero+"&edad="+edad;
+    console.log(parms)
     cargarPnl("#pnl00","prgClienteAdicionar.php",parms);
 }
 function modificarCliente() {
