@@ -12,7 +12,8 @@ $area = $_GET["area"];
 $fact = $_GET["fact"];
 $edad = $_GET["edad"];
 $genero = $_GET["genero"];
-$tipoPrecio=$_GET["tipoPrecio"];
+
+$ci = $_GET['ci'];
 
 $nomCli = str_replace("'", "''", $nomCli);
 $apCli = str_replace("'", "''", $apCli);
@@ -30,7 +31,7 @@ $codigoCliente=$dat[0];//$codigoCliente=mysqli_result($resp,0,0);
 
 $consulta="
 INSERT INTO clientes (cod_cliente, nombre_cliente,paterno, nit_cliente, dir_cliente, telf1_cliente, email_cliente, cod_area_empresa, nombre_factura, cod_tipo_precio,cod_tipo_edad,ci_cliente,cod_genero)
-VALUES ('$codigoCliente', '$nomCli','$apCli', '$nit', '$dir', '$tel1', '$mail', $area, '$fact', '$tipoPrecio','$edad','$ci','$genero')
+VALUES ('$codigoCliente', '$nomCli','$apCli', '$nit', '$dir', '$tel1', '$mail', $area, '$fact', '0','$edad','$ci','$genero')
 ";
 if(isset($_GET["dv"])){
   $resp=mysqli_query($enlaceCon,$consulta);
