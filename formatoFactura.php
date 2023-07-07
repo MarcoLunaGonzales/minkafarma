@@ -2,7 +2,7 @@
 //header('Content-Type: text/html; charset=ISO-8859-1');
 
 require('fpdf.php');
-require('conexionmysqli2.inc');
+require('conexionmysqlipdf.inc');
 require('funciones.php');
 require('funcion_nombres.php');
 require('NumeroALetras.php');
@@ -10,9 +10,10 @@ include('phpqrcode/qrlib.php');
 //header("Content-Type: text/html; charset=iso-8859-1 ");
 mysqli_query($enlaceCon,"SET NAMES utf8");
 
- error_reporting(E_ALL);
- ini_set('display_errors', '1');
 
+/* error_reporting(E_ALL);
+ ini_set('display_errors', '1');
+*/
 
 
 $codigoVenta=$_GET["codVenta"];
@@ -32,7 +33,7 @@ $pdf->SetMargins(0,0,0);
 $pdf->AddPage(); 
 $pdf->SetFont('Arial','',8);
 
-
+//echo "entro 1";
 
 $sqlConf="select id, valor from configuracion_facturas where id=1 and cod_ciudad='$cod_ciudad'";
 $respConf=mysqli_query($enlaceCon,$sqlConf);
@@ -85,7 +86,9 @@ $nitTxt=$datConf[1];//$nitTxt=mysql_result($respConf,0,1);
 	where f.cod_dosificacion=d.cod_dosificacion and f.cod_venta=$codigoVenta";*/
 $sqlDatosFactura="select '' as nro_autorizacion, '', '' as codigo_control, f.nit, f.razon_social, DATE_FORMAT(f.siat_fechaemision, '%d/%m/%Y') 
 from salida_almacenes f where f.cod_salida_almacenes=$codigoVenta";
-	
+
+//echo $sqlDatosFactura;
+
 $respDatosFactura=mysqli_query($enlaceCon,$sqlDatosFactura);
 $datDatosFactura=mysqli_fetch_array($respDatosFactura);
 
@@ -109,6 +112,9 @@ s.siat_codigotipoemision,(SELECT descripcionLeyenda from siat_sincronizarlistale
 		from `salida_almacenes` s, `tipos_docs` t, `clientes` c
 		where s.`cod_salida_almacenes`='$codigoVenta' and s.`cod_cliente`=c.`cod_cliente` and
 		s.`cod_tipo_doc`=t.`codigo`";
+
+//echo "<br>".$sqlDatosVenta;
+
 $respDatosVenta=mysqli_query($enlaceCon,$sqlDatosVenta);
 $tipoPago=1;
 while($datDatosVenta=mysqli_fetch_array($respDatosVenta)){
@@ -149,8 +155,13 @@ while($datDatosVenta=mysqli_fetch_array($respDatosVenta)){
 	$siat_codigopuntoventa=$datDatosVenta['siat_codigoPuntoVenta'];
 	$siat_codigotipoemision=$datDatosVenta['siat_codigotipoemision'];
 	$txt3=$datDatosVenta['leyenda'];
+
+	//echo "entro detalle";
 }
 $sqlResponsable="select CONCAT(SUBSTRING_INDEX(nombres,' ', 1),' ',SUBSTR(paterno, 1,1),'.') from funcionarios where codigo_funcionario='".$cod_funcionario."'";
+
+//echo "entro respo".$sqlResponsable;
+
 $respResponsable=mysqli_query($enlaceCon,$sqlResponsable);
 $datResponsable=mysqli_fetch_array($respResponsable);
 $nombreFuncionario=$datResponsable[0];
@@ -210,6 +221,9 @@ $sqlDetalle="select m.codigo_material, sum(s.`cantidad_unitaria`), m.`descripcio
 		m.`codigo_material`=s.`cod_material` and s.`cod_salida_almacen`=$codigoVenta 
 		group by s.cod_material
 		order by s.orden_detalle";
+
+//echo "detail".$sqlDetalle;
+
 $respDetalle=mysqli_query($enlaceCon,$sqlDetalle);
 
 $yyy=85;
@@ -253,12 +267,13 @@ while($datDetalle=mysqli_fetch_array($respDetalle)){
 	//montoTotal=$montoTotal+$montoUnit;
 	
 	$yyy=$yyy+5; 
+
+	//echo "entro final detalle";
+
 }
 
 $pdf->SetXY(4,$y+$yyy+1);		$pdf->Cell(68,0,"---------------------------------------------------------------------------",0,0,"C");		
 $yyy=$yyy+5;
-
-
 
 $descuentoVenta=number_format($descuentoVenta,2,'.','');
 $montoFinal=$montoTotal-$descuentoVenta;
@@ -305,6 +320,7 @@ $pdf->SetXY(4,$y+$yyy+38);		$pdf->Cell(68,0,"Proceso: $codigoVenta",0,0,"C");
 $pdf->SetXY(4,$y+$yyy+41);		$pdf->Cell(68,0,"Cajero(a): $nombreFuncionario",0,0,"C");
 $pdf->SetXY(4,$y+$yyy+44);		$pdf->Cell(68,0,"---------------------------------------------------------------------------",0,0,"C");
 
+//echo "entro 4";
 
 $pdf->SetXY(4,$y+$yyy+46);		$pdf->MultiCell(35,3,utf8_decode($txt2),0,"L");
 
@@ -320,7 +336,7 @@ $fileName="qrs/".$fechahora.$nroDocVenta.".png";
     
 QRcode::png($codeContents, $fileName,QR_ECLEVEL_L, 4);
 
-
+//echo "entro 5";
 
 $pdf->Image($fileName , 43 ,$y+$yyy+45, 30, 30,'PNG');
 

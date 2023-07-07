@@ -7,6 +7,7 @@
 <?php 
 require_once("conexionmysqli2.inc");
 require_once("funciones.php");
+require_once("funcionesVentas.php");
 
 
 $globalAdmin=$_COOKIE["global_admin_cargo"];
@@ -33,11 +34,16 @@ for( $j=0;$j<=sizeof($arrayProductosX)-1;$j++ ){
 	$num=$numJS+$j;
 	//echo "num".$num."<br>";
 	$arrayProductosDetalle=$arrayProductosX[$j];
-	list($codigoProductoX,$nombreProductoX,$lineaProductoX)=explode("|",$arrayProductosDetalle);
+	list($codigoProductoX,$nombreProductoX,$lineaProductoX,$stockProductoX)=explode("|",$arrayProductosDetalle);
 
-	$stockProductoX=stockProducto($enlaceCon,$globalAlmacen, $codigoProductoX);
-	$precioProductoX=precioProductoSucursal($enlaceCon,$codigoProductoX,$globalAgencia);
-	$precioProductoX=round($precioProductoX,2);
+	$arrayPreciosAplicar=precioCalculadoParaFacturacion($enlaceCon,$codigoProductoX,$globalAgencia);
+	$precioProductoBase=$arrayPreciosAplicar[0];
+	$txtValidacionPrecioCero=$arrayPreciosAplicar[1];
+	$descuentoBs=$arrayPreciosAplicar[2];
+	$descuentoPorcentaje=$arrayPreciosAplicar[3];
+	$nombrePrecioAplicar=$arrayPreciosAplicar[4];
+
+	$precioProductoX=round($precioProductoBase,2);
 
 ?>
 
@@ -62,14 +68,8 @@ for( $j=0;$j<=sizeof($arrayProductosX)-1;$j++ ){
 
 <?php
 echo "<td><div id='idstock<?php echo $num;?>'>";
-$stockProducto=0;
-if( $banderaValidacionStock==0 || ($banderaValidacionStock==2 && $stockProductoX<=0) ){
-	echo "<input type='text' id='stock$num' name='stock$num' value='-' readonly size='4' style='background:red;'>
-	<span style='color:red;font-size:20px;'>S:$stockProductoX</span>";
-}elseif( $banderaValidacionStock==1 || ($banderaValidacionStock==2 && $stockProductoX>0) ){
-	echo "<input type='text' id='stock$num' name='stock$num' value='$stockProductoX' readonly size='4'>";
-}
-echo "</td></div>";
+echo "<input type='number' id='stock$num' name='stock$num' value='$stockProductoX' readonly size='5' style='height:20px;font-size:19px;width:80px;color:red;'>";
+echo "</div></td>";
 ?>
 
 <td align="center" width="8%">
@@ -80,25 +80,18 @@ echo "</td></div>";
 
 <td align="center" width="8%">
 	<div id='idprecio<?php echo $num;?>'>
-		<input class="inputnumber" type="number" min="1" id="precio_unitario<?php echo $num;?>" name="precio_unitario<?php echo $num;?>" step="0.01" value="<?php echo $precioProductoX;?>" onKeyUp='calculaMontoMaterial(<?=$num;?>);' readonly>
+		<input class="inputnumber" type="number" min="1" id="precio_unitario<?php echo $num;?>" name="precio_unitario<?php echo $num;?>" step="0.01" value="<?php echo $precioProductoX;?>" <?=$txtValidacionPrecioCero;?> >
 	</div>
 </td>
 
 <td align="center" width="15%">
-	<?php
-		if($globalAdmin==0){
-			echo "<input class='inputnumber' type='number' min='0' max='90' step='0.01' value='0' id='tipoPrecio$num' name='tipoPrecio$num' style='background:#ADF8FA;' >%";		
-		}elseif($globalAdmin==1){
-			echo "<input class='inputnumber' type='number' min='0' max='90' step='0.01' value='0' id='tipoPrecio$num' name='tipoPrecio$num' style='background:#ADF8FA;' >%";
-		}
-
-
-			?>
-	<input class="inputnumber" type="number" value="0" id="descuentoProducto<?php echo $num;?>" name="descuentoProducto<?php echo $num;?>" step="0.01" style='background:#ADF8FA;' readonly>
+	<input class="inputnumber" type="number" min="0" max="90" step="0.01" value="<?=$descuentoBs;?>" id="tipoPrecio<?php echo $num;?>" 	name="tipoPrecio<?php echo $num;?>" style="background:#ADF8FA;" readonly>%
+	<input class="inputnumber" type="number" value="<?=$descuentoPorcentaje;?>" id="descuentoProducto<?php echo $num;?>" name="descuentoProducto<?php echo $num;?>" step="0.01" style='background:#ADF8FA;' readonly>
+	<div id="divMensajeOferta<?=$num;?>" class="textosmallazul"><?=$nombrePrecioAplicar;?></div>
 </td>
 
 <td align="center" width="8%">
-	<input class="inputnumber" type="number" value="0" id="montoMaterial<?php echo $num;?>" name="montoMaterial<?php echo $num;?>" value="0"  step="0.01"  required readonly> 
+	<input class="inputnumber" type="number" value="0" id="montoMaterial<?php echo $num;?>" name="montoMaterial<?php echo $num;?>" value="0"  step="0.01" readonly> 
 </td>
 
 <td align="center"  width="5%" ><input class="boton2peque" type="button" value="-" onclick="menos(<?php echo $num;?>)" /></td>

@@ -26,7 +26,7 @@ echo "<h1>Reporte Utilidades x Documento e Item</h1>
 	<br>Fecha Reporte: $fecha_reporte
 	</h2>";
 	
-$sql="select s.fecha, (select t.abreviatura from tipos_docs t where t.codigo=s.cod_tipo_doc), s.nro_correlativo, 
+$sql="SELECT s.fecha, (select t.abreviatura from tipos_docs t where t.codigo=s.cod_tipo_doc), s.nro_correlativo, 
 (select cli.nombre_cliente from clientes cli where cli.cod_cliente=s.cod_cliente), 
 (select CONCAT(f.paterno,' ',f.nombres) from funcionarios f where f.codigo_funcionario=s.cod_chofer), 
 m.`codigo_material`, m.`descripcion_material`, 

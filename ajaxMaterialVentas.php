@@ -40,7 +40,7 @@ $banderaPreciosDescuento=obtenerValorConfiguracion($enlaceCon,52);
 
 <td width="8%" align="center">
 	<div id='idstock<?php echo $num;?>'>
-		<input type='hidden' id='stock<?php echo $num;?>' name='stock<?php echo $num;?>' value='' style='background:#ADF8FA;'>
+		<input type="number" id="stock<?=$num;?>" name="stock<?=$num;?>" value="0" readonly size="5" style="height:20px;font-size:19px;width:80px;color:red;">
 	</div>
 </td>
 
@@ -49,38 +49,15 @@ $banderaPreciosDescuento=obtenerValorConfiguracion($enlaceCon,52);
 	<div id="div_venta_caja<?=$num;?>" class="textosmallazul"></div>
 </td>
 
-
+<!--Cuando Carga el precio no es readonly para validar el precio 0 -->
 <td align="center" width="8%">
 	<div id='idprecio<?php echo $num;?>'>
-		<input class="inputnumber" type="number" min="1" value="0" id="precio_unitario<?php echo $num;?>" name="precio_unitario<?php echo $num;?>" step="0.01" readonly>
+		<input class="inputnumber" type="number" min="0.01" value="0" id="precio_unitario<?php echo $num;?>" name="precio_unitario<?php echo $num;?>" step="0.01">
 	</div>
 </td>
 
 <td align="center" width="15%">
-	<?php
-		if($globalAdmin==0){
-			$sql1="select codigo, nombre, abreviatura from tipos_precio where estado=1 order by 3";
-			$resp1=mysqli_query($enlaceCon,$sql1);
-			$txtPorcentajes=0;
-			while($dat=mysqli_fetch_array($resp1)){
-				$codigo=$dat[0];
-				$nombre=$dat[1];
-				$abreviatura=$dat[2];
-				$txtPorcentajes.="|".$abreviatura;
-			}
-			echo "<input class='inputnumber' type='number' step='0.01' value='0' id='tipoPrecio$num' name='tipoPrecio$num' style='background:#ADF8FA;' readonly>%";	
-		}elseif($globalAdmin==1 || $banderaPreciosDescuento==1){
-			$txtDisabled="";
-			$actionDisabled="onKeyUp='ajaxPrecioItem(".$num.")'";
-			if($banderaPreciosDescuento==1){
-				$txtDisabled="readonly";
-				$actionDisabled="";
-			}
-			echo "<input class='inputnumber' type='number' min='0' max='90' step='0.01' value='0' id='tipoPrecio$num' name='tipoPrecio$num' style='background:#ADF8FA;' readonly>%";
-		}
-
-
-			?>
+	<input class="inputnumber" type="number" min="0" max="90" step="0.01" value="0" id="tipoPrecio<?php echo $num;?>" name="tipoPrecio<?php echo $num;?>" style="background:#ADF8FA;" readonly>%
 	<input class="inputnumber" type="number" value="0" id="descuentoProducto<?php echo $num;?>" name="descuentoProducto<?php echo $num;?>" step="0.01" style='background:#ADF8FA;' readonly>
 	<div id="divMensajeOferta<?=$num;?>" class="textosmallazul"></div>
 </td>

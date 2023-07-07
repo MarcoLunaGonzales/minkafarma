@@ -6,8 +6,6 @@ require("funciones.php");
 
  error_reporting(E_ALL);
  ini_set('display_errors', '1');
-
-
 ?>
 
 <html>
@@ -352,6 +350,7 @@ function ajaxPrecioItem(indice){
 	ajax.onreadystatechange=function() {
 		if (ajax.readyState==4) {
 				var respuesta=ajax.responseText.split("#####");
+				console.log("[0]:"+respuesta[0]+" [1]:"+respuesta[1]+" [2]:"+respuesta[2]+" [3]:"+respuesta[3])
 				contenedor.innerHTML = respuesta[0];				
 				document.getElementById("descuentoProducto"+indice).value=(respuesta[1]*parseFloat(cantidadUnitaria));
 				if(respuesta[2]==0){
@@ -363,25 +362,13 @@ function ajaxPrecioItem(indice){
 					document.getElementById("divMensajeOferta"+indice).innerHTML=respuesta[3];
 				}
 	    	calculaMontoMaterial(indice);
+		}else{
+			contenedor.innerHTML = "Error en Conexión!!";				
 		}
 	}
 	ajax.send(null);
 }
 
-/*function ajaxRazonSocial(f){
-	var contenedor;
-	contenedor=document.getElementById("divRazonSocial");
-	var nitCliente=document.getElementById("nitCliente").value;
-	ajax=nuevoAjax();
-	ajax.open("GET", "ajaxRazonSocial.php?nitCliente="+nitCliente,true);
-	ajax.onreadystatechange=function() {
-		if (ajax.readyState==4) {
-			contenedor.innerHTML = ajax.responseText;
-			document.getElementById('razonSocial').focus();
-		}
-	}
-	ajax.send(null);
-}*/
 function ajaxRazonSocial(f){
 	var contenedor;
 	contenedor=document.getElementById("divRazonSocial");
@@ -661,27 +648,6 @@ function aplicarDescuentoPorcentaje(f){
 	minimoEfectivo();
 	//totales();
 }
-function aplicarDescuentoUSDPorcentaje(f){
-	var tipo_cambio=$("#tipo_cambio_dolar").val();
-	var total=document.getElementById("totalVenta").value;
-    
-    var descuentoPorcentaje=document.getElementById("descuentoVentaUSDPorcentaje").value;
-    document.getElementById("descuentoVentaPorcentaje").value=descuentoPorcentaje;
-
-	var descuento=document.getElementById("descuentoVenta").value;
-	
-	descuento=Math.round(parseFloat(descuentoPorcentaje)*parseFloat(total))/100;
-	
-	document.getElementById("totalFinal").value=Math.round((parseFloat(total)-parseFloat(descuento))*100)/100;
-	var descuentoUSD=(parseFloat(total)-parseFloat(descuento))/tipo_cambio;
-	document.getElementById("descuentoVenta").value=Math.round((descuento)*100)/100;
-	document.getElementById("descuentoVentaUSD").value=Math.round((descuento/tipo_cambio)*100)/100;
-	document.getElementById("totalFinalUSD").value=Math.round((descuentoUSD)*100)/100;
-	
-	aplicarCambioEfectivo();
-	minimoEfectivo();
-	//totales();
-}
 function minimoEfectivo(){
   //obtener el minimo a pagar
 	var minimoEfectivo=$("#totalFinal").val();
@@ -691,7 +657,6 @@ function minimoEfectivo(){
 	//$("#efectivoRecibidoUnidoUSD").attr("min",minimoEfectivoUSD);		
 }
 function aplicarCambioEfectivo(f){
-	var tipo_cambio=$("#tipo_cambio_dolar").val();
 	var recibido=document.getElementById("efectivoRecibido").value;
 	var total=document.getElementById("totalFinal").value;
 	var cambio=0;
@@ -701,46 +666,16 @@ function aplicarCambioEfectivo(f){
 	}else{
 		cambio=Math.round((parseFloat(recibido)-parseFloat(total))*100)/100;
 	}
-
 	document.getElementById("cambioEfectivo").value=parseFloat(cambio);
-	document.getElementById("efectivoRecibidoUSD").value=Math.round((recibido/tipo_cambio)*100)/100;
-	document.getElementById("cambioEfectivoUSD").value=Math.round((cambio/tipo_cambio)*100)/100;	
-	minimoEfectivo();
-}
-function aplicarCambioEfectivoUSD(f){
-	var tipo_cambio=$("#tipo_cambio_dolar").val();
-	var recibido=document.getElementById("efectivoRecibidoUSD").value;
-	var total=document.getElementById("totalFinalUSD").value;
-	var cambio=0;
-
-	if(recibido=="" || recibido==0){
-		recibido=0;
-	}else{
-		cambio=Math.round((parseFloat(recibido)-parseFloat(total))*100)/100;
-	}
-	document.getElementById("cambioEfectivoUSD").value=parseFloat(cambio);
-	document.getElementById("efectivoRecibido").value=Math.round((recibido*tipo_cambio)*100)/100;
-	document.getElementById("cambioEfectivo").value=Math.round((cambio*tipo_cambio)*100)/100;	
 	minimoEfectivo();
 }
 function aplicarMontoCombinadoEfectivo(f){
   var efectivo=$("#efectivoRecibidoUnido").val();	
-  //alert ('efectivo='+efectivo);
-  var efectivoUSD=$("#efectivoRecibidoUnidoUSD").val();	
-  
   if(efectivo==""){
    efectivo=0;
   }
-  if(efectivoUSD==""){
-   efectivoUSD=0;
-  }	
-
-  var tipo_cambio=$("#tipo_cambio_dolar").val();
-  //alert ('tipo_cambio='+tipo_cambio);
-  var monto_dolares_bolivianos=parseFloat(efectivoUSD)*parseFloat(tipo_cambio);
-  var monto_total_bolivianos=monto_dolares_bolivianos+parseFloat(efectivo);
+  var monto_total_bolivianos=parseFloat(efectivo);
   document.getElementById("efectivoRecibido").value=Math.round((monto_total_bolivianos)*100)/100;
-  document.getElementById("efectivoRecibidoUSD").value=Math.round((monto_total_bolivianos/tipo_cambio)*100)/100;
   aplicarCambioEfectivo(f);
 }
 function marcarDesmarcar(f,elem){
@@ -880,7 +815,7 @@ function Hidden(){
 	document.getElementById('divboton').style.visibility='hidden';
 
 }
-function setMateriales(f, cod, nombreMat){
+function setMateriales(f, cod, nombreMat, stockProducto){
 	var numRegistro=f.materialActivo.value;
 	var nombre_material_x, fecha_venc_x, cantidad_presentacionx, venta_solo_cajax;
 	var datos_material=nombreMat.split("####");
@@ -892,7 +827,9 @@ function setMateriales(f, cod, nombreMat){
 	document.getElementById('materiales'+numRegistro).value=cod;
 	document.getElementById('cod_material'+numRegistro).innerHTML=nombre_material_x;
 	document.getElementById('fecha_vencimiento'+numRegistro).innerHTML=fecha_venc_x;
-	
+
+	document.getElementById('stock'+numRegistro).value=parseInt(stockProducto);
+
 	document.getElementById('divRecuadroExt').style.visibility='hidden';
 	document.getElementById('divProfileData').style.visibility='hidden';
 	document.getElementById('divProfileDetail').style.visibility='hidden';
@@ -906,10 +843,12 @@ function setMateriales(f, cod, nombreMat){
 	}
 	document.getElementById("cantidad_unitaria"+numRegistro).focus();
 
+	//actStock(numRegistro);
+	ajaxPrecioItem(numRegistro);
+	totales();
 
-	actStock(numRegistro);
-	// Verificación de PRECIO CLIENTE
-	precioCliente(numRegistro, cod);
+	/*El precio del cliente debe integrarse al ajaxPrecioItem*/
+	//precioCliente(numRegistro, cod);
 }
 /**
  * Verificación de Precio Cliente
@@ -1076,14 +1015,6 @@ function menos(numero) {
 	totales();
 }
 
-/*function pressEnter(e, f){
-	tecla = (document.all) ? e.keyCode : e.which;
-	if (tecla==13){
-		document.getElementById('itemNombreMaterial').focus();
-		listaMateriales(f);
-		return false;
-	}
-}*/
 function pressEnter(e, f){
 	tecla = (document.all) ? e.keyCode : e.which;
 	if (tecla==13){
@@ -1093,26 +1024,6 @@ function pressEnter(e, f){
 	    return false;    	   	    	
 		//listaMateriales(f);			
 	}
-}
-function alterna_modo_de_pantalla() {
-  if ((document.fullScreenElement && document.fullScreenElement !== null) ||    // metodo alternativo
-      (!document.mozFullScreen && !document.webkitIsFullScreen)) {               // metodos actuales
-    if (document.documentElement.requestFullScreen) {
-      document.documentElement.requestFullScreen();
-    } else if (document.documentElement.mozRequestFullScreen) {
-      document.documentElement.mozRequestFullScreen();
-    } else if (document.documentElement.webkitRequestFullScreen) {
-      document.documentElement.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
-    }
-  } else {
-    if (document.cancelFullScreen) {
-      document.cancelFullScreen();
-    } else if (document.mozCancelFullScreen) {
-      document.mozCancelFullScreen();
-    } else if (document.webkitCancelFullScreen) {
-      document.webkitCancelFullScreen();
-    }
-  }
 }
 
 
@@ -1133,110 +1044,167 @@ function leerCookie(nombre) {
 	return valor;
 }
 
-function validar(f, ventaDebajoCosto){	
+function validar(f){	
 	
+	var mensajeGuardar="";
 	var cookieSucursal=leerCookie("global_agencia");	
 	var formularioSucursal=$("#sucursal_origen").val();
 	console.log("cookieSucursal: "+cookieSucursal+" formularioSucursal: "+formularioSucursal);
+
+	
 
 	if(parseInt(cookieSucursal)!=parseInt(formularioSucursal)){
 		Swal.fire("NO PUEDE GENERAR LA VENTA!!!.", "Error en sesion de Sucursal!!!!. Cierre la Ventana de Facturacion y vuelva a abrir la misma.", "error");		
 		return (false);
 	}
 
-	
 	if($("#nitCliente").val()=="0"){
-		// errores++;
 		Swal.fire("Nit!", "Se requiere un número de NIT / CI / CEX válido", "warning");
-		// $("#pedido_realizado").val(0);		
 		return(false);
 	}
-
 	if($("#nro_tarjeta").val().length!=16&&$("#nro_tarjeta").val()!=""){
-		// errores++;
 		Swal.fire("Tarjeta!", "El número de Tarjeta debe tener 16 digitos<br><br><b>Ej: 1234********1234</b>", "info");
-		// $("#pedido_realizado").val(0);
 		return(false);
 	}
 
-	if($("#totalFinal").val()<=0){
+	/******** Validacion productos vacios ********/
+	var banderaValidacionDetalle=0;
+	var inputs = $('form input[name^="materiales"]');
+	inputs.each(function() {
+  	var value = $(this).val();
+  	if(value==0 || value==""){
+			banderaValidacionDetalle=1;
+  	}else{
+  	}
+	});
+	if(banderaValidacionDetalle==1){
+		Swal.fire("Productos!", "Debe seleccionar un producto para cada fila.", "info");
+		return(false);
+	}
+	/******** Fin validacion productos vacios ********/
+	
+	/******** Validacion Cantidades ********/
+	var banderaValidacionDetalle=0;
+	var inputs = $('form input[name^="cantidad_unitaria"]');
+	inputs.each(function() {
+  	var value = $(this).val();
+  	if(value<=0 || value==""){
+			banderaValidacionDetalle=1;
+  	}else{
+  	}
+	});
+	if(banderaValidacionDetalle==1){
+		Swal.fire("Cantidades!", "Hay algún campo con la cantidad vacia o en cero.", "info");
+		return(false);
+	}
+	/******** Fin validacion Cantidades ********/
+
+	/******** Validacion Precios ********/
+	var banderaValidacionDetalle=0;
+	var inputs = $('form input[name^="precio_unitario"]');
+	inputs.each(function() {
+  	var value = $(this).val();
+  	if(value<=0 || value==""){
+			banderaValidacionDetalle=1;
+  	}else{
+  	}
+	});
+	if(banderaValidacionDetalle==1){
+		Swal.fire("Precios!", "No pueden existir precios menores o iguales a 0.", "info");
+		return(false);
+	}
+	/******** Fin Precios ********/
+
+	/******** Validacion Montos Productos ********/
+	var banderaValidacionDetalle=0;
+	var inputs = $('form input[name^="montoMaterial"]');
+	inputs.each(function() {
+  	var value = $(this).val();
+  	if(value==0 || value==""){
+			banderaValidacionDetalle=1;
+  	}else{
+  	}
+	});
+	if(banderaValidacionDetalle==1){
+		Swal.fire("Montos por Producto!", "No puede existir la venta de un producto en 0.", "info");
+		return(false);
+	}
+	/******** Fin Montos Productos ********/
+
+
+	/**************************************************/
+	/************ Validacion de Stocks ****************/
+	/**************************************************/
+	var banderaValidacionStock=document.getElementById("bandera_validacion_stock").value;
+	console.log("bandera stocks valid: "+banderaValidacionStock);
+	banderaValidacionDetalle=0;
+	var inputs_stocks = $('form input[name^="stock"]');
+	var inputs_cantidades = $('form input[name^="cantidad_unitaria"]');
+	for (var i = 0; i < inputs_stocks.length; i++) {
+  	var cantidadFila = inputs_cantidades[i].value;
+  	var stockFila = inputs_stocks[i].value;
+  	if(banderaValidacionStock==1){
+  		if(cantidadFila>stockFila){
+  			banderaValidacionDetalle=1;
+  		}
+  	}else{ 				//para todos los otros casos de stocks
+  		if(cantidadFila>stockFila){
+  			banderaValidacionDetalle=2;
+  		}
+  	}
+  	console.log("cantidadStock: "+stockFila);
+  	console.log( "cantidadFila: "+cantidadFila);
+	}
+	console.log("validacionDetalleStocks:"+banderaValidacionDetalle);
+	if(banderaValidacionDetalle==1){
+		Swal.fire("Stocks!", "NO puede sacar cantidades mayores al stock.", "error");
+		return(false);
+	}
+	if(banderaValidacionDetalle==2){
+		mensajeGuardar="La venta provocara NEGATIVO en el STOCK!";				
+	}
+	/**************************************************/
+	/************ Fin Validacion de Stocks ************/
+	/**************************************************/
+
+  /**************** Validar Efectivo y Total Final ****************/
+  var efectivoRecibido = parseFloat($("#efectivoRecibido").val());
+  var totalFinalVenta = parseFloat($("#totalFinal").val());
+  if (isNaN(efectivoRecibido)) { efectivoRecibido = 0; }
+  if (isNaN(totalFinalVenta)) { totalFinalVenta = 0; }
+  console.log("efectivo: "+efectivoRecibido);
+  if(efectivoRecibido < totalFinalVenta){
+    Swal.fire("Error en Monto Recibido en Efectivo!", "<b>El monto en efectivo NO puede ser menor al monto total.</b>", "error");
+		return (false);
+  }
+	if(totalFinalVenta<=0){
 		Swal.fire("Monto Final!", "El Monto Final del documento no puede ser 0", "info");
 		return(false);
 	}
-	//alert(ventaDebajoCosto);
-	f.cantidad_material.value=num;
-	var cantidadItems=num;
-	console.log("numero de items: "+cantidadItems);
-	console.log("MontoFinal: "+totalFinal);
+  /**************** Fin Validar Efectivo y Total Final ****************/
 
-	if(cantidadItems>0){
-		var item="";
-		var cantidad="";
-		var stock="";
-		var descuento="";
-		var monto_item="";
-		for(var i=1; i<=cantidadItems; i++){
-			console.log("valor i: "+i);
-			console.log("objeto materiales: "+document.getElementById("materiales"+i));
-			if(document.getElementById("materiales"+i)!=null){
-				item=parseFloat(document.getElementById("materiales"+i).value);
-				cantidad=parseFloat(document.getElementById("cantidad_unitaria"+i).value);
-				monto_item=parseFloat(document.getElementById("montoMaterial"+i).value);
-				
-				//VALIDACION DE VARIABLE DE STOCK QUE NO SE VALIDA
-				stock=document.getElementById("stock"+i).value;
-				if(stock=="-"){
-					stock=10000;
-				}else{
-					stock=parseFloat(document.getElementById("stock"+i).value);
-				}
-				
-				descuento=parseFloat(document.getElementById("descuentoProducto"+i).value);
-				precioUnit=parseFloat(document.getElementById("precio_unitario"+i).value);				
-				var costoUnit=parseFloat(document.getElementById("costoUnit"+i).value);
-		
-				console.log("materiales"+i+" valor: "+item);
-				console.log("stock: "+stock+" cantidad: "+cantidad+ "precio: "+precioUnit);
+	Swal.fire({
+		title: '¿Esta seguro de Realizar la Venta?',
+		text: mensajeGuardar,
+		showCancelButton: true,
+		confirmButtonColor: '#3085d6',
+		cancelButtonColor: '#d33',
+		confirmButtonText: 'Si, Vender/Facturar!'
+		}).then((result) => {
+				console.log(result);
+				console.log("resultado: "+result.value);
+		    if (result.value) {
+		      console.log("Enviando");
+		      document.getElementById("btsubmit").value = "Enviando...";
+					document.getElementById("btsubmit").disabled = true;   
+					document.forms[0].submit();
+		    }if(result.dismiss){
+						console.log("Cancelando....");
+						return false;
+		    }
+	});
 
-				if(item==0){
-					alert("Debe escoger un item en la fila "+i);
-					return(false);
-				}
-				//alert(costoUnit+" "+precioUnit);
-				if(costoUnit>precioUnit && ventaDebajoCosto==0){
-					alert('No puede registrar una venta a perdida!!!!');
-					return(false);
-				}
-				if(stock<cantidad){
-					alert("No puede sacar cantidades mayores a las existencias. Fila "+i);
-					return(false);
-				}		
-				if( (cantidad<=0 || precioUnit<=0) || (Number.isNaN(cantidad)) || Number.isNaN(precioUnit) || (Number.isNaN(monto_item)) || monto_item<=0 ){
-					alert("La cantidad, Precio y Monto por Item no pueden estar vacios o ser <= 0.");
-					return(false);
-				}
-			}
-		}
-	}else{
-		alert("El ingreso debe tener al menos 1 item.");
-		return(false);
-	}
-	/*Swal.fire({
-        title: '¿Esta seguro de Realizar la Venta?',
-        text: "Se procederá con el guardado del documento",
-         type: 'info'
-       }).then((result) => {
-          if (result.value) {
-            alert("Enviando....");
-          } else if (result.dismiss === Swal.DismissReason.cancel) {
-            return(false);
-          }
-    });
-
-   if(1==1){
-   	alert("parando");
-   	return(false);
-   }*/
+  return false;
 }
 
 function validarCotizacion(f){		
@@ -1260,7 +1228,6 @@ function validarCotizacion(f){
 		Swal.fire("Monto Final!", "El Monto Final del documento no puede ser 0", "info");
 		return(false);
 	}
-	//alert(ventaDebajoCosto);
 	f.cantidad_material.value=num;
 	var cantidadItems=num;
 	console.log("numero de items: "+cantidadItems);
@@ -1305,28 +1272,6 @@ function validarCotizacion(f){
 	f.action="guardarCotizacion.php";
 	f.submit();
 }
-
-
-
-function checkSubmit() {
-    document.getElementById("btsubmit").value = "Enviando...";
-    document.getElementById("btsubmit").disabled = true;
-    return true;
-}	
-
-$(document).ready(function() {
-  $("#guardarSalidaVenta").submit(function(e) {
-      var mensaje="";
-      if(parseFloat($("#efectivoRecibido").val())<parseFloat($("#totalFinal").val())){
-        mensaje+="<p></p>";
-        alert("El monto en efectivo NO debe ser menor al monto total");
-        return false;
-      }else{
-      	document.getElementById("btsubmit").value = "Enviando...";
-				document.getElementById("btsubmit").disabled = true;        				
-      }     
-    });
-});
 
 function mostrarComplemento(){
 	var tipo=$("#tipo_documento").val();
@@ -1377,7 +1322,6 @@ function asignarNit(nit){
 }
 
 function adicionarCliente() {	
-   
     var nomcli = $("#nomcli").val();
     var apcli = $("#apcli").val();
     var ci = $("#ci").val();
@@ -1684,12 +1628,6 @@ $datConf=mysqli_fetch_array($respConf);
 $facturacionActivada=$datConf[0];
 //$facturacionActivada=mysql_result($respConf,0,0);
 
-//SACAMOS LA CONFIGURACION PARA CONOCER SI PERMITIMOS VENDER POR DEBAJO DEL COSTO
-$sqlConf="select valor_configuracion from configuraciones where id_configuracion=5";
-$respConf=mysqli_query($enlaceCon,$sqlConf);
-$datConf=mysqli_fetch_array($respConf);
-$ventaDebajoCosto=$datConf[0];
-//$ventaDebajoCosto=mysql_result($respConf,0,0);
 
 //SACAMOS LA CONFIGURACION PARA SABER SI MOSTRAR MENSAJES DE BIENVENIDA PANTALLA PRINCIPAL
 $banderaMensajesDoblePantalla=0;
@@ -1733,9 +1671,6 @@ if(isset($_GET['file'])){
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent-4">
                     <ul class="navbar-nav ml-auto">
-                    	  <li class="nav-item active">
-                            <a class="nav-link" href="#" onclick="alterna_modo_de_pantalla();" title="PANTALLA COMPLETA"><i class="material-icons">fullscreen</i></a>
-                        </li>
                         <li class="nav-item active">
                             <a class="nav-link" href="#"><i class="fa fa-user"></i> <?php echo $nombreUsuarioSesion?> <span class="sr-only">(current)</span></a>
                         </li>                        
@@ -1745,7 +1680,7 @@ if(isset($_GET['file'])){
                 </div>
             </nav>
 
-<form action='guardarSalidaMaterial.php' method='POST' name='form1' id="guardarSalidaVenta" ><!--onsubmit='return checkSubmit();'-->
+<form action='guardarSalidaMaterial.php' method='POST' name='form1' id="guardarSalidaVenta" onsubmit="return validar(this)">
 
 	<input type="hidden" id="siat_error_valor" name="siat_error_valor">
 	<input type="hidden" id="confirmacion_guardado" value="0">
@@ -1756,6 +1691,8 @@ if(isset($_GET['file'])){
 	<input type="hidden" id="sucursal_origen" name="sucursal_origen" value="<?=$globalAgencia?>">
 
 	<input type="hidden" id="validacion_clientes" name="validacion_clientes" value="<?=obtenerValorConfiguracion($enlaceCon,11)?>">
+	<input type="hidden" id="bandera_validacion_stock" name="bandera_validacion_stock" value="<?=obtenerValorConfiguracion($enlaceCon,4)?>">
+
 
 <table class='' width='100%' style='width:100%;margin-top:-24px !important;'>
 <tr class="bg-info text-white" align='center' id='venta_detalle' style="color:#fff;background:#006db3 !important; font-size: 16px;">
@@ -2152,7 +2089,7 @@ if($confDescuentoHabilitado==1){
 
 if($banderaErrorFacturacion==0 || $tipoDocDefault!=1){
 	echo "<div class='divBotones2'>
-	        <input type='submit' class='boton-verde' value='Guardar Venta' id='btsubmit' name='btsubmit' onClick='return validar(this.form, $ventaDebajoCosto)'>
+	        <input type='submit' class='boton-verde' value='Guardar Venta' id='btsubmit' name='btsubmit'>
 					
 					<!--input type='button' class='boton2' value='Cancelar' onClick='location.href=\"navegador_ingresomateriales.php\"';-->
 					
@@ -2166,7 +2103,7 @@ if($banderaErrorFacturacion==0 || $tipoDocDefault!=1){
                <td style='font-size:12px;color:#189B22; font-weight:bold;' class='d-none'>EFECTIVO $ USD</td
             </tr>
              <tr>
-               <td><input type='number' name='efectivoRecibidoUnido' onChange='aplicarMontoCombinadoEfectivo(form1);' onkeyup='aplicarMontoCombinadoEfectivo(form1);' onkeydown='aplicarMontoCombinadoEfectivo(form1);' id='efectivoRecibidoUnido' style='height:25px;font-size:18px;width:100%;' step='any'></td>
+               <td><input type='number' name='efectivoRecibidoUnido' onChange='aplicarMontoCombinadoEfectivo(form1);' onkeyup='aplicarMontoCombinadoEfectivo(form1);' onkeydown='aplicarMontoCombinadoEfectivo(form1);' id='efectivoRecibidoUnido' style='height:25px;font-size:18px;width:100%;' value='0' step='any'></td>
                <td class='d-none'><input type='number' name='efectivoRecibidoUnidoUSD' onChange='aplicarMontoCombinadoEfectivo(form1);' onkeyup='aplicarMontoCombinadoEfectivo(form1);' onkeydown='aplicarMontoCombinadoEfectivo(form1);' id='efectivoRecibidoUnidoUSD' style='height:25px;font-size:18px;width:100%;' step='any'></td>
                <td><a href='#' class='btn btn-default btn-sm btn-fab' style='background:#FF0000' onclick='validarCotizacion(form1); return false;' id='boton_cotizacion' title='Guardar como Cotización' data-toggle='tooltip'><i class='material-icons'>file_download</i></a></td>
              </tr>
@@ -2183,8 +2120,8 @@ if($banderaErrorFacturacion==0 || $tipoDocDefault!=1){
 
 </div>
 
-<input type='hidden' name='materialActivo' value="0">
-<input type='hidden' name='cantidad_material' value="0">
+<input type='hidden' name='materialActivo' id='materialActivo' value="0">
+<input type='hidden' name='cantidad_material' id='cantidad_material' value="0">
 <!-- small modal -->
 <div class="modal fade modal-primary" id="modalAsignarNit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-md">
