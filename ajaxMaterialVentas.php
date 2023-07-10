@@ -20,7 +20,7 @@ $banderaPreciosDescuento=obtenerValorConfiguracion($enlaceCon,52);
 <!--link rel="STYLESHEET" type="text/css" href="stilos.css" /-->
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 
-<table border="0" align="center" width="100%"  class="texto" id="data<?php echo $num?>" >
+<table border="0" align="center" width="100%"  class="texto100" id="data<?php echo $num?>" >
 <tr bgcolor="#FFFFFF">
 
 <td width="10%" align="center">

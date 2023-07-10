@@ -104,9 +104,8 @@ h2 {
 }
 
 table {
-    *border-collapse: collapse; /* IE7 and lower */
     border-spacing: 0;
-    width: 85%;    
+    width: 95%;    
     font-family: Verdana, sans-serif, Arial;
     font-size:9pt;
 }
@@ -178,36 +177,32 @@ table {
     border-radius: 0 0 6px 6px
 }
 
-/*.texto {
-font-family: sans-serif, Arial;
-    font-size: 8pt;
-    color:#000000;
-
-}*/
 .textoMsj {
     font-family: sans-serif, Arial;
     font-size: 13pt;
     color:#5F7BA9;
 
 }
-/*.textotabla{
-    font-family: sans-serif, Arial;
-    font-size: 10pt;
-    color: #5F7BA9;
-    background: #EAF7FD
-}*/
+.texto100 table{
+    border-spacing: 0;
+    width: 100%;    
+    font-family: Verdana, sans-serif, Arial;
+    font-size:9pt;
+}
+.texto100 td, .texto100 th {
+    padding: 10px;
+    border-bottom: 1px solid #f2f2f2;    
+}
 .texto td, .texto th {
     padding: 10px;
     border-bottom: 1px solid #f2f2f2;    
 }
-
 .texto tbody tr:nth-child(even) {
     background: #f5f5f5;
     -webkit-box-shadow: 0 1px 0 rgba(255,255,255,.8) inset; 
     -moz-box-shadow:0 1px 0 rgba(255,255,255,.8) inset;  
     box-shadow: 0 1px 0 rgba(255,255,255,.8) inset;        
 }
-
 .texto th {
     text-align: left;
     text-shadow: 0 1px 0 rgba(255,255,255,.5); 
@@ -220,13 +215,11 @@ font-family: sans-serif, Arial;
     background-image:      -o-linear-gradient(top, #f5f5f5, #eee); 
     background-image:         linear-gradient(top, #f5f5f5, #eee);
 }
-
 .texto th:first-child {
     -moz-border-radius: 6px 0 0 0;
     -webkit-border-radius: 6px 0 0 0;
     border-radius: 6px 0 0 0;  
 }
-
 .texto th:last-child {
     -moz-border-radius: 0 6px 0 0;
     -webkit-border-radius: 0 6px 0 0;

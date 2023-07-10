@@ -48,7 +48,7 @@ for( $j=0;$j<=sizeof($arrayProductosX)-1;$j++ ){
 ?>
 
 <div id="div<?php echo $num?>">
-<table border="0" align="center" width="100%"  class="texto" id="data<?php echo $num?>" >
+<table border="0" align="center" width="100%"  class="texto100" id="data<?php echo $num?>" >
 <tr bgcolor="#FFFFFF">
 
 <td width="10%" align="center">
@@ -85,8 +85,8 @@ echo "</div></td>";
 </td>
 
 <td align="center" width="15%">
-	<input class="inputnumber" type="number" min="0" max="90" step="0.01" value="<?=$descuentoBs;?>" id="tipoPrecio<?php echo $num;?>" 	name="tipoPrecio<?php echo $num;?>" style="background:#ADF8FA;" readonly>%
-	<input class="inputnumber" type="number" value="<?=$descuentoPorcentaje;?>" id="descuentoProducto<?php echo $num;?>" name="descuentoProducto<?php echo $num;?>" step="0.01" style='background:#ADF8FA;' readonly>
+	<input class="inputnumber" type="number" min="0" max="90" step="0.01" value="<?=$descuentoPorcentaje;?>" id="tipoPrecio<?php echo $num;?>" 	name="tipoPrecio<?php echo $num;?>" style="background:#ADF8FA;" readonly>%
+	<input class="inputnumber" type="number" value="0" id="descuentoProducto<?php echo $num;?>" name="descuentoProducto<?php echo $num;?>" step="0.01" style='background:#ADF8FA;' readonly>
 	<div id="divMensajeOferta<?=$num;?>" class="textosmallazul"><?=$nombrePrecioAplicar;?></div>
 </td>
 

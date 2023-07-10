@@ -337,7 +337,7 @@ function ajaxPrecioItem(indice){
 	contenedor=document.getElementById("idprecio"+indice);
 	var codmat=document.getElementById("materiales"+indice).value;
 	var tipoPrecio=document.getElementById("tipoPrecio"+indice).value;
-	console.log("descuento: "+tipoPrecio);
+	console.log("AjaxPrecioItemStart->descuento: "+tipoPrecio);
 	//var tipoPrecio=1;
 	var cantidadUnitaria=document.getElementById("cantidad_unitaria"+indice).value;
 	if(cantidadUnitaria>0){
@@ -350,13 +350,20 @@ function ajaxPrecioItem(indice){
 	ajax.onreadystatechange=function() {
 		if (ajax.readyState==4) {
 				var respuesta=ajax.responseText.split("#####");
-				console.log("[0]:"+respuesta[0]+" [1]:"+respuesta[1]+" [2]:"+respuesta[2]+" [3]:"+respuesta[3])
 				contenedor.innerHTML = respuesta[0];				
-				document.getElementById("descuentoProducto"+indice).value=(respuesta[1]*parseFloat(cantidadUnitaria));
+				if(parseFloat(cantidadUnitaria>0)){
+					document.getElementById("descuentoProducto"+indice).value=(respuesta[1]*parseFloat(cantidadUnitaria));
+				}else{
+					document.getElementById("descuentoProducto"+indice).value=(respuesta[1]);
+				}
 				if(respuesta[2]==0){
 					console.log("No aplica porcentaje para el producto");
 				}else{
-					document.getElementById("tipoPrecio"+indice).value=(respuesta[2]*parseFloat(cantidadUnitaria));
+					if(parseFloat(cantidadUnitaria>0)){
+						document.getElementById("tipoPrecio"+indice).value=(respuesta[2]*parseFloat(cantidadUnitaria));						
+					}else{
+						document.getElementById("tipoPrecio"+indice).value=(respuesta[2]);
+					}
 				}
 				if(respuesta[3]!=""){
 					document.getElementById("divMensajeOferta"+indice).innerHTML=respuesta[3];
@@ -798,7 +805,9 @@ $rpt_territorio=$_COOKIE['global_agencia'];
 $rpt_almacen=$_COOKIE['global_almacen'];
 
 $fecha_inicio="01/".date("m/Y");
-$fecha_actual=date("d/m/Y");
+
+$fecha_actual=date("Y-m-d");
+
 $fecha_inicio_kardex=obtenerValorConfiguracion($enlaceCon,50);
 if($fecha_inicio_kardex==0 || $fecha_inicio_kardex==""){
 	$fecha_inicio_kardex=$fecha_inicio;	
@@ -968,7 +977,7 @@ function masMultiple(form) {
 			num++;
 			div_material_linea=document.getElementById("fiel");			
 
-			/*recuperamos las cantidades de los otors productos*/
+			/*recuperamos las cantidades de los otros productos*/
 			var inputs = $('form input[name^="cantidad_unitaria"]');
 			var arrayCantidades=[];
 			inputs.each(function() {
@@ -977,6 +986,17 @@ function masMultiple(form) {
 			  var index = name.charAt(name.length - 1);
 			  console.log("index: "+index);
 			  arrayCantidades.push([name,value,index]);
+			});
+			/*fin recuperar*/
+			/*recuperamos los stocks de los otros productos*/
+			var inputs = $('form input[name^="stock"]');
+			var arrayStocks=[];
+			inputs.each(function() {
+			  var name = $(this).attr('name');
+			  var value = $(this).val();
+			  var index = name.charAt(name.length - 1);
+			  console.log("index: "+index);
+			  arrayStocks.push([name,value,index]);
 			});
 			/*fin recuperar*/
 
@@ -988,6 +1008,11 @@ function masMultiple(form) {
 				}
 				for (x=0;x<arrayCantidades.length;x++) {
 					console.log("Iniciando recorrido Matriz");
+					var name_set_stock=arrayStocks[x][0];
+					var value_set_stock=arrayStocks[x][1];
+					var index_set_stock=arrayStocks[x][2];
+					document.getElementById(name_set_stock).value=value_set_stock;
+
 					var name_set=arrayCantidades[x][0];
 					var value_set=arrayCantidades[x][1];
 					var index_set=arrayCantidades[x][2];
@@ -1051,7 +1076,7 @@ function validar(f){
 	var formularioSucursal=$("#sucursal_origen").val();
 	console.log("cookieSucursal: "+cookieSucursal+" formularioSucursal: "+formularioSucursal);
 
-	
+	document.getElementById('cantidad_material').value=num;
 
 	if(parseInt(cookieSucursal)!=parseInt(formularioSucursal)){
 		Swal.fire("NO PUEDE GENERAR LA VENTA!!!.", "Error en sesion de Sucursal!!!!. Cierre la Ventana de Facturacion y vuelva a abrir la misma.", "error");		
@@ -1141,8 +1166,8 @@ function validar(f){
 	var inputs_stocks = $('form input[name^="stock"]');
 	var inputs_cantidades = $('form input[name^="cantidad_unitaria"]');
 	for (var i = 0; i < inputs_stocks.length; i++) {
-  	var cantidadFila = inputs_cantidades[i].value;
-  	var stockFila = inputs_stocks[i].value;
+  	var cantidadFila = parseFloat(inputs_cantidades[i].value);
+  	var stockFila = parseFloat(inputs_stocks[i].value);
   	if(banderaValidacionStock==1){
   		if(cantidadFila>stockFila){
   			banderaValidacionDetalle=1;
@@ -1695,7 +1720,7 @@ if(isset($_GET['file'])){
 
 
 <table class='' width='100%' style='width:100%;margin-top:-24px !important;'>
-<tr class="bg-info text-white" align='center' id='venta_detalle' style="color:#fff;background:#006db3 !important; font-size: 16px;">
+<tr class="bg-info text-white" align='center' id='venta_detalle' style="color:#fff;background:#006db3 !important; font-size: 13px;">
 <?php
 
 if($tipoDocDefault==2){

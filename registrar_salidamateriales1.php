@@ -145,11 +145,17 @@ function Hidden(){
 	document.getElementById('divboton').style.visibility='hidden';
 
 }
-function setMateriales(f, cod, nombreMat){
+function setMateriales(f, cod, nombreMat, stockProducto){
 	var numRegistro=f.materialActivo.value;
-	
+	var nombre_material_x, fecha_venc_x, cantidad_presentacionx, venta_solo_cajax;
+	var datos_material=nombreMat.split("####");
+ 	nombre_material_x=datos_material[0];  
+ 	fecha_venc_x=datos_material[1];  
+ 	cantidad_presentacionx=datos_material[2];
+ 	venta_solo_cajax=datos_material[3];
 	document.getElementById('materiales'+numRegistro).value=cod;
-	document.getElementById('cod_material'+numRegistro).innerHTML=nombreMat;
+
+	document.getElementById('cod_material'+numRegistro).innerHTML=nombre_material_x;
 	
 	document.getElementById('divRecuadroExt').style.visibility='hidden';
 	document.getElementById('divProfileData').style.visibility='hidden';
