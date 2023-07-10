@@ -10,7 +10,6 @@ require("enviar_correo/php/send-email_anulacion.php");
 // error_reporting(E_ALL);
 // ini_set('display_errors', '1');
 
-
 $usuarioVendedor=$_COOKIE['global_usuario'];
 $globalSucursal=$_COOKIE['global_agencia'];
 
@@ -29,15 +28,11 @@ $tipoSalida=$_POST['tipoSalida'];
 $almacenOrigen=$_POST['almacen_origen'];
 $globalSucursal=$_POST['sucursal_origen'];
 
-
-
 $tipoDoc=$_POST['tipoDoc'];
 if(!isset($_POST['no_venta'])){
    $almacenDestino=2;
-   //$almacenOrigen=$global_almacen;
 }else{
    $almacenDestino=$_POST['almacen'];
-   //$almacenOrigen=$global_almacen;
 }
 
 $cod_tipopreciogeneral=0;
@@ -68,8 +63,6 @@ if(isset($_POST['tipo_cambio_dolar'])){
    $tipo_cambio=$_POST['tipo_cambio_dolar'];
 }
 
-
-
 if(isset($_POST['cliente'])){	$codCliente=$_POST['cliente']; }else{ $codCliente=0;	}
 if(isset($_POST['tipoPrecio'])){	$tipoPrecio=$_POST['tipoPrecio']; }else{ $tipoPrecio=0;	}
 if(isset($_POST['razonSocial'])){	$razonSocial=$_POST['razonSocial']; }else{ $razonSocial="";	}
@@ -83,9 +76,6 @@ if(isset($_POST['nitCliente'])){	$nitCliente=$_POST['nitCliente']; }else{ $nitCl
 if((int)$nitCliente==123){
 	$razonSocial="SN";
 }
-
-
-
 
 $fecha_emision_manual="";
 if(isset($_POST['fecha_emision']) and isset($_POST['hora_emision'])){
@@ -136,35 +126,20 @@ $hora=date("H:i:s");
 
 
 //SACAMOS LA CONFIGURACION PARA EL DOCUMENTO POR DEFECTO
-$sqlConf="select valor_configuracion from configuraciones where id_configuracion=1";
-$respConf=mysqli_query($enlaceCon,$sqlConf);
-$datConf=mysqli_fetch_array($respConf);
-$tipoDocDefault=$datConf[0];
-//$tipoDocDefault=mysql_result($respConf,0,0);
+$tipoDocDefault=obtenerValorConfiguracion($enlaceCon,1);
+
 
 //SACAMOS LA CONFIGURACION PARA EL CLIENTE POR DEFECTO
-$sqlConf="select valor_configuracion from configuraciones where id_configuracion=2";
-$respConf=mysqli_query($enlaceCon,$sqlConf);
-$datConf=mysqli_fetch_array($respConf);
-$clienteDefault=$datConf[0];
-//$clienteDefault=mysql_result($respConf,0,0);
+$clienteDefault=obtenerValorConfiguracion($enlaceCon,2);
 
 //SACAMOS LA CONFIGURACION PARA CONOCER SI LA FACTURACION ESTA ACTIVADA
-$sqlConf="select valor_configuracion from configuraciones where id_configuracion=3";
-$respConf=mysqli_query($enlaceCon,$sqlConf);
-$datConf=mysqli_fetch_array($respConf);
-$facturacionActivada=$datConf[0];
-//$facturacionActivada=mysql_result($respConf,0,0);
+$facturacionActivada=obtenerValorConfiguracion($enlaceCon,3);
 
-$sqlConf="select valor_configuracion from configuraciones where id_configuracion=4";
-$respConf=mysqli_query($enlaceCon,$sqlConf);
-$datConf=mysqli_fetch_array($respConf);
-$banderaValidacionStock=$datConf[0];
-//$banderaValidacionStock=mysql_result($respConf,0,0);
+//SACAMOS LA CONFIGURACION PARA CONOCER EL CONTROL DE STOCKS
+$banderaValidacionStock=obtenerValorConfiguracion($enlaceCon,4);
 
 //variables para envio de correo
 $siat_estado_facturacion="";
-
 //SI TIPO DE DOCUMENTO ES 1 == FACTURA INGRESAMOS A LOS PROCESOS SIAT y 4 facturas de contigencia
 if($tipoDoc==1 || $tipoDoc==4){
 	//ALEATORIAMENTE SON DOS PORQUE AL PRIMER RAND SIEMPRE RETORNA EL MISMO
@@ -187,15 +162,10 @@ if($tipoDoc==1 || $tipoDoc==4){
 if((int)$nitCliente=='99001' || (int)$nitCliente=='99002' || (int)$nitCliente=='99003'){
 	$siat_codigotipodocumentoidentidad=5;//nit
 }
-
-
 $created_by=$usuarioVendedor;
-
 $contador = 0;
 do {
-
 	$anio=date("Y");
-
 	$created_at=date("Y-m-d H:i:s");
 	$sql="SELECT IFNULL(max(cod_salida_almacenes)+1,1) FROM salida_almacenes";
 	$resp=mysqli_query($enlaceCon,$sql);
@@ -219,8 +189,6 @@ do {
 			$fechaEmit=$_POST['fecha_emision'];	
 			$horaEmit=$_POST['hora_emision'];	
 
-			// $sqlCufd="select codigo,cufd,codigo_control FROM siat_cufd where cod_ciudad='$globalSucursal' and estado=1 and fecha='$fechaEmit' and cuis='$cuis' LIMIT 1";	
-
 			$sqlCufd="SELECT codigo,cufd,codigo_control from siat_cufd where cod_ciudad='$globalSucursal' and cuis='$cuis' and  created_at between '$fechaEmit 00:00:00' and '$fechaEmit $horaEmit:00' order by created_at desc limit 1";
 		}else{
 			$sqlCufd="select codigo,cufd,codigo_control FROM siat_cufd where cod_ciudad='$globalSucursal' and estado=1 and fecha='$fecha' and cuis='$cuis' LIMIT 1";	
@@ -240,7 +208,6 @@ do {
 		if(!isset($_POST["nro_correlativo"])){
 	  			$nro_correlativo=$vectorNroCorrelativo[0];
 		}else{
-	  			// $vectorNroCorrelativo=numeroCorrelativoCUFD($enlaceCon,$tipoDoc);
 				$vectorNroCorrelativo=numeroCorrelativo($enlaceCon,$tipoDoc);
 	  			$nro_correlativo=$vectorNroCorrelativo[0];
 		}
@@ -279,7 +246,6 @@ do {
 	$contador++;
 } while ($sql_inserta<>1 && $contador <= 100);
 
-
 if($sql_inserta==1){
 	$code="";
 	//TARJETA INSERTAR
@@ -305,10 +271,6 @@ if($sql_inserta==1){
 	{   	
 		$codMaterial=$_POST["materiales$i"];
 		if($codMaterial!=0){
-
-			// if(isset($_POST['cantidad_unitaria$i'])){	$cantidadUnitaria=$_POST['cantidad_unitaria$i']; }else{ $cantidadUnitaria=0;	}
-			// if(isset($_POST['precio_unitario$i'])){	$precioUnitario=$_POST['precio_unitario$i']; }else{ $precioUnitario=0;	}
-			// if(isset($_POST['descuentoProducto$i'])){	$descuentoProducto=$_POST['descuentoProducto$i']; }else{ $descuentoProducto=0;	}
 			
 			$cantidadUnitaria=$_POST["cantidad_unitaria$i"];
 			$precioUnitario=$_POST["precio_unitario$i"];
@@ -316,14 +278,20 @@ if($sql_inserta==1){
 
 			//SE DEBE CALCULAR EL MONTO DEL MATERIAL POR CADA UNO PRECIO*CANTIDAD - EL DESCUENTO ES UN DATO ADICIONAL
 			$montoMaterial=$precioUnitario*$cantidadUnitaria;
-			$montoMaterialConDescuento=($precioUnitario*$cantidadUnitaria)-$descuentoProducto;
+			$montoMaterialConDescuento=($precioUnitario*$cantidadUnitaria)-$descuentoProducto;			
 			
-			
+			$banderaErrorCantidadRestante=0;
 			$montoTotalVentaDetalle=$montoTotalVentaDetalle+$montoMaterialConDescuento;
 			if($banderaValidacionStock==1){
-				//echo "descontando aca";
-				$respuesta=descontar_inventarios($enlaceCon,$codigo, $almacenOrigen,$codMaterial,$cantidadUnitaria,$precioUnitario,$descuentoProducto,$montoMaterial,$i);
-			}else{
+				/* Aca realizamos la validacion de la cantidad restante en caso de que la bandera de validacion sea 1 */
+				$cantidadRestanteProducto=cantidadRestanteIngresos($enlaceCon,$almacenOrigen,$codMaterial);
+				if($cantidadRestanteProducto>=$cantidadUnitaria){
+					$respuesta=descontar_inventarios($enlaceCon,$codigo,$almacenOrigen,$codMaterial,$cantidadUnitaria,$precioUnitario,$descuentoProducto,$montoMaterial,$i);
+				}else{
+					$banderaErrorCantidadRestante=1;
+				}
+			}
+			if($banderaValidacionStock==0 || $banderaErrorCantidadRestante==1){
 				$respuesta=insertar_detalleSalidaVenta($enlaceCon,$codigo, $almacenOrigen,$codMaterial,$cantidadUnitaria,$precioUnitario,$descuentoProducto,$montoMaterial,$banderaValidacionStock, $i);
 			}
 	

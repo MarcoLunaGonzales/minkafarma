@@ -264,12 +264,7 @@ $txtLeyendaFin=mysqli_result($respConf,0,1);
 <label class="arial-12"><?="COD. CLIENTE:	$cod_cliente"?></label><br>
 <label class="arial-12"><?="FECHA EMISIÓN: $fechaFactura $horaFactura"?></label><br>
 <label class="arial-12"><?="======================================"?></label><br>
-<table width="100%">
-	<tr align="center" class="arial-12"><td width="15%">Cantidad</td>
-		<td width="10%">P.U.</td>
-		<td width="25%">Monto</td>
-		<td align="right" width="20%">Desc.</td>
-		<td width="30%">SubTotal</td></tr></table>
+<table width="100%"><tr align="center" class="arial-12"><td width="15%"><?="CANT."?></td><td width="25%"><?="P.U."?></td><td align="right"  width="25%"><?="Desc."?></td><td width="35%"><?="IMPORTE"?></td></tr></table>
 <label class="arial-12"><?="======================================"?></label><br>
 <?php
 $sqlDetalle="select m.codigo_material, sum(s.`cantidad_unitaria`), m.`descripcion_material`, s.`precio_unitario`, 
@@ -305,31 +300,28 @@ while($datDetalle=mysqli_fetch_array($respDetalle)){
 	$descuentoVentaProd+=$descUnit;
 	$montoUnitProd=($cantUnit*$precioUnit);
 
-	$montoUnitProdF=redondear2($montoUnitProd);
-
 	$montoUnitProdDesc=$montoUnitProd-$descUnit;
 	$montoUnitProdDesc=redondear2($montoUnitProdDesc);
 
 	$montoUnitProd=redondear2($montoUnitProd);
 
 	?>
-    <table width="100%">
-    	<tr class="arial-7">
-    		<td align="left"  width="15%">(<?=$codInterno?>)</td>
-    		<td colspan="4" align="left"><?=$nombreMat?></td></tr>
-    	<tr class="arial-8">
-    		<td align="left"  width="10%"><?="$cantUnit"?></td>
-    		<td align="right" width="15%"><?="$precioUnitFactura"?></td>
-    		<td align="right" width="25%"><?="$montoUnitProdF"?></td>
-    		<td align="right"  width="20%"><?="$descUnit"?></td>
-    		<td align="right"  width="30%"><?="$montoUnitProdDesc"?></td>
-    	</tr></table>
+    <table width="100%"><tr class="arial-7"><td align="left"  width="15%">(<?=$codInterno?>)</td><td colspan="3" align="left"><?=$nombreMat?></td></tr>
+    <tr class="arial-8"><td align="left"  width="15%"><?="$cantUnit"?></td><td align="right" width="25%"><?="$precioUnitFactura"?></td><td align="right"  width="25%"><?="$descUnit"?></td><td align="right"  width="35%"><?="$montoUnitProdDesc"?></td></tr></table>
 	<?php
 	//$montoTotal=$montoTotal+$montoUnitProd;	 ESTE ERA OFICIAL
 	$montoTotal=$montoTotal+$montoUnitProdDesc;
 	//$montoTotal=$montoTotal+redondear2($cantUnit*$precioUnit);	
 	$yyy=$yyy+6;
 }
+
+
+
+// $descuentoVenta=number_format($descuentoVenta,1,'.','')."0";
+// $montoFinal=$montoTotal-$descuentoVenta;
+// //$montoFinal=$montoTotal-$descuentoVenta-$descuentoVentaProd; ESTE ERA OFICIAL
+// //$montoTotal=number_format($montoTotal,1,'.','')."0";
+// $montoFinal=number_format($montoFinal,1,'.','')."0";
 
 $descuentoVenta=number_format($descuentoVenta,2,'.','');
 $montoFinal=$montoTotal-$descuentoVenta;

@@ -18,8 +18,6 @@ if($tipoDoc==1){
 </script>	
 
 
-
-
 <script>
 	console.log('entrando 2');
 	window.open('registrar_salidaventas.php','_self');
