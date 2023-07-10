@@ -60,7 +60,9 @@ $resp=mysqli_query($enlaceCon,$sql);
 <?php
 
 $cadComboLinea="";
-$consult="select t.`cod_linea_proveedor`, t.`nombre_linea_proveedor`,p.nombre_proveedor from `proveedores_lineas` t join proveedores p on p.cod_proveedor=t.cod_proveedor where estado=1";
+$consult="select t.`cod_linea_proveedor`, t.`nombre_linea_proveedor`,p.nombre_proveedor from `proveedores_lineas` t join proveedores p on p.cod_proveedor=t.cod_proveedor where p.estado=1";
+//echo $consult;
+
 $rs1=mysqli_query($enlaceCon,$consult);
 while($reg1=mysqli_fetch_array($rs1))
    {$codTipo = $reg1["cod_linea_proveedor"];

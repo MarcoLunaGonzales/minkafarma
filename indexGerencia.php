@@ -144,7 +144,9 @@ include("datosUsuario.php");
 				<ul>
 					<li><a href="campanias/list.php" target="contenedorPrincipal">Campañas</a></li>					
 					<li><a href="navegadorCotizaciones.php" target="contenedorPrincipal">Cotizaciones</a></li>					
-					<li><a href="ofertas/list.php" target="contenedorPrincipal">Ofertas</a></li>					
+					<li><a href="ofertas/list.php" target="contenedorPrincipal">Ofertas</a></li>
+                    <li><a href="ofertas/listAdmin.php" target="contenedorPrincipal">Autorización de Ofertas</a></li>
+
 				</ul>	
 			</li>	
 			
