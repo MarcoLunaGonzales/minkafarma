@@ -193,7 +193,10 @@ $globalAlmacen=$_COOKIE['global_almacen'];
         </style>
 
 <?php
-	$nombreClienteX=nombreCliente($enlaceCon,$cod_cliente);
+	$sql="SELECT CONCAT(nombre_cliente, ' ', paterno) FROM clientes WHERE cod_cliente='$cod_cliente'";
+	$resp	= mysqli_query($enlaceCon,$sql);
+	$dat	= mysqli_fetch_array($resp);
+	$nombreClienteX = $dat[0];
 ?>
 <center>
 	<h4 class="title">CARGA DE DOCUMENTOS <br> Cliente: <?= $nombreClienteX; ?></h4>

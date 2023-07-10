@@ -1442,6 +1442,18 @@ function registrarNuevoCliente(){
 		alert("Ingrese el NIT para registrar el cliente!");
 	}	
 }
+/**
+ * Se obtiene la lista de documentos del cliente
+ */
+function obtenerListaDocumentosCliente(){
+	let cod_cliente = $('#cliente').val();
+	if(cod_cliente > 0){
+		let url = "clienteDocumento.php?cod_cliente=" + cod_cliente;
+		window.open(url, "_blank");
+	}else{
+		alert('No se seleccionó cliente')
+	}
+}
 function refrescarComboCliente(cliente){
 	
 	var parametros={"cliente":cliente,"nit":$("#nitCliente").val()};
@@ -1862,7 +1874,11 @@ while($dat2=mysqli_fetch_array($resp2)){
 	<td>	
 		<a href="#" title="Editar Cliente" data-toggle='tooltip' onclick="editarDatosClienteRegistro(); return false;" class="btn btn-primary btn-round btn-sm text-white btn-fab"><i class="material-icons">edit</i></a>
 		<a href="#" title="Registrar Nuevo Cliente" data-toggle='tooltip' onclick="registrarNuevoCliente(); return false;" class="btn btn-success btn-round btn-sm text-white circle" id="button_nuevo_cliente">+</a>
-
+		<!-- Lista de Documentos -->
+		<a href="#" title="Documentos adjuntos del Cliente" data-toggle='tooltip' 
+			onclick="obtenerListaDocumentosCliente();" 
+			class="btn btn-info btn-round btn-sm text-white btn-fab">
+			<i class="material-icons">insert_drive_file</i></a>
 	</td>
 
 

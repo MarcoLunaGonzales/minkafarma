@@ -32,32 +32,32 @@ while($reg=mysqli_fetch_array($rs))
 $cadTipoPrecio="";
 $consulta1="select t.`codigo`, t.`nombre` from `tipos_precio` t";
 $rs1=mysqli_query($enlaceCon,$consulta1);
-while($reg1=mysqli_fetch_array($rs1))
-   {$codTipo = $reg1["codigo"];
+while($reg1=mysqli_fetch_array($rs1)){
+    $codTipo = $reg1["codigo"];
     $nomTipo = $reg1["nombre"];
     $cadTipoPrecio=$cadTipoPrecio."<option value='$codTipo'>$nomTipo</option>";
-   }
+}
 
-    // GENERO
-    $comboGenero="";
-    $consult="select t.`cod_genero`, t.`descripcion` from `generos` t where cod_estadoreferencial=1";
-    $rs1=mysqli_query($enlaceCon,$consult);
-    while($reg1=mysqli_fetch_array($rs1)){
-        $codTipo = $reg1["cod_genero"];
-        $nomTipo = $reg1["descripcion"];
-        $comboGenero=$comboGenero."<option value='$codTipo'>$nomTipo</option>";
-    }
-    // EDAD
-    $comboEdad = "";
-    $consultaEdad="SELECT c.codigo,c.nombre, c.abreviatura FROM tipos_edades AS c WHERE c.estado = 1 ORDER BY 1";
-    $rs=mysqli_query($enlaceCon,$consultaEdad);
-    while($reg=mysqli_fetch_array($rs))
-    {
-        $codigoEdad = $reg["codigo"];
-        $nomEdad = $reg["abreviatura"];
-        $desEdad = $reg["nombre"];
-        $comboEdad=$comboEdad."<option value='$codigoEdad'>$nomEdad ($desEdad)</option>";
-    }
+// GENERO
+$comboGenero="";
+$consult="select t.`cod_genero`, t.`descripcion` from `generos` t where cod_estadoreferencial=1";
+$rs1=mysqli_query($enlaceCon,$consult);
+while($reg1=mysqli_fetch_array($rs1)){
+    $codTipo = $reg1["cod_genero"];
+    $nomTipo = $reg1["descripcion"];
+    $comboGenero=$comboGenero."<option value='$codTipo'>$nomTipo</option>";
+}
+// EDAD
+$comboEdad = "";
+$consultaEdad="SELECT c.codigo,c.nombre, c.abreviatura FROM tipos_edades AS c WHERE c.estado = 1 ORDER BY 1";
+$rs=mysqli_query($enlaceCon,$consultaEdad);
+while($reg=mysqli_fetch_array($rs))
+{
+    $codigoEdad = $reg["codigo"];
+    $nomEdad = $reg["abreviatura"];
+    $desEdad = $reg["nombre"];
+    $comboEdad=$comboEdad."<option value='$codigoEdad'>$nomEdad ($desEdad)</option>";
+}
    
 ?>
 <style>

@@ -21,20 +21,42 @@ function listadoClientes() {
 function frmAdicionar() {
     cargarPnl("#pnl00","frmClienteAdicionar.php","");
 }
+// function frmModificar() {
+//     var total=$("#idtotal").val();
+//     var tag,sel,cod,c=0;
+//     for(var i=1;i<=total;i++) {
+//         tag=$("#idchk"+i);
+//         sel=tag.attr("checked");
+//         if(sel==true) {
+//             cod=tag.val(); c++;
+//         }
+//     }
+//     if(c==1) {
+//         cargarPnl("#pnl00","frmClienteEditar.php","codcli="+cod);
+//     } else if(c>1) {
+//         alert("Seleccione solo un elememnto para editar.");
+//     } else {
+//         alert("Seleccione un elememnto para editar.");
+//     }
+// }
+/**
+ * EDICIÓN
+ * Evento para redireccionar al Formulario de Edición
+ */
 function frmModificar() {
-    var total=$("#idtotal").val();
-    var tag,sel,cod,c=0;
-    for(var i=1;i<=total;i++) {
-        tag=$("#idchk"+i);
-        sel=tag.attr("checked");
-        if(sel==true) {
-            cod=tag.val(); c++;
-        }
-    }
-    if(c==1) {
+    var primerCheckboxSeleccionado = null;
+
+    // Recorrer todos los checkboxes
+    $("input[type='checkbox']").each(function() {
+      if (this.checked) {
+        primerCheckboxSeleccionado = this;
+        return false;
+      }
+    });
+
+    if (primerCheckboxSeleccionado != null) {
+        var cod = $(primerCheckboxSeleccionado).val();
         cargarPnl("#pnl00","frmClienteEditar.php","codcli="+cod);
-    } else if(c>1) {
-        alert("Seleccione solo un elememnto para editar.");
     } else {
         alert("Seleccione un elememnto para editar.");
     }
@@ -71,7 +93,7 @@ function adicionarCliente() {
     var genero    = $("#genero").val();
     var edad      = $("#edad").val();
     var parms="nomcli="+nomcli+"&nit="+nit+"&dir="+dir+"&tel1="+tel1+"&mail="+mail+"&area="+area+"&fact="+fact+"&apcli="+apellidos+"&ci="+ci+"&genero="+genero+"&edad="+edad;
-    console.log(parms)
+    // console.log(parms)
     cargarPnl("#pnl00","prgClienteAdicionar.php",parms);
 }
 function modificarCliente() {
@@ -83,7 +105,12 @@ function modificarCliente() {
     var mail = $("#mail").val();
     var area = $("#area").val();
     var fact = $("#fact").val();
-    var parms="codcli="+codcli+"&nomcli="+nomcli+"&nit="+nit+"&dir="+dir+"&tel1="+tel1+"&mail="+mail+"&area="+area+"&fact="+fact+"";
+    
+    var apellidos = $("#apellidos").val();
+    var ci        = $("#ci").val();
+    var genero    = $("#genero").val();
+    var edad      = $("#edad").val();
+    var parms="codcli="+codcli+"&nomcli="+nomcli+"&nit="+nit+"&dir="+dir+"&tel1="+tel1+"&mail="+mail+"&area="+area+"&fact="+fact+"&apcli="+apellidos+"&ci="+ci+"&genero="+genero+"&edad="+edad;
     cargarPnl("#pnl00","prgClienteModificar.php",parms);
 }
 function eliminarCliente(cods) {
