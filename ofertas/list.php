@@ -251,7 +251,7 @@ echo "<script language='Javascript'>
 </div>
 	<?php
 	echo "<form method='post' action='' onsubmit='return false;'>";
-	$sql="SELECT e.codigo, e.nombre, e.abreviatura, e.estado,e.desde,e.hasta,e.por_linea,e.cod_estadodescuento,(SELECT nombre from estados_descuentos where codigo=e.cod_estadodescuento) as nombre_estado,e.observacion_descuento from $table e where e.estado=1 order by 2";
+	$sql="SELECT e.codigo, e.nombre, e.abreviatura, e.estado,e.desde,e.hasta,e.por_linea,e.cod_estadodescuento,(SELECT nombre from estados_descuentos where codigo=e.cod_estadodescuento) as nombre_estado,e.observacion_descuento, e.oferta_stock_limitado from $table e where e.estado=1 order by 2";
 	
 	//echo $sql;
 	
@@ -273,13 +273,14 @@ echo "<script language='Javascript'>
 	echo "<center><table class='table table-sm table-bordered'>";
 	echo "<tr class='bg-principal text-white'>
 	<th colspan='3'></th>
-	<th colspan='2' align='center'>Periodo del Descuento</th>
+	<th colspan='3' align='center'>Periodo del Descuento</th>
 	<th colspan='5'></th>
 	</tr>";
 	echo "<tr class='bg-principal text-white'>
 	<th>&nbsp;</th>
 	<th>Nombre</th>
-	<th>Descuento</th>
+	<th>Descuento<br>Base %</th>
+	<th>Oferta <br> Stock Limitado</th>
 	<th>Desde</th>
 	<th>Hasta</th>
 	<th style='background:#999999 !important'><i class='material-icons' style='font-size:14px'>today</i> Días</th>
@@ -345,6 +346,12 @@ echo "<script language='Javascript'>
 		$est_estado="";
 		$estado_descripcion=$dat['nombre_estado'];
 		$observacion_descuento=$dat['observacion_descuento'];
+		$ofertaStockLimitado=$dat['oferta_stock_limitado'];
+		$txtOfertaStockLimitado="NO";
+		if($ofertaStockLimitado==1){
+			$txtOfertaStockLimitado="SI";
+		}
+
         switch ($dat['cod_estadodescuento']) {
         	case 1: $est_estado="style='background:#3498DB;color:#fff;'"; break;
         	case 2: $est_estado="style='background:#C0392B;color:#fff;'";$inputcheck=""; break;
@@ -358,6 +365,7 @@ echo "<script language='Javascript'>
 		<td>$inputcheck</td>
 		<td>$nombre</td>
 		<td>$abreviatura</td>
+		<td><span style='color:red'><b>$txtOfertaStockLimitado</b></span></td>
 		<td>$desde</td>
 		<td>$hasta</td>
 		<td>$dias</td>

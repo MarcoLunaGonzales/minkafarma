@@ -6,11 +6,15 @@ require("conexionmysqli2.inc");
 $codMaterial = $_GET["codmat"];
 $indice = $_GET["indice"];
 $codTipoPrecio=$_GET["tipoPrecio"];
+$codCliente=$_GET["cod_cliente"];
+if($codCliente==""){
+	$codCliente=0;
+}
 
 $codigoCiudadGlobal=$_COOKIE["global_agencia"];
 $globalAdmin=$_COOKIE["global_admin_cargo"];
 
-$arrayPreciosAplicar=precioCalculadoParaFacturacion($enlaceCon,$codMaterial,$codigoCiudadGlobal);
+$arrayPreciosAplicar=precioCalculadoParaFacturacion($enlaceCon,$codMaterial,$codigoCiudadGlobal,$codCliente);
 
 $precioProductoBase=$arrayPreciosAplicar[0];
 $txtValidacionPrecioCero=$arrayPreciosAplicar[1];

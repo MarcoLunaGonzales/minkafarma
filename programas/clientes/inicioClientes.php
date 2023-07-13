@@ -21,28 +21,7 @@ function listadoClientes() {
 function frmAdicionar() {
     cargarPnl("#pnl00","frmClienteAdicionar.php","");
 }
-// function frmModificar() {
-//     var total=$("#idtotal").val();
-//     var tag,sel,cod,c=0;
-//     for(var i=1;i<=total;i++) {
-//         tag=$("#idchk"+i);
-//         sel=tag.attr("checked");
-//         if(sel==true) {
-//             cod=tag.val(); c++;
-//         }
-//     }
-//     if(c==1) {
-//         cargarPnl("#pnl00","frmClienteEditar.php","codcli="+cod);
-//     } else if(c>1) {
-//         alert("Seleccione solo un elememnto para editar.");
-//     } else {
-//         alert("Seleccione un elememnto para editar.");
-//     }
-// }
-/**
- * EDICIÓN
- * Evento para redireccionar al Formulario de Edición
- */
+
 function frmModificar() {
     var primerCheckboxSeleccionado = null;
 

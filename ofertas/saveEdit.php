@@ -16,8 +16,9 @@ $user=0;
 if(isset($_COOKIE['global_usuario'])){
   $user=$_COOKIE['global_usuario'];
 }
+$stockLimitado=$_POST["stock_limitado"];
 
-$sql_upd=mysqli_query($enlaceCon,"update $table set nombre='$nombre', abreviatura='$abreviatura', desde='$fecha_hora_ini', hasta='$fecha_hora_fin',cod_funcionario='$user' where codigo='$codigo'");
+$sql_upd=mysqli_query($enlaceCon,"update $table set nombre='$nombre', abreviatura='$abreviatura', desde='$fecha_hora_ini', hasta='$fecha_hora_fin',cod_funcionario='$user', oferta_stock_limitado='$stockLimitado' where codigo='$codigo'");
 
 echo "<script language='Javascript'>
 			alert('Los datos fueron modificados correctamente.');

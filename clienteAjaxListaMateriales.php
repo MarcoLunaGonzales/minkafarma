@@ -3,7 +3,7 @@
 <table align='center' class="texto">
 <tr><th>Codigo</th><th>Producto</th><th>Linea</th><th>Principio Activo</th><th>Accion Terapeutica</th><th>Stock</th><th>Precio</th></tr>
 <?php
-require("conexionmysqli.php");
+require("conexionmysqli2.inc");
 require("funciones.php");
 
 $codigoMat=0;

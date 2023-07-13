@@ -8,7 +8,8 @@ require("../funciones.php");
  error_reporting(E_ALL);
  ini_set('display_errors', '1');
 
- $globalSucursal=$_COOKIE['global_agencia'];
+$globalSucursal=$_COOKIE['global_agencia'];
+$globalAlmacen=$_COOKIE['global_almacen'];
  
 
 $codigo_registro=$_POST["codigo_registro"];
@@ -61,7 +62,7 @@ echo "<table class='table table-sm table-bordered' id='tabla_productos'>";
   <th width='10%'><div class='btn-group'><a href='#' class='btn btn-sm btn-warning' onClick='seleccionar_todo()'>T</a><a href='#' onClick='deseleccionar_todo()' class='btn btn-sm btn-default'>N</a></div></th>
   <th>Proveedor</th>
   <th>Producto</th>  
-  <th>Estado</th>
+  <th>Oferta <br> Stock Limitado?</th>
   <th>Precio Actual</th>
   <th>% Desc</th>
   <th>Precio Final</th>
@@ -85,6 +86,15 @@ echo "<table class='table table-sm table-bordered' id='tabla_productos'>";
          $porcentDesc=$dat['porcentaje_material'];
          $estiloInput="#FFF";         
     }
+
+    $stockProductoX=stockProducto($enlaceCon,$globalAlmacen,$dat[0]);
+    $txtStockProducto="";
+    if($stockProductoX==0){
+      $txtStockProducto="-";
+    }else{
+      $txtStockProducto="<span style='color:red'><b>$stockProductoX</b></span>";
+    }
+
     $precio=number_format(precioProductoSucursalCalculado($enlaceCon,$dat[0],$globalSucursal),2,'.','');
     $precioFin=number_format($precio*((100-$porcentDesc)/100),2,'.','');
     $inpPorcent="<input style='width:60px; background:$estiloInput; border:none;border-bottom:1px solid #B2E6E2' id='descuento$dat[0]' type='number' name='descuento$dat[0]' value='$porcentDesc' step='any' onchange='calcularPrecioFinalDescuento($dat[0]); return false;' onkeyup='calcularPrecioFinalDescuento($dat[0]); return false;'> %";
@@ -96,7 +106,7 @@ echo "<table class='table table-sm table-bordered' id='tabla_productos'>";
     <td><input type='checkbox' name='codigo[]' value='$dat[0]' $checked></td>
     <td><small>$proveedor ($linea)</small></td>
     <td>($dat[0]) $producto</td>
-    <td>$estado</td>
+    <td align='center'>$txtStockProducto</td>
     <td>$inpPrecio</td>    
     <td width='10%'>$inpPorcent</td>
     <td>$inpPrecioFinal</td>

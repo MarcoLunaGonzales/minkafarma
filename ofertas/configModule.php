@@ -14,6 +14,7 @@ $urlEditCiudad="edit_ciudad.php";
 $urlEditLinea="edit_linea.php";
 $urlEditProducto="edit_producto.php";
 $urlDelete="delete.php";
+$urlAbrirOferta="abrir_oferta.php";
 $urlSave="save.php";
 $urlSaveEdit="saveEdit.php";
 $urlSaveEditDia="saveEditDia.php";

@@ -3,10 +3,7 @@
 	require_once("../estilos2.inc");
 	require_once("configModule.php");
 	require_once("../funciones.php");
-
-if($global_usuario!=-1&&verificarPersonalConfiguracionMultiple($_COOKIE['global_usuario'],39)==0){
-	?><script type="text/javascript">window.location.href="../inicio_almacenes.php";</script><?php
-}?>
+?>
 <script language='Javascript'>
 function enviar_nav(f){	
 			var i;
@@ -37,6 +34,36 @@ function enviar_nav(f){
                     $("#modal_aprobar").modal("show");
 				}
 			}           
+		}
+
+		function abrir_nav(f)
+		{
+			var i;
+			var j=0;
+			datos=new Array();
+			for(i=0;i<=f.length-1;i++)
+			{
+				if(f.elements[i].type=='checkbox')
+				{	if(f.elements[i].checked==true)
+					{	datos[j]=f.elements[i].value;
+						j=j+1;
+					}
+				}
+			}
+			if(j==0)
+			{	alert('Debe seleccionar un registro para abrir la Oferta.');
+			}
+			else
+			{
+				if(confirm('Esta seguro de abrir la Oferta.'))
+				{
+					location.href='<?=$urlAbrirOferta?>?datos='+datos+'&admin=1';
+				}
+				else
+				{
+					return(false);
+				}
+			}
 		}
 		function eliminar_nav(f)
 		{
@@ -209,6 +236,7 @@ function enviar_nav(f){
          }
 </script>
 	<?php
+
 	$fechaActual=date("Y-m-d H:i:s");
 	echo "<form method='post' action=''>";
 	$sql="select e.codigo, e.nombre, e.abreviatura, e.estado,e.desde,e.hasta,e.cod_estadodescuento,e.observacion_descuento,(SELECT nombre from estados_descuentos where codigo=e.cod_estadodescuento) as nombre_estado,por_linea from $table e where e.estado!=2 order by 2";
@@ -217,6 +245,7 @@ function enviar_nav(f){
 	
 	echo "<div class=''>
 	<input type='button' value='Aprobar' name='Aprobar' class='btn btn-success' onclick='enviar_nav(this.form)'>
+	<input type='button' value='Abrir Oferta' name='Anular' class='btn btn-danger' onclick='abrir_nav(this.form)'>
 	<input type='button' value='Anular' name='Anular' class='btn btn-danger' onclick='editar_nav(this.form)'>
 	<input type='button' value='Eliminar' name='eliminar' class='btn btn-default' onclick='eliminar_nav(this.form)'>
 	</div>";
@@ -311,6 +340,7 @@ function enviar_nav(f){
 	
 	echo "<div class=''>
 	<input type='button' value='Aprobar' name='Aprobar' class='btn btn-success' onclick='enviar_nav(this.form)'>
+	<input type='button' value='Abrir Oferta' name='Anular' class='btn btn-danger' onclick='abrir_nav(this.form)'>
 	<input type='button' value='Anular' name='Anular' class='btn btn-danger' onclick='editar_nav(this.form)'>
 	<input type='button' value='Eliminar' name='eliminar' class='btn btn-default' onclick='eliminar_nav(this.form)'>
 	</div>";
