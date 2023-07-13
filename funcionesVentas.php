@@ -1,6 +1,6 @@
 <?php
 
-function precioCalculadoParaFacturacion($enlaceCon,$codMaterial,$codigoCiudadGlobal){
+function precioCalculadoParaFacturacion($enlaceCon,$codMaterial,$codigoCiudadGlobal,$codCliente){
 	//require("conexionmysqli.php");
 	$fechaActual=date("Y-m-d");
 
@@ -93,6 +93,31 @@ function precioCalculadoParaFacturacion($enlaceCon,$codMaterial,$codigoCiudadGlo
 		$txtValidacionPrecioCero="onkeyup='return false;' onkeydown='return false;' onkeypress='return false;' required";
 	}
 
+	
+	/*********  VERIFICAMOS PRECIOS CLIENTE  **********/
+	$sqlPreciosCliente="SELECT cpd.precio_base, cpd.porcentaje_aplicado, cpd.precio_aplicado, cpd.precio_producto FROM clientes_precios cp LEFT JOIN clientes_preciosdetalle cpd ON cpd.cod_clienteprecio = cp.codigo 
+		WHERE cpd.cod_producto = '$codMaterial' AND cp.cod_cliente = '$codCliente' LIMIT 1";
+	$respPreciosCliente=mysqli_query($enlaceCon, $sqlPreciosCliente);
+	//echo $sqlPreciosCliente;
+	$banderaPrecioCliente=0;
+	if($respPreciosCliente) {
+    	$datosCliente = mysqli_fetch_assoc($respPreciosCliente);  
+    	if ($datosCliente) {
+        	//echo "entro cliente";
+        	$porcentajeAplicadoCliente = $datosCliente['porcentaje_aplicado'];
+        	$precioAplicadoCliente= $datosCliente['precio_aplicado'];
+        	$precio_base=$datosCliente['precio_base'];
+        	$precio_producto=$datosCliente['precio_producto'];
+        	//Aplicamos el porcentaje al precio Base del Producto
+        	$indiceConversionCliente=($porcentajeAplicadoCliente/100);
+			$descuentoAplicadoClienteBs=round($precioProducto*($indiceConversionCliente),2);
+			$nombrePrecioAplicarCliente="Precio Cliente";
+			$banderaPrecioCliente=1;
+        }
+    } 
+	/*********  FIN VERIFICAMOS PRECIOS CLIENTE  **********/
+
+	
 	$precioNumero=$cadRespuesta;
 	$descuentoBs=0;
 	$descuentoPorcentaje=0;
@@ -101,6 +126,10 @@ function precioCalculadoParaFacturacion($enlaceCon,$codMaterial,$codigoCiudadGlo
 		$descuentoBs=$descuentoOfertaBs;
 		$descuentoPorcentaje=$descuentoOfertaPorcentaje;
 		$nombrePrecioAplicar=$nombreOferta;
+	}elseif ($banderaPrecioCliente==1) {
+		$descuentoBs=$descuentoAplicadoClienteBs;
+		$descuentoPorcentaje=$porcentajeAplicadoCliente;
+		$nombrePrecioAplicar=$nombrePrecioAplicarCliente;
 	}else{
 		$descuentoBs=$descuentoPrecioMonto;
 		$descuentoPorcentaje=$descuentoAplicarCasoX;

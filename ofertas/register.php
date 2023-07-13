@@ -1,3 +1,24 @@
+<style>
+	input[type=radio]
+	{
+	  /* Double-sized Checkboxes */
+	  -ms-transform: scale(2); /* IE */
+	  -moz-transform: scale(2); /* FF */
+	  -webkit-transform: scale(2); /* Safari and Chrome */
+	  -o-transform: scale(2); /* Opera */
+	  transform: scale(2);
+	  padding: 10px;
+	}
+
+	/* Might want to wrap a span around your checkbox text */
+	.radiotext
+	{
+	  /* Checkbox text */
+	  font-size: 110%;
+	  display: inline;
+	}
+
+</style>
 <?php
 
 require("../conexionmysqli.inc");
@@ -16,11 +37,19 @@ echo "<tr><td align='left' class='bg-info text-white'>Nombre</td>";
 echo "<td align='left' colspan='3'>
 	<input type='text' class='form-control' name='nombre' size='40' onKeyUp='javascript:this.value=this.value.toUpperCase();' required>
 </td></tr>";
-echo "<tr><td align='left' class='bg-info text-white'>Descuento %</td>";
+echo "<tr><td align='left' class='bg-info text-white'>Descuento BASE %</td>";
 echo "<td align='left' colspan='3'>
 	<input type='number' class='form-control' name='abreviatura' size='30' required>
 </td>";
 echo "</tr>";
+
+echo "<tr><td align='left' class='bg-info text-white'>Oferta con STOCK LIMITADO</td>";
+echo "<td align='left' colspan='3'>
+		<input type='radio' name='stock_limitado' value='0' checked><span class='radiotext'>&nbsp;&nbsp; NO &nbsp;&nbsp;</span>
+        <input type='radio' name='stock_limitado' value='1'><span class='radiotext'>&nbsp; &nbsp;  SI &nbsp;&nbsp;</span>
+</td>";
+echo "</tr>";
+
 echo "<tr><td align='left' class='bg-info text-white'>Nivel Descuento</td>";
 echo "<td align='left' colspan='3'>
 	<select name='nivel_descuento' class='selectpicker form-control' data-style='btn btn-info'>

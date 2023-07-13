@@ -199,7 +199,7 @@ $globalAlmacen=$_COOKIE['global_almacen'];
 	$nombreClienteX = $dat[0];
 ?>
 <center>
-	<h4 class="title">CARGA DE DOCUMENTOS <br> Cliente: <?= $nombreClienteX; ?></h4>
+	<h1 class="title">Documentos Relacionados <br> Cliente: <?= $nombreClienteX; ?></h1>
 </center>
 
 <table class="texto" align="center" cellspacing="0" width="100%">

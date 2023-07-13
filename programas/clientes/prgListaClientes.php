@@ -1,12 +1,12 @@
 <?php
 
-require("../../conexionmysqli.php");
+require("../../conexionmysqli.inc");
+
 require("../../estilos_almacenes.inc");
 
 $globalAgencia=$_COOKIE["global_agencia"];
 $globalAlmacen=$_COOKIE["global_almacen"];
 
-echo "<br>";
 echo "<h1>Clientes</h1>";
 
 echo "<div class='divBotones'>
@@ -14,8 +14,7 @@ echo "<div class='divBotones'>
 <input class='boton' type='button' value='Editar' onclick='javascript:frmModificar();'>
 <input class='boton2' type='button' value='Eliminar' onclick='javascript:frmEliminar();'>
 </div>";
-echo "<br>";
-echo "<br>";
+
 echo "<center>";
 echo "<table class='texto'>";
 echo "<tr>";

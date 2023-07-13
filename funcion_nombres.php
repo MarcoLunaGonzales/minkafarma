@@ -121,7 +121,7 @@ function nombreCategoria($enlaceCon,$codigo)
 }
 
 function nombreCliente($enlaceCon,$codigo)
-{	$sql="select nombre_cliente from clientes where cod_cliente='$codigo'";
+{	$sql="select concat(nombre_cliente,' ',paterno) from clientes where cod_cliente='$codigo'";
 	$resp=mysqli_query($enlaceCon,$sql);
 	$dat=mysqli_fetch_array($resp);
 	$nombre=$dat[0];

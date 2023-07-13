@@ -588,20 +588,12 @@ function guardarClientePrecio() {
 		$row = mysqli_fetch_assoc($result);
 		$observacion = empty($row['observaciones'])?'':$row['observaciones'];
 	?>
+
+<br><br><br>
 <center>
-	<h4>Registro de Precios por Cliente <br> Cliente: <?= $nombreClienteX; ?></h4>
+	<h1>Gestión de Precios por Cliente <br> Cliente: <?= $nombreClienteX; ?></h1>
 </center>
-<center>
-	<table border="0" class="texto">
-		<tbody>
-			<tr>
-				<td>
-					<input type="button" value="Add Item(+)" name="Guardar" class="boton" onclick="mas(this)">
-				</td>
-			</tr>
-		</tbody>
-	</table>
-</center>
+
 <table class="texto" align="center" cellspacing="0" width="100%">
 	<tbody>
 		<tr>
@@ -614,10 +606,22 @@ function guardarClientePrecio() {
 	</tbody>
 </table>
 
+<center>
+	<table border="0" class="texto">
+		<tbody>
+			<tr>
+				<td>
+					<input type="button" value="Producto (+)" name="Guardar" class="boton" onclick="mas(this)">
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</center>
+
 <fieldset id="fiel" style="width:100%;border:0;">
 	<table align="center" class="texto" width="100%" id="data0" border="0">
 		<tr align="center">
-			<td width="38%">Material</td>
+			<td width="38%">Producto</td>
 			<td width="8%">Precio </td>
 			<td width="15%">Desc. %</td>
 			<td width="15%">Desc. Monto</td>
@@ -705,7 +709,7 @@ function guardarClientePrecio() {
 		<tbody>
 			<tr>
 				<td>
-					<input type="button" value="Registrar Precios" name="Guardar" class="boton" onclick="guardarClientePrecio()">
+					<input type="button" value="Registrar Precios" name="Guardar" class="boton-verde" onclick="guardarClientePrecio()">
 					<input class="boton2" type="button" value="Volver" onclick="javascript:listaClientes();">
 					<!-- <a href="programas/clientes/inicioClientes.php" target="contenedorPrincipal" class="mm-listitem__text">Clientes</a> -->
 				</td>

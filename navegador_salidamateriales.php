@@ -1,5 +1,5 @@
 <?php 
-require("conexion.inc");
+require("conexionmysqli.php");
 require('function_formatofecha.php');
 require("estilos_almacenes.inc");
 
@@ -340,6 +340,7 @@ while ($dat = mysqli_fetch_array($resp)) {
 	
     echo "<input type='hidden' name='fecha_salida$nro_correlativo' value='$fecha_salida_mostrar'>";
     $estado_preparado = 0;
+    $color_fondo="";
     if ($estado_almacen == 0) {
         $color_fondo = "";
         $chk = "<input type='checkbox' name='codigo' value='$codigo'>";
@@ -369,9 +370,13 @@ while ($dat = mysqli_fetch_array($resp)) {
         $chk = "<input type='checkbox' name='codigo' value='$codigo'>";
         $estado_preparado = 1;
     }
-    if ($salida_anulada == 1) {
-        $color_fondo = "#ff8080";
-        $chk = "&nbsp;";
+    $strikei="";
+    $strikef="";
+    if($salida_anulada==1){
+        $strikei="<strike class='text-danger'>";        
+        $strikef=" (ANULADO)</strike>";
+        $color_fondo="red";
+        $chk="";
     }
 	
     /*if ($anio_salida != $globalGestionActual) {
@@ -380,14 +385,16 @@ while ($dat = mysqli_fetch_array($resp)) {
 	
     echo "<input type='hidden' name='estado_preparado' value='$estado_preparado'>";
     //echo "<tr><td><input type='checkbox' name='codigo' value='$codigo'></td><td align='center'>$fecha_salida_mostrar</td><td>$nombre_tiposalida</td><td>$nombre_ciudad</td><td>$nombre_almacen</td><td>$nombre_funcionario</td><td>&nbsp;$obs_salida</td><td>$txt_detalle</td></tr>";
-    echo "<tr bgcolor='$color_fondo'>";
+    echo "<tr>";
     echo "<td align='center'>&nbsp;$chk</td>";
-    echo "<td align='center'>$nro_correlativo</td>";
-    echo "<td align='center'>$fecha_salida_mostrar $hora_salida</td>";
-    echo "<td>$nombre_tiposalida</td><td>&nbsp;$nombre_almacen</td>";
-    echo "<td>$nombrePersonalSalida</td><td>&nbsp;$obs_salida</td>";
+    echo "<td align='center'>$strikei $nro_correlativo $strikef</td>";
+    echo "<td align='center'>$strikei $fecha_salida_mostrar $hora_salida $strikef</td>";
+    echo "<td>$strikei $nombre_tiposalida $strikef</td>
+    <td>$strikei $nombre_almacen $strikef</td>";
+    echo "<td>$strikei $nombrePersonalSalida $strikef</td>
+    <td>$strikei $obs_salida $strikef</td>";
     $url_notaremision = "navegador_detallesalidamuestras.php?codigo_salida=$codigo";    
-    echo "<td><a href='javascript:llamar_preparado(this.form, $estado_preparado, $codigo)'>
+    echo "<td bgcolor='$color_fondo'><a href='javascript:llamar_preparado(this.form, $estado_preparado, $codigo)'>
 		<img src='imagenes/detalles.png' border='0' title='Detalle' width='40'></a></td>";
 	/*if($codTipoDoc==1){
 		echo "<td><a href='formatoFactura.php?codVenta=$codigo' target='_BLANK'>Ver F.P.</a></td>";

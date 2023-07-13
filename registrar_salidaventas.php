@@ -337,6 +337,9 @@ function ajaxPrecioItem(indice){
 	contenedor=document.getElementById("idprecio"+indice);
 	var codmat=document.getElementById("materiales"+indice).value;
 	var tipoPrecio=document.getElementById("tipoPrecio"+indice).value;
+	var cod_cliente  = document.getElementById('cliente').value;
+
+
 	console.log("AjaxPrecioItemStart->descuento: "+tipoPrecio);
 	//var tipoPrecio=1;
 	var cantidadUnitaria=document.getElementById("cantidad_unitaria"+indice).value;
@@ -346,7 +349,7 @@ function ajaxPrecioItem(indice){
 	}
 
 	ajax=nuevoAjax();
-	ajax.open("GET", "ajaxPrecioItem.php?codmat="+codmat+"&indice="+indice+"&tipoPrecio="+tipoPrecio,true);
+	ajax.open("GET", "ajaxPrecioItem.php?codmat="+codmat+"&indice="+indice+"&tipoPrecio="+tipoPrecio+"&cod_cliente="+cod_cliente,true);
 	ajax.onreadystatechange=function() {
 		if (ajax.readyState==4) {
 				var respuesta=ajax.responseText.split("#####");
@@ -828,6 +831,7 @@ function setMateriales(f, cod, nombreMat, stockProducto){
 	var numRegistro=f.materialActivo.value;
 	var nombre_material_x, fecha_venc_x, cantidad_presentacionx, venta_solo_cajax;
 	var datos_material=nombreMat.split("####");
+
  	nombre_material_x=datos_material[0];  
  	fecha_venc_x=datos_material[1];  
  	cantidad_presentacionx=datos_material[2];
@@ -1193,15 +1197,20 @@ function validar(f){
 	/**************************************************/
 
   /**************** Validar Efectivo y Total Final ****************/
+  var banderaValidacionEfectivoRecibido=document.getElementById("bandera_efectivo_recibido").value;
   var efectivoRecibido = parseFloat($("#efectivoRecibido").val());
   var totalFinalVenta = parseFloat($("#totalFinal").val());
   if (isNaN(efectivoRecibido)) { efectivoRecibido = 0; }
   if (isNaN(totalFinalVenta)) { totalFinalVenta = 0; }
   console.log("efectivo: "+efectivoRecibido);
-  if(efectivoRecibido < totalFinalVenta){
-    Swal.fire("Error en Monto Recibido en Efectivo!", "<b>El monto en efectivo NO puede ser menor al monto total.</b>", "error");
-		return (false);
+  if(banderaValidacionEfectivoRecibido==1){
+	  if(efectivoRecibido < totalFinalVenta){
+	    Swal.fire("Error en Monto Recibido en Efectivo!", "<b>El monto en efectivo NO puede ser menor al monto total.</b>", "error");
+			return (false);
+	  }  	
   }
+
+
 	if(totalFinalVenta<=0){
 		Swal.fire("Monto Final!", "El Monto Final del documento no puede ser 0", "info");
 		return(false);
@@ -1729,6 +1738,7 @@ if(isset($_GET['file'])){
 
 	<input type="hidden" id="validacion_clientes" name="validacion_clientes" value="<?=obtenerValorConfiguracion($enlaceCon,11)?>">
 	<input type="hidden" id="bandera_validacion_stock" name="bandera_validacion_stock" value="<?=obtenerValorConfiguracion($enlaceCon,4)?>">
+	<input type="hidden" id="bandera_efectivo_recibido" name="bandera_efectivo_recibido" value="<?=obtenerValorConfiguracion($enlaceCon,21)?>">
 
 
 <table class='' width='100%' style='width:100%;margin-top:-24px !important;'>
