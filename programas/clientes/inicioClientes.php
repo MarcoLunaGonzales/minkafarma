@@ -132,6 +132,7 @@ function eliminarCliente(cods) {
                 var sheetName = workbook.SheetNames[0];
                 var worksheet = workbook.Sheets[sheetName];
                 var jsonData = XLSX.utils.sheet_to_json(worksheet, { raw: true });
+                // console.log(jsonData.length)
                 // Realizar el cambio de nombres de propiedades
                 var nuevoJSON = jsonData.map(function(item) {
                         return {
@@ -139,9 +140,10 @@ function eliminarCliente(cods) {
                             precio_producto: item['PRECIO A CARGAR']
                         };
                     });
-                // callback(nuevoJSON);
-                var primeros5Registros = nuevoJSON.slice(0, 5); // Obtener los primeros 5 registros
-                callback(primeros5Registros);
+                // console.log(nuevoJSON)
+                callback(nuevoJSON);
+                // var primeros5Registros = nuevoJSON.slice(0, 1000); // Obtener los primeros 1000 registros
+                // callback(primeros5Registros);
             };
             reader.readAsArrayBuffer(file);
         }
@@ -149,9 +151,8 @@ function eliminarCliente(cods) {
          * Cargar Documento Precio Cliente
          */
         $('body').on('click', '#cargar_save', function() {
-            let cod_cliente = $('#cargar_cod_cliente').val();
+            var cod_cliente = $('#cargar_cod_cliente').val();
             var file = $('#cargar_doc')[0].files[0];
-            
             if (!file) {
                 Swal.fire({
                     title: 'Error',
@@ -160,42 +161,93 @@ function eliminarCliente(cods) {
                 });
                 return; // Detener el flujo de ejecución si el campo está vacío
             }
-
             var datos = [];
-            obtenerJSONDesdeExcel(file, function(jsonData) {
-                datos = jsonData;
-
-                Swal.fire({
-                    title: '¿Deseas continuar?',
-                    text: 'Se reemplazaran los datos de Precio cliente',
-                    type: 'question',
-                    showCancelButton: true,
-                    confirmButtonText: 'Sí',
-                    cancelButtonText: 'No'
-                }).then(function(result) {
-                    if (result.value) {
-                        $.ajax({
-                        type: "POST",
-                        dataType: 'json',
-                        url: "clientePrecioArchivoSave.php",
-                        data: {
-                            items: datos,
-                            cod_cliente: cod_cliente
-                        },
-                        success: function(resp) {
-                            $('#cargarModal').modal('hide');
-                            Swal.fire({
-                                title: 'Correcto!',
-                                text: 'Archivo cargado correctamente.',
-                                type: 'success'
-                            });
+            Swal.fire({
+                title: 'Confirmar',
+                text: '¿Estás seguro de reemplazar los datos existentes con los del archivo cargado?',
+                type: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Sí',
+                cancelButtonText: 'No'
+            }).then((result) => {
+                if (result.value) {
+                    var datos = [];
+                    obtenerJSONDesdeExcel(file, function(jsonData) {
+                        // Dividir los datos en lotes más pequeños
+                        var batchSize = 200; // Tamaño del lote (ajústalo según tus necesidades)
+                        var batches = [];
+                        for (var i = 0; i < jsonData.length; i += batchSize) {
+                            batches.push(jsonData.slice(i, i + batchSize));
                         }
+                        /**
+                         * LIMPIA REGISTRO
+                         **/
+                        $.ajax({
+                            type: "POST",
+                            dataType: 'json',
+                            url: "clientePrecioArchivoSave.php",
+                            data: {
+                                cod_cliente: cod_cliente,
+                                tipo: 1
+                            },
+                            success: function(resp) {
+                                // console.log('Listo, limpio');
+                                // Iniciar el procesamiento por lotes
+                                procesarLotes(0, batches, cod_cliente);
+                                $('#cargarModal').modal('hide');
+                            },
+                            error: function() {
+                                Swal.fire('Error', 'Se produjo un error al procesar el lote ' + (index + 1), 'error');
+                            }
                         });
-                    }
-                });
+                    });
+                }
             });
         });
+        function procesarLotes(index, batches, cod_cliente) {
+            if (index >= batches.length) {
+                Swal.fire('Registro Correcto', '', 'success');
+                return; // Finalizar el procesamiento por lotes
+            }
 
+            var batch = batches[index];
+
+            // Mostrar indicador de carga para el lote actual
+            Swal.fire({
+                title: 'Cargando (Lote ' + (index + 1) + '/' + batches.length + ')',
+                text: 'Por favor, espera...',
+                icon: 'info',
+                allowOutsideClick: false,
+                showCancelButton: false,
+                showConfirmButton: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            /**
+             * Enviar el lote actual al servidor
+             */
+            $.ajax({
+                type: "POST",
+                dataType: 'json',
+                url: "clientePrecioArchivoSave.php",
+                data: {
+                    items: batch,
+                    cod_cliente: cod_cliente,
+                    tipo: 2
+                },
+                success: function(resp) {
+                    // console.log(resp)
+                    Swal.close(); // Ocultar indicador de carga del lote actual
+                    // Procesar el siguiente lote
+                    procesarLotes(index + 1, batches, cod_cliente);
+                },
+                error: function() {
+                    Swal.fire('Error', 'Se produjo un error al procesar el lote ' + (index + 1), 'error');
+                }
+            });
+        }
 
     </script>
 

@@ -58,11 +58,12 @@ $globalAlmacen=$_COOKIE["global_almacen"];
           <td><?php echo $dirCliente; ?></td>
           <td><?php echo $nomArea; ?></td>
           <td>
-            <a href='../../clientePrecio.php?cod_cliente=<?php echo $codCliente; ?>' title='Precios Clientes' class='text-dark'><i class='material-icons'>description</i></a>
+            <a href='../../clientePrecio.php?cod_cliente=<?php echo $codCliente; ?>' title='Registrar Precios Clientes' class='text-dark'><i class='material-icons'>description</i></a>
             <a href='../../clienteDocumento.php?cod_cliente=<?php echo $codCliente; ?>' target='_blank' title='Carga de Documentos' class='text-dark'><i class='material-icons'>cloud_upload</i></a>
             <a href='#' title='Carga de Precio Clientes' class='text-primary modal_documento' data-cod_cliente="<?php echo $codCliente; ?>">
                 <i class='material-icons'>description</i>
             </a>
+            <a href="../../clientePrecioVer.php?cod_cliente=<?php echo $codCliente; ?>" title="Ver Precios Clientes" class="text-info"><i class="material-icons">visibility</i></a>
           </td>
         </tr>
         <?php
@@ -78,7 +79,7 @@ $globalAlmacen=$_COOKIE["global_almacen"];
   <input class='boton2' type='button' value='Eliminar' onclick='javascript:frmEliminar();'>
 </div>
 
-<!-- Modal -->
+<!-- Modal Carga de Datos -->
 <div class="modal fade" id="cargarModal" tabindex="-1" aria-labelledby="cargarModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
