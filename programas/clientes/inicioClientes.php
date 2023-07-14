@@ -204,6 +204,9 @@ function eliminarCliente(cods) {
                 }
             });
         });
+        /**
+         * Proceso de Almacenamiento LOTE
+         */
         function procesarLotes(index, batches, cod_cliente) {
             if (index >= batches.length) {
                 Swal.fire('Registro Correcto', '', 'success');
@@ -248,7 +251,52 @@ function eliminarCliente(cods) {
                 }
             });
         }
-
+        /**
+         * Abre Modal para Clonar Precio Cliente
+         */
+        $('body').on('click', '.modal_clonar', function(){
+            $('#cargar_doc').val();
+            $('#cliente_actual').val($(this).data('cod_cliente'));
+            $('#clonarModal').modal('show');
+        });
+        /**
+         * Proceso de Guardado de Clonación
+         */
+         $('body').on('click', '#clonar_save', function(){
+            var cod_cliente         = $('#cliente_actual').val();
+            var cod_cliente_clonado = $('#cliente_clonado').val();
+            Swal.fire({
+                title: 'Confirmar',
+                text: '¿Estás seguro de clonar los precios del cliente seleccionado?',
+                type: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Sí',
+                cancelButtonText: 'No'
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        type: "POST",
+                        dataType: 'json',
+                        url: "clientePrecioClonarSave.php",
+                        data: {
+                            cod_cliente: cod_cliente,
+                            cod_cliente_clonado: cod_cliente_clonado
+                        },
+                        success: function(resp) {
+                            if(resp.status){
+                                Swal.fire(resp.message, '', 'success');
+                            }else{
+                                Swal.fire(resp.message, '', 'error');
+                            }
+                            $('#clonarModal').modal('hide');
+                        },
+                        error: function() {
+                            Swal.fire('Error', 'Se produjo un error al procesar el lote ' + (index + 1), 'error');
+                        }
+                    });
+                }
+            });
+        });
     </script>
 
 </html>
