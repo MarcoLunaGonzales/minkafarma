@@ -87,7 +87,7 @@ echo "</div></td>";
 <td align="center" width="15%">
 	<input class="inputnumber" type="number" min="0" max="90" step="0.01" value="<?=$descuentoPorcentaje;?>" id="tipoPrecio<?php echo $num;?>" 	name="tipoPrecio<?php echo $num;?>" style="background:#ADF8FA;" readonly>%
 	<input class="inputnumber" type="number" value="0" id="descuentoProducto<?php echo $num;?>" name="descuentoProducto<?php echo $num;?>" step="0.01" style='background:#ADF8FA;' readonly>
-	<div id="divMensajeOferta<?=$num;?>" class="textosmallazul"><?=$nombrePrecioAplicar;?></div>
+	<div id="divMensajeOferta<?=$num;?>" class="textomedianosangre"><?=$nombrePrecioAplicar;?></div>
 </td>
 
 <td align="center" width="8%">

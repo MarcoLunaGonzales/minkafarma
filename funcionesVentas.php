@@ -1,10 +1,13 @@
 <?php
 
 function precioCalculadoParaFacturacion($enlaceCon,$codMaterial,$codigoCiudadGlobal,$codCliente){
-	//require("conexionmysqli.php");
+	require_once("funciones.php");
+	
 	$fechaActual=date("Y-m-d");
 
 	$globalAdmin=$_COOKIE["global_admin_cargo"];
+
+	$globalAlmacen=$_COOKIE["global_almacen"];
 
 	$fechaCompleta=date("Y-m-d");
 	$horaCompleta=date("H:m:i");
@@ -63,13 +66,16 @@ function precioCalculadoParaFacturacion($enlaceCon,$codMaterial,$codigoCiudadGlo
 		//$cadRespuesta=$cadRespuesta-($cadRespuesta*($indiceConversion));
 	}
 
+
 	/**************** Iniciamos la revision de las oferats *******************/
 	/*************************************************************************/
 	$codigoOferta=0;
 	$nombreOferta=0;
 	$descuentoOferta=0;
 
-	$sqlOferta="SELECT t.codigo, t.nombre, IFNULL((select tp.porcentaje_material from tipos_precio_productos tp where tp.cod_tipoprecio=t.codigo and tp.cod_material='$codMaterial'), t.abreviatura) AS abreviatura from tipos_precio t where '$fechaCompleta $horaCompleta' between t.desde and t.hasta
+	$sqlOferta="SELECT t.codigo, t.nombre, IFNULL((select tp.porcentaje_material from tipos_precio_productos tp where tp.cod_tipoprecio=t.codigo and tp.cod_material='$codMaterial'), t.abreviatura) AS abreviatura, t.oferta_stock_limitado, DATE_FORMAT(t.desde, '%Y-%m-%d'), DATE_FORMAT(t.hasta, '%Y-%m-%d'), 
+		IFNULL((select tp.stock_oferta from tipos_precio_productos tp where tp.cod_tipoprecio=t.codigo and tp.cod_material='$codMaterial'), 0) AS stockoferta
+	from tipos_precio t where '$fechaCompleta $horaCompleta' between t.desde and t.hasta
 	 and (SELECT td.cod_dia from tipos_precio_dias td where td.cod_tipoprecio=t.codigo and td.cod_dia=DAYOFWEEK('$fechaCompleta'))
 	and t.estado=1 and t.cod_estadodescuento=3 and $codigoCiudadGlobal in (SELECT tc.cod_ciudad from tipos_precio_ciudad tc where tc.cod_tipoprecio=t.codigo) and $codMaterial in (SELECT tpp.cod_material from tipos_precio_productos tpp where tpp.cod_tipoprecio=t.codigo);";
 	
@@ -81,8 +87,30 @@ function precioCalculadoParaFacturacion($enlaceCon,$codMaterial,$codigoCiudadGlo
 		$nombreOferta=$datOferta[1];
 		$descuentoOfertaPorcentaje=$datOferta[2];
 		$descuentoOfertaPorcentaje=round($descuentoOfertaPorcentaje,2);
-
 		$descuentoOfertaBs=$precioProducto*($descuentoOfertaPorcentaje/100);
+		$ofertaStockLimitado=$datOferta[3];
+		$fechaInicioOferta=$datOferta[4];
+		$fechaFinalOferta=$datOferta[5];
+		$stockProductoOferta=$datOferta[6];
+
+		/*Si la oferta es de stock limitado validamos el stock y las salidas*/
+		$salidasProductoOferta=0;
+		if($ofertaStockLimitado==1){
+			if($stockProductoOferta>0){
+				$salidasProductoOferta=salidasItemPeriodo($enlaceCon, $globalAlmacen, $codMaterial, $fechaInicioOferta, $fechaFinalOferta);
+				if($salidasProductoOferta>=$stockProductoOferta){
+					$descuentoOfertaPorcentaje=0;
+					$descuentoOfertaBs=0;
+					$nombreOferta=$nombreOferta."(expirada)";
+				}else{
+					$nombreOferta=$nombreOferta."(vigente)";
+				}
+			}elseif($stockProductoOferta<=0) {
+				$descuentoOfertaPorcentaje=0;
+				$descuentoOfertaBs=0;
+				$nombreOferta=$nombreOferta."(error en config.)";
+			}
+		}
 	}
 	/*************************************************************************/
 	/*********************** Fin Revision de las ofertas ********************/
