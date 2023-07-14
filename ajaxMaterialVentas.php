@@ -59,7 +59,7 @@ $banderaPreciosDescuento=obtenerValorConfiguracion($enlaceCon,52);
 <td align="center" width="15%">
 	<input class="inputnumber" type="number" min="0" max="90" step="0.01" value="0" id="tipoPrecio<?php echo $num;?>" name="tipoPrecio<?php echo $num;?>" style="background:#ADF8FA;" readonly>%
 	<input class="inputnumber" type="number" value="0" id="descuentoProducto<?php echo $num;?>" name="descuentoProducto<?php echo $num;?>" step="0.01" style='background:#ADF8FA;' readonly>
-	<div id="divMensajeOferta<?=$num;?>" class="textosmallazul"></div>
+	<div id="divMensajeOferta<?=$num;?>" class="textomedianosangre"></div>
 </td>
 
 <td align="center" width="8%">

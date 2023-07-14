@@ -1,7 +1,6 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>Farmacias Bolivia</title>
     <link rel="shortcut icon" href="imagenes/icon_farma.ico" type="image/x-icon">
   <link type="text/css" rel="stylesheet" href="menuLibs/css/demo.css" />
   <script type="text/javascript" src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
