@@ -238,11 +238,13 @@ function funcionInicio(){
 <fieldset id="fiel" style="width:100%;border:0;">
 	<table align="center" class="texto" width="100%" id="data0" border="0">
 		<tr align="center">
-			<td width="38%">Producto</td>
-			<td width="8%">Precio </td>
-			<td width="15%">Desc. %</td>
-			<td width="15%">Desc. Monto</td>
-			<td width="8%">Precio Cliente</td>
+			<th width="5%">-</th>
+			<th width="15%">Linea</th>
+			<th width="18%">Producto</th>
+			<th width="8%">Precio </th>
+			<th width="15%">Desc. %</th>
+			<th width="15%">Desc. Monto</th>
+			<th width="8%">Precio Cliente</th>
 		</tr>
 	</table>
 	<?php
@@ -255,7 +257,7 @@ function funcionInicio(){
 				LEFT JOIN clientes_preciosdetalle cpd ON cpd.cod_clienteprecio = cp.codigo 
 				LEFT JOIN material_apoyo m ON m.codigo_material = cpd.cod_producto 
 				WHERE cp.cod_cliente = '".$cod_cliente."'
-				ORDER BY cpd.codigo ASC";
+				ORDER BY detalle_proveedor, m.descripcion_material";
 	$result = mysqli_query($enlaceCon, $query);
 
 	if (!$result) {
@@ -266,6 +268,7 @@ function funcionInicio(){
 	// Verificar si se encontraron registros
 	if (mysqli_num_rows($result) > 0) {
 		// Recorrer los registros
+		$indice=1;
 		while ($row = mysqli_fetch_assoc($result)) {
 			$cantidad_total++;
 			if(!empty($row['cod_producto'])){
@@ -275,8 +278,16 @@ function funcionInicio(){
 		<tbody>
 			<tr bgcolor="#FFFFFF" class="lista_registro">
 
-				<td width="38%" align="center">
-					<?=$row['descripcion_material'];?> - <?=$row['detalle_proveedor'];?> (<?=$row['codigo_material'];?>)
+				<td width="5%" align="center">
+					<?=$indice;?>
+				</td>
+
+				<td width="15%" align="left">
+					<?=$row['detalle_proveedor'];?>
+				</td>
+
+				<td width="18%" align="left">
+					<?=$row['descripcion_material'];?>-(<?=$row['codigo_material'];?>)
 				</td>
 
 				<td align="center" width="8%">
@@ -297,6 +308,7 @@ function funcionInicio(){
 	</table>
 	<?php
 			}
+			$indice++;
 		}
 	}
 	?>

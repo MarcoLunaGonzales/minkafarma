@@ -24,12 +24,13 @@ $globalAlmacen=$_COOKIE["global_almacen"];
       <th>Email</th>
       <th>Telefono</th>
       <th>Direccion</th>
-      <th>Ciudad</th>
+      <th># Productos Registrados</th>
       <th>Acciones</th>
     </tr>
     <?php
     $consulta="
-        SELECT c.cod_cliente, CONCAT(c.nombre_cliente, ' ', c.paterno) as nombre_cliente, c.nit_cliente, c.ci_cliente, c.email_cliente, c.telf1_cliente, c.dir_cliente, c.cod_area_empresa, a.descripcion
+        SELECT c.cod_cliente, CONCAT(c.nombre_cliente, ' ', c.paterno) as nombre_cliente, c.nit_cliente, c.ci_cliente, c.email_cliente, c.telf1_cliente, c.dir_cliente, c.cod_area_empresa, a.descripcion,
+(select count(*) from clientes_precios cp, clientes_preciosdetalle cpd where cp.codigo=cpd.cod_clienteprecio and cp.cod_cliente=c.cod_cliente)as numeroproductos
         FROM clientes AS c INNER JOIN ciudades AS a ON c.cod_area_empresa = a.cod_ciudad 
         WHERE c.cod_area_empresa='$globalAgencia' ORDER BY c.nombre_cliente ASC
     ";
@@ -47,6 +48,10 @@ $globalAlmacen=$_COOKIE["global_almacen"];
         $dirCliente = $reg["dir_cliente"];
         $codArea = $reg["cod_area_empresa"];
         $nomArea = $reg["descripcion"];
+        $numeroProductos=$reg["numeroproductos"];
+        if($numeroProductos==0){
+            $numeroProductos="-";
+        }
         ?>
         <tr>
           <td><input type='checkbox' id='idchk<?php echo $cont; ?>' value='<?php echo $codCliente; ?>' ></td>
@@ -56,7 +61,7 @@ $globalAlmacen=$_COOKIE["global_almacen"];
           <td><?php echo $emailCliente; ?></td>
           <td><?php echo $telefonoCliente; ?></td>
           <td><?php echo $dirCliente; ?></td>
-          <td><?php echo $nomArea; ?></td>
+          <td><?php echo $numeroProductos; ?></td>
           <td>
             <a href='../../clientePrecio.php?cod_cliente=<?php echo $codCliente; ?>' title='Registrar Precios Clientes' class='text-dark'><i class='material-icons'>description</i></a>
             <a href='../../clienteDocumento.php?cod_cliente=<?php echo $codCliente; ?>' target='_blank' title='Carga de Documentos' class='text-dark'><i class='material-icons'>cloud_upload</i></a>
