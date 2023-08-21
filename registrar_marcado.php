@@ -12,7 +12,7 @@ echo "<form name='form1' action='guarda_marcado.php' method='post'>";
 echo "<h1>Registrar Marcado de Personal</h1>";
 
 // Se obtiene IP y Navegador
-echo '<input type="text" id="ipAddress"><input type="text" id="userAgent">';
+echo '<input type="hidden" id="ipAddress"><input type="hidden" id="userAgent">';
 
 echo "<center><table class='texto' width='50%'>";
 echo "<tr><th>Introducir la clave del sistema para realizar el marcado</th></tr>";
