@@ -9,6 +9,12 @@ require("funcion_nombres.php");
 
 date_default_timezone_set('America/La_Paz');
 
+/****************************************
+ * Valores de IP y NAVEGADOR QUE UTILIZA
+ ****************************************/
+$ipAddress = $_POST['ipAddress'];
+$userAgent = $_POST['userAgent'];
+/****************************************/
 
 $claveMarcado=$_POST["clave_marcado"];
 

@@ -11,6 +11,9 @@ require("estilos.inc");
 echo "<form name='form1' action='guarda_marcado.php' method='post'>";
 echo "<h1>Registrar Marcado de Personal</h1>";
 
+// Se obtiene IP y Navegador
+echo '<input type="hidden" id="ipAddress"><input type="hidden" id="userAgent">';
+
 echo "<center><table class='texto' width='50%'>";
 echo "<tr><th>Introducir la clave del sistema para realizar el marcado</th></tr>";
 echo "<tr><td align='center'><input type='password' value='' name='clave_marcado' id='clave_marcado' size='50' required></td>";
@@ -38,6 +41,21 @@ echo "</table></center>";
 echo "</form>";
 ?>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    // Obtener la dirección IP del dispositivo
+    function getIPAddress(callback) {
+      $.getJSON('https://api64.ipify.org?format=json', function(data) {
+        var ipAddress = data.ip;
+        callback(ipAddress);
+      });
+    }
+    // Obtener el Navegador
+    var userAgent = navigator.userAgent;
+    getIPAddress(function(ip) {
+      document.getElementById('ipAddress').value = ip;
+    });
 
-
+    document.getElementById('userAgent').value = userAgent;
+</script>
 </body>
