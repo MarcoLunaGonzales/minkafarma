@@ -9,20 +9,20 @@ $titulo=$_GET['titulo'];
 $mensaje=$_GET['mensaje'];
 */
 
-$correo="mluna@minkasoftware.com";
+$correo="lunagonzalesmarco@gmail.com";
 $personal="2";
 $evento="Evento test";
 $titulo="Titulo Test";
 $mensaje="Mensaje de Prueba para test."; 
     
-    $mail_username="noresponse@minkasoftware.com";//Correo electronico saliente ejemplo: tucorreo@gmail.com
-	$mail_userpassword="minka@2019";//Tu contraseña de gmail
+    $mail_username="mailfacturacion@minkasoftware.com";//Correo electronico saliente ejemplo: tucorreo@gmail.com
+	$mail_userpassword="M1nk4.2024***";//Tu contraseña de gmail
 	$mail_addAddress=$correo;//correo electronico que recibira el mensaje
 	$template="PHPMailer/email_template.html";//Ruta de la plantilla HTML para enviar nuestro mensaje
 				
 	/*Inicio captura de datos enviados por $_POST para enviar el correo */
 	$mail_setFromEmail=$mail_username;
-	$mail_setFromName="TuFarma";
+	$mail_setFromName="TUFARMA";
 	$txt_message=$mensaje;
 	$mail_subject=$titulo; //el subject del mensaje
 	

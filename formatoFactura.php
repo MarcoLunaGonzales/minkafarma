@@ -199,7 +199,7 @@ $pdf->SetXY(4,$y+41);		$pdf->MultiCell(68,3,utf8_decode("COD. DE AUTORIZACIÓN: 
 $pdf->SetXY(4,$y+51);		$pdf->Cell(68,0,"---------------------------------------------------------------------------", 0,0,"C");
 $pdf->SetXY(4,$y+52);		$pdf->MultiCell(68,3,utf8_decode($txt1),0,"C");
 
-$y=$y+5;
+$y=$y-5;
 
 $pdf->SetXY(4,$y+59);		$pdf->Cell(68,0,"---------------------------------------------------------------------------", 0,0,"C");
 
@@ -306,6 +306,11 @@ if($montoDecimal==""){
 }
 $txtMonto=NumeroALetras::convertir($montoEntero);
 /////////////////////
+
+
+if($montoCambio2<0){
+	$montoCambio2=0;
+}
 
 $pdf->SetXY(4,$y+$yyy+20);		$pdf->MultiCell(68,3,"Son:  $txtMonto"." ".$montoDecimal."/100 Bolivianos",0,"L");
 //$pdf->SetXY(0,$y+$yyy+28);		$pdf->Cell(0,0,"",0,0,"C");

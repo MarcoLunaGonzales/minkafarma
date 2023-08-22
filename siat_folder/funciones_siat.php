@@ -73,9 +73,6 @@ function obtenerEventosignificativo_BD($codigoMotivoEvento,$codigoPuntoVenta,$co
 
 
 function obtenerPuntoVenta_BD($cod_ciudad){
-
-
-
   $sql="select codigoPuntoVenta from siat_puntoventa where cod_ciudad=$cod_ciudad";
        // echo $sql;
   $valor="0";
@@ -191,8 +188,6 @@ function generarCufd($ciudad,$codigoSucursal,$codigoPuntoVenta){
 }
 
 function deshabilitarCufd($cod_ciudad,$cuis,$fecha_X){
-   
-  
    // echo $sql;
   $valor="0";
   // require("../../conexionmysqli.inc");

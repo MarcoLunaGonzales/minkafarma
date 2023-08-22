@@ -50,10 +50,10 @@ echo "<td align='left' colspan='3'>
 </td>";
 echo "</tr>";
 
+//<option value='1' selected>Linea</option>
 echo "<tr><td align='left' class='bg-info text-white'>Nivel Descuento</td>";
 echo "<td align='left' colspan='3'>
 	<select name='nivel_descuento' class='selectpicker form-control' data-style='btn btn-info'>
-		<option value='1' selected>Linea</option>
 		<option value='0'>Producto</option>
 	</select>	
 </td>";

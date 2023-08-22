@@ -317,7 +317,7 @@ echo "<script language='Javascript'>
         	$ciudades=substr($ciudades, 0, $tamanioGlosa)."...";
      	}
 		if($dat['por_linea']==1){
-			echo "dentro del if";
+			//echo "dentro del if";
 			$lineas=obtenerNombreDesLineasRegistrados($codigo);
 			echo "lineas: ".$lineas;
 		   $tamanioGlosa=50; 

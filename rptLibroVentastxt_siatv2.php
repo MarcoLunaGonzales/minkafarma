@@ -42,7 +42,7 @@ if($tipo>0){
 
 $sql="select s.nro_correlativo, DATE_FORMAT(s.fecha, '%d/%m/%Y'), s.monto_final, s.razon_social, s.nit, s.siat_cuf as nro_autorizacion, s.salida_anulada, '0' as cod_control, 
 (SELECT c.descripcion FROM ciudades c, almacenes a where a.cod_ciudad=c.cod_ciudad and a.cod_almacen=s.cod_almacen)nombre_ciudad, s.cod_tipo_doc from salida_almacenes s where YEAR(s.fecha)='$codAnio' and MONTH(s.fecha)='$codMes' and 
-s.cod_almacen in (select a.cod_almacen from almacenes a where a.cod_ciudad='$rpt_territorio') and s.siat_estado_facturacion=1 order by s.nro_correlativo";
+s.cod_almacen in (select a.cod_almacen from almacenes a where a.cod_ciudad in ($rpt_territorio) ) and s.siat_estado_facturacion=1 order by s.nro_correlativo";
 
 $resp=mysqli_query($enlaceCon,$sql);
 echo "<br><table align='center' class='table table-condensed' width='70%'>
@@ -70,6 +70,8 @@ echo "<br><table align='center' class='table table-condensed' width='70%'>
 </tr></thead><tbody>";
 
 $indice=1;
+$totalVentas=0;
+$totalImpuestos=0;
 while($datos=mysqli_fetch_array($resp)){	
 	$nroFactura=$datos[0];
 	$fecha=$datos[1];
@@ -88,9 +90,11 @@ while($datos=mysqli_fetch_array($resp)){
 
 	$codigoControl=$datos[7];
 	
+	$totalVentas+=$importe;
 	$importe=number_format($importe,1,".","");
 	$montoVentaFormat=number_format($importe,2,".",",");
 	$montoIVA=$importe*0.13;
+	$totalImpuestos+=$montoIVA;
 	$montoIVAFormat=number_format($montoIVA,2,".",",");
 	$nombreCiudad=$datos['nombre_ciudad'];
 	$codTipoDoc=$datos['cod_tipo_doc'];
@@ -125,5 +129,29 @@ while($datos=mysqli_fetch_array($resp)){
 	</tr>";
 	$indice++;
 }
+	$totalVentasF=number_format($totalVentas,2,".",",");
+	$totalImpuestosF=number_format($totalImpuestos,2,".",",");
+
+	echo "<tr>
+	<td class='small' style='background:#E2E1DE;'>-</td>
+    <td class='small' style='background:#E2E1DE;'>-</td>
+	<td>-</td>
+	<td>-</td>
+	<td>-</td>
+	<td>-</td>
+	<td>-</td>
+	<td>-</td>
+	<td>-</td>
+	<td>-</td>
+	<td>$totalVentasF</td>
+	<td>0</td>
+	<td>0</td>
+	<td>0</td>
+	<td>$totalVentasF</td>
+	<td>0</td>
+	<td>$totalVentasF</td>
+	<td>$totalImpuestosF</td>
+	<td>-</td>
+	</tr>";
 echo "</tbody></table></br>";
 ?>

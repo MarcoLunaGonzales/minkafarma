@@ -41,7 +41,7 @@ if(isset($_POST['acciones'])&&count($_POST['acciones'])>0){
 $sqllimit="";
 if($sqlCodigo==""&&$sqlNombre==""&&$stringLineasX==""&&$stringFormasX==""&&$stringAccionesX=="")
 {
-  $sqllimit="LIMIT 100";
+  $sqllimit="LIMIT 250";
 }
 $descDefault=0;
 $consultDesc="SELECT abreviatura FROM tipos_precio where codigo=$codigo_registro;";
@@ -51,7 +51,7 @@ while($datDesc=mysqli_fetch_array($rspdesc)){
 }
 
 $sql="(SELECT s.cod_material,d.codigo_material,d.descripcion_material,(select cod_proveedor from proveedores_lineas where cod_linea_proveedor=d.cod_linea_proveedor) as cod_proveedor,d.cod_linea_proveedor,s.porcentaje_material from tipos_precio_productos s join material_apoyo d on d.codigo_material=s.cod_material where s.cod_tipoprecio=$codigo_registro and d.estado=1 order by 1)
-   UNION (select d.codigo_material,0 as codigo_material,d.descripcion_material,(select cod_proveedor from proveedores_lineas where cod_linea_proveedor=d.cod_linea_proveedor) as cod_proveedor,d.cod_linea_proveedor, 0 as porcentaje_material from material_apoyo d where d.estado=1 and d.codigo_material not in (SELECT s.cod_material from tipos_precio_productos s join material_apoyo d on d.codigo_material=s.cod_material where s.cod_tipoprecio=$codigo_registro and d.estado=1) $sqlCodigo $stringLineasX $sqlNombre $stringFormasX $stringAccionesX order by 1 $sqllimit) order by 1";
+   UNION (select d.codigo_material,0 as codigo_material,d.descripcion_material,(select cod_proveedor from proveedores_lineas where cod_linea_proveedor=d.cod_linea_proveedor) as cod_proveedor,d.cod_linea_proveedor, 0 as porcentaje_material from material_apoyo d where d.estado=1 and d.codigo_material not in (SELECT s.cod_material from tipos_precio_productos s join material_apoyo d on d.codigo_material=s.cod_material where s.cod_tipoprecio=$codigo_registro and d.estado=1) $sqlCodigo $stringLineasX $sqlNombre $stringFormasX $stringAccionesX order by 1 $sqllimit) order by 3";
  // echo $sql;
 
 $resp=mysqli_query($enlaceCon,$sql); 
@@ -103,7 +103,7 @@ echo "<table class='table table-sm table-bordered' id='tabla_productos'>";
 
     $inpPrecioFinal="<input style='width:60px; background:$estiloInput; border:none;border-bottom:1px solid #B2E6E2' id='precio_fin$dat[0]' type='number' name='precio_fin$dat[0]' value='$precioFin' step='any' onchange='calcularDescuentoFinal($dat[0]); return false;' onkeyup='calcularDescuentoFinal($dat[0]); return false;'>";
     echo "<tr class='$estiloTexto'>
-    <td><input type='checkbox' name='codigo[]' value='$dat[0]' $checked></td>
+    <td><input type='checkbox' name='codigo[]' value='$dat[0]' $checked>$index</td>
     <td><small>$proveedor ($linea)</small></td>
     <td>($dat[0]) $producto</td>
     <td align='center'>$txtStockProducto</td>

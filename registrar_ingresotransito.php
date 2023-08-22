@@ -12,6 +12,15 @@ $globalAlmacen=$_COOKIE["global_almacen"];
  error_reporting(E_ALL);
  ini_set('display_errors', '1');
 
+
+$banderaActPreciosTraspaso=obtenerValorConfiguracion($enlaceCon,24);
+$txtActPrecios="";
+if($banderaActPreciosTraspaso==1){
+	$txtActPrecios="*** Los precios seran actualizados en el Traspaso.";
+}else{
+	$txtActPrecios="*** Los precios NO seran actualizados en el Traspaso.";
+}
+
 $sql_datos_salidaorigen="select s.nro_correlativo, s.cod_tiposalida, a.nombre_almacen, a.cod_ciudad from salida_almacenes s, almacenes a
 where a.cod_almacen=s.cod_almacen and s.cod_salida_almacenes='$codigo_registro'";
 $resp_datos_salidaorigen=mysqli_query($enlaceCon,$sql_datos_salidaorigen);
@@ -24,7 +33,15 @@ $observaciones="";
 
 
 echo "<form action='guarda_ingresotransito.php' method='post'>";
-echo "<h1>Registrar Ingreso en Transito</h1>";
+echo "<h1></h1>";
+
+echo "<table border='0' class='textotit' align='center'>
+		<tr><th></th><th>Registrar Ingreso en Transito</th><th></th></tr>
+		<tr><th align='left'><span class='textopequenorojo' style='background-color:yellow;'><b>$txtActPrecios</b></span></th>
+			<th></th>
+		</tr>
+		</table><br>";
+
 echo "<center>
 	<table class='texto'>";
 echo "<tr><th>Fecha</th><th>Nota de Ingreso</th><th>Tipo de Ingreso</th><th>Observaciones</th></tr>";
@@ -32,6 +49,7 @@ echo "<tr><td>";
 	echo"<INPUT type='date' class='texto' value='$fecha' id='fecha' size='10' name='fecha' readonly>";
 echo "<td><input type='text' disabled='true' size='40' name='' value='Salida:$correlativo_salidaorigen $nombre_almacen_origen' class='texto'></td>";
 echo "<input type='hidden' name='nota_ingreso' value='Salida:$correlativo_salidaorigen $nombre_almacen_origen'>";
+
 
 echo "<td align='center'><input type='text' class='texto' name='nombre_tipoingreso' value='INGRESO POR TRASPASO' size='30' readonly></td>";
 
@@ -79,14 +97,18 @@ while($dat_detalle_salida=mysqli_fetch_array($resp_detalle_salida))
 	/*** Verificar los Precios en origen y Destino ***/
 	/*************************************************/
 	$precioSucursalOrigen=precioProductoSucursal($enlaceCon, $cod_material, $codSucursalOrigen);
-	$precioSucursalOrigenF=formatonumeroDec($precioSucursalOrigen);
 	$precioSucursalDestino=precioProductoSucursal($enlaceCon, $cod_material, $globalCiudad);
+
+	$precioSucursalOrigenF=formatonumeroDec($precioSucursalOrigen);
+	$precioSucursalDestinoF=formatonumeroDec($precioSucursalDestino);
+
 	$txtObsPrecios="";
-	if($precioSucursalOrigen>0 && $precioSucursalDestino==0){
-		$txtObsPrecios="<span style='color: blue;'>El precio de la sucursal se actualizará a $precioSucursalOrigenF</span>";
+	
+	if( ($precioSucursalOrigen>0 && $precioSucursalDestino==0) || ($banderaActPreciosTraspaso==1 && $precioSucursalOrigen>$precioSucursalDestino) ){
+		$txtObsPrecios="<span style='color:red;'>El precio de la sucursal se actualizará a $precioSucursalOrigenF</span>";
 	}
 	if($precioSucursalOrigen==0 && $precioSucursalDestino==0){
-		$txtObsPrecios="<span style='color: red'>El producto no tiene precio registrado. Consultar con el administrador del sistema.</span>";
+		$txtObsPrecios="<span style='color:red;'>El producto no tiene precio registrado. Consultar con el administrador del sistema.</span>";
 		$banderaErrorPrecios=1;	
 	}
 	/*************************************************/
@@ -102,7 +124,7 @@ while($dat_detalle_salida=mysqli_fetch_array($resp_detalle_salida))
 	
 	echo "<td align='center'>$cantidad_unitaria</td>";
 	echo "<td><input type='number' name='cantidad_unitaria$indice_detalle' step='0.1' value='$cantidad_unitaria' class='texto' required></td>";
-	echo "<td>$txtObsPrecios</td>";
+	echo "<td><span style='color:blue;'>Precio Origen: $precioSucursalOrigenF Precio Destino: $precioSucursalDestinoF</span><br>$txtObsPrecios</td>";
 	echo "</tr>";
 	$indice_detalle++;
 }

@@ -488,6 +488,7 @@ function calcularDescuentoUnitario(tipo, index){
 }
 // Calculo de montos TOTALES
 function calculaPrecioCliente(preciocompra, index){
+	console.log("****** Ingresando calculaPrecioCliente **********");
 	/************ banderaCalculoPrecio = 0 precionFinal   1 = precioCompra *******************/
 	var banderaCalculoPrecio = document.getElementById('bandera_calculo_precio').value;
 	/****************************************************************************/
@@ -499,12 +500,9 @@ function calculaPrecioCliente(preciocompra, index){
 	var margen		  = document.getElementById('margenlinea'+index).value;
 
 	console.log("cantidad: "+cantidad+" precio: "+precio_unitario);
-
-	/*var total_subtotal  = (cantidad > 0 ? cantidad : 0) * (precio_unitario > 0 ? precio_unitario : 0);
-	document.getElementById('precio_old'+index).value = total_subtotal.toFixed(2);*/
 	/****************************************************************************/
-
 	if(banderaCalculoPrecio==0){
+		console.log("entra banderaCalculoPrecio en 0");
 		//var costo=preciocompra.value;
 		var costo = parseFloat(document.getElementById("precio"+index).value);
 		var costounitario=(costo/cantidad)/cantidad_presentacion;
@@ -515,6 +513,7 @@ function calculaPrecioCliente(preciocompra, index){
 		preciocliente=number_format(preciocliente,2);
 		document.getElementById('preciocliente'+index).value=preciocliente;		
 	}else{
+		console.log("entra banderaCalculoPrecio distinto 0");
 		var costounitario = precio_unitario / cantidad_presentacion;
 		var preciocliente=(costounitario + (costounitario*(margen/100)));
 		console.log('costounitario2:'+costounitario)
@@ -523,11 +522,10 @@ function calculaPrecioCliente(preciocompra, index){
 		preciocliente=number_format(preciocliente,2);
 		document.getElementById('preciocliente'+index).value=preciocliente;
 	}
-
 	var margenNuevo=(preciocliente-costounitario)/costounitario;
 	var margenNuevoF="M ["+ number_format((margenNuevo*100),0) + "%]";
 	document.getElementById('divmargen'+index).innerHTML=margenNuevoF;
-
+	console.log("**** fin  calculaPrecioCliente ******");
 	// Ajuste Descuento Adicional
 	ajusteDescuento();
 	totalesMonto();
@@ -687,6 +685,7 @@ echo "<table border='0' class='textotit' align='center'>
 			<th align='left'><span class='textopequenorojo' style='background-color:aqua;'><b>$txtCalculoPrecioFinal</b></span></th>
 		</tr>
 		</table><br>";
+		
 echo "<table border='0' class='texto' cellspacing='0' align='center' width='90%' style='border:#ccc 1px solid;'>";
 echo "<tr>
 	<th>Nro. Ingreso: <b>$nro_correlativo<b></th>";

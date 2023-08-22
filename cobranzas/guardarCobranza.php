@@ -35,7 +35,7 @@ else
 	$codigo++;
 }
 
-$sqlNro="select max(nro_cobro) from cobros_cab where cod_gestion in (select cod_gestion from gestiones where estado=1)";
+$sqlNro="select max(nro_cobro)+1 from cobros_cab where cod_gestion in (select cod_gestion from gestiones where estado=1)";
 $nroCobranza=obtenerCodigo($enlaceCon, $sqlNro);
 
 $montoTotal=0;

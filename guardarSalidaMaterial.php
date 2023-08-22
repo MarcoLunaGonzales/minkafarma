@@ -1,4 +1,5 @@
 <?php
+set_time_limit(0);
 
 $start_time = microtime(true);
 require("conexionmysqli.php");

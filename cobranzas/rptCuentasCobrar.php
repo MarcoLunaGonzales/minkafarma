@@ -1,11 +1,10 @@
-<link href="../stilos.css" rel='stylesheet' type='text/css'>
 
 <?php
 require('../function_formatofecha.php');
 require('../conexionmysqli2.inc');
 require('../funcion_nombres.php');
 require('../funciones.php');
-
+require("../estilos_almacenes.inc");
 // error_reporting(E_ALL);
 // ini_set('display_errors', '1');
 
@@ -14,8 +13,8 @@ $fecha_fin=$_GET['fecha_fin'];
 $fecha_ini=$_GET['fecha_ini'];
 
 //desde esta parte viene el reporte en si
-$fecha_iniconsulta=cambia_formatofecha($fecha_ini);
-$fecha_finconsulta=cambia_formatofecha($fecha_fin);
+$fecha_iniconsulta=$fecha_ini;
+$fecha_finconsulta=$fecha_fin;
 
 $rpt_territorio=$_GET['rpt_territorio'];
 
@@ -27,7 +26,7 @@ echo "<table align='center' class='textotit' width='100%'><tr><td align='center'
 	<br>Territorio: $nombre_territorio <br> De: $fecha_ini A: $fecha_fin
 	<br>Fecha Reporte: $fecha_reporte</tr></table>";
 
-$sql="select s.`cod_salida_almacenes`, s.`nro_correlativo`, s.`fecha`, c.`nombre_cliente`, s.`monto_final`,
+$sql="select s.`cod_salida_almacenes`, s.`nro_correlativo`, s.`fecha`, concat(c.`nombre_cliente`,' ',c.paterno), s.`monto_final`,
        (
          select COALESCE(sum(cbd.monto_detalle), 0)
          from `cobros_cab` cb, `cobros_detalle` cbd

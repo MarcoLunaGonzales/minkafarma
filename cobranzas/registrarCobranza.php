@@ -98,7 +98,7 @@ require("../conexionmysqli.inc");
 <table border='0' class='texto' cellspacing='0' align='center' width='80%' style='border:#ccc 1px solid;'>
 <tr><th>Cliente</th><th>Fecha Pago</th><th>Observaciones</th></tr>
 <?php
-$sql1="select cod_cliente, nombre_cliente from clientes order by 2";
+$sql1="select cod_cliente, concat(nombre_cliente,' ',paterno) from clientes order by 2";
 $resp1=mysqli_query($enlaceCon, $sql1);
 ?>
 <tr>
@@ -133,7 +133,7 @@ $fecha=date("d/m/Y");
 
 <div id="divDetalle">
 	<table border='0' class='texto' cellspacing='0' align='center' width='90%' style='border:#ccc 1px solid;'>
-		<tr><th>Nro. OC</th><th>Fecha OC</th><th>Monto OC</th><th>A Cuenta</th><th>Saldo OC</th><th>Monto a Pagar</th><th>Nro. Doc. Pago</th></tr>
+		<tr><th>Nro. OC</th><th>Fecha OC</th><th>Monto OC</th><th>A Cuenta</th><th>Saldo OC</th><th>Monto a Pagar</th><th>Nro. Recibo</th></tr>
 	</table>
 </div>
 

@@ -96,9 +96,7 @@ include("datosUsuario.php");
 						<li><a href="navegador_precios.php?orden=2" target="contenedorPrincipal">Precios (Por Linea Proveedor)</a></li>		
 						<li><a href="navegadorUbicaciones.php" target="contenedorPrincipal">Ubicaciones</a></li>						
 					</ul>
-				</li>
-					<li><a href="navegador_dosificaciones.php" target="contenedorPrincipal">Dosificaciones de Facturas</a></li>
-					
+				</li>					
 				</ul>	
 			</li>
 			<!--li><span>Ordenes de Compra</span>
@@ -183,9 +181,7 @@ include("datosUsuario.php");
 					<li><span>Costos</span>
 						<ul>
 							<li><a href="rptOpKardexCostos.php" target="contenedorPrincipal">Kardex de Movimiento Precio Promedio</a></li>
-							<!--li><a href="rptOpKardexCostosPEPS.php" target="contenedorPrincipal">Kardex de Movimiento PEPS</a></li>
-							<li><a href="rptOpKardexCostosUEPS.php" target="contenedorPrincipal">Kardex de Movimiento UEPS</a></li-->
-							<li><a href="rptOpExistenciasCostos.php" target="contenedorPrincipal">Existencias</a></li>							
+							<li><a href="rptOpExistenciasCostos.php" target="contenedorPrincipal">Existencias</a></li>			<li><a href="rptOpUtilidadesDocItem.php" target="contenedorPrincipal">Costo Ventas x Documento e Item</a></li>				
 						</ul>
 					</li>
 					<li><span>Ventas</span>

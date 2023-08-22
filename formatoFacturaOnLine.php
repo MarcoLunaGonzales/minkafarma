@@ -382,6 +382,7 @@ if($montoDecimal==""){
 	$montoDecimal="00";
 }
 $txtMonto=NumeroALetras::convertir($montoEntero);
+
 ?>
 <label class="arial-12" style="float: left;"><?="Son:  $txtMonto"." ".$montoDecimal."/100 Bolivianos"?></label>
 <table width="100%">

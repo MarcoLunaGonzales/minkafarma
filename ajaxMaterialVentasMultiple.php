@@ -10,6 +10,10 @@ require_once("funciones.php");
 require_once("funcionesVentas.php");
 
 
+
+ error_reporting(E_ALL);
+ ini_set('display_errors', '1');
+
 $globalAdmin=$_COOKIE["global_admin_cargo"];
 $globalAlmacen=$_COOKIE["global_almacen"];
 $globalAgencia=$_COOKIE["global_agencia"];
@@ -18,8 +22,14 @@ $numJS=$_GET['codigo'];
 $arrayProductos=$_GET['productos_multiple'];
 $fechaActual=date("Y-m-d");
 
+$codClienteX=$_GET["cod_cliente"];
+
 /*Esta Bandera es para la validacion de stocks*/
 $banderaValidacionStock=obtenerValorConfiguracion($enlaceCon,4);
+
+/*Bandera de descuento abierto en Venta*/
+$banderaDescuentoAbierto=obtenerValorConfiguracion($enlaceCon,54);
+
 
 $arrayProductosX=explode(",",$arrayProductos);
 
@@ -36,7 +46,7 @@ for( $j=0;$j<=sizeof($arrayProductosX)-1;$j++ ){
 	$arrayProductosDetalle=$arrayProductosX[$j];
 	list($codigoProductoX,$nombreProductoX,$lineaProductoX,$stockProductoX)=explode("|",$arrayProductosDetalle);
 
-	$arrayPreciosAplicar=precioCalculadoParaFacturacion($enlaceCon,$codigoProductoX,$globalAgencia);
+	$arrayPreciosAplicar=precioCalculadoParaFacturacion($enlaceCon,$codigoProductoX,$globalAgencia,$codClienteX);
 	$precioProductoBase=$arrayPreciosAplicar[0];
 	$txtValidacionPrecioCero=$arrayPreciosAplicar[1];
 	$descuentoBs=$arrayPreciosAplicar[2];
@@ -85,7 +95,7 @@ echo "</div></td>";
 </td>
 
 <td align="center" width="15%">
-	<input class="inputnumber" type="number" min="0" max="90" step="0.01" value="<?=$descuentoPorcentaje;?>" id="tipoPrecio<?php echo $num;?>" 	name="tipoPrecio<?php echo $num;?>" style="background:#ADF8FA;" readonly>%
+	<input class="inputnumber" type="number" min="0" max="90" step="0.01" value="<?=$descuentoPorcentaje;?>" id="tipoPrecio<?php echo $num;?>" 	name="tipoPrecio<?php echo $num;?>"  onkeyup='calculaMontoMaterial(<?php echo $num;?>);' onchange='calculaMontoMaterial(<?php echo $num;?>);'  style="background:#ADF8FA;" <?=($banderaDescuentoAbierto==0)?'readonly':'';?> >%
 	<input class="inputnumber" type="number" value="0" id="descuentoProducto<?php echo $num;?>" name="descuentoProducto<?php echo $num;?>" step="0.01" style='background:#ADF8FA;' readonly>
 	<div id="divMensajeOferta<?=$num;?>" class="textomedianosangre"><?=$nombrePrecioAplicar;?></div>
 </td>

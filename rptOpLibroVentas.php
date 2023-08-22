@@ -121,11 +121,7 @@ for ($i=0; $i < count($meses); $i++) {
 echo "</select></td>";
 echo "<td width='50%'><select name='rpt_territorio' data-live-search='true' title='-- Elija una sucursal --'  id='rpt_territorio' multiple data-actions-box='true' data-style='select-with-transition' data-actions-box='true' data-size='10' class='selectpicker form-control' required>";
 $globalAgencia=$_COOKIE["global_agencia"];
-	if($_COOKIE["admin_central"]==1){
        $sql="select cod_ciudad, descripcion from ciudades where cod_ciudad>0 order by descripcion";    
-	}else{	   
-       $sql="select cod_ciudad, descripcion from ciudades where cod_ciudad>0 and cod_ciudad='$globalAgencia' order by descripcion";
-	}
 	
 	$resp=mysqli_query($enlaceCon,$sql);
 	while($dat=mysqli_fetch_array($resp))

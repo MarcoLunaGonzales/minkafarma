@@ -13,12 +13,12 @@ if($inicio==0){
 }    
 	$mail = new PHPMailer;
 	$mail->isSMTP();                            // Establecer el correo electrónico para utilizar SMTP
-	$mail->Host = 'mail.minkasoftware.com';             // Especificar el servidor de correo a utilizar 
+	$mail->Host = 'p3plzcpnl491749.prod.phx3.secureserver.net';             // Especificar el servidor de correo a utilizar 
 	$mail->SMTPAuth = true;                     // Habilitar la autenticacion con SMTP
 	$mail->Username = $mail_username;          // Correo electronico saliente ejemplo: tucorreo@gmail.com
 	$mail->Password = $mail_userpassword; 		// Tu contraseña de gmail
 	$mail->SMTPSecure = 'tls';                  // Habilitar encriptacion, `ssl` es aceptada
-	$mail->Port = 587;                          // Puerto TCP  para conectarse 
+	$mail->Port = 465;                          // Puerto TCP  para conectarse 
 	$mail->setFrom($mail_setFromEmail, $mail_setFromName);//Introduzca la dirección de la que debe aparecer el correo electrónico. Puede utilizar cualquier dirección que el servidor SMTP acepte como válida. El segundo parámetro opcional para esta función es el nombre que se mostrará como el remitente en lugar de la dirección de correo electrónico en sí.
 	$mail->addReplyTo($mail_setFromEmail, $mail_setFromName);//Introduzca la dirección de la que debe responder. El segundo parámetro opcional para esta función es el nombre que se mostrará para responder
 	$mail->addAddress($mail_addAddress);   // Agregar quien recibe el e-mail enviado

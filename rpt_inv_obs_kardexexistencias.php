@@ -3,6 +3,10 @@ require('estilos_reportes_almacencentral.php');
 require('conexionmysqli.inc');
 require('function_formatofecha.php');
 require('function_comparafechas.php');
+
+ error_reporting(E_ALL);
+ ini_set('display_errors', '1');
+
 echo "$rpt_territorio $rpt_almacen $tipo_item";
 	$sql_nombre_territorio="select descripcion from ciudades where cod_ciudad='$rpt_territorio'";
 	$resp_territorio=mysqli_query($enlaceCon, $sql_nombre_territorio);
@@ -20,7 +24,7 @@ echo "$rpt_territorio $rpt_almacen $tipo_item";
 	$resp_item=mysqli_query($enlaceCon, $sql_item);
 	while($dat_item=mysqli_fetch_array($resp_item))
 	{	$codigo_item=$dat_item[0];
-		$nombre_item="$dat_item[1] $dat_item[2]";		
+		$nombre_item=$dat_item[1];		
 		$sql_fechas_ingresos="select sum(id.cantidad_unitaria) from ingreso_almacenes i, ingreso_detalle_almacenes id
 		where i.cod_ingreso_almacen=id.cod_ingreso_almacen and i.cod_almacen='$rpt_almacen' and 
 		i.ingreso_anulado=0 and id.cod_material='$codigo_item'";

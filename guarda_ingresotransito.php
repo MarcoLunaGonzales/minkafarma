@@ -16,6 +16,9 @@ $banderaPrecioUpd=obtenerValorConfiguracion($enlaceCon,7);
 
 $banderaUpdPreciosSucursales=obtenerValorConfiguracion($enlaceCon,49);
 
+$banderaActPreciosTraspaso=obtenerValorConfiguracion($enlaceCon,24);
+
+
 $sql = "select IFNULL(MAX(cod_ingreso_almacen)+1,1) from ingreso_almacenes order by cod_ingreso_almacen desc";
 $resp = mysqli_query($enlaceCon,$sql);
 $dat = mysqli_fetch_array($resp);
@@ -96,8 +99,7 @@ if($cod_Ingreso2>0){
 
 				$precioUnitario=0;
 				
-				$costo=$precioUnitario;
-							
+				$costo=$precioUnitario;							
 				
 				$consulta="insert into ingreso_detalle_almacenes(cod_ingreso_almacen, cod_material, cantidad_unitaria, cantidad_restante, lote, fecha_vencimiento, 
 				precio_bruto, costo_almacen, costo_actualizado, costo_actualizado_final, costo_promedio, precio_neto, cod_ubicacionestante, cod_ubicacionfila) 
@@ -114,7 +116,7 @@ if($cod_Ingreso2>0){
 				$descuentoSucursalOrigen=$arrayPrecioSucursalOrigen[1];
 
 				$precioSucursalDestino=precioProductoSucursal($enlaceCon, $cod_material, $codSucursalIngreso);
-				if($precioSucursalOrigen>0 && $precioSucursalDestino==0){
+				if( ($precioSucursalOrigen>0 && $precioSucursalDestino==0) || ($banderaActPreciosTraspaso==1 && $precioSucursalOrigen>$precioSucursalDestino) ){
 					$arrayPreciosModificar[$codSucursalIngreso]=$precioSucursalOrigen;
 					$respModificarPrecios=actualizarPrecios($enlaceCon,$cod_material,$arrayPreciosModificar,$descuentoSucursalOrigen);
 				}

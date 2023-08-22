@@ -1,4 +1,7 @@
-<link href="../stilos.css" rel='stylesheet' type='text/css'>
+<?php
+require("../conexionmysqli.inc");
+require("../estilos_almacenes.inc");
+?>
 
 <script language='JavaScript'>
 function envia_formulario(f)
@@ -13,14 +16,13 @@ function envia_formulario(f)
 </script>
 <?php
 
-require("../conexionmysqli2.inc");
 
 $fecha_rptdefault=date("d/m/Y");
 echo "<table align='center' class='textotit'><tr><th>Reporte Cuentas x Cobrar</th></tr></table><br>";
 echo"<form method='post' action='rptOpKardexCostos.php'>";
 
 	echo"\n<table class='texto' border='1' align='center' cellSpacing='0' width='50%'>\n";
-	echo "<tr><th align='left'>Territorio</th><td><select name='rpt_territorio' class='texto'>";
+	echo "<tr><th align='left'>Territorio</th><td><select name='rpt_territorio' class='selectpicker' data-style='btn btn-info' data-show-subtext='true' data-live-search='true'>";
 	$sql="select cod_ciudad, descripcion from ciudades order by descripcion";
 	$resp=mysqli_query($enlaceCon, $sql);
 	echo "<option value=''></option>";
@@ -32,24 +34,12 @@ echo"<form method='post' action='rptOpKardexCostos.php'>";
 	echo "</select></td></tr>";
 	
 	echo "<tr><th align='left'>De fecha:</th>";
-	echo" <TD bgcolor='#ffffff'><INPUT  type='text' class='texto' value='$fecha_rptdefault' id='exafinicial' size='10' name='exafinicial'>";
-	echo" <IMG id='imagenFecha' src='../imagenes/fecha.bmp'>";
-	echo" <DLCALENDAR tool_tip='Seleccione la Fecha' ";
-	echo" daybar_style='background-color: DBE1E7; font-family: verdana; color:000000;' ";
-	echo" navbar_style='background-color: 7992B7; color:ffffff;' ";
-	echo" input_element_id='exafinicial' ";
-	echo" click_element_id='imagenFecha'></DLCALENDAR>";
+	echo" <TD bgcolor='#ffffff'><INPUT  type='date' class='texto' value='$fecha_rptdefault' id='exafinicial' size='10' name='exafinicial'>";
 	echo"  </TD>";
 	echo "</tr>";
 
 	echo "<tr><th align='left'>A fecha:</th>";
-			echo" <TD bgcolor='#ffffff'><INPUT  type='text' class='texto' value='$fecha_rptdefault' id='exaffinal' size='10' name='exaffinal'>";
-    		echo" <IMG id='imagenFecha1' src='../imagenes/fecha.bmp'>";
-    		echo" <DLCALENDAR tool_tip='Seleccione la Fecha' ";
-    		echo" daybar_style='background-color: DBE1E7; font-family: verdana; color:000000;' ";
-    		echo" navbar_style='background-color: 7992B7; color:ffffff;' ";
-    		echo" input_element_id='exaffinal' ";
-    		echo" click_element_id='imagenFecha1'></DLCALENDAR>";
+			echo" <TD bgcolor='#ffffff'><INPUT  type='date' class='texto' value='$fecha_rptdefault' id='exaffinal' size='10' name='exaffinal'>";
     		echo"  </TD>";
 	echo "</tr>";
 	
@@ -58,6 +48,5 @@ echo"<form method='post' action='rptOpKardexCostos.php'>";
 	</center><br>";
 	echo"</form>";
 	echo "</div>";
-	echo"<script type='text/javascript' language='javascript'  src='../dlcalendar.js'></script>";
 
 ?>

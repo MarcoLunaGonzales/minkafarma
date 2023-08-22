@@ -26,12 +26,12 @@ $fechaActual=date("Y-m-d");
 
 <!-- CANTIDAD -->
 <td align="center" width="10%">
-<input type="number" class="inputnumber" min="1" max="1000000" id="cantidad_unitaria<?php echo $num;?>" name="cantidad_unitaria<?php echo $num;?>" size="5"  value="" onKeyUp='calculaPrecioCliente(0, <?php echo $num;?>);' onChange='calculaPrecioCliente(0, <?php echo $num;?>);' required>
+<input type="number" class="inputnumber" min="1" max="1000000" id="cantidad_unitaria<?php echo $num;?>" name="cantidad_unitaria<?php echo $num;?>" size="5"  value="" oninput='calculaPrecioCliente(0, <?php echo $num;?>);' onblur='calculaPrecioCliente(0, <?php echo $num;?>);' required>
 </td>
 
 <!-- PRECIO UNITARIO -->
 <td align="center" width="10%">
-<input type="number" class="inputnumber" min="0.01" max="1000000" id="precio_unitario<?php echo $num;?>" name="precio_unitario<?php echo $num;?>" size="5"  value="0" onKeyUp='calculaPrecioCliente(0, <?php echo $num;?>);' onChange='calculaPrecioCliente(0, <?php echo $num;?>);' step="0.01" required>
+<input type="number" class="inputnumber" min="0.01" max="1000000" id="precio_unitario<?php echo $num;?>" name="precio_unitario<?php echo $num;?>" size="5"  value="0" oninput='calculaPrecioCliente(0, <?php echo $num;?>);' onblur='calculaPrecioCliente(0, <?php echo $num;?>);' step="0.01" required>
 </td>
 
 <td align="center" width="10%">

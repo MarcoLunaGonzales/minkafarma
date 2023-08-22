@@ -724,23 +724,18 @@ function buscarMaterial(f, numMaterial){
 	
 }
 
-
 function check(e) {
-
     tecla = (document.all) ? e.keyCode : e.which;
-
     //Tecla de retroceso para borrar, siempre la permite
     if (tecla == 8||tecla==13) {
         return true;
     }
-
     // Patron de entrada, en este caso solo acepta numeros y letras
     if($("#tipo_documento").val()!=1){
     	patron = /[A-Za-z0-9-]/;
     }else{
     	patron = /[0-9]/;
-    }
-    
+    }    
     tecla_final = String.fromCharCode(tecla);
     return patron.test(tecla_final);
 }
@@ -801,6 +796,8 @@ $( document ).ready(function() {
 });
 
 </script>
+
+
 <?php 
 require("estilos_almacenes.inc");
 
@@ -962,6 +959,9 @@ function masMultiple(form) {
 		menos(numFilas);
 		console.log("numFilasActualizado: "+numFilas);
 
+		var cod_cliente  = document.getElementById('cliente').value;
+
+
 		var productosMultiples=new Array();		
 		for(i=0;i<=form.length-1;i++){
     		if(form.elements[i].type=='checkbox'){  	   
@@ -1005,7 +1005,7 @@ function masMultiple(form) {
 			/*fin recuperar*/
 
 			ajax=nuevoAjax();
-			ajax.open("GET","ajaxMaterialVentasMultiple.php?codigo="+numFilas+"&productos_multiple="+productosMultiples,true);
+			ajax.open("GET","ajaxMaterialVentasMultiple.php?codigo="+numFilas+"&productos_multiple="+productosMultiples+"&cod_cliente="+cod_cliente,true);
 			ajax.onreadystatechange=function(){
 				if (ajax.readyState==4) {
 					div_material_linea.innerHTML=div_material_linea.innerHTML+ajax.responseText;
@@ -1217,26 +1217,34 @@ function validar(f){
 	}
   /**************** Fin Validar Efectivo y Total Final ****************/
 
-	Swal.fire({
-		title: '¿Esta seguro de Realizar la Venta?',
-		text: mensajeGuardar,
-		showCancelButton: true,
-		confirmButtonColor: '#3085d6',
-		cancelButtonColor: '#d33',
-		confirmButtonText: 'Si, Vender/Facturar!'
-		}).then((result) => {
-				console.log(result);
-				console.log("resultado: "+result.value);
-		    if (result.value) {
-		      console.log("Enviando");
-		      document.getElementById("btsubmit").value = "Enviando...";
-					document.getElementById("btsubmit").disabled = true;   
-					document.forms[0].submit();
-		    }if(result.dismiss){
-						console.log("Cancelando....");
-						return false;
-		    }
-	});
+	var banderaMsgGuardar=document.getElementById("bandera_msg_guardar").value;
+	if(banderaMsgGuardar==1){
+			Swal.fire({
+				title: '¿Esta seguro de Realizar la Venta?',
+				text: mensajeGuardar,
+				showCancelButton: true,
+				confirmButtonColor: '#3085d6',
+				cancelButtonColor: '#d33',
+				confirmButtonText: 'Si, Vender/Facturar!'
+				}).then((result) => {
+						console.log(result);
+						console.log("resultado: "+result.value);
+				    if (result.value) {
+				      console.log("Enviando");
+				      document.getElementById("btsubmit").value = "Enviando...";
+							document.getElementById("btsubmit").disabled = true;   
+							document.forms[0].submit();
+				    }if(result.dismiss){
+								console.log("Cancelando....");
+								return false;
+				    }
+			});		
+	}else{
+			document.getElementById("btsubmit").value = "Enviando...";
+			document.getElementById("btsubmit").disabled = true;   
+			document.forms[0].submit();				
+	}
+
 
   return false;
 }
@@ -1692,7 +1700,6 @@ if($banderaPreciosDescuento==1){
 	$txtPrecioMayorista="[Precio Mayorista:".$porcentajePrecioMayorista."%]";
 }
 
-
 include("datosUsuario.php");
 
 if(isset($_GET['file'])){
@@ -1739,6 +1746,7 @@ if(isset($_GET['file'])){
 	<input type="hidden" id="validacion_clientes" name="validacion_clientes" value="<?=obtenerValorConfiguracion($enlaceCon,11)?>">
 	<input type="hidden" id="bandera_validacion_stock" name="bandera_validacion_stock" value="<?=obtenerValorConfiguracion($enlaceCon,4)?>">
 	<input type="hidden" id="bandera_efectivo_recibido" name="bandera_efectivo_recibido" value="<?=obtenerValorConfiguracion($enlaceCon,21)?>">
+	<input type="hidden" id="bandera_msg_guardar" name="bandera_msg_guardar" value="<?=obtenerValorConfiguracion($enlaceCon,23)?>">
 
 
 <table class='' width='100%' style='width:100%;margin-top:-24px !important;'>

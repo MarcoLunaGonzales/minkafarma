@@ -41,6 +41,8 @@ $indexFila=0;
 $tipoSalidaVencimiento=obtenerValorConfiguracion($enlaceCon,5);
 //Bandera para mostrar la Fecha de Vencimiento en la Factura o no
 $banderaMostrarFV=obtenerValorConfiguracion($enlaceCon,20);
+//Bandera para buscar desde el nombre de producto tambien el principio activo
+$banderaBuscarPA=obtenerValorConfiguracion($enlaceCon,22);
 
 	$sql="select m.codigo_material, m.descripcion_material,
 	(select concat(p.nombre_proveedor,'-',pl.nombre_linea_proveedor)as nombre_proveedor
@@ -49,9 +51,12 @@ $banderaMostrarFV=obtenerValorConfiguracion($enlaceCon,20);
 	if($codigoMat!=""){
 		$sql=$sql. " and codigo_material='$codigoMat'";
 	}
-	if($nombreItem!=""){
-		$sql=$sql. " and descripcion_material like '%$nombreItem%' ";
+	if($nombreItem!="" && $banderaBuscarPA==1){
+		$sql=$sql. " and (descripcion_material like '%$nombreItem%' or principio_activo like '%$nombreItem%')";
+	}elseif($nombreItem!="" && $banderaBuscarPA!=1){
+		$sql=$sql. " and descripcion_material like '%$nombreItem%'";
 	}
+
 	if($tipoSalidaVencimiento==$tipoSalida){
 		$sql=$sql. " and m.codigo_material in (select id.cod_material from ingreso_almacenes i, ingreso_detalle_almacenes id 
 		where i.cod_ingreso_almacen=id.cod_ingreso_almacen and i.cod_almacen='$globalAlmacen' and i.ingreso_anulado=0 
@@ -91,6 +96,8 @@ $banderaMostrarFV=obtenerValorConfiguracion($enlaceCon,20);
 			$nombre=addslashes($nombre);
 			$linea=addslashes($linea);
 			
+			$stockProducto=0;
+
 			if($tipoSalida==$tipoSalidaVencimiento){
 				$stockProducto=stockProductoVencido($enlaceCon,$globalAlmacen, $codigo);
 			}else{
@@ -131,6 +138,8 @@ $banderaMostrarFV=obtenerValorConfiguracion($enlaceCon,20);
 
 			  	if($stockProducto>0){
 					$stockProductoFormat="<b class='textograndenegro' style='color:#C70039'>".$stockProducto."</b>";
+			  	}else{
+			  		$stockProductoFormat=$stockProducto;
 			  	}
 				echo "<tr><td><input type='checkbox' id='idchk$cont' name='idchk$cont' value='$datosProd' onchange='ver(this)' ></td><td>$codigo</td><td><div class='textograndenegro'><a href='javascript:setMateriales(form1, $codigo, \"$nombre - $linea ($codigo)####$txtFechaVencimiento####$cantidadPresentacion####$ventaSoloCajas \",$stockProducto)'>$nombre</a></div></td>
 				<td>$linea</td>

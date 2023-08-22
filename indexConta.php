@@ -122,8 +122,6 @@ include("datosUsuario.php");
 					<li><span>Costos</span>
 						<ul>
 							<li><a href="rpt_op_inv_kardex.php?rpt_valorado=1" target="contenedorPrincipal">Kardex Valorado</a></li>
-							<!--li><a href="rptOpKardexCostosPEPS.php" target="contenedorPrincipal">Kardex de Movimiento PEPS</a></li>
-							<li><a href="rptOpKardexCostosUEPS.php" target="contenedorPrincipal">Kardex de Movimiento UEPS</a></li-->
 							<li><a href="rptOpExistenciasCostos.php" target="contenedorPrincipal">Existencias</a></li>	
 							<li><a href="rptOpUtilidadesDocItem.php" target="contenedorPrincipal">Costo Ventas x Documento e Item</a></li>							
 						</ul>

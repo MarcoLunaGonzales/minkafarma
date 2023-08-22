@@ -1,7 +1,6 @@
-<link href="../stilos.css" rel='stylesheet' type='text/css'>
 <?php
 require('../function_formatofecha.php');
-require('../conexionmysqli2.inc');
+require('../conexionmysqli.inc');
 require('../funcion_nombres.php');
 require('../funciones.php');
 
@@ -15,8 +14,8 @@ $rpt_cliente=$_GET['rpt_cliente'];
 
 
 //desde esta parte viene el reporte en si
-$fecha_iniconsulta=cambia_formatofecha($fecha_ini);
-$fecha_finconsulta=cambia_formatofecha($fecha_fin);
+$fecha_iniconsulta=$fecha_ini;
+$fecha_finconsulta=$fecha_fin;
 
 
 $rpt_territorio=$_GET['rpt_territorio'];
