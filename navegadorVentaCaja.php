@@ -315,10 +315,13 @@ function cambiarTipoPago(codigo){
 
 
 // EDITAR DATOS
-function ShowFacturarEditar(codVenta,numCorrelativo, codVendedor, codTipoPago){
+function ShowFacturarEditar(codVenta,numCorrelativo, codVendedor, codTipoPago, nitCliente, razonSocial){
     console.log(codVendedor)
 	document.getElementById("cod_venta_edit").value=codVenta;
 	document.getElementById("nro_correlativo_edit").value=numCorrelativo;
+    // Nuevos campos de Razon Social / NIT
+	document.getElementById("edit_nit").value=nitCliente;
+	document.getElementById("edit_razon_social").value=razonSocial;
 	
 	document.getElementById('divRecuadroExt2_edit').style.visibility='visible';
 	document.getElementById('divProfileData2_edit').style.visibility='visible';
@@ -341,14 +344,15 @@ function HiddenFacturarEditar(){
             formData.append('edit_cod_vendedor', $('#edit_cod_vendedor').val());
             formData.append('edit_cod_tipopago', $('#edit_cod_tipopago').val());
             $.ajax({
-                url:"actualizarFactura.php?cod_venta_edit="+$('#cod_venta_edit').val()+"&edit_cod_vendedor="+$('#edit_cod_vendedor').val()+"&edit_cod_tipopago="+$('#edit_cod_tipopago').val(),
+                url:"actualizarFactura.php?cod_venta_edit="+$('#cod_venta_edit').val()+"&edit_cod_vendedor="+$('#edit_cod_vendedor').val()+"&edit_cod_tipopago="+$('#edit_cod_tipopago').val()+"&edit_nit="+$('#edit_nit').val()+"&edit_razon_social="+$('#edit_razon_social').val(),
                 type:"POST",
                 contentType: false,
                 processData: false,
                 data: formData,
                 success:function(response){
                     // let resp = JSON.parse(response);
-                    location.href="navegadorVentas2.php";
+                    // location.href="navegadorVentas2.php";
+                    window.open("formatoNotaRemision.php?codVenta=" + $('#cod_venta_edit').val(), '_blank');
                 }
             });
             HiddenFacturarEditar();
@@ -409,7 +413,7 @@ echo "<div class='divBotones'>
         
 echo "<center><table class='texto'>";
 echo "<tr><th>&nbsp;</th><th>Nro. Doc</th><th>Fecha/hora<br>Registro Salida</th><th>Vendedor</th><th>TipoPago</th>
-    <th>Razon Social</th><th>NIT</th><th>Monto</th><th>Observaciones</th><th>Imprimir</th><th>Editar</br>DatosVenta</th></tr>";
+    <th>Razon Social</th><th>NIT</th><th>Monto</th><th>Observaciones</th><th>Imprimir</th><th>Cobrar</th></tr>";
     
 echo "<input type='hidden' name='global_almacen' value='$global_almacen' id='global_almacen'>";
 
@@ -421,10 +425,13 @@ $consulta = "
     (select concat(f.paterno,' ',f.nombres) from funcionarios f where f.codigo_funcionario=s.cod_chofer)as vendedor,
     (select t.nombre_tipopago from tipos_pago t where t.cod_tipopago=s.cod_tipopago)as tipopago,
     s.cod_chofer,
-    s.cod_tipopago, s.monto_final
-    FROM salida_almacenes s, tipos_salida ts 
-    WHERE s.cod_tiposalida = ts.cod_tiposalida AND s.cod_almacen = '$global_almacen' and s.cod_tiposalida=1001 and 
-    s.cod_tipo_doc not in (1,4) ";
+    s.cod_tipopago, s.monto_final,
+    s.nit
+    FROM salida_almacenes s, tipos_salida ts
+    WHERE s.cod_tiposalida = ts.cod_tiposalida 
+    AND s.cod_almacen = '$global_almacen' 
+    AND s.cod_tiposalida=1001 
+    AND s.cod_tipo_doc not in (1,4) ";
 
 if($nroCorrelativoBusqueda!="")
 {   $consulta = $consulta."AND s.nro_correlativo='$nroCorrelativoBusqueda' ";
@@ -459,7 +466,7 @@ while ($dat = mysqli_fetch_array($resp)) {
     $nombreCliente=$dat[10];
     $codTipoDoc=$dat[11];
     $nombreTipoDoc=nombreTipoDoc($enlaceCon,$codTipoDoc);
-    $razonSocial=$dat[12];
+    $razonSocial=empty($dat[12]) ? '' : "$dat[12]";
     $nitCli=$dat[13];
     $vendedor=$dat[14];
     $tipoPago=$dat[15];
@@ -468,6 +475,7 @@ while ($dat = mysqli_fetch_array($resp)) {
     $codTipoPago = $dat[17];
 
     $montoVenta = $dat[18];
+    $nitCliente = empty($dat[19]) ? '' : "$dat[19]";
     $montoVentaFormat=formatonumeroDec($montoVenta);
 
     echo "<input type='hidden' name='fecha_salida$nro_correlativo' value='$fecha_salida_mostrar'>";
@@ -506,9 +514,10 @@ while ($dat = mysqli_fetch_array($resp)) {
         </td>";
         // Editar Datos
         echo "<td bgcolor='$color_fondo'>
-            <a href='#' onClick='ShowFacturarEditar($codigo,$nro_correlativo, $codVendedor, $codTipoPago);'>
-            <img src='imagenes/change.png' width='30' border='0' title='Cambiar Vendedor / Tipo Pago'></a>
-        </td>";
+                <a href='#' onClick='ShowFacturarEditar($codigo,$nro_correlativo, $codVendedor, $codTipoPago,\"$nitCliente\",\"$razonSocial\");'>
+                <img src='imagenes/change.png' width='30' border='0' title='Cobrar'></a>
+            </td>";
+
         //echo "<td  bgcolor='$color_fondo'><a href='notaSalida.php?codVenta=$codigo' target='_BLANK'><img src='imagenes/detalle.png' width='30' border='0' title='Factura Formato Pequeño'></a></td>";
     }
     
@@ -606,7 +615,7 @@ echo "</form>";
 </div>
 <div id="divProfileData2_edit" style="background-color:#FFF; width:750px; height:300px; position:absolute; top:50px; left:170px; -webkit-border-radius: 20px; 	-moz-border-radius: 20px; visibility: hidden; z-index:2;">
   	<div id="divProfileDetail2_edit" style="visibility:hidden; text-align:center">
-		<h2 align='center' class='texto'>Cambiar Datos a Factura</h2>
+		<h2 align='center' class='texto'>Cobro</h2>
 		<form name="form1" id="form1" action="convertNRToFactura.php" method="POST">
 		<table align='center' class='texto'>
 			<tr>
@@ -656,9 +665,22 @@ echo "</form>";
 				</td>
 			</tr>
 
+			<tr>
+				<td>NIT:</td>
+				<td>
+				<input type='text' name='edit_nit' id="edit_nit" class='texto'>
+				</td>
+			</tr>
+			<tr>
+				<td>Razón Social:</td>
+				<td>
+				<input type='text' name='edit_razon_social' id="edit_razon_social">
+				</td>
+			</tr>
+
 		</table>	
 		<center>
-			<input type='button' value='Actualizar' class='boton' onClick="UpdateFacturarEditar()">
+			<input type='button' value='Cobrar' class='boton' onClick="UpdateFacturarEditar()">
 			<input type='button' value='Cancelar' class='boton2' onClick="HiddenFacturarEditar()">
 			
 		</center>
