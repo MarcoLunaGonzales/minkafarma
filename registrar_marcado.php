@@ -1,7 +1,7 @@
-<script>
-function cargaInicio(f){
-	f.clave_marcado.focus();
-}
+<script language='JavaScript'>
+  function cargaInicio(f){
+  	f.clave_marcado.focus();
+  }
 </script>
 <body onload="cargaInicio(form1);">
 <?php
@@ -12,7 +12,8 @@ echo "<form name='form1' action='guarda_marcado.php' method='post'>";
 echo "<h1>Registrar Marcado de Personal</h1>";
 
 // Se obtiene IP y Navegador
-echo '<input type="hidden" id="ipAddress"><input type="hidden" id="userAgent">';
+echo "<input type='hidden' id='ipAddress' name='ipAddress'>
+    <input type='hidden' id='userAgent' name='userAgent'>";
 
 echo "<center><table class='texto' width='50%'>";
 echo "<tr><th>Introducir la clave del sistema para realizar el marcado</th></tr>";
@@ -21,7 +22,6 @@ echo "</table></center>";
 
 echo "<div class='divBotones'><input type='submit' class='boton' value='Guardar Marcado' onClick='validar(this.form)'>
 </div>";
-
 
 $sql="select m.fecha_marcado, 
 (select concat(f.paterno,' ', f.nombres) from funcionarios f where f.codigo_funcionario=m.cod_funcionario) 
@@ -47,6 +47,7 @@ echo "</form>";
     function getIPAddress(callback) {
       $.getJSON('https://api64.ipify.org?format=json', function(data) {
         var ipAddress = data.ip;
+        console.log('IP Adress:'+ipAddress);
         callback(ipAddress);
       });
     }
@@ -55,7 +56,7 @@ echo "</form>";
     getIPAddress(function(ip) {
       document.getElementById('ipAddress').value = ip;
     });
-
     document.getElementById('userAgent').value = userAgent;
+    console.log('user agent:' + userAgent);
 </script>
 </body>

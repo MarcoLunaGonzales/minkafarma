@@ -316,29 +316,24 @@ if($sql_inserta==1){
 					// echo $sqlUpdMonto;
 		$respUpdMonto=mysqli_query($enlaceCon,$sqlUpdMonto);
 	}
-	//echo "tipoSalida=".$tipoSalida;
-	//echo "tipoDoc=".$tipoDoc;
+
+
 	if($tipoSalida==1001){
 		//servicios siat
 		if($tipoDoc==1){		
 			$sqlRecep="select siat_codigoRecepcion from salida_almacenes where cod_salida_almacenes='$codigo'";
 			$respRecep=mysqli_query($enlaceCon,$sqlRecep);
-			// $recepcion=mysqli_result($respRecep,0,0);
 			$datPV=mysqli_fetch_array($respRecep);
 			$recepcion=$datPV[0];
-
 			$errorFacturaXml=0;
 			if($recepcion==""){			
 				require_once "siat_folder/funciones_siat.php";
 				$errorConexion=verificarConexion()[0];
 				if($_POST['siat_error_valor']==0&&$_POST['tipo_documento']==5){
-					// echo $errorConexion."**";
 					$facturaImpuestos=generarFacturaVentaImpuestos($codigo,true,$errorConexion);			
 				}else{
-					// echo $errorConexion."**2";
 					$facturaImpuestos=generarFacturaVentaImpuestos($codigo,false,$errorConexion);	
 				}
-				// echo $facturaImpuestos."**";
 				$fechaEmision=$facturaImpuestos[1];
 				$cuf=$facturaImpuestos[2];		
 				if(isset($facturaImpuestos[0]->RespuestaServicioFacturacion->codigoRecepcion)){
@@ -366,27 +361,17 @@ if($sql_inserta==1){
 						</script>";	
 				}else{
 					$mensaje="Transacción Exitosa :)";	
-					
-					if($tipoImpresion==0){$url="puente_impresion.php?codVenta=$codigo&tipodoc=$tipoDoc";}
-					else{
-						$url="formatoFacturaOnLine.php?codVenta=$codigo";
-						//$url="dFacturaElectronica.php?codigo_salida=$codigo";
-					}
+					$url="puente_impresion.php?codVenta=$codigo&tipodoc=$tipoDoc";
 					
 				}
 			}else{ //ESTO ES CUANDO HAY ERROR FACTURA
 				$mensaje="Factura emitida fuera de línea :(";				
-				if($tipoImpresion==0){$url="puente_impresion.php?codVenta=$codigo&tipodoc=$tipoDoc";}
-					else{
-						$url="formatoFacturaOnLine.php?codVenta=$codigo";
-						//$url="dFacturaElectronica.php?codigo_salida=$codigo";
-					}
+				$url="puente_impresion.php?codVenta=$codigo&tipodoc=$tipoDoc";
 			}
 
 			//SACAMOS LA VARIABLE PARA ENVIAR EL CORREO O NO SI ES 1 ENVIAMOS CORREO DESPUES DE LA TRANSACCION
 			$banderaCorreo=obtenerValorConfiguracion($enlaceCon,10);
 			if($banderaCorreo==1){
-				//para correo solo en caso de offline y online
 				$enviar_correo=true;
 				$correo_destino=obtenerCorreosListaCliente($codCliente);
 				if($correo_destino==null || $correo_destino=="" || $correo_destino==" "){
@@ -412,13 +397,10 @@ if($sql_inserta==1){
 				}else{
 					$texto_correo="<span style=\"border:1px;font-size:18px;color:red;\"><b>Ocurrio un error al enviar el correo, vuelva a intentarlo.</b></span>";
 				}
-				/*DIRECCIONAMOS A LA URL CORRECTA TIPO DE IMPRESION*/
-				if($tipoImpresion==0){$url="puente_impresion.php?codVenta=$codigo&tipodoc=$tipoDoc";}
-				else{
-						$url="formatoFacturaOnLine.php?codVenta=$codigo";
-						//$url="dFacturaElectronica.php?codigo_salida=$codigo";
-					}
 
+				/*DIRECCIONAMOS A LA URL CORRECTA TIPO DE IMPRESION*/
+				$url="puente_impresion.php?codVenta=$codigo&tipodoc=$tipoDoc";
+				
 				echo "<script language='Javascript'>
 					Swal.fire({
 				    title: 'SIAT: ".$mensaje."',
@@ -428,8 +410,6 @@ if($sql_inserta==1){
 					   location.href='$url'; 
 					});
 					</script>";
-				// $texto_correo="<span style=\"border:1px;font-size:18px;color:#91d167;\"><b>¿DESEAS ENVIAR CORREO?</b></span>";
-				// echo "<script language='Javascript'>
 			}else{
 				echo "<script language='Javascript'>
 					Swal.fire({
@@ -442,8 +422,7 @@ if($sql_inserta==1){
 					</script>";
 			}
 		}else if($tipoDoc==2){			
-			if($tipoImpresion==0){$url="puente_impresion.php?codVenta=$codigo&tipodoc=$tipoDoc";}
-					else{$url="formatoNotaRemisionOnLine.php?codVenta=$codigo";}
+			$url="puente_impresion.php?codVenta=$codigo&tipodoc=$tipoDoc";
 			$banderaCorreo=0;
 			if($banderaCorreo==1 || $banderaCorreo==2){
 				header("location:sendEmailVenta.php?codigo=$codigo&evento=1&tipodoc=$tipoDoc");
@@ -464,10 +443,6 @@ if($sql_inserta==1){
 			$sqlUpdMonto="update salida_almacenes set siat_cuf='$cuf' where cod_salida_almacenes='$codigo' ";
 			$respUpdMonto=mysqli_query($enlaceCon,$sqlUpdMonto);
 			$errorFacturaXml=1;
-			// echo "<script type='text/javascript' language='javascript'>
-			// location.href='navegadorVentas.php';
-			// </script>";
-
 			//SACAMOS LA VARIABLE PARA ENVIAR EL CORREO O NO SI ES 1 ENVIAMOS CORREO DESPUES DE LA TRANSACCION
 			$banderaCorreo=obtenerValorConfiguracion($enlaceCon,10);
 			if($banderaCorreo==1){
@@ -506,8 +481,6 @@ if($sql_inserta==1){
 					   location.href='navegadorVentas.php'; 
 					});
 					</script>";
-				// $texto_correo="<span style=\"border:1px;font-size:18px;color:#91d167;\"><b>¿DESEAS ENVIAR CORREO?</b></span>";
-				// echo "<script language='Javascript'>
 			}else{
 				echo "<script language='Javascript'>
 					Swal.fire({
@@ -518,12 +491,7 @@ if($sql_inserta==1){
 					    location.href='navegadorVentas.php';
 					});
 					</script>";
-				// echo "<script type='text/javascript' language='javascript'>
-				// location.href='navegadorVentas.php?codVenta=$codigo';
-				// </script>";
 			}
-
-
 		}else{
 			echo "<script type='text/javascript' language='javascript'>
 			location.href='navegador_salidamateriales.php';
@@ -537,7 +505,6 @@ if($sql_inserta==1){
 }else{
 		echo "<script type='text/javascript' language='javascript'>
 			alert('Ocurrio un error en la transaccion. Contacte con el administrador del sistema.');
-			
 		</script>";//location.href='navegador_salidamateriales.php';
 }
 

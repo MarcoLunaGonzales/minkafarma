@@ -10,7 +10,7 @@ echo "<h1>Reporte Marcados de Personal</h1>";
 
 $sqlPersonal="select distinct(f.codigo_funcionario), concat(f.paterno,' ',f.materno,' ',f.nombres) from marcados_personal m, funcionarios f
 where f.codigo_funcionario=m.cod_funcionario and 
-m.fecha_marcado BETWEEN '$fechaInicio' and '$fechaFinal'";
+m.fecha_marcado BETWEEN '$fechaInicio 00:00:00' and '$fechaFinal 23:59:59' ";
 $respPersonal=mysqli_query($enlaceCon, $sqlPersonal);
 
 echo "<center><table class='texto'>";

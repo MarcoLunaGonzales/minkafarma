@@ -33,8 +33,8 @@ if($numFilas>0){
 	while($dat=mysqli_fetch_array($resp)){
 		$codUsuario=$dat[0];
 		$nombreUsuario=nombreVisitador($enlaceCon, $codUsuario);
-		$sqlInsert="insert into marcados_personal (cod_funcionario, fecha_marcado, estado) values 
-		($codUsuario, '$fechaActual', 1)";
+		$sqlInsert="insert into marcados_personal (cod_funcionario, fecha_marcado, estado, ip, user_agent) values 
+		($codUsuario, '$fechaActual', 1, '$ipAddress', '$userAgent')";
 		$respInsert=mysqli_query($enlaceCon, $sqlInsert);
 		
 		echo "<script language='Javascript'>
