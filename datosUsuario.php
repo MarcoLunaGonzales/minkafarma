@@ -1,6 +1,6 @@
 <?php
-	require("conexionmysqli.php");
-	require("funciones.php");
+	require_once 'conexionmysqli.php';
+	require_once 'funciones.php';
 
 	$banderaVentaCaja=obtenerValorConfiguracion($enlaceCon, 17);
 	if($banderaVentaCaja==0){

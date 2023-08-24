@@ -1700,7 +1700,7 @@ if($banderaPreciosDescuento==1){
 	$txtPrecioMayorista="[Precio Mayorista:".$porcentajePrecioMayorista."%]";
 }
 
-include("datosUsuario.php");
+require_once 'datosUsuario.php';
 
 if(isset($_GET['file'])){
 	unlink($_GET['file']);
