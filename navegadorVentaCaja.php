@@ -515,10 +515,14 @@ while ($dat = mysqli_fetch_array($resp)) {
         echo "<td  bgcolor='$color_fondo'><a href='formatoNotaRemision.php?codVenta=$codigo' target='_BLANK'><img src='imagenes/factura1.jpg' width='30' border='0' title='Factura Formato Pequeño'></a>
         </td>";
         // Editar Datos
-        echo "<td bgcolor='$color_fondo'>
+        if($estado_almacen<>4){
+            echo "<td bgcolor='$color_fondo'>
                 <a href='#' onClick='ShowFacturarEditar($codigo,$nro_correlativo, $codVendedor, $codTipoPago,\"$nitCliente\",\"$razonSocial\",\"$montoVentaFormat\");'>
                 <img src='imagenes/factura.png' width='30' border='0' title='Cobrar'></a>
             </td>";
+        }else{
+            echo "<td bgcolor='$color_fondo'>&nbsp;</td>";
+        }
 
         //echo "<td  bgcolor='$color_fondo'><a href='notaSalida.php?codVenta=$codigo' target='_BLANK'><img src='imagenes/detalle.png' width='30' border='0' title='Factura Formato Pequeño'></a></td>";
     }

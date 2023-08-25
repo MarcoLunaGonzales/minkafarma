@@ -120,11 +120,15 @@ require_once 'datosUsuario.php';
 			<li><span>Salidas</span>
 				<ul>
 					<li><a href="navegador_salidamateriales.php" target="contenedorPrincipal">Listado de Salidas</a></li>
-					<li><a href="<?=$urlNavVentas;?>" target="contenedorPrincipal" target='_blank'>Listado de Ventas</a></li>
+					<li><a href="<?=$urlNavVentas;?>" target='_blank'>Listado de Ventas</a></li>
 					<li><a href="registrar_salidaventas_manuales.php" target="_blank">Factura Manual de Contigencia</a></li>
 
 				</ul>	
 			</li>
+			<li><a href="registrar_ingresomateriales.php" target="_blank">Registrar Ingreso **</a></li>
+			<li><a href="registrar_salidaventas.php" target="_blank">Vender / Facturar **</a></li>
+			<li><a href="<?=$urlNavVentas;?>" target='_blank'>Listado de Ventas **</a></li>
+
 			<li><span>Marcados de Personal</span>
 				<ul>
 					<li><a href="registrar_marcado.php" target="contenedorPrincipal">Registro de Marcados</a></li>
@@ -158,10 +162,9 @@ require_once 'datosUsuario.php';
 					<li><a href="cobranzas/rptOpCuentasCobrar.php" target="contenedorPrincipal">Reporte Cuentas x Cobrar</a></li>
 				</ul>	
 			</li>
-			
-			<li><a href="registrar_ingresomateriales.php" target="_blank">Registrar Ingreso **</a></li>
-			<li><a href="registrar_salidaventas.php" target="_blank">Vender / Facturar **</a></li>
+
 			<li><a href="rptOpArqueoDiario.php?variableAdmin=1" target="contenedorPrincipal">Cierre de Caja</a></li>
+			<li><a href="rptOpArqueoDiarioGeneral.php?variableAdmin=1" target="contenedorPrincipal">Cierre de Caja General</a></li>
 			<li><a href="cambiarSucursalSesion.php" target="contenedorPrincipal">Cambiar Almacen</a></li>
 			<!--li><a href="listadoProductosStock.php" target="_blank">Listado de Productos **</a></li-->
 			<!--li><a href="rptProductosVencer.php" target="contenedorPrincipal">Productos proximos a Vencer</a></li-->
