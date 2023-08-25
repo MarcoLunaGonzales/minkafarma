@@ -315,14 +315,15 @@ function cambiarTipoPago(codigo){
 
 
 // EDITAR DATOS
-function ShowFacturarEditar(codVenta,numCorrelativo, codVendedor, codTipoPago, nitCliente, razonSocial){
+function ShowFacturarEditar(codVenta,numCorrelativo, codVendedor, codTipoPago, nitCliente, razonSocial, montoCobro){
     console.log(codVendedor)
 	document.getElementById("cod_venta_edit").value=codVenta;
 	document.getElementById("nro_correlativo_edit").value=numCorrelativo;
     // Nuevos campos de Razon Social / NIT
 	document.getElementById("edit_nit").value=nitCliente;
 	document.getElementById("edit_razon_social").value=razonSocial;
-	
+	document.getElementById("edit_monto_cobro").value=montoCobro;
+    
 	document.getElementById('divRecuadroExt2_edit').style.visibility='visible';
 	document.getElementById('divProfileData2_edit').style.visibility='visible';
 	document.getElementById('divProfileDetail2_edit').style.visibility='visible';
@@ -353,6 +354,7 @@ function HiddenFacturarEditar(){
                     // let resp = JSON.parse(response);
                     // location.href="navegadorVentas2.php";
                     window.open("formatoNotaRemision.php?codVenta=" + $('#cod_venta_edit').val(), '_blank');
+                    parent.location.href='navegadorVentaCaja.php';
                 }
             });
             HiddenFacturarEditar();
@@ -514,8 +516,8 @@ while ($dat = mysqli_fetch_array($resp)) {
         </td>";
         // Editar Datos
         echo "<td bgcolor='$color_fondo'>
-                <a href='#' onClick='ShowFacturarEditar($codigo,$nro_correlativo, $codVendedor, $codTipoPago,\"$nitCliente\",\"$razonSocial\");'>
-                <img src='imagenes/change.png' width='30' border='0' title='Cobrar'></a>
+                <a href='#' onClick='ShowFacturarEditar($codigo,$nro_correlativo, $codVendedor, $codTipoPago,\"$nitCliente\",\"$razonSocial\",\"$montoVentaFormat\");'>
+                <img src='imagenes/factura.png' width='30' border='0' title='Cobrar'></a>
             </td>";
 
         //echo "<td  bgcolor='$color_fondo'><a href='notaSalida.php?codVenta=$codigo' target='_BLANK'><img src='imagenes/detalle.png' width='30' border='0' title='Factura Formato Pequeño'></a></td>";
@@ -611,9 +613,9 @@ echo "</form>";
 
 
 <!-- EDITAR DATOS -->
-<div id="divRecuadroExt2_edit" style="background-color:#666; position:absolute; width:800px; height: 350px; top:30px; left:150px; visibility: hidden; opacity: .70; -moz-opacity: .70; filter:alpha(opacity=70); -webkit-border-radius: 20px; -moz-border-radius: 20px; z-index:2;">
+<div id="divRecuadroExt2_edit" style="background-color:#666; position:absolute; width:800px; height: 400px; top:30px; left:150px; visibility: hidden; opacity: .70; -moz-opacity: .70; filter:alpha(opacity=70); -webkit-border-radius: 20px; -moz-border-radius: 20px; z-index:2;">
 </div>
-<div id="divProfileData2_edit" style="background-color:#FFF; width:750px; height:300px; position:absolute; top:50px; left:170px; -webkit-border-radius: 20px; 	-moz-border-radius: 20px; visibility: hidden; z-index:2;">
+<div id="divProfileData2_edit" style="background-color:#FFF; width:750px; height:350px; position:absolute; top:50px; left:170px; -webkit-border-radius: 20px; 	-moz-border-radius: 20px; visibility: hidden; z-index:2;">
   	<div id="divProfileDetail2_edit" style="visibility:hidden; text-align:center">
 		<h2 align='center' class='texto'>Cobro</h2>
 		<form name="form1" id="form1" action="convertNRToFactura.php" method="POST">
@@ -677,6 +679,13 @@ echo "</form>";
 				<input type='text' name='edit_razon_social' id="edit_razon_social">
 				</td>
 			</tr>
+
+            <tr>
+                <td>Monto:</td>
+                <td>
+                <input type='text' name='edit_monto_cobro' id="edit_monto_cobro" readonly>
+                </td>
+            </tr>
 
 		</table>	
 		<center>

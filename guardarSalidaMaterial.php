@@ -74,9 +74,11 @@ $razonSocial=addslashes($razonSocial);
 
 if(isset($_POST['nitCliente'])){	$nitCliente=$_POST['nitCliente']; }else{ $nitCliente=0;	}
 
+/*
 if((int)$nitCliente==123){
 	$razonSocial="SN";
 }
+*/
 
 $fecha_emision_manual="";
 if(isset($_POST['fecha_emision']) and isset($_POST['hora_emision'])){
