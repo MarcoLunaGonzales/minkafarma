@@ -1,4 +1,5 @@
 <?php
+
 require('fpdf.php');
 require('conexionmysqlipdf.inc');
 require('funciones.php');
@@ -193,7 +194,7 @@ $respResponsable=mysqli_query($enlaceCon,$sqlResponsable);
 $datResponsable=mysqli_fetch_array($respResponsable);
 $nombreFuncionario=$datResponsable[0];
 
-$pdf->SetXY(4,$y+$yyy+25);		$pdf->Cell(68,0,"Vendedor(a): $nombreFuncionario",0,0,"C");
+$pdf->SetXY(4,$y+$yyy+30);		$pdf->Cell(68,0,"Vendedor(a): $nombreFuncionario",0,0,"C");
 
 
 $pdf->Output();
