@@ -9,6 +9,12 @@ $fecha_fin=$_POST['exaffinal'];
 $codTipoDoc=$_POST['rpt_tipodoc'];
 $codTipoPago=$_POST['tipo_pago'];
 
+$verVenta 	= $_POST['rpt_ver_venta'];
+$rptVer 	= '';
+if($verVenta == 2){
+	// Ver venta menor <= 5
+	$rptVer = ' AND s.monto_final <= 5 ';
+}
 
 $codTipoDoc=implode(",",$codTipoDoc);
 $codTipoPago=implode(",",$codTipoPago);
@@ -36,9 +42,10 @@ $sql="select s.`fecha`,
 	(select t.`nombre_tipopago` from `tipos_pago` t where t.`cod_tipopago`=s.cod_tipopago)
 	from `salida_almacenes` s where s.`cod_tiposalida`=1001 and s.salida_anulada=0 and
 	s.`cod_almacen` in (select a.`cod_almacen` from `almacenes` a where a.`cod_ciudad`='$rpt_territorio')
+	".$rptVer."
 	and s.`fecha` BETWEEN '$fecha_iniconsulta' and '$fecha_finconsulta' and 
 	s.cod_tipo_doc in ($codTipoDoc) and s.cod_tipopago in ($codTipoPago) ";
-
+// echo $sql;
 $sql.=" order by s.fecha, s.nro_correlativo";
 
 //echo $sql;

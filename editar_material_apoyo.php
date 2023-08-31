@@ -43,8 +43,9 @@ $paginaRetorno=$_GET['pagina_retorno'];
 $globalAdmin=$_COOKIE["global_admin_cargo"];
 
 
-$sqlEdit="select m.codigo_material, m.descripcion_material, m.estado, m.cod_linea_proveedor, m.cod_forma_far, m.cod_empaque, 
-	m.cantidad_presentacion, m.principio_activo, m.cod_tipoventa, m.producto_controlado, m.accion_terapeutica, m.codigo_barras, bandera_venta_unidades from material_apoyo m where m.codigo_material='$codProducto'";
+$sqlEdit="SELECT m.codigo_material, m.descripcion_material, m.estado, m.cod_linea_proveedor, m.cod_forma_far, m.cod_empaque, 
+	m.cantidad_presentacion, m.principio_activo, m.cod_tipoventa, m.producto_controlado, m.accion_terapeutica, m.codigo_barras, bandera_venta_unidades, m.cod_tipo_material
+	FROM material_apoyo m where m.codigo_material='$codProducto'";
 $respEdit=mysqli_query($enlaceCon,$sqlEdit);
 while($datEdit=mysqli_fetch_array($respEdit)){
 	$nombreProductoX=$datEdit[1];
@@ -58,6 +59,7 @@ while($datEdit=mysqli_fetch_array($respEdit)){
 	$accionTerapeutica=$datEdit[10];
 	$codigoBarras=$datEdit[11];
 	$ventaSoloCajas=$datEdit[12];
+	$codTipoMaterialX=$datEdit[13];
 }
 
 		$cadenaPrecios="";
@@ -215,6 +217,29 @@ if($ventaSoloCajas==0){
 	</td>";
 }
 echo "</tr>";
+
+
+echo "<tr><th>Tipo Material</th>";
+$sql1="SELECT tm.cod_tipomaterial, tm.nombre_tipomaterial, tm.obs_tipomaterial
+		FROM tipos_material tm;";
+$resp1=mysqli_query($enlaceCon,$sql1);
+echo "<td>
+		<select name='cod_tipo_material' id='cod_tipo_material' class='selectpicker' data-style='btn btn-info' data-show-subtext='true' data-live-search='true' required>";
+
+			while($dat1=mysqli_fetch_array($resp1))
+			{	$codTipoMaterial   = $dat1[0];
+				$nombreTipoMaterial = $dat1[1];	
+				
+				if($codTipoMaterial==$codTipoMaterialX){
+					echo "<option value='$codTipoMaterial' selected>$nombreTipoMaterial</option>";
+				}else{
+					echo "<option value='$codTipoMaterial'>$nombreTipoMaterial</option>";
+				}
+			}
+		echo "</select>
+</td>";
+echo "</tr>";
+
 
 if($globalAdmin==1){
 	echo "<tr><th align='left'>Precio de Venta</th>";

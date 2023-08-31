@@ -137,6 +137,23 @@ echo "<td>
 </td>";
 echo "</tr>";
 
+echo "<tr><th>Tipo Material</th>";
+$sql1="SELECT tm.cod_tipomaterial, tm.nombre_tipomaterial, tm.obs_tipomaterial
+		FROM tipos_material tm;";
+$resp1=mysqli_query($enlaceCon,$sql1);
+echo "<td>
+		<select name='cod_tipo_material' id='cod_tipo_material' class='selectpicker' data-style='btn btn-info' data-show-subtext='true' data-live-search='true' required>";
+
+			while($dat1=mysqli_fetch_array($resp1))
+			{	$codTipoMaterial   = $dat1[0];
+				$nombreTipoMaterial = $dat1[1];	
+				echo "<option value='$codTipoMaterial'>$nombreTipoMaterial</option>";
+			}
+		echo "</select>
+</td>";
+echo "</tr>";
+
+
 echo "<tr><th align='left'>Precio de Venta</th>";
 $sqlSucursales="select cod_ciudad, descripcion from ciudades order by 1";
 $respSucursales=mysqli_query($enlaceCon,$sqlSucursales);

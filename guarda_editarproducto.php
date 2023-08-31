@@ -24,6 +24,7 @@ $arrayAccionTerapeutica=$_POST['arrayAccionTerapeutica'];
 
 $globalAdmin=$_COOKIE["global_admin_cargo"];
 
+$codTipoMaterial=$_POST['cod_tipo_material'];
 
 /*RECUPERAMOS LOS PRECIOS*/
 if($globalAdmin==1){
@@ -44,7 +45,7 @@ if($globalAdmin==1){
 
 $sql_inserta="update material_apoyo set descripcion_material='$nombreProducto', cod_linea_proveedor='$codLinea', 
 cod_forma_far='$codForma', cod_empaque='$codEmpaque', cantidad_presentacion='$cantidadPresentacion', 
-principio_activo='$principioActivo', cod_tipoventa='$codTipoVenta', producto_controlado='$productoControlado', accion_terapeutica='$accionTerapeutica', codigo_barras='$codigoBarras', bandera_venta_unidades='$ventaSoloCajas' where codigo_material='$codProducto'";
+principio_activo='$principioActivo', cod_tipoventa='$codTipoVenta', producto_controlado='$productoControlado', accion_terapeutica='$accionTerapeutica', codigo_barras='$codigoBarras', bandera_venta_unidades='$ventaSoloCajas', cod_tipo_material='$codTipoMaterial' where codigo_material='$codProducto'";
 //echo $sql_inserta;
 $resp_inserta=mysqli_query($enlaceCon,$sql_inserta);
 

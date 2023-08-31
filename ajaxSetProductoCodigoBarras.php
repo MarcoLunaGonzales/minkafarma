@@ -46,11 +46,13 @@ $codigoItem=trim($codigoItem);
 			$precioItem=round($precioItem);
 			$costoItem=round($costoItem);
 			
+			$margenLinea=margenLinea($enlaceCon,$codigo);	
+
 			$nombreLinea=$dat[3];
-			echo "1#####".$codigo."#####".$nombre."#####".$cantidadPresentacion."#####".$costoItem."#####".'.'."#####".'.'."#####".$codigo."#####".$nombreLinea."#####".$precioItem;
+			echo "1#####".$codigo."#####".$nombre."#####".$cantidadPresentacion."#####".$costoItem."#####".'.'."#####".'.'."#####".$codigo."#####".$nombreLinea."#####".$precioItem."#####".$margenLinea;
 		}
 	}else{
-		echo "0#####_#####_#####_#####_#####_#####_#####_#####_";
+		echo "0#####_#####_#####_#####_#####_#####_#####_#####_#####_";
 	}
 
 ?>

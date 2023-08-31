@@ -61,6 +61,12 @@ echo"<form method='post' action='rptVentasDocumento.php' target='_blank'>";
     		echo" </TD>";
 	echo "</tr>";
 	
+	echo "<tr><th align='left'>Ver</th>
+			<td><select name='rpt_ver_venta' class='texto' required>";
+	echo "<option value='1'>Todo</option>";
+	echo "<option value='2'>Ventas Menores</option>";
+	echo "</select></td></tr>";
+	
 	echo"\n </table><br>";
 	require('home_almacen.php');
 	echo "<center><input type='submit' name='reporte' value='Ver Reporte' class='boton'>
