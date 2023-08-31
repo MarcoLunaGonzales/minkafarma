@@ -10,6 +10,8 @@ $usuario = $_POST["usuario"];
 $contrasena = $_POST["contrasena"];
 $contrasena = str_replace("'", "''", $contrasena);
 
+$imgLogo=obtenerValorConfiguracion($enlaceCon, 13);
+
 $sql = "
     SELECT f.cod_cargo, f.cod_ciudad
     FROM funcionarios f, usuarios_sistema u
@@ -27,6 +29,10 @@ if ($num_filas != 0) {
     setcookie("global_agencia", $cod_ciudad);
     
     setcookie("globalIdEntidad", 1);    
+	
+	setcookie("global_logo", $imgLogo);    
+
+
 	
 	//sacamos la gestion activa
 	$sqlGestion="select cod_gestion, nombre_gestion from gestiones where estado=1";

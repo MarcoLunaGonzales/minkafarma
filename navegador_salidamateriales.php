@@ -348,7 +348,7 @@ while ($dat = mysqli_fetch_array($resp)) {
     //salida despachada
     if ($estado_almacen == 1) {
         $color_fondo = "#bbbbbb";
-        $chk = "&nbsp;";
+        $chk = "<input type='checkbox' name='codigo' value='$codigo'>";
     }
     //salida recepcionada
     if ($estado_almacen == 2) {
@@ -365,9 +365,9 @@ while ($dat = mysqli_fetch_array($resp)) {
         $color_fondo = "#66ff99";
         $chk = "<input type='checkbox' name='codigo' value='$codigo'>";
     }
-	if ($estado_almacen == 3) {
-        $color_fondo = "#ffff99";
-        $chk = "<input type='checkbox' name='codigo' value='$codigo'>";
+	if ($estado_almacen == 4) {
+        $color_fondo = "";
+        $chk = "&nbsp;";
         $estado_preparado = 1;
     }
     $strikei="";

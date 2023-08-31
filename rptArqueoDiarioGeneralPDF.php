@@ -23,11 +23,12 @@ $fecha_fin=$_GET['fecha_fin'];
 $hora_ini=$_GET['hora_ini'];
 $hora_fin=$_GET['hora_fin'];
 
+$globalLogo=$_COOKIE["global_logo"];
 
 ob_start();
 echo "<html><head><link href='stilos.css' rel='stylesheet' type='text/css'></head></body>";
 echo "<center><table border=0 class='linea' width='100%'><tr><td align='left'>
-<img src='imagenes/logoMinka.png' width='80'></td>
+<img src='imagenes/$globalLogo' width='80'></td>
 <th></th></tr></table></center><br>";
 //desde esta parte viene el reporte en si
 $fecha_iniconsulta=$fecha_ini;

@@ -134,24 +134,26 @@ require_once 'datosUsuario.php';
 					<li><a href="registrar_marcado.php" target="contenedorPrincipal">Registro de Marcados</a></li>
 					<li><a href="rptOpMarcados.php" target="contenedorPrincipal">Reporte de Marcados</a></li>
 				</ul>	
-			</li>
-			<li><span>SIAT</span>
-				<ul>
-					<li><a href="siat_folder/siat_facturacion_offline/facturas_sincafc_list.php" target="contenedorPrincipal">Facturas Off-line</a></li>
-					<li><a href="siat_folder/siat_facturacion_offline/facturas_cafc_list.php" target="contenedorPrincipal">Facturas Off-line CAFC</a></li>
-					<li><a href="siat_folder/siat_sincronizacion/index.php" target="contenedorPrincipal">Sincronización</a></li>
-					<li><a href="siat_folder/siat_puntos_venta/index.php" target="contenedorPrincipal">Puntos Venta</a></li>
-					<li><a href="siat_folder/siat_cuis_cufd/index.php" target="contenedorPrincipal">Generación CUIS y CUFD</a></li>
-					
-				</ul>	
 			</li>	
 			<li><span>Adicionales</span>
 				<ul>
+					<li><span>SIAT</span>
+						<ul>
+							<li><a href="siat_folder/siat_facturacion_offline/facturas_sincafc_list.php" target="contenedorPrincipal">Facturas Off-line</a></li>
+							<li><a href="siat_folder/siat_facturacion_offline/facturas_cafc_list.php" target="contenedorPrincipal">Facturas Off-line CAFC</a></li>
+							<li><a href="siat_folder/siat_sincronizacion/index.php" target="contenedorPrincipal">Sincronización</a></li>
+							<li><a href="siat_folder/siat_puntos_venta/index.php" target="contenedorPrincipal">Puntos Venta</a></li>
+							<li><a href="siat_folder/siat_cuis_cufd/index.php" target="contenedorPrincipal">Generación CUIS y CUFD</a></li>
+							
+						</ul>	
+					</li>
 					<li><a href="campanias/list.php" target="contenedorPrincipal">Campañas</a></li>					
 					<li><a href="navegadorCotizaciones.php" target="contenedorPrincipal">Cotizaciones</a></li>					
 					<li><a href="ofertas/list.php" target="contenedorPrincipal">Ofertas</a></li>
                     <li><a href="ofertas/listAdmin.php" target="contenedorPrincipal">Autorización de Ofertas</a></li>
-
+                    <li><a href="navegador_tiposgasto.php" target="contenedorPrincipal">Tipos de Gasto</a></li>		
+                    <li><a href="navegador_gastos.php" target="contenedorPrincipal">Gastos</a></li>			
+					<li><a href="rptOpGastos.php" target="contenedorPrincipal">Reporte detallado de Gastos</a></li>
 				</ul>	
 			</li>	
 			
@@ -176,8 +178,8 @@ require_once 'datosUsuario.php';
 							<li><a href="rpt_op_inv_kardex.php" target="contenedorPrincipal">Kardex de Movimiento</a></li>
 							<li><a href="rpt_op_inv_existencias.php" target="contenedorPrincipal">Existencias</a></li>
 							<li><a href="rptOpMovimientoProductos.php" target="contenedorPrincipal">Movimiento de Productos</a></li>
-							<!--li><a href="rpt_op_inv_ingresos.php" target="contenedorPrincipal">Ingresos</a></li>
-							<li><a href="rpt_op_inv_salidas.php" target="contenedorPrincipal">Salidas</a></li-->
+							<!--li><a href="rpt_op_inv_ingresos.php" target="contenedorPrincipal">Ingresos</a></li-->
+							<li><a href="rpt_op_inv_salidas.php" target="contenedorPrincipal">Salidas</a></li>
 							<li><a href="rptPrecios.php" target="contenedorPrincipal">Precios</a></li>
 							<li><a href="rptOpProductosAReponer.php" target="contenedorPrincipal">Productos a reponer</a></li>
 							<li><a href="rptProductosVencer.php" target="contenedorPrincipal">Productos proximos a Vencer</a></li>

@@ -133,6 +133,8 @@ function enviar_buscador(){
 		$vista=0;
 	}
 
+	$banderaFiltro=0;
+
 	$sql="select m.codigo_material, m.descripcion_material, m.estado, 
 		(select e.nombre_empaque from empaques e where e.cod_empaque=m.cod_empaque), 
 		(select f.nombre_forma_far from formas_farmaceuticas f where f.cod_forma_far=m.cod_forma_far), 
@@ -156,22 +158,29 @@ function enviar_buscador(){
   if(isset($_GET['proveedorB'])&&$_GET['proveedorB']!=0){
       $proveedorB=$_GET["proveedorB"];
       $sql.=" and m.cod_linea_proveedor in (select cod_linea_proveedor from proveedores_lineas p where p.cod_proveedor='$proveedorB') ";
+      $banderaFiltro=1;
   }
   if(isset($_GET['nombreB'])&&$_GET['nombreB']!=""){
       $nombreB=$_GET['nombreB'];
       $sql.=" and m.descripcion_material like '%$nombreB%' ";
+      $banderaFiltro=1;
   }
   if(isset($_GET['principioB'])&&$_GET['principioB']!=""){
       $principioB=$_GET['principioB'];
       $sql.=" and m.principio_activo like '%$principioB%' ";
+      $banderaFiltro=1;
   }
   if(isset($_GET['barrasB'])&&$_GET['barrasB']!=""){
       $barrasB=$_GET['barrasB'];
       $sql.=" and m.codigo_barras like '%$barrasB%'";   
+      $banderaFiltro=1;
   }
 
-	$sql.=" order by m.descripcion_material limit 0,50 ";
+	$sql.=" order by m.descripcion_material ";
 	
+	if($banderaFiltro==0){
+		$sql.=" limit 0,50 ";
+	}	
 	//echo $sql;
 	
 	$resp=mysqli_query($enlaceCon,$sql);

@@ -16,6 +16,7 @@ require('funciones.php');
  error_reporting(E_ALL);
  ini_set('display_errors', '1');
 
+$globalLogo=$_COOKIE["global_logo"];
 
 $rpt_territorio=$_GET['rpt_territorio'];
 $rpt_funcionario=$_GET['rpt_funcionario'];
@@ -30,7 +31,7 @@ if($variableAdmin!=1){
 ob_start();
 echo "<html><head><link href='stilos.css' rel='stylesheet' type='text/css'></head></body>";
 echo "<center><table border=0 class='linea' width='100%'><tr><td align='left'>
-<img src='imagenes/logoMinka.png' width='80'></td>
+<img src='imagenes/$globalLogo' width='80'></td>
 <th></th></tr></table></center><br>";
 //desde esta parte viene el reporte en si
 $fecha_iniconsulta=$fecha_ini;

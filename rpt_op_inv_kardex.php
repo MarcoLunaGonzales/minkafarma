@@ -104,7 +104,8 @@ echo"<form method='post' action='rpt_op_inv_kardex.php'>";
 	echo "</select></td></tr>";
 	
 
-	echo "<tr><th align='left'>Almacen</th><td><select name='rpt_almacen' id='rpt_almacen' class='form-control'>";
+	echo "<tr><th align='left'>Almacen</th><td>
+	<select name='rpt_almacen' id='rpt_almacen' class='selectpicker form-control'>";
 	
 	$sql="select cod_almacen, nombre_almacen from almacenes where cod_ciudad='$global_agencia' and cod_ciudad>0 order by cod_tipoalmacen ";
 	//echo $sql;

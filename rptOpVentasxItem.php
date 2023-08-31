@@ -1,14 +1,15 @@
 <script language='JavaScript'>
 function envia_formulario(f)
-{	var rpt_territorio,fecha_ini, fecha_fin, rpt_ordenar;
+{	var rpt_territorio,fecha_ini, fecha_fin, rpt_ordenar, rpt_ver;
 	rpt_territorio=f.rpt_territorio.value;
 	fecha_ini=f.exafinicial.value;
 	fecha_fin=f.exaffinal.value;
 	rpt_ordenar=f.rpt_ordenar.value;
+	rpt_ver=f.rpt_ver.value;
 	
 	var forms = f;
     if(forms.checkValidity()){
-		window.open('rptVentasxItem.php?rpt_territorio='+rpt_territorio+'&fecha_ini='+fecha_ini+'&fecha_fin='+fecha_fin+'&rpt_ordenar='+rpt_ordenar,'','scrollbars=yes,status=no,toolbar=no,directories=no,menubar=no,resizable=yes,width=1000,height=800');			
+		window.open('rptVentasxItem.php?rpt_territorio='+rpt_territorio+'&fecha_ini='+fecha_ini+'&fecha_fin='+fecha_fin+'&rpt_ordenar='+rpt_ordenar+'&rpt_ver='+rpt_ver,'','scrollbars=yes,status=no,toolbar=no,directories=no,menubar=no,resizable=yes,width=1000,height=800');			
 		return(true);    
 	} else{
         alert("Debe seleccionar todos los campos del reporte.")
@@ -20,7 +21,7 @@ function envia_formulario(f)
 require("conexionmysqli2.inc");
 require("estilos_almacenes.inc");
 
-$fecha_rptdefault=date("d/m/Y");
+$fecha_rptdefault=date("Y-m-d");
 echo "<table align='center' class='textotit'><tr><th>Ranking de Ventas x Item</th></tr></table><br>";
 echo"<form method='post' action=''>";
 
@@ -28,7 +29,6 @@ echo"<form method='post' action=''>";
 	echo "<tr><th align='left'>Territorio</th><td><select name='rpt_territorio' class='texto' required>";
 	$sql="select cod_ciudad, descripcion from ciudades order by descripcion";
 	$resp=mysqli_query($enlaceCon, $sql);
-	echo "<option value=''></option>";
 	while($dat=mysqli_fetch_array($resp))
 	{	$codigo_ciudad=$dat[0];
 		$nombre_ciudad=$dat[1];
@@ -47,11 +47,17 @@ echo"<form method='post' action=''>";
     		echo" </TD>";
 	echo "</tr>";
 
-
 	echo "<tr><th align='left'>Ordenar por:</th><td><select name='rpt_ordenar' class='texto' required>";
+	echo "<option value='0'>Nombre de Producto</option>";
 	echo "<option value='1'>Monto</option>";
 	echo "<option value='2'>Cantidad</option>";
 	echo "</select></td></tr>";
+
+	echo "<tr><th align='left'>Ver:</th><td><select name='rpt_ver' class='texto' required>";
+	echo "<option value='1'>Reporte Normal</option>";
+	echo "<option value='2'>Reporte con Existencias</option>";
+	echo "</select></td></tr>";
+
 
 	
 	echo"\n </table><br>";
