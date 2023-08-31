@@ -5,6 +5,7 @@ require('funciones.php');
 require('NumeroALetras.php');
 
 $codigoVenta=$_GET["codVenta"];
+$globalAlmacen=$_COOKIE['global_almacen'];
 
 //consulta cuantos items tiene el detalle
 $sqlNro="select count(*) from `salida_detalle_almacenes` s where s.`cod_salida_almacen`=$codigoVenta";
@@ -25,6 +26,10 @@ $incremento=3;
 /*error_reporting(E_ALL);
 ini_set('display_errors', '1');*/
 
+// Variable de configuración - Mostrar Stock
+$sqlConf  	  = "select id_configuracion, valor_configuracion from configuraciones where id_configuracion=25";
+$respConf 	  = mysqli_query($enlaceCon,$sqlConf);
+$mostrarStock = mysqli_result($respConf,0,1);
 
 //desde aca
 $sqlConf="select id, valor from configuracion_facturas where id=1";
@@ -141,6 +146,12 @@ while($datDetalle=mysqli_fetch_array($respDetalle)){
 	$montoUnit=$montoUnit-$descUnit;
 	$montoUnit=redondear2($montoUnit);
 	
+	// En base a la configuración se muestra =>  1: SI, 0: NO
+	if($mostrarStock == 1){
+		$itemStock    = stockProducto($enlaceCon, $globalAlmacen, $codInterno);
+		$nombreMat = "(S: $itemStock) - ".$nombreMat;
+	}
+
 	$pdf->SetFont('Arial','',7);
 	//$pdf->SetXY(5,$y+$yyy);		$pdf->MultiCell(60,3,"$nombreMat",1,"C");
 	$pdf->SetXY(7,$y+$yyy);		$pdf->Cell(80,3,"$nombreMat",0,0,"L");

@@ -136,7 +136,8 @@ function soloMas(obj) {
 			ajax.onreadystatechange=function(){
 				if (ajax.readyState==4) {
 					div_material.innerHTML=ajax.responseText;
-					setMaterialesSolo(obj[1],obj[2]+"(<small>"+obj[6]+" "+obj[8]+" "+obj[7]+"</small>)",obj[3],obj[4],obj[9]);
+					// setMaterialesSolo(obj[1],obj[2]+"(<small>"+obj[6]+" "+obj[8]+" "+obj[7]+"</small>)",obj[3],obj[4],obj[9]);
+					setMaterialesSolo(obj[1],obj[2]+" - <small style='color:black;'>"+"CP:" + obj[3]+"</small>",obj[3],obj[4],obj[9], obj[10]);
 				}
 			}		
 			ajax.send(null);
@@ -198,7 +199,7 @@ function setMaterialesSoloSalidas(cod, nombreMat){
 }
 
 
-function setMaterialesSolo(cod, nombreMat, cantidadPresentacion, costoItem, precioItem){	
+function setMaterialesSolo(cod, nombreMat, cantidadPresentacion, costoItem, precioItem, margenLinea){	
 	var numRegistro=$('input[name=materialActivo]').val();
 	console.log(numRegistro+" "+costoItem+" "+precioItem);
 	$('#material'+numRegistro).val(cod);
@@ -207,6 +208,10 @@ function setMaterialesSolo(cod, nombreMat, cantidadPresentacion, costoItem, prec
 	$('#divUltimoCosto'+numRegistro).html("["+costoItem+"]");
 	$('#precioVenta'+numRegistro).val(precioItem);
 	$('#precio'+numRegistro).val(costoItem);
+	// Margen
+	$("#cantidadpresentacion"+numRegistro).val(cantidadPresentacion);
+	// Margen
+	$("#margenlinea"+numRegistro).val(margenLinea);
 	document.getElementById('divPrecioTotal'+numRegistro).innerHTML=precioItem;
 	document.getElementById('divUltimoCosto'+numRegistro).innerHTML="["+costoItem+"]";
 	$("#input_codigo_barras").focus();

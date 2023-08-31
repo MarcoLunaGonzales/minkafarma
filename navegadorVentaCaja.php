@@ -315,14 +315,19 @@ function cambiarTipoPago(codigo){
 
 
 // EDITAR DATOS
-function ShowFacturarEditar(codVenta,numCorrelativo, codVendedor, codTipoPago, nitCliente, razonSocial, montoCobro){
-    console.log(codVendedor)
+function ShowFacturarEditar(codVenta,numCorrelativo, codVendedor, codTipoPago, nitCliente, razonSocial, montoCobro, montoEfectivo, montoCambio, detalleItem){
+    // console.log(codVendedor)
+    // console.log(detalleItem)
 	document.getElementById("cod_venta_edit").value=codVenta;
 	document.getElementById("nro_correlativo_edit").value=numCorrelativo;
     // Nuevos campos de Razon Social / NIT
 	document.getElementById("edit_nit").value=nitCliente;
 	document.getElementById("edit_razon_social").value=razonSocial;
 	document.getElementById("edit_monto_cobro").value=montoCobro;
+    
+	document.getElementById("edit_monto_efectivo").value = montoEfectivo;
+	document.getElementById("edit_monto_cambio").value   = montoCambio;
+	document.getElementById("itemsVenta").innerHTML      = detalleItem;
     
 	document.getElementById('divRecuadroExt2_edit').style.visibility='visible';
 	document.getElementById('divProfileData2_edit').style.visibility='visible';
@@ -331,6 +336,21 @@ function ShowFacturarEditar(codVenta,numCorrelativo, codVendedor, codTipoPago, n
     $('#edit_cod_vendedor').val(codVendedor).trigger('click');
     $('#edit_cod_tipopago').val(codTipoPago).trigger('click');
 }
+/**
+ * modificación de cambio
+ */
+document.addEventListener("DOMContentLoaded", function() {
+    var editMontoEfectivo = document.getElementById("edit_monto_efectivo");
+    var editMontoCobro    = document.getElementById("edit_monto_cobro");
+    var editMontoCambio   = document.getElementById("edit_monto_cambio");
+
+    editMontoEfectivo.addEventListener("keyup", function() {
+        var montoCobro      = parseFloat(editMontoCobro.value) || 0;
+        var montoEfectivo   = parseFloat(this.value) || 0;
+        var montoCambio     = (montoEfectivo - montoCobro).toFixed(2);
+        editMontoCambio.value = montoCambio;
+    });
+})
 
 function HiddenFacturarEditar(){
 	document.getElementById('divRecuadroExt2_edit').style.visibility='hidden';
@@ -345,7 +365,7 @@ function HiddenFacturarEditar(){
             formData.append('edit_cod_vendedor', $('#edit_cod_vendedor').val());
             formData.append('edit_cod_tipopago', $('#edit_cod_tipopago').val());
             $.ajax({
-                url:"actualizarFactura.php?cod_venta_edit="+$('#cod_venta_edit').val()+"&edit_cod_vendedor="+$('#edit_cod_vendedor').val()+"&edit_cod_tipopago="+$('#edit_cod_tipopago').val()+"&edit_nit="+$('#edit_nit').val()+"&edit_razon_social="+$('#edit_razon_social').val(),
+                url:"actualizarFactura.php?cod_venta_edit="+$('#cod_venta_edit').val()+"&edit_cod_vendedor="+$('#edit_cod_vendedor').val()+"&edit_cod_tipopago="+$('#edit_cod_tipopago').val()+"&edit_nit="+$('#edit_nit').val()+"&edit_razon_social="+$('#edit_razon_social').val()+"&edit_monto_efectivo="+$('#edit_monto_efectivo').val()+"&edit_monto_cambio="+$('#edit_monto_cambio').val(),
                 type:"POST",
                 contentType: false,
                 processData: false,
@@ -428,7 +448,9 @@ $consulta = "
     (select t.nombre_tipopago from tipos_pago t where t.cod_tipopago=s.cod_tipopago)as tipopago,
     s.cod_chofer,
     s.cod_tipopago, s.monto_final,
-    s.nit
+    s.nit,
+    s.monto_efectivo,
+    s.monto_cambio
     FROM salida_almacenes s, tipos_salida ts
     WHERE s.cod_tiposalida = ts.cod_tiposalida 
     AND s.cod_almacen = '$global_almacen' 
@@ -479,6 +501,34 @@ while ($dat = mysqli_fetch_array($resp)) {
     $montoVenta = $dat[18];
     $nitCliente = empty($dat[19]) ? '' : "$dat[19]";
     $montoVentaFormat=formatonumeroDec($montoVenta);
+    // Monto Efectivo
+    $montoEfectivo = formatonumeroDec($dat[20]);
+    // Monto Cambio
+    $montoCambio   = formatonumeroDec($dat[21]);
+    // Detalle de items
+    $detalleItem = '';
+    $sqlDetalleItem = "select m.codigo_material, sum(s.`cantidad_unitaria`), m.`descripcion_material`, s.`precio_unitario`, 
+                sum(s.`descuento_unitario`), sum(s.`monto_unitario`) from `salida_detalle_almacenes` s, `material_apoyo` m where 
+                m.`codigo_material`=s.`cod_material` and s.`cod_salida_almacen`='$codigo'
+                group by s.cod_material
+                order by s.orden_detalle";
+                // echo $sqlDetalleItem."===="; 
+    $respDetalleItem = mysqli_query($enlaceCon,$sqlDetalleItem);
+    while ($row = mysqli_fetch_array($respDetalleItem)) {
+        $itemNombre    = $row[2];
+        $itemCantidad  = round($row[1], 2);
+        $descUnit       = $row[4];
+        $montoUnit      = $row[5];
+        $montoUnit      = $montoUnit-$descUnit;
+        $montoUnit      = round($montoUnit, 2);
+        // $montoTotal=$montoTotal+$montoUnit;
+        $detalleItem .= "<tr>
+                            <td>$itemNombre</td>
+                            <td>$itemCantidad</td>
+                            <td>$montoUnit</td>
+                        </tr>";
+    }
+    // echo $detalleItem;
 
     echo "<input type='hidden' name='fecha_salida$nro_correlativo' value='$fecha_salida_mostrar'>";
     
@@ -517,7 +567,7 @@ while ($dat = mysqli_fetch_array($resp)) {
         // Editar Datos
         if($estado_almacen<>4){
             echo "<td bgcolor='$color_fondo'>
-                <a href='#' onClick='ShowFacturarEditar($codigo,$nro_correlativo, $codVendedor, $codTipoPago,\"$nitCliente\",\"$razonSocial\",\"$montoVentaFormat\");'>
+                <a href='#' onClick='ShowFacturarEditar($codigo,$nro_correlativo, $codVendedor, $codTipoPago,\"$nitCliente\",\"$razonSocial\",\"$montoVentaFormat\",\"$montoEfectivo\",\"$montoCambio\", `$detalleItem`);'>
                 <img src='imagenes/factura.png' width='30' border='0' title='Cobrar'></a>
             </td>";
         }else{
@@ -615,88 +665,132 @@ echo "</form>";
     </div>
 </div>
 
-
+<style>
+    #divProfileData2_edit {
+        background-color: #FFF;
+        width: 95%;
+        max-width: 1000px;
+        position: absolute;
+        top: 50px;
+        left: 50%;
+        transform: translateX(-50%);
+        -webkit-border-radius: 20px;
+        -moz-border-radius: 20px;
+        visibility: hidden;
+        z-index: 2;
+        overflow: hidden;
+    }
+</style>
 <!-- EDITAR DATOS -->
-<div id="divRecuadroExt2_edit" style="background-color:#666; position:absolute; width:800px; height: 400px; top:30px; left:150px; visibility: hidden; opacity: .70; -moz-opacity: .70; filter:alpha(opacity=70); -webkit-border-radius: 20px; -moz-border-radius: 20px; z-index:2;">
-</div>
-<div id="divProfileData2_edit" style="background-color:#FFF; width:750px; height:350px; position:absolute; top:50px; left:170px; -webkit-border-radius: 20px; 	-moz-border-radius: 20px; visibility: hidden; z-index:2;">
-  	<div id="divProfileDetail2_edit" style="visibility:hidden; text-align:center">
+<div id="divRecuadroExt2_edit" style="background-color:#666; position:absolute; width:100%; height: 100%; top:0; left:0; visibility: hidden; opacity: .70; -moz-opacity: .70; filter:alpha(opacity=70); z-index:2;"></div>
+<div id="divProfileData2_edit">
+    <div id="divProfileDetail2_edit" style="text-align: center; padding: 20px;">
 		<h2 align='center' class='texto'>Cobro</h2>
 		<form name="form1" id="form1" action="convertNRToFactura.php" method="POST">
-		<table align='center' class='texto'>
-			<tr>
-				<input type="hidden" name="cod_venta_edit" id="cod_venta_edit" value="0">
-				<td>Nro.</td>
-				<td>
-				<input type='text' name='nro_correlativo_edit' id="nro_correlativo_edit" class='texto' disabled>
-				</td>
-			</tr>
-            
-			<tr>
-				<td>Vendedor</td>
-				<td>
-            <?php $sql1="SELECT codigo_funcionario, UPPER(CONCAT(nombres, ' ', paterno, ' ', materno)) as nombre_funcionario
-                        FROM funcionarios f ";
-                    $resp1 = mysqli_query($enlaceCon,$sql1);
-            ?>
-            <select name='cod_vendedor' id='edit_cod_vendedor' required>
-                <?php while($dat1=mysqli_fetch_array($resp1))
-                    {	
-                        $codLinea=$dat1[0];
-                        $nombreLinea=$dat1[1];
-                ?>
-                <option value="<?=$codLinea;?>"><?=$nombreLinea;?></option>
-                <?php } ?>
-            </select>
-				</td>
-			</tr>
+            <div style="display: flex; justify-content: space-between;">
+                <div style="flex: 1;">
+                    <table align='center' class='texto'>
+                        <tr>
+                            <input type="hidden" name="cod_venta_edit" id="cod_venta_edit" value="0">
+                            <td>Nro.</td>
+                            <td>
+                            <input type='text' name='nro_correlativo_edit' id="nro_correlativo_edit" class='texto' disabled>
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Vendedor</td>
+                            <td>
+                        <?php $sql1="SELECT codigo_funcionario, UPPER(CONCAT(nombres, ' ', paterno, ' ', materno)) as nombre_funcionario
+                                    FROM funcionarios f ";
+                                $resp1 = mysqli_query($enlaceCon,$sql1);
+                        ?>
+                        <select name='cod_vendedor' id='edit_cod_vendedor' required>
+                            <?php while($dat1=mysqli_fetch_array($resp1))
+                                {	
+                                    $codLinea=$dat1[0];
+                                    $nombreLinea=$dat1[1];
+                            ?>
+                            <option value="<?=$codLinea;?>"><?=$nombreLinea;?></option>
+                            <?php } ?>
+                        </select>
+                            </td>
+                        </tr>
 
-            
-			<tr>
-				<td>Tipo Pago</td>
-				<td>
-            <?php $sql1="SELECT cod_tipopago, nombre_tipopago
-                        FROM tipos_pago";
-                    $resp1 = mysqli_query($enlaceCon,$sql1);
-            ?>
-            <select name='cod_tipopago' id='edit_cod_tipopago' required>
-                <?php while($dat1=mysqli_fetch_array($resp1))
-                    {	
-                        $codLinea=$dat1[0];
-                        $nombreLinea=$dat1[1];
-                ?>
-                <option value="<?=$codLinea;?>"><?=$nombreLinea;?></option>
-                <?php } ?>
-            </select>
-				</td>
-			</tr>
+                        
+                        <tr>
+                            <td>Tipo Pago</td>
+                            <td>
+                        <?php $sql1="SELECT cod_tipopago, nombre_tipopago
+                                    FROM tipos_pago";
+                                $resp1 = mysqli_query($enlaceCon,$sql1);
+                        ?>
+                        <select name='cod_tipopago' id='edit_cod_tipopago' required>
+                            <?php while($dat1=mysqli_fetch_array($resp1))
+                                {	
+                                    $codLinea=$dat1[0];
+                                    $nombreLinea=$dat1[1];
+                            ?>
+                            <option value="<?=$codLinea;?>"><?=$nombreLinea;?></option>
+                            <?php } ?>
+                        </select>
+                            </td>
+                        </tr>
 
-			<tr>
-				<td>NIT:</td>
-				<td>
-				<input type='text' name='edit_nit' id="edit_nit" class='texto'>
-				</td>
-			</tr>
-			<tr>
-				<td>Razón Social:</td>
-				<td>
-				<input type='text' name='edit_razon_social' id="edit_razon_social">
-				</td>
-			</tr>
+                        <tr>
+                            <td>NIT:</td>
+                            <td>
+                            <input type='text' name='edit_nit' id="edit_nit" class='texto'>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Razón Social:</td>
+                            <td>
+                            <input type='text' name='edit_razon_social' id="edit_razon_social">
+                            </td>
+                        </tr>
 
-            <tr>
-                <td>Monto:</td>
-                <td>
-                <input type='text' name='edit_monto_cobro' id="edit_monto_cobro" readonly>
-                </td>
-            </tr>
+                        <tr>
+                            <td>Monto:</td>
+                            <td>
+                            <input type='text' name='edit_monto_cobro' id="edit_monto_cobro" readonly>
+                            </td>
+                        </tr>
 
-		</table>	
-		<center>
-			<input type='button' value='Cobrar' class='boton' onClick="UpdateFacturarEditar()">
-			<input type='button' value='Cancelar' class='boton2' onClick="HiddenFacturarEditar()">
-			
-		</center>
+                        <tr>
+                            <td>Efectivo:</td>
+                            <td>
+                            <input type='text' name='edit_monto_efectivo' id="edit_monto_efectivo">
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Cambio:</td>
+                            <td>
+                            <input type='text' name='edit_monto_cambio' id="edit_monto_cambio" readonly>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div style="flex: 1;">
+                    <table class='texto'>
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Cantidad</th>
+                                <th>Monto</th>
+                            </tr>
+                        </thead>
+                        <tbody id="itemsVenta">
+                        </tbody>
+                    </table>
+                </div>
+            </div>	
+            <center>
+                <input type='button' value='Cobrar' class='boton' onClick="UpdateFacturarEditar()">
+                <input type='button' value='Cancelar' class='boton2' onClick="HiddenFacturarEditar()">
+                
+            </center>
 		</form>
 	</div>
 </div>
