@@ -43,6 +43,8 @@ $tipoSalidaVencimiento=obtenerValorConfiguracion($enlaceCon,5);
 $banderaMostrarFV=obtenerValorConfiguracion($enlaceCon,20);
 //Bandera para buscar desde el nombre de producto tambien el principio activo
 $banderaBuscarPA=obtenerValorConfiguracion($enlaceCon,22);
+//Bandera para mostrar el Codigo con Costo de Compra
+$banderaCodigoCostoCompra=obtenerValorConfiguracion($enlaceCon,26);
 
 	$sql="select m.codigo_material, m.descripcion_material,
 	(select concat(p.nombre_proveedor,'-',pl.nombre_linea_proveedor)as nombre_proveedor
@@ -133,6 +135,18 @@ $banderaBuscarPA=obtenerValorConfiguracion($enlaceCon,22);
 			}
 			/*Fin Fecha de Vencimiento*/
 
+			/**  Codigo Costo Compra***/
+			$txtCodigoCostoCompra="";
+			if($banderaCodigoCostoCompra==1){
+				$sqlCostoCompra="SELECT concat(FORMAT(id.costo_almacen,1),'0',FORMAT((id.costo_almacen*1.25),1)) from ingreso_almacenes i, ingreso_detalle_almacenes id where i.cod_ingreso_almacen=id.cod_ingreso_almacen and 
+					i.ingreso_anulado=0 and i.cod_tipoingreso in (999,1000) and id.cod_material='$codigo' order by i.cod_ingreso_almacen desc limit 0,1";
+				$respCostoCompra=mysqli_query($enlaceCon,$sqlCostoCompra);
+				if($datCostoCompra=mysqli_fetch_array($respCostoCompra)){
+					$txtCodigoCostoCompra=$datCostoCompra[0];
+				}
+				$txtCodigoCostoCompra=str_replace(".", "", $txtCodigoCostoCompra);
+			}
+			/*****Fin Bandera Costo Compra*****/
 			if($mostrarFila==1){
 				$indexFila++;
 
@@ -141,7 +155,7 @@ $banderaBuscarPA=obtenerValorConfiguracion($enlaceCon,22);
 			  	}else{
 			  		$stockProductoFormat=$stockProducto;
 			  	}
-				echo "<tr><td><input type='checkbox' id='idchk$cont' name='idchk$cont' value='$datosProd' onchange='ver(this)' ></td><td>$codigo</td><td><div class='textograndenegro'><a href='javascript:setMateriales(form1, $codigo, \"$nombre - $linea ($codigo)####$txtFechaVencimiento####$cantidadPresentacion####$ventaSoloCajas \",$stockProducto)'>$nombre</a></div></td>
+				echo "<tr><td><input type='checkbox' id='idchk$cont' name='idchk$cont' value='$datosProd' onchange='ver(this)' ></td><td>$codigo</td><td><div class='textograndenegro'><a href='javascript:setMateriales(form1, $codigo, \"$nombre - $linea ($codigo)-$txtCodigoCostoCompra ####$txtFechaVencimiento####$cantidadPresentacion####$ventaSoloCajas \",$stockProducto)'>$nombre</a></div></td>
 				<td>$linea</td>
 				<td><small>$principioActivo</small></td>
 				<td><small>$accionTerapeutica</small></td>

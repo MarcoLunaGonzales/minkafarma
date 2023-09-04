@@ -24,6 +24,8 @@
 require("../conexionmysqli.inc");
 require("../estilos2.inc");
 require("configModule.php");
+
+
 $fecha_rptinidefault=date("Y")."-".date("m")."-01";
 $hora_rptinidefault=date("H:i");
 $fecha_rptdefault=date("Y-m-d");
@@ -55,6 +57,7 @@ echo "<tr><td align='left' class='bg-info text-white'>Nivel Descuento</td>";
 echo "<td align='left' colspan='3'>
 	<select name='nivel_descuento' class='selectpicker form-control' data-style='btn btn-info'>
 		<option value='0'>Producto</option>
+		<option value='2'>Solo Medicamentos</option>
 	</select>	
 </td>";
 echo "</tr>";

@@ -139,7 +139,7 @@ function enviar_buscador(){
 		(select e.nombre_empaque from empaques e where e.cod_empaque=m.cod_empaque), 
 		(select f.nombre_forma_far from formas_farmaceuticas f where f.cod_forma_far=m.cod_forma_far), 
 		(select pl.nombre_linea_proveedor from proveedores p, proveedores_lineas pl where p.cod_proveedor=pl.cod_proveedor and pl.cod_linea_proveedor=m.cod_linea_proveedor),
-		(select t.nombre_tipoventa from tipos_venta t where t.cod_tipoventa=m.cod_tipoventa), m.cantidad_presentacion, m.principio_activo, bandera_venta_unidades
+		(select t.nombre_tipoventa from tipos_venta t where t.cod_tipoventa=m.cod_tipoventa), m.cantidad_presentacion, m.principio_activo, bandera_venta_unidades, m.codigo_barras
 		from material_apoyo m
 		where m.estado='1' ";
 	if($vista==1)
@@ -147,7 +147,7 @@ function enviar_buscador(){
 		(select e.nombre_empaque from empaques e where e.cod_empaque=m.cod_empaque), 
 		(select f.nombre_forma_far from formas_farmaceuticas f where f.cod_forma_far=m.cod_forma_far), 
 		(select pl.nombre_linea_proveedor from proveedores p, proveedores_lineas pl where p.cod_proveedor=pl.cod_proveedor and pl.cod_linea_proveedor=m.cod_linea_proveedor),
-		(select t.nombre_tipoventa from tipos_venta t where t.cod_tipoventa=m.cod_tipoventa), m.cantidad_presentacion, m.principio_activo, bandera_venta_unidades
+		(select t.nombre_tipoventa from tipos_venta t where t.cod_tipoventa=m.cod_tipoventa), m.cantidad_presentacion, m.principio_activo, bandera_venta_unidades, m.codigo_barras
 		from material_apoyo m
 		where m.estado='0' ";
 	}
@@ -201,7 +201,7 @@ function enviar_buscador(){
 	echo "<center><table class='texto'>";
 	echo "<tr><th>Indice</th><th>Nombre Producto</th>
 		<th>Presentacion</th><th>Venta Solo<br> Caja Entera</th><th>Distribuidor</th>
-		<th>Precio</th><th>Principio Activo</th><th>&nbsp;</th></tr>";
+		<th>Precio</th><th>Principio Activo</th><th>BarCode</th><th>&nbsp;</th></tr>";
 	
 	$indice_tabla=1;
 	while($dat=mysqli_fetch_array($resp))
@@ -216,6 +216,7 @@ function enviar_buscador(){
 		$cantPresentacion=$dat[7];
 		$principioActivo=$dat[8];
 		$ventaSoloCajas=$dat[9];
+		$barCode=$dat[10];
 		$imgVentaSoloCajas="-";
 		if($ventaSoloCajas==1){
 			$imgVentaSoloCajas="<img src='imagenes/bien.jpg' width='20'>";
@@ -242,6 +243,7 @@ function enviar_buscador(){
 		<td>$nombreLinea</td>
 		<td>$precioProducto</td>
 		<td>$principioActivo</td>
+		<td>$barCode</td>
 		<td align='center'>
 		<a href='editar_material_apoyo.php?cod_material=$codigo&pagina_retorno=0'><img src='imagenes/edit.png' width='25'></a>
 		<a href='javascript:deleteProducto($codigo,\"$nombreProd\");'><img src='imagenes/eliminarproceso.gif' width='25'></a>

@@ -6,11 +6,17 @@ function precioCalculadoParaFacturacion($enlaceCon,$codMaterial,$codigoCiudadGlo
 	$fechaActual=date("Y-m-d");
 
 	$globalAdmin=$_COOKIE["global_admin_cargo"];
-
 	$globalAlmacen=$_COOKIE["global_almacen"];
 
 	$fechaCompleta=date("Y-m-d");
 	$horaCompleta=date("H:m:i");
+
+	$sqlMedicamento="SELECT m.cod_tipo_material from material_apoyo m where m.codigo_material='$codMaterial'";
+	$respMedicamento=mysqli_query($enlaceCon, $sqlMedicamento);
+	$medicamentoProducto=2;
+	if($datMedicamento=mysqli_fetch_array($respMedicamento)){
+		$medicamentoProducto=$datMedicamento[0];
+	}
 
 	$cadRespuesta="";
 	$consulta="select p.`precio`, p.descuento_unitario from precios p where p.`codigo_material`='$codMaterial' and p.`cod_precio`=1 and 
@@ -73,8 +79,20 @@ function precioCalculadoParaFacturacion($enlaceCon,$codMaterial,$codigoCiudadGlo
 	$nombreOferta=0;
 	$descuentoOferta=0;
 	
-	$sqlOferta="SELECT t.codigo, t.nombre, IFNULL(tp.porcentaje_material, t.abreviatura) AS abreviatura, t.oferta_stock_limitado, DATE_FORMAT(t.desde, '%Y-%m-%d'), DATE_FORMAT(t.hasta, '%Y-%m-%d'), IFNULL(tp.stock_oferta, 0) AS stockoferta from tipos_precio t, tipos_precio_productos tp where t.codigo=tp.cod_tipoprecio and '$fechaCompleta $horaCompleta' between t.desde and t.hasta and (SELECT td.cod_dia from tipos_precio_dias td where td.cod_tipoprecio=t.codigo and td.cod_dia=DAYOFWEEK('$fechaCompleta')) and t.estado=1 and t.cod_estadodescuento=3 and $codigoCiudadGlobal in (SELECT tc.cod_ciudad from tipos_precio_ciudad tc where tc.cod_tipoprecio=t.codigo) and tp.cod_material='$codMaterial';";
-	
+	$sqlOferta="";
+	if($medicamentoProducto==1){
+		//Verificamos la oferta general de los medicamentos
+		$sqlOfertaPre="SELECT t.codigo, t.nombre, t.abreviatura, t.oferta_stock_limitado, DATE_FORMAT(t.desde, '%Y-%m-%d'), DATE_FORMAT(t.hasta, '%Y-%m-%d') from tipos_precio t where '$fechaCompleta $horaCompleta' between t.desde and t.hasta and (SELECT td.cod_dia from tipos_precio_dias td where td.cod_tipoprecio=t.codigo and td.cod_dia=DAYOFWEEK('$fechaCompleta')) and t.estado=1 and t.cod_estadodescuento=3 and $codigoCiudadGlobal in (SELECT tc.cod_ciudad from tipos_precio_ciudad tc where tc.cod_tipoprecio=t.codigo) and t.por_linea=2;";
+		$respOfertaPre=mysqli_query($enlaceCon, $sqlOfertaPre);
+		$banderaOfertaGeneralMedicamento=mysqli_num_rows($respOfertaPre);
+		if($banderaOfertaGeneralMedicamento==0){
+			$sqlOferta="SELECT t.codigo, t.nombre, IFNULL(tp.porcentaje_material, t.abreviatura) AS abreviatura, t.oferta_stock_limitado, DATE_FORMAT(t.desde, '%Y-%m-%d'), DATE_FORMAT(t.hasta, '%Y-%m-%d'), IFNULL(tp.stock_oferta, 0) AS stockoferta from tipos_precio t, tipos_precio_productos tp where t.codigo=tp.cod_tipoprecio and '$fechaCompleta $horaCompleta' between t.desde and t.hasta and (SELECT td.cod_dia from tipos_precio_dias td where td.cod_tipoprecio=t.codigo and td.cod_dia=DAYOFWEEK('$fechaCompleta')) and t.estado=1 and t.cod_estadodescuento=3 and $codigoCiudadGlobal in (SELECT tc.cod_ciudad from tipos_precio_ciudad tc where tc.cod_tipoprecio=t.codigo) and tp.cod_material='$codMaterial';";
+		}elseif ($banderaOfertaGeneralMedicamento>0) {
+			$sqlOferta="SELECT t.codigo, t.nombre, t.abreviatura, t.oferta_stock_limitado, DATE_FORMAT(t.desde, '%Y-%m-%d'), DATE_FORMAT(t.hasta, '%Y-%m-%d') from tipos_precio t where '$fechaCompleta $horaCompleta' between t.desde and t.hasta and (SELECT td.cod_dia from tipos_precio_dias td where td.cod_tipoprecio=t.codigo and td.cod_dia=DAYOFWEEK('$fechaCompleta')) and t.estado=1 and t.cod_estadodescuento=3 and $codigoCiudadGlobal in (SELECT tc.cod_ciudad from tipos_precio_ciudad tc where tc.cod_tipoprecio=t.codigo) and t.por_linea=2;";
+		}
+	}else{
+		$sqlOferta="SELECT t.codigo, t.nombre, IFNULL(tp.porcentaje_material, t.abreviatura) AS abreviatura, t.oferta_stock_limitado, DATE_FORMAT(t.desde, '%Y-%m-%d'), DATE_FORMAT(t.hasta, '%Y-%m-%d'), IFNULL(tp.stock_oferta, 0) AS stockoferta from tipos_precio t, tipos_precio_productos tp where t.codigo=tp.cod_tipoprecio and '$fechaCompleta $horaCompleta' between t.desde and t.hasta and (SELECT td.cod_dia from tipos_precio_dias td where td.cod_tipoprecio=t.codigo and td.cod_dia=DAYOFWEEK('$fechaCompleta')) and t.estado=1 and t.cod_estadodescuento=3 and $codigoCiudadGlobal in (SELECT tc.cod_ciudad from tipos_precio_ciudad tc where tc.cod_tipoprecio=t.codigo) and tp.cod_material='$codMaterial';";
+	}
 	//echo $sqlOferta."<br>";
 	
 	$respOferta=mysqli_query($enlaceCon, $sqlOferta);

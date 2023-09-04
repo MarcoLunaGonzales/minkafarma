@@ -30,9 +30,9 @@ if($tipoImpresion==0 && $tipoVentaCaja==0){
 	<?php
 }elseif($tipoImpresion==1 && $tipoVentaCaja==0) {
 	if($tipoDoc==1){
-		$url="formatoFacturaOnline.php?codVenta=$codVenta";
+		$url="formatoFacturaOnLine.php?codVenta=$codVenta";
 	}else{
-		$url="formatoNotaRemisionOnline.php?codVenta=$codVenta";
+		$url="formatoNotaRemisionOnLine.php?codVenta=$codVenta";
 	}
 	?>
 	<script>

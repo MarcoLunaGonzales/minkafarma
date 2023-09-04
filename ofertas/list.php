@@ -316,15 +316,10 @@ echo "<script language='Javascript'>
      	if(strlen($ciudades)>$tamanioGlosa){
         	$ciudades=substr($ciudades, 0, $tamanioGlosa)."...";
      	}
-		if($dat['por_linea']==1){
-			//echo "dentro del if";
-			$lineas=obtenerNombreDesLineasRegistrados($codigo);
-			echo "lineas: ".$lineas;
-		   $tamanioGlosa=50; 
-            if(strlen($lineas)>$tamanioGlosa){
-               $lineas=substr($lineas, 0, $tamanioGlosa)."...";
-            }
-            $productos="";
+		if($dat['por_linea']==2){
+			//echo "Todos los Medicamentos";
+      $lineas="Todos los Medicamentos";
+      $productos="";
 		}else{
 			$productos=obtenerNombreDesProdRegistrados($codigo);
 		    $tamanioGlosa=50; 
@@ -333,7 +328,7 @@ echo "<script language='Javascript'>
             }
             $lineas="";
 		}
-      $por_linea=$dat['por_linea'];
+    $por_linea=$dat['por_linea'];
 		$inputcheck="<input type='checkbox' name='codigo' value='$codigo'><input type='hidden' id='por_linea$codigo' value='$por_linea'>";
 
 		$clonarOption="";
@@ -370,7 +365,7 @@ echo "<script language='Javascript'>
 		<td>$hasta</td>
 		<td>$dias</td>
 		<td>$ciudades</td>
-		<td>$lineas</td>
+		<td><span style='color:red'><b>$lineas</b></span></td>
 		<td>$productos</td>
 		<td>$estado</td>
 		</tr>";

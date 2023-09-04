@@ -292,13 +292,10 @@ function enviar_nav(f){
         if(strlen($ciudades)>$tamanioGlosa){
            $ciudades=substr($ciudades, 0, $tamanioGlosa)."...";
         }
-		if($dat['por_linea']==1){
-			$lineas=obtenerNombreDesLineasRegistrados($codigo);
-		    $tamanioGlosa=50; 
-            if(strlen($lineas)>$tamanioGlosa){
-               $lineas=substr($lineas, 0, $tamanioGlosa)."...";
-            }
-            $productos="";
+		if($dat['por_linea']==2){
+			//echo "Todos los Medicamentos";
+      $lineas="Todos los Medicamentos";
+      $productos="";
 		}else{
 			$productos=obtenerNombreDesProdRegistrados($codigo);
 		    $tamanioGlosa=50; 
@@ -342,7 +339,7 @@ function enviar_nav(f){
 		<td>$hasta</td>
 		<td>$dias</td>
 		<td>$ciudades</td>
-		<td>$lineas</td>
+		<td><span style='color:red'><b>$lineas</b></span></td>
 		<td>$productos</td>
 		<td>$estado</td>
 		</tr>";
