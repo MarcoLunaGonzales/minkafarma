@@ -535,29 +535,50 @@ function verificarPagoTargeta(){
 
 
 function calculaMontoMaterial(indice){
-
-	console.log("entro calcular monto material");
+	console.log("function calculaMontoMaterial");
 	var cantidadUnitaria=document.getElementById("cantidad_unitaria"+indice).value;
 	if(cantidadUnitaria==""){
 		cantidadUnitaria=0;
 	}
 	var precioUnitario=document.getElementById("precio_unitario"+indice).value;
 	var porcentajeDescuentoUnitario=document.getElementById("tipoPrecio"+indice).value;
+	
+	console.log("Variables entrada porcentaje: "+porcentajeDescuentoUnitario);
 
-	var descuentoUnitario=(parseFloat(cantidadUnitaria)*parseFloat(precioUnitario)) * (parseFloat(porcentajeDescuentoUnitario)/100);
+	descuentoUnitario=(parseFloat(cantidadUnitaria)*parseFloat(precioUnitario)) * (parseFloat(porcentajeDescuentoUnitario)/100);
 	descuentoUnitario=Math.round(descuentoUnitario*100)/100;
-
 	console.log("calculo: CU: "+cantidadUnitaria+" PU: "+precioUnitario+" DUPorc: "+porcentajeDescuentoUnitario+" DU:"+descuentoUnitario);
-	//var descuentoUnitario=document.getElementById("descuentoProducto"+indice).value;
-
 	var montoUnitario=(parseFloat(cantidadUnitaria)*parseFloat(precioUnitario)) - (parseFloat(descuentoUnitario));
 	montoUnitario=Math.round(montoUnitario*100)/100;
-	
 	document.getElementById("descuentoProducto"+indice).value=descuentoUnitario;
 	document.getElementById("montoMaterial"+indice).value=montoUnitario;
 	
 	totales();
 }
+
+function calculaMontoMaterial_bs(indice){
+	console.log("function calculaMontoMaterialBolivianos");
+	var cantidadUnitaria=document.getElementById("cantidad_unitaria"+indice).value;
+	if(cantidadUnitaria==""){
+		cantidadUnitaria=0;
+	}
+	var precioUnitario=document.getElementById("precio_unitario"+indice).value;
+	
+	var descuentoUnitarioBS=document.getElementById("descuentoProducto"+indice).value;
+	
+	console.log("Variables entrada porcentajeDescuentoUnitarioBS: "+descuentoUnitarioBS);
+
+	porcentajeDescuentoUnitario = ((parseFloat(descuentoUnitarioBS)) / (parseFloat(cantidadUnitaria)*parseFloat(precioUnitario))*100);
+	porcentajeDescuentoUnitario=Math.round(porcentajeDescuentoUnitario*100)/100;
+	console.log("calculo: CU: "+cantidadUnitaria+" PU: "+precioUnitario+" DUPorc: "+porcentajeDescuentoUnitario+" DU:"+descuentoUnitario);
+	var montoUnitario=(parseFloat(cantidadUnitaria)*parseFloat(precioUnitario)) - (parseFloat(descuentoUnitarioBS));
+	montoUnitario=Math.round(montoUnitario*100)/100;
+	document.getElementById("tipoPrecio"+indice).value=porcentajeDescuentoUnitario;
+	document.getElementById("montoMaterial"+indice).value=montoUnitario;
+	
+	totales();
+}
+
 
 function totales(){
 	var subtotal=0;

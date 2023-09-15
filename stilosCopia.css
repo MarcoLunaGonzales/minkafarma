@@ -281,6 +281,7 @@ a:active {
 	text-decoration: none;
 }
 .textotit {
+    text-align: center;
 	font-family: Verdana;
 	font-size: 14pt;
 	color: #585858;

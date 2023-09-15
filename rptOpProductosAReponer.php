@@ -20,7 +20,7 @@ function envia_formulario(f)
 require("conexionmysqli2.inc");
 require("estilos_almacenes.inc");
 
-$fecha_rptdefault=date("d/m/Y");
+$fecha_rptdefault=date("Y-m-d");
 echo "<table align='center' class='textotit'><tr><th>Productos a Reponer</th></tr></table><br>";
 echo"<form method='post' action=''>";
 	echo"\n<table class='texto' align='center' cellSpacing='0' width='50%'>\n";

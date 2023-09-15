@@ -271,6 +271,16 @@ function ingresosItemPeriodo($enlaceCon, $almacen, $item, $fechaInicio, $fechaFi
 	}
 	return($cant_ingresos);
 }
+function ingresosItemPeriodoxCompra($enlaceCon, $almacen, $item, $fechaInicio, $fechaFinal){
+	$sql_ingresos="select IFNULL(sum(id.cantidad_unitaria),0) from ingreso_almacenes i, ingreso_detalle_almacenes id
+	where i.cod_ingreso_almacen=id.cod_ingreso_almacen and i.fecha between '$fechaInicio' and '$fechaFinal' and i.cod_almacen='$almacen' and i.cod_tipoingreso=1000 and id.cod_material='$item' and i.ingreso_anulado=0";
+	$cant_ingresos=0;
+	$resp_ingresos=mysqli_query($enlaceCon,$sql_ingresos);
+	if($dat_ingresos=mysqli_fetch_array($resp_ingresos)){
+		$cant_ingresos=$dat_ingresos[0];	
+	}
+	return($cant_ingresos);
+}
 function salidasItemPeriodo($enlaceCon, $almacen, $item, $fechaInicio, $fechaFinal){
 	$cant_salidas=0;
 	$sql_salidas="select IFNULL(sum(sd.cantidad_unitaria),0) from salida_almacenes s, salida_detalle_almacenes sd

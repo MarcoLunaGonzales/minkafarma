@@ -12,18 +12,28 @@ require('conexionmysqli2.inc');
  ini_set('display_errors', '1');
 
 
-$rpt_territorio=$_GET["rpt_territorio"];
-$rpt_almacen=$_GET["rpt_almacen"];
-$rpt_ver=$_GET["rpt_ver"];
-$rpt_fecha=$_GET["rpt_fecha"];
-$rptOrdenar=$_GET["rpt_ordenar"];
-$rptDistribuidor=$_GET["rpt_distribuidor"];
-$rptTipoImpresion=$_GET["rpt_tipo_impresion"];
+$rpt_almacen=$_POST["rpt_almacen"];
+$rpt_ver=$_POST["rpt_ver"];
+$rpt_fecha=$_POST["rpt_fecha"];
+$rptOrdenar=$_POST["rpt_ordenar"];
+$rptDistribuidor=$_POST["rpt_distribuidor"];
+$rptTipoImpresion=$_POST["rpt_tipo_impresion"];
 
-$array_proveedores=explode(",", $rptDistribuidor);
+$txtRptVer="";
+if($rpt_ver==1){
+	$txtRptVer="Toda La BD de Productos";
+}elseif ($rpt_ver==2) {
+	$txtRptVer="Productos Con Existencia";
+}elseif ($rpt_ver==3) {
+	$txtRptVer="Productos Sin Existencia";
+}elseif ($rpt_ver==0) {
+	$txtRptVer="Todos los Productos con algún Movimiento en el Almacen";
+}
+
+$array_proveedores=implode(",",$rptDistribuidor);
 $nombreProveedor="";
-for ($i=0; $i <count($array_proveedores) ; $i++) { 
-	$codigo_proveedor=$array_proveedores[$i];
+for ($i=0; $i <count($rptDistribuidor) ; $i++) { 
+	$codigo_proveedor=$rptDistribuidor[$i];
 	$nombreProveedor.=obtenerNombreProveedor($codigo_proveedor)." - ";
 }
 //recortamos la cadena
@@ -32,30 +42,39 @@ if($tamanioCadenaDistribuidor>300){
 	$nombreProveedor=substr($nombreProveedor, 0, 300)." ...";  // devuelve "abcde"
 }
 
-$rpt_fecha=cambia_formatofecha($rpt_fecha);
+//$rpt_fecha=cambia_formatofecha($rpt_fecha);
 $fecha_reporte=date("d/m/Y");
 $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
 
 
-	$sql_nombre_territorio="select descripcion from ciudades where cod_ciudad='$rpt_territorio'";
-	$resp_nombre_territorio=mysqli_query($enlaceCon, $sql_nombre_territorio);
-	$datos_nombre_territorio=mysqli_fetch_array($resp_nombre_territorio);
-	$nombre_territorio=$datos_nombre_territorio[0];
 	$sql_nombre_almacen="select nombre_almacen from almacenes where cod_almacen='$rpt_almacen'";
 	$resp_nombre_almacen=mysqli_query($enlaceCon, $sql_nombre_almacen);
 	$datos_nombre_almacen=mysqli_fetch_array($resp_nombre_almacen);
 	$nombre_almacen=$datos_nombre_almacen[0];
-		echo "<table align='center' class='textotit' width='70%'><tr><td align='center'>Reporte Existencias Almacen<br>Territorio: <strong>$nombre_territorio</strong> Nombre Almacen: <strong>$nombre_almacen</strong> <br>Existencias a Fecha: <strong>$rpt_fecha</strong><br>$txt_reporte <br>
-		Distribuidor: <small><small><small><b>$nombreProveedor</b></small></small></small></th></tr></table>";
+
+	echo "<table align='center' class='textotit' width='70%'><tr><td align='center'>Reporte Existencias Almacen
+		<br>Nombre Almacen: <strong>$nombre_almacen</strong> <br>Existencias a Fecha: <strong>$rpt_fecha</strong><br>$txt_reporte
+		<br>Ver: <b><small>$txtRptVer</small></b> 
+		<br>Distribuidor: <small><small><small><b>$nombreProveedor</b></small></small></small></th></tr></table>";
 		//desde esta parte viene el reporte en si
 		
 		if($rptOrdenar==1){
-			$sql_item="select m.codigo_material, m.descripcion_material, m.cantidad_presentacion from material_apoyo m, proveedores p, proveedores_lineas pl
-			where p.cod_proveedor=pl.cod_proveedor and pl.cod_linea_proveedor=m.cod_linea_proveedor and m.codigo_material<>0 and m.estado='1' and p.cod_proveedor in ($rptDistribuidor) order by m.descripcion_material";
+			if($rpt_ver==1){
+				$sql_item="SELECT m.codigo_material, m.descripcion_material, m.cantidad_presentacion from material_apoyo m, proveedores p, proveedores_lineas pl
+					where p.cod_proveedor=pl.cod_proveedor and pl.cod_linea_proveedor=m.cod_linea_proveedor and m.codigo_material<>0 and m.estado='1' and p.cod_proveedor in ($array_proveedores) order by m.descripcion_material";
+			}else{
+				$sql_item="SELECT m.codigo_material, m.descripcion_material, m.cantidad_presentacion from material_apoyo m, proveedores p, proveedores_lineas pl, ingreso_almacenes i, ingreso_detalle_almacenes id
+					where i.cod_ingreso_almacen=id.cod_ingreso_almacen and id.cod_material=m.codigo_material and  i.ingreso_anulado=0 and i.cod_almacen='$rpt_almacen' and p.cod_proveedor=pl.cod_proveedor and pl.cod_linea_proveedor=m.cod_linea_proveedor and m.codigo_material<>0 and p.cod_proveedor in ($array_proveedores) order by m.descripcion_material";
+			}
 		}else{
-			$sql_item="select m.codigo_material, 
-			m.descripcion_material, cantidad_presentacion, CONCAT(p.nombre_proveedor,' - ',pl.nombre_linea_proveedor)as linea  from proveedores p, proveedores_lineas pl, 
-			material_apoyo m where p.cod_proveedor=pl.cod_proveedor and pl.cod_linea_proveedor=m.cod_linea_proveedor and m.estado='1' and p.cod_proveedor in ($rptDistribuidor) order by 4,2";
+			if($rpt_ver==1){
+				$sql_item="SELECT m.codigo_material, 
+				m.descripcion_material, cantidad_presentacion, CONCAT(p.nombre_proveedor,' - ',pl.nombre_linea_proveedor)as linea  from proveedores p, proveedores_lineas pl, 
+				material_apoyo m where p.cod_proveedor=pl.cod_proveedor and pl.cod_linea_proveedor=m.cod_linea_proveedor and m.estado='1' and p.cod_proveedor in ($array_proveedores) order by 4,2";
+			}else{
+				$sql_item="SELECT m.codigo_material, 
+				m.descripcion_material, cantidad_presentacion, CONCAT(p.nombre_proveedor,' - ',pl.nombre_linea_proveedor)as linea  from proveedores p, proveedores_lineas pl, material_apoyo m, ingreso_almacenes i, ingreso_detalle_almacenes id where p.cod_proveedor=pl.cod_proveedor and pl.cod_linea_proveedor=m.cod_linea_proveedor and i.cod_ingreso_almacen=id.cod_ingreso_almacen and id.cod_material=m.codigo_material and  i.ingreso_anulado=0 and i.cod_almacen='$rpt_almacen' and p.cod_proveedor in ($array_proveedores) order by 4,2";
+			}			
 		}
 		
 		//echo $sql_item;
@@ -162,16 +181,18 @@ $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
 			{	//no se muestra nada
 			}
 			else
-			{	if($rpt_ver==1)
+			{	if($rpt_ver==1 || $rpt_ver==0)
 				{	echo $cadena_mostrar;
+					$indice++;
 				}
 				if($rpt_ver==2 and $stock_real>0)
 				{	echo $cadena_mostrar;
+					$indice++;
 				}
 				if($rpt_ver==3 and $stock_real==0)
 				{	echo $cadena_mostrar;
+					$indice++;
 				}
-				$indice++;
 			}
 		}
 		$cadena_mostrar.="</tbody>";

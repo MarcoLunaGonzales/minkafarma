@@ -3,7 +3,7 @@ require("conexion.inc");
 require("estilos_almacenes.inc");
 ?>
 <script language='JavaScript'>
-	function envia_form(f){
+	function envia_form1(f){
 		f.action="rptMarcados.php";
 		f.submit();
 		return(true);

@@ -6,7 +6,7 @@
 	if($banderaVentaCaja==0){
 		$urlNavVentas="navegadorVentas.php";
 	}else{
-		$urlNavVentas="navegadorVentaCaja.php";
+		$urlNavVentas="navegadorVentaCaja.php"; 
 	}
 
 	$global_usuario=$_COOKIE['global_usuario'];

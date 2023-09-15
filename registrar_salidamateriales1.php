@@ -1,19 +1,26 @@
+<html>
+    <head>
+        <title>Busqueda</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <!--script type="text/javascript" src="lib/js/xlibPrototipoSimple-v0.1.js"></script-->
+        <script type="text/javascript" src="lib/js/jquery-3.2.1.min.js"></script>
+
 <?php
 
-require("conexionmysqli.php");
-require("estilos_almacenes.inc");
+$indexGerencia=1;
 
+require('conexionmysqli2.inc');
+require('estilos_almacenes.inc');
+require('funciones.php');
+
+ error_reporting(E_ALL);
+ ini_set('display_errors', '1');
 
 $usuarioVentas=$_COOKIE['global_usuario'];
 $globalAgencia=$_COOKIE['global_agencia'];
 $globalAlmacen=$_COOKIE['global_almacen'];
 
 ?>
-<html>
-    <head>
-        <title>Busqueda</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <script type="text/javascript" src="lib/js/xlibPrototipoSimple-v0.1.js"></script>
 		
 <script type='text/javascript' language='javascript'>
 function nuevoAjax()
@@ -273,8 +280,12 @@ function validar(f)
 				alert("No puede sacar cantidades mayores a las existencias. Fila "+i);
 				return(false);
 			}
-		}		
-		return(true);
+		}
+		console.log("Enviando");
+      	document.getElementById("btsubmit").value = "Enviando...";
+		document.getElementById("btsubmit").disabled = true;   
+		document.forms[0].submit();
+		//return(true);
 	}else{
 		alert("La transaccion debe tener al menos 1 item.");
 		return(false);
@@ -285,9 +296,9 @@ function validar(f)
 </script>	
 <?php
 echo "<body>";
-if($fecha=="")
-{   $fecha=date("d/m/Y");
-}
+
+$fecha=date("d/m/Y");
+
 $sql="select nro_correlativo from salida_almacenes where cod_almacen='$global_almacen' order by cod_salida_almacenes desc";
 $resp=mysqli_query($enlaceCon,$sql);
 $dat=mysqli_fetch_array($resp);
@@ -300,7 +311,7 @@ else
     $codigo++;
 }
 ?>
-<form action='guardarSalidaMaterial.php' method='POST' name='form1'>
+<form action='guardarSalidaMaterial.php' method='POST' name='form1' onsubmit="return validar(this)">
 <h1>Registrar Salida de Almacen</h1>
 
 <input type="hidden" id="almacen_origen" name="almacen_origen" value="<?=$globalAlmacen?>">
@@ -312,7 +323,7 @@ else
 <tr><th>Tipo de Salida</th><th>Tipo de Documento</th><th>Nro. Salida</th><th>Fecha</th><th>Almacen Destino</th></tr>
 <tr>
 <td align='center'>
-	<select name='tipoSalida' id='tipoSalida' onChange='ajaxTipoDoc(form1)'>
+	<select name='tipoSalida' id='tipoSalida' onChange='ajaxTipoDoc(form1)' class="selectpicker" data-style="btn btn-success">
 		<option value="0">--------</option>
 <?php
 	$sqlTipo="select cod_tiposalida, nombre_tiposalida from tipos_salida where cod_tiposalida<>1001 order by 2";
@@ -391,7 +402,7 @@ else
 <?php
 
 echo "<div class='divBotones'>
-	<input type='submit' class='boton' value='Guardar' onClick='return validar(this.form);'>
+	<input type='submit' class='boton' value='Guardar' id='btsubmit' name='btsubmit'>
 	<input type='button' class='boton2' value='Cancelar' onClick='location.href=\"navegador_salidamateriales.php\"'>
 </div>";
 

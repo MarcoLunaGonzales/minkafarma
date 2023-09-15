@@ -1,4 +1,5 @@
 <?php 
+
 require("conexionmysqli.php");
 require('function_formatofecha.php');
 require("estilos_almacenes.inc");
@@ -263,13 +264,14 @@ function llamar_preparado(f, estado_preparado, codigo_salida)
 $txtnroingreso="";
 $fecha1="";
 $fecha2="";
-if(!isset($_GET['txtnroingreso'])){
+
+if(isset($_GET['txtnroingreso'])){
     $txtnroingreso = $_GET["txtnroingreso"];
 }
-if(!isset($_GET["fecha1"])){
+if(isset($_GET["fecha1"])){
     $fecha1 = $_GET["fecha1"];    
 }
-if(!isset($_GET["fecha2"])){
+if(isset($_GET["fecha2"])){
     $fecha2 = $_GET["fecha2"];
 }
 $global_almacen=$_COOKIE['global_almacen'];
@@ -352,7 +354,7 @@ while ($dat = mysqli_fetch_array($resp)) {
     }
     //salida recepcionada
     if ($estado_almacen == 2) {
-        $color_fondo = "#33ccff";
+        $color_fondo = "";
         $chk = "&nbsp;";
     }
     //salida en proceso de despacho
@@ -366,7 +368,7 @@ while ($dat = mysqli_fetch_array($resp)) {
         $chk = "<input type='checkbox' name='codigo' value='$codigo'>";
     }
 	if ($estado_almacen == 4) {
-        $color_fondo = "";
+        $color_fondo = "#33ccff";
         $chk = "&nbsp;";
         $estado_preparado = 1;
     }

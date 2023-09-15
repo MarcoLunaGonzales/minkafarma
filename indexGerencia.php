@@ -46,7 +46,7 @@
 <?php
 //require_once 'conexionmysqlipdf.inc';
 require_once 'datosUsuario.php';
-//require_once 'funciones.php';
+//require_once 'funciones.php'; 
 ?>
 
 <div id="page">
@@ -154,6 +154,7 @@ require_once 'datosUsuario.php';
                     <li><a href="navegador_tiposgasto.php" target="contenedorPrincipal">Tipos de Gasto</a></li>		
                     <li><a href="navegador_gastos.php" target="contenedorPrincipal">Gastos</a></li>			
 					<li><a href="rptOpGastos.php" target="contenedorPrincipal">Reporte detallado de Gastos</a></li>
+					<li><a href="editPerfil.php" target="contenedorPrincipal">Cambiar Clave Acceso</a></li>
 				</ul>	
 			</li>	
 			

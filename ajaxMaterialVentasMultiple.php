@@ -96,7 +96,8 @@ echo "</div></td>";
 
 <td align="center" width="15%">
 	<input class="inputnumber" type="number" min="0" max="90" step="0.01" value="<?=$descuentoPorcentaje;?>" id="tipoPrecio<?php echo $num;?>" 	name="tipoPrecio<?php echo $num;?>"  onkeyup='calculaMontoMaterial(<?php echo $num;?>);' onchange='calculaMontoMaterial(<?php echo $num;?>);'  style="background:#ADF8FA;" <?=($banderaDescuentoAbierto==0)?'readonly':'';?> >%
-	<input class="inputnumber" type="number" value="0" id="descuentoProducto<?php echo $num;?>" name="descuentoProducto<?php echo $num;?>" step="0.01" style='background:#ADF8FA;' readonly>
+	
+	<input class="inputnumber" type="number" value="0" id="descuentoProducto<?php echo $num;?>" name="descuentoProducto<?php echo $num;?>" step="0.01" onkeyup='calculaMontoMaterial_bs(<?php echo $num;?>);' onchange='calculaMontoMaterial_bs(<?php echo $num;?>);' style='background:#ADF8FA;' <?=($banderaDescuentoAbierto==0)?'readonly':'';?> >
 	<div id="divMensajeOferta<?=$num;?>" class="textomedianosangre"><?=$nombrePrecioAplicar;?></div>
 </td>
 

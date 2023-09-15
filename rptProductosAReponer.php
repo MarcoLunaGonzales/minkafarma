@@ -48,13 +48,14 @@ $resp=mysqli_query($enlaceCon, $sql);
 
 echo "<br><table align='center' class='texto' width='100%'>
 <tr>
+<th>BarCode</th>
 <th>Codigo</th>
 <th>Producto</th>
 <th>Linea</th>
 <th>Cantidad</th>
 <th>Monto Venta</th>
 <th>Fecha Ultima Venta</th>
-<th>Stock Ultima Venta</th>
+<th>Stock Actual</th>
 <th>Observaciones</th>
 </tr>";
 
@@ -79,7 +80,10 @@ while($datos=mysqli_fetch_array($resp)){
 		$montoVenta=$montoVenta-$descuentoAdiProducto;
 	}
 
-	$stockFechaUltimaVenta=stockProductoAFecha($enlaceCon, $cod_almacen, $codItem, $fechaUltimaVenta);
+	//$stockFechaUltimaVenta=stockProductoAFecha($enlaceCon, $cod_almacen, $codItem, $fechaUltimaVenta);
+
+	//el Stock debe ser al ultimo momento para evaluar la necesidad de comprar
+	$stockFechaUltimaVenta=stockProducto($enlaceCon, $cod_almacen, $codItem);
 
 	$obsStock="";
 	if($stockFechaUltimaVenta<=0){
@@ -96,6 +100,7 @@ while($datos=mysqli_fetch_array($resp)){
 
 		echo "<tr>
 		<td>$barCode</td>
+		<td>$codItem</td>
 		<td>$nombreItem</td>
 		<td>$nombreMarca</td>
 		<td>$cantidadFormat</td>
@@ -108,6 +113,7 @@ while($datos=mysqli_fetch_array($resp)){
 }
 $totalPtr=number_format($totalVenta,2,".",",");
 echo "<tr>
+	<td>&nbsp;</td>
 	<td>&nbsp;</td>
 	<td>&nbsp;</td>
 	<td>&nbsp;</td>

@@ -54,6 +54,18 @@ function nombreVisitador($enlaceCon,$codigo)
 	return($nombre);
 }
 
+function nombrePersonalMultiple($enlaceCon,$codigo)
+{	//require("conexionmysqli.php");
+	$sql="select concat(paterno,' ',nombres) from funcionarios where codigo_funcionario in ($codigo)";
+	$resp=mysqli_query($enlaceCon,$sql);
+	$nombre="";
+	while($dat=mysqli_fetch_array($resp)){
+		$nombre.=$dat[0]." - ";
+	}
+	//$nombre=mysqli_result($resp,0,0);
+	return($nombre);
+}
+
 function nombreTerritorio($enlaceCon,$codigo)
 {	//require("conexionmysqli.php");
 	$sql="select descripcion from ciudades where cod_ciudad='$codigo'";

@@ -1,3 +1,12 @@
+<?php
+
+require("conexionmysqli.php");
+require("estilos_almacenes.inc");
+
+ error_reporting(E_ALL);
+ ini_set('display_errors', '1');
+
+?>
 <script language='JavaScript'>
 function envia_formulario(f)
 {	var rpt_territorio,fecha_ini, fecha_fin, rpt_ver;
@@ -22,7 +31,7 @@ function actualizarDatosPersonal(){
      $.ajax({
         type: "GET",
         dataType: 'html',
-        url: "depositos/ajaxCalcularDatosPersonal.php",
+        url: "ajaxCalcularDatosPersonal.php",
         data: parametros,   
         success:  function (resp) { 
           //alert(resp);
@@ -33,13 +42,6 @@ function actualizarDatosPersonal(){
  }
 </script>
 <?php
-
-require("conexionmysqli2.inc");
-require("estilos_almacenes.inc");
-
-if($_COOKIE["admin_central"]==1){
-	$global_tipoalmacen=1;
-}
 
 $globalCiudad=$_COOKIE["global_agencia"];
 
@@ -52,7 +54,7 @@ if(isset($_POST["rpt_territorio"])){
 $globalFuncionario=$_COOKIE["global_usuario"];
 $fecha_rptdefault=date("Y-m-d");
 
-echo "<table align='center' class='textotit'><tr><th>Reporte Ventas x Documento e Item</th></tr></table><br>";
+echo "<h1>Reporte Ventas x Documento e Item</h1>";
 echo"<form method='post' action=''>";
 
 	echo"\n<table class='texto' align='center' cellSpacing='0' width='50%'>\n";
@@ -73,7 +75,7 @@ echo"<form method='post' action=''>";
 	}
 	echo "</select></td></tr>";
 
-		echo "<tr><th align='left'>Personal</th><td><select name='rpt_personal' id='rpt_personal' multiple class='selectpicker' data-live-search='true' data-size='6' data-actions-box='true'>";
+	echo "<tr><th align='left'>Personal</th><td><select name='rpt_personal' id='rpt_personal' multiple class='selectpicker' data-live-search='true' data-size='6' data-actions-box='true'>";
 		$sql="SELECT codigo_funcionario,CONCAT(paterno,' ',materno,' ',nombres)personal FROM funcionarios where estado=1 order by paterno,materno,nombres ";
 
 	$resp=mysqli_query($enlaceCon,$sql);
@@ -86,12 +88,7 @@ echo"<form method='post' action=''>";
 		  echo "<option value='$codigo_funcionario' selected>$nombre_funcionario</option>";				
 		}
 	}
-	if($global_tipoalmacen==1)
-	{	echo "</select><a href='#' class='btn btn-deffault btn-fab btn-sm'><i class='material-icons' title='Actualizar Listado Personal'>refresh</i></a></td></tr>";
-	}
-	else
-	{	echo "</select><a href='#' class='btn btn-deffault btn-fab btn-sm'><i class='material-icons' onclick='actualizarDatosPersonal();return false;' title='Actualizar Listado Personal'>refresh</i></a></td></tr>";
-	}	
+	echo "</select><a href='#' class='btn btn-deffault btn-fab btn-sm'><i class='material-icons' onclick='actualizarDatosPersonal();return false;' title='Listar Todo el Personal (Incluidos Retirados)'>refresh</i></a></td></tr>";	
 	
 	echo "<tr><th align='left'>Fecha inicio:</th>";
 			echo" <TD bgcolor='#ffffff'><INPUT  type='date' class='texto' value='$fecha_rptdefault' id='exafinicial' size='10' name='exafinicial'>";
@@ -108,6 +105,5 @@ echo"<form method='post' action=''>";
 	</center><br>";
 	echo"</form>";
 	echo "</div>";
-	echo"<script type='text/javascript' language='javascript'  src='dlcalendar.js'></script>";
 
 ?>

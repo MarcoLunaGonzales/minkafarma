@@ -144,7 +144,7 @@ $banderaCodigoCostoCompra=obtenerValorConfiguracion($enlaceCon,26);
 				if($datCostoCompra=mysqli_fetch_array($respCostoCompra)){
 					$txtCodigoCostoCompra=$datCostoCompra[0];
 				}
-				$txtCodigoCostoCompra=str_replace(".", "", $txtCodigoCostoCompra);
+				//$txtCodigoCostoCompra=str_replace(".", "", $txtCodigoCostoCompra);
 			}
 			/*****Fin Bandera Costo Compra*****/
 			if($mostrarFila==1){

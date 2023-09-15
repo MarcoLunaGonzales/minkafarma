@@ -76,21 +76,24 @@ function precioCalculadoParaFacturacion($enlaceCon,$codMaterial,$codigoCiudadGlo
 	/**************** Iniciamos la revision de las ofertas *******************/
 	/*************************************************************************/
 	$codigoOferta=0;
-	$nombreOferta=0;
+	$nombreOferta="";
 	$descuentoOferta=0;
 	
 	$sqlOferta="";
 	if($medicamentoProducto==1){
-		//Verificamos la oferta general de los medicamentos
+		//Verificamos la oferta general CUANDO ES MEDICAMENTO
 		$sqlOfertaPre="SELECT t.codigo, t.nombre, t.abreviatura, t.oferta_stock_limitado, DATE_FORMAT(t.desde, '%Y-%m-%d'), DATE_FORMAT(t.hasta, '%Y-%m-%d') from tipos_precio t where '$fechaCompleta $horaCompleta' between t.desde and t.hasta and (SELECT td.cod_dia from tipos_precio_dias td where td.cod_tipoprecio=t.codigo and td.cod_dia=DAYOFWEEK('$fechaCompleta')) and t.estado=1 and t.cod_estadodescuento=3 and $codigoCiudadGlobal in (SELECT tc.cod_ciudad from tipos_precio_ciudad tc where tc.cod_tipoprecio=t.codigo) and t.por_linea=2;";
 		$respOfertaPre=mysqli_query($enlaceCon, $sqlOfertaPre);
 		$banderaOfertaGeneralMedicamento=mysqli_num_rows($respOfertaPre);
 		if($banderaOfertaGeneralMedicamento==0){
+			/************  Cuando es Medicamento pero no hay OFERTA GENERAL  *************/
 			$sqlOferta="SELECT t.codigo, t.nombre, IFNULL(tp.porcentaje_material, t.abreviatura) AS abreviatura, t.oferta_stock_limitado, DATE_FORMAT(t.desde, '%Y-%m-%d'), DATE_FORMAT(t.hasta, '%Y-%m-%d'), IFNULL(tp.stock_oferta, 0) AS stockoferta from tipos_precio t, tipos_precio_productos tp where t.codigo=tp.cod_tipoprecio and '$fechaCompleta $horaCompleta' between t.desde and t.hasta and (SELECT td.cod_dia from tipos_precio_dias td where td.cod_tipoprecio=t.codigo and td.cod_dia=DAYOFWEEK('$fechaCompleta')) and t.estado=1 and t.cod_estadodescuento=3 and $codigoCiudadGlobal in (SELECT tc.cod_ciudad from tipos_precio_ciudad tc where tc.cod_tipoprecio=t.codigo) and tp.cod_material='$codMaterial';";
 		}elseif ($banderaOfertaGeneralMedicamento>0) {
+			/************  Cuando es Medicamento CON OFERTA GENERAL  *************/
 			$sqlOferta="SELECT t.codigo, t.nombre, t.abreviatura, t.oferta_stock_limitado, DATE_FORMAT(t.desde, '%Y-%m-%d'), DATE_FORMAT(t.hasta, '%Y-%m-%d') from tipos_precio t where '$fechaCompleta $horaCompleta' between t.desde and t.hasta and (SELECT td.cod_dia from tipos_precio_dias td where td.cod_tipoprecio=t.codigo and td.cod_dia=DAYOFWEEK('$fechaCompleta')) and t.estado=1 and t.cod_estadodescuento=3 and $codigoCiudadGlobal in (SELECT tc.cod_ciudad from tipos_precio_ciudad tc where tc.cod_tipoprecio=t.codigo) and t.por_linea=2;";
 		}
 	}else{
+		/************  Cuando NO ES MEDICAMENTO  *************/
 		$sqlOferta="SELECT t.codigo, t.nombre, IFNULL(tp.porcentaje_material, t.abreviatura) AS abreviatura, t.oferta_stock_limitado, DATE_FORMAT(t.desde, '%Y-%m-%d'), DATE_FORMAT(t.hasta, '%Y-%m-%d'), IFNULL(tp.stock_oferta, 0) AS stockoferta from tipos_precio t, tipos_precio_productos tp where t.codigo=tp.cod_tipoprecio and '$fechaCompleta $horaCompleta' between t.desde and t.hasta and (SELECT td.cod_dia from tipos_precio_dias td where td.cod_tipoprecio=t.codigo and td.cod_dia=DAYOFWEEK('$fechaCompleta')) and t.estado=1 and t.cod_estadodescuento=3 and $codigoCiudadGlobal in (SELECT tc.cod_ciudad from tipos_precio_ciudad tc where tc.cod_tipoprecio=t.codigo) and tp.cod_material='$codMaterial';";
 	}
 	//echo $sqlOferta."<br>";
@@ -113,7 +116,9 @@ function precioCalculadoParaFacturacion($enlaceCon,$codMaterial,$codigoCiudadGlo
 		if($ofertaStockLimitado==1){
 			if($stockProductoOferta>0){
 				$salidasProductoOferta=salidasItemPeriodo($enlaceCon, $globalAlmacen, $codMaterial, $fechaInicioOferta, $fechaFinalOferta);
-				if($salidasProductoOferta>=$stockProductoOferta){
+				$ingresosProductoOferta=ingresosItemPeriodoxCompra($enlaceCon, $globalAlmacen, $codMaterial, $fechaInicioOferta, $fechaFinalOferta);
+
+				if(  ($salidasProductoOferta>=$stockProductoOferta) || $ingresosProductoOferta>0 ){
 					$descuentoOfertaPorcentaje=0;
 					$descuentoOfertaBs=0;
 					$nombreOferta=$nombreOferta."(expirada)";

@@ -152,7 +152,6 @@ echo"<form method='post' action='rpt_op_inv_kardex.php'>";
 	echo"</form>";
 	echo"</body>";
 	echo "</div>";
-	echo"<script type='text/javascript' language='javascript'  src='dlcalendar.js'></script>";
 
 ?>
 

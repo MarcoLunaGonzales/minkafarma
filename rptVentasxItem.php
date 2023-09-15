@@ -10,19 +10,26 @@ require('funciones.php');
 
 $sqlUTF=mysqli_query($enlaceCon, "SET NAMES utf8");
 
-$fecha_ini=$_GET['fecha_ini'];
-$fecha_fin=$_GET['fecha_fin'];
-$rpt_ordenar=$_GET['rpt_ordenar'];
-$rpt_ver=$_GET['rpt_ver'];
+$fecha_ini=$_POST['fecha_ini'];
+$fecha_fin=$_POST['fecha_fin'];
+$rpt_ordenar=$_POST['rpt_ordenar'];
+$rpt_ver=$_POST['rpt_ver'];
 
 $globalLogo=$_COOKIE["global_logo"];
+
+$rpt_personal=$_POST['rpt_personal'];
+
+$rptPersonalX=implode(",",$rpt_personal);
+
+$nombrePersonalX=nombrePersonalMultiple($enlaceCon, $rptPersonalX);
+
 
 //desde esta parte viene el reporte en si
 $fecha_iniconsulta=$fecha_ini;
 $fecha_finconsulta=$fecha_fin;
 
 
-$rpt_territorio=$_GET['rpt_territorio'];
+$rpt_territorio=$_POST['rpt_territorio'];
 
 $fecha_reporte=date("d/m/Y H:i:s");
 
@@ -30,14 +37,16 @@ $nombre_territorio=nombreTerritorio($enlaceCon, $rpt_territorio);
 
 echo "<table align='center' class='textotit' width='100%'><tr><td align='center'>Ranking de Ventas x Item
 	<br>Territorio: $nombre_territorio <br> De: $fecha_ini A: $fecha_fin
-	<br>Fecha Reporte: $fecha_reporte</tr></table>";
+	<br>Fecha Reporte: $fecha_reporte
+	<br>Personal: $nombrePersonalX</tr></table>";
 	
 $sql="select m.`codigo_material`, m.`descripcion_material`, (select p.nombre_proveedor from proveedores p, proveedores_lineas pl where p.cod_proveedor=pl.cod_proveedor and pl.cod_linea_proveedor=m.cod_linea_proveedor)as linea, m.codigo_barras, 
 	(sum(sd.monto_unitario)-sum(sd.descuento_unitario))montoVenta, sum(sd.cantidad_unitaria)cantidadventa, s.descuento, s.monto_total, s.cod_almacen
 	from `salida_almacenes` s, `salida_detalle_almacenes` sd, `material_apoyo` m 
 	where s.`cod_salida_almacenes`=sd.`cod_salida_almacen` and s.`fecha` BETWEEN '$fecha_iniconsulta' and '$fecha_finconsulta'
 	and s.`salida_anulada`=0 and sd.`cod_material`=m.`codigo_material` and s.`cod_tiposalida`=1001 and  
-	s.`cod_almacen` in (select a.`cod_almacen` from `almacenes` a where a.`cod_ciudad`='$rpt_territorio')
+	s.`cod_almacen` in (select a.`cod_almacen` from `almacenes` a where a.`cod_ciudad`='$rpt_territorio') and 
+	s.cod_chofer in ($rptPersonalX)
 	group by m.`codigo_material`";
 if($rpt_ordenar==0){
 	$sql=$sql." order by m.descripcion_material ;";
@@ -113,5 +122,4 @@ echo "<tr>
 <tr>";
 
 echo "</table>";
-include("imprimirInc.php");
 ?>
