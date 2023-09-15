@@ -10,6 +10,12 @@ require("funciones.php");
         <script type="text/javascript" src="lib/externos/jquery/jquery-1.4.4.min.js"></script>
         <script type="text/javascript" src="dlcalendar.js"></script>
         <script type="text/javascript" src="functionsGeneral.js"></script>
+
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
         <script type='text/javascript' language='javascript'>
 
 function number_format(amount, decimals) {
@@ -257,7 +263,7 @@ function fun13(cadIdOrg,cadIdDes)
     document.getElementById(cadIdDes).value=num;
 }
 
-	num=0;
+	var num=0;
 
 	function modalMasLinea(form){
 		buscarMaterialLinea(form1,0);
@@ -510,8 +516,9 @@ function calculaPrecioCliente(preciocompra, index){
 		var preciocliente=costounitario+(costounitario*(margen/100));
 		console.log("preciocliente1: "+preciocliente); // s dejo esta parte de codigo
 		preciocliente=redondear(preciocliente,2);
-		preciocliente=number_format(preciocliente,2);
-		document.getElementById('preciocliente'+index).value=preciocliente;		
+		// preciocliente=number_format(preciocliente,2);
+		document.getElementById('preciocliente'+index).value=preciocliente;	
+		document.getElementById('precioclienteOf'+index).value=preciocliente;
 	}else{
 		console.log("entra banderaCalculoPrecio distinto 0");
 		var costounitario = precio_unitario / cantidad_presentacion;
@@ -519,8 +526,9 @@ function calculaPrecioCliente(preciocompra, index){
 		console.log('costounitario2:'+costounitario)
 		console.log('(costounitario*(margen/100)):'+(costounitario*(margen/100)))
 		preciocliente=redondear(preciocliente,2);
-		preciocliente=number_format(preciocliente,2);
+		// preciocliente=number_format(preciocliente,2);
 		document.getElementById('preciocliente'+index).value=preciocliente;
+		document.getElementById('precioclienteOf'+index).value=preciocliente;
 	}
 	var margenNuevo=(preciocliente-costounitario)/costounitario;
 	var margenNuevoF="M ["+ number_format((margenNuevo*100),0) + "%]";
@@ -604,7 +612,7 @@ function ajusteDescuento(){
 	
 }
 
-function validar(f){   
+function validar(f){ 
 	f.cantidad_material.value=num;
 	var cantidadItems=num;
 	
@@ -674,7 +682,7 @@ $num_filas=mysqli_num_rows($resp);
 if($num_filas==1){   
 	$nro_correlativo=$dat[0];
 }
-echo "<form action='guarda_ingresomateriales.php' method='post' name='form1' onsubmit='return checkSubmit();'>";
+echo "<form action='guarda_ingresomateriales.php' method='post' name='form1' id='form1' onsubmit='return checkSubmit();'>";
 
 echo "<input type='hidden' name='bandera_calculo_precio' id='bandera_calculo_precio' value='$banderaCalculoPrecioFinal''>";
 
@@ -789,14 +797,14 @@ echo "</table><br>";
 				<td align='right' width="10%"><input type='number' name='totalCompraSD' id='totalCompraSD' value='0' size='10' step="0.01" readonly></td>
 			</tr>
 		</table>
+		
+<div class='divBotones'>
+	<!-- <input type='button' class='boton' name='Guardar' value='Guardar'  id='btsubmit' onClick='return validar(this.form);'></center> -->
+	<button type="button" class="boton" name="Guardar" id="btsubmit" onClick="verificarCambio();">Guardar</button>
+	<input type='button' class='boton2' value='Cancelar' onClick='location.href=\"navegador_ingresomateriales.php\"'>
+</div>
 
 <?php
-
-
-echo "<div class='divBotones'>
-<input type='submit' class='boton' name='Guardar' value='Guardar'  id='btsubmit' onClick='return validar(this.form);'></center>
-<input type='button' class='boton2' value='Cancelar' onClick='location.href=\"navegador_ingresomateriales.php\"'></center>
-</div>";
 
 echo "</div>";
 echo "<script type='text/javascript' language='javascript'  src='dlcalendar.js'></script>";
@@ -854,4 +862,76 @@ echo "<script type='text/javascript' language='javascript'  src='dlcalendar.js'>
 <input type='hidden' name='cantidad_material' value="0">
 
 </form>
+
+
+<!-- El modal -->
+<div class="modal fade" id="verificarModal">
+	<div class="modal-dialog modal-md">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">Verificación de cambios</h4>
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+			</div>
+			<div class="modal-body">
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" id="btnContinuar">Continuar</button>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	var jsonData = [];
+	function verificarCambio() {
+		// console.log(validar($("#form1")))
+		// return true;
+		var jsonData = [];
+
+		// Itera sobre todos los elementos <input> con la clase "row-item"
+		$(".row-item").each(function(index) {
+			var rowItemValue 	= $(this).val();
+			var producto 		= $("#cod_material" + rowItemValue).html();
+			var preciocliente 	= parseFloat($("#preciocliente" + rowItemValue).val());
+			var precioclienteOf = parseFloat($("#precioclienteOf" + rowItemValue).val());
+
+			if (preciocliente !== precioclienteOf) {
+				var rowData = {
+					"producto": producto,
+					"preciocliente": preciocliente,
+					"precioclienteOf": precioclienteOf,
+					"rowItemValue": rowItemValue
+				};
+				jsonData.push(rowData);
+			}
+		});
+
+		if(jsonData.length > 0){
+			// Construye la tabla HTML
+			var tableHTML = '<table class="table">';
+			tableHTML += "<thead><tr><th>Producto</th><th>Precio Cliente Modificado</th><th>Precio Cliente Original</th></tr></thead>";
+			tableHTML += '<tbody>';
+			
+			for (var i = 0; i < jsonData.length; i++) {
+				tableHTML += '<tr>';
+				tableHTML += '<td>' + jsonData[i].producto + '</td>';
+				tableHTML += '<td>' + jsonData[i].preciocliente + '</td>';
+				tableHTML += '<td>' + jsonData[i].precioclienteOf + '</td>';
+				tableHTML += '</tr>';
+			}
+			
+			tableHTML += '</tbody>';
+			tableHTML += '</table>';
+			$(".modal-body").html(tableHTML);
+			$("#verificarModal").modal("show");
+		}else{
+			$("#form1").submit();
+		}
+	}
+	// Agrega un controlador de eventos para el botón "Continuar" en el modal
+	$("#btnContinuar").on("click", function() {
+		$("#form1").submit();
+	});
+</script>
 </body>
