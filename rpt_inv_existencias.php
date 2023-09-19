@@ -18,6 +18,9 @@ $rpt_fecha=$_POST["rpt_fecha"];
 $rptOrdenar=$_POST["rpt_ordenar"];
 $rptDistribuidor=$_POST["rpt_distribuidor"];
 $rptTipoImpresion=$_POST["rpt_tipo_impresion"];
+$rptPrecioVenta=$_POST["rpt_precioventa"];
+
+$globalAgencia=$_COOKIE["global_agencia"];
 
 $txtRptVer="";
 if($rpt_ver==1){
@@ -101,6 +104,9 @@ $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
 				echo "<th>CantidadPresentacion</th>";
 			}
 			echo"<th>Cajas</th><th>Unidades</th>";
+			if($rptPrecioVenta==1){
+				echo "<th>Precio Venta</th>";
+			}
 			if($rptTipoImpresion==1){
 				echo "<th>Fisico</th><th>Observaciones</th>";
 			}
@@ -165,8 +171,12 @@ $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
 				}
 				$stockUnidades=$stock2%$cantidadPresentacion;
 				$cadena_mostrar.="<td align='center'>$stockCajas</td><td align='center'>$stockUnidades</td>";
+				if($rptPrecioVenta==1){
+					$precioVentaProducto=precioVenta($enlaceCon,$codigo_item,$globalAgencia);
+					$cadena_mostrar.="<td align='center'>$precioVentaProducto</td>";
+				}
 				if($rptTipoImpresion==1){
-					$cadena_mostrar.="<th>&nbsp;</th><th>&nbsp;</th>";
+					$cadena_mostrar.="<td>&nbsp;</td><td>&nbsp;</td>";
 				}
 				$cadena_mostrar.="</tr>";
 			}

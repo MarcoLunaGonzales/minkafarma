@@ -145,7 +145,7 @@ $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
 	for($indice=1;$indice<=$zz;$indice++)
 	{	$fecha_consulta=$vector_final_fechas[$indice];
 		//hacemos la consulta para ingresos
-		$sql_ingresos="select i.nro_correlativo, id.cantidad_unitaria, i.observaciones, ti.nombre_tipoingreso, id.costo_almacen, i.cod_ingreso_almacen
+		$sql_ingresos="select i.nro_correlativo, id.cantidad_unitaria, i.observaciones, ti.nombre_tipoingreso, id.costo_almacen, i.cod_ingreso_almacen, (select a.nombre_almacen from salida_almacenes s, almacenes a where a.cod_almacen=s.cod_almacen and s.cod_salida_almacenes=i.cod_salida_almacen)
 		from ingreso_almacenes i, ingreso_detalle_almacenes id, tipos_ingreso ti
 		where i.cod_tipoingreso=ti.cod_tipoingreso and i.cod_ingreso_almacen=id.cod_ingreso_almacen and i.cod_almacen='$rpt_almacen' and
 		i.ingreso_anulado=0 and id.cod_material='$rpt_item' and i.fecha='$fecha_consulta'";
@@ -157,6 +157,7 @@ $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
 			$nombre_ingreso=$dat_ingresos[3];
 			$costoIngreso=$dat_ingresos[4];
 			$codIngresoX=$dat_ingresos[5];
+			$almacenOrigenTraspaso=$dat_ingresos[6];
 
 			$suma_ingresos=$suma_ingresos+$cantidad_ingreso;
 			$cantidad_kardex=$cantidad_kardex+$cantidad_ingreso;
@@ -182,7 +183,7 @@ $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
 			<td align='right' bgcolor='$coloresValores'>0</td>
 			<td align='right' bgcolor='$coloresValores'>$valorKardexX</td>
 			<td align='left' bgcolor='#F1C40F'>$nombre_ingreso</td>
-			<td bgcolor='#F1C40F'>&nbsp;</td>
+			<td bgcolor='#F1C40F'>$almacenOrigenTraspaso</td>
 			<td bgcolor='#F1C40F'>&nbsp;$obs_ingreso ($codIngresoX)</td>
 			</tr>";
 		}

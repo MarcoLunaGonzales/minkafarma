@@ -62,7 +62,9 @@ Bs.<input type="number" class="inputnumber" min="0" max="1000000" id="descuento_
 </td>
 
 <td align="center" width="10%">
-<input type="number" class="inputnumber" value="0" id="preciocliente<?php echo $num;?>" name="preciocliente<?php echo $num;?>" size="4" min="0" step="0.01" onKeyUp='calculaMargen(this,<?php echo $num;?>);' onChange='calculaMargen(this,<?php echo $num;?>);' style="height:20px;font-size:18px;width:80px;color:red;" required>
+<!-- PrecioCliente a Guardar -->
+<input type="number" class="inputnumber" value="0" id="precioclienteguardar<?php echo $num;?>" name="precioclienteguardar<?php echo $num;?>" size="4" min="0" step="0.01" onKeyUp='calculaMargen(this,<?php echo $num;?>);' onChange='calculaMargen(this,<?php echo $num;?>);' style="height:20px;font-size:19px;width:80px;color:blue;" required>
+<input type="number" class="inputnumber" value="0" id="preciocliente<?php echo $num;?>" name="preciocliente<?php echo $num;?>" size="4" min="0" step="0.01" style="height:20px;font-size:15px;width:80px;color:black;" disabled>
 <!-- PrecioCliente sin modificacion -->
 <input type="hidden" class="inputnumber" value="0" id="precioclienteOf<?php echo $num;?>" name="precioclienteOf<?php echo $num;?>">
 </br>

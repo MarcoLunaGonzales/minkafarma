@@ -1,5 +1,7 @@
 <?php
-require("conexionmysqli2.inc");
+
+$indexGerencia=1;
+require("conexionmysqli.inc");
 require("estilos_almacenes.inc");
 require("funciones.php");
 ?>
@@ -7,15 +9,9 @@ require("funciones.php");
 <html>
     <head>
         <title>Busqueda</title>
-        <script type="text/javascript" src="lib/externos/jquery/jquery-1.4.4.min.js"></script>
-        <script type="text/javascript" src="dlcalendar.js"></script>
-        <script type="text/javascript" src="functionsGeneral.js"></script>
-
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
+        <link  rel="icon"   href="imagenes/card.png" type="image/png" />
+        <link href="assets/style.css" rel="stylesheet" />
+		    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <script type='text/javascript' language='javascript'>
 
 function number_format(amount, decimals) {
@@ -137,7 +133,8 @@ function setMateriales(f, cod, nombreMat, cantidadpresentacion, precio, margenli
 	document.getElementById('material'+numRegistro).value=cod;
 	document.getElementById('cantidadpresentacion'+numRegistro).value=cantidadpresentacion;
 	document.getElementById('cod_material'+numRegistro).innerHTML=nombreMat+" - <span class='textomedianonegro'>CP:"+cantidadpresentacion+"</span>";
-	document.getElementById('divpreciocliente'+numRegistro).innerHTML=number_format(precio,2);
+	document.getElementById('divpreciocliente'+numRegistro).innerHTML="PrecioActual:"+number_format(precio,2);
+	document.getElementById('precioclienteguardar'+numRegistro).value=number_format(precio,2);
 	document.getElementById('margenlinea'+numRegistro).value=margenlinea;
 	
 	
@@ -155,6 +152,7 @@ function setMaterialesSelec(f, cod, nombreMat, cantidadpresentacion, precio, mar
 	document.getElementById('cantidadpresentacion'+numRegistro).value=cantidadpresentacion;
 	document.getElementById('cod_material'+numRegistro).innerHTML=nombreMat;
 	document.getElementById('divpreciocliente'+numRegistro).innerHTML=number_format(precio,2);
+	document.getElementById('precioclienteguardar'+numRegistro).value=number_format(precio,2);
 	document.getElementById('margenlinea'+numRegistro).value=margenlinea;
 }
 function masSelec() {	
@@ -469,7 +467,7 @@ function calculaMargen(precioclienteForm, index){
 	
 	console.log("nuevo margen cliente: "+margenNuevo);
 
-	var margenNuevoF="M ["+ number_format((margenNuevo*100),0) + "%]";
+	var margenNuevoF="Margen["+ number_format((margenNuevo*100),0) + "%]";
 	document.getElementById('divmargen'+index).innerHTML=margenNuevoF;
 }
 // CALCULO DE DESCUENTOS EN PORCENTAJE
@@ -531,7 +529,7 @@ function calculaPrecioCliente(preciocompra, index){
 		document.getElementById('precioclienteOf'+index).value=preciocliente;
 	}
 	var margenNuevo=(preciocliente-costounitario)/costounitario;
-	var margenNuevoF="M ["+ number_format((margenNuevo*100),0) + "%]";
+	var margenNuevoF="Margen["+ number_format((margenNuevo*100),0) + "%]";
 	document.getElementById('divmargen'+index).innerHTML=margenNuevoF;
 	console.log("**** fin  calculaPrecioCliente ******");
 	// Ajuste Descuento Adicional
@@ -616,33 +614,29 @@ function validar(f){
 	f.cantidad_material.value=num;
 	var cantidadItems=num;
 	
-	if(cantidadItems>0){
-		var item="";
-		var cantidad="";
-		var precioBruto="";
-		var precioNeto="";
-		
-		for(var i=1; i<=cantidadItems; i++){
-			item=parseFloat(document.getElementById("material"+i).value);			
-			if(item==0){
-				alert("Debe escoger un item en la fila "+i);
-				return(false);
-			}
-			return(true);
-		}
-		
-	}else{
-		alert("El ingreso debe tener al menos 1 item.");
+	var banderaValidacionDetalle=0;
+	var inputs = $('form input[name^="cantidadunitaria"]');
+	inputs.each(function() {
+  	var value = $(this).val();
+  	if(value==0 || value==""){
+			banderaValidacionDetalle=1;
+  	}else{
+  	}
+	});
+	if(banderaValidacionDetalle==1){
+		alert("Las cantidades para los productos no son validas.");
 		return(false);
 	}
-}
 
-
-function checkSubmit() {
     document.getElementById("btsubmit").value = "Enviando...";
     document.getElementById("btsubmit").disabled = true;
     return true;
 }
+
+
+/*function checkSubmit() {
+    return true;
+}*/
 
 function redondear(value, precision) {
     var multiplier = Math.pow(10, precision || 0);
@@ -682,7 +676,7 @@ $num_filas=mysqli_num_rows($resp);
 if($num_filas==1){   
 	$nro_correlativo=$dat[0];
 }
-echo "<form action='guarda_ingresomateriales.php' method='post' name='form1' id='form1' onsubmit='return checkSubmit();'>";
+echo "<form action='guarda_ingresomateriales.php' method='post' name='form1' id='form1' onsubmit='return validar(this);'>";
 
 echo "<input type='hidden' name='bandera_calculo_precio' id='bandera_calculo_precio' value='$banderaCalculoPrecioFinal''>";
 
@@ -773,7 +767,7 @@ echo "</table><br>";
 					<!-- Monto Total -->
 					<td width="10%" align="center">Total</td>
 
-					<td width="10%" align="center">Precio<br>Cliente<br>Unitario</td>
+					<td width="10%" align="center"><span style="font-size:15px;width:80px;color:blue;"><b>PrecioActualizar</b></span><br>PrecioVentaCalculado</td>
 					<td width="10%" align="center">-</td>
 				</tr>
 			</table>
@@ -800,15 +794,13 @@ echo "</table><br>";
 		
 <div class='divBotones'>
 	<!-- <input type='button' class='boton' name='Guardar' value='Guardar'  id='btsubmit' onClick='return validar(this.form);'></center> -->
-	<button type="button" class="boton" name="Guardar" id="btsubmit" onClick="verificarCambio();">Guardar</button>
+	<button type="submit" class="boton" name="Guardar" id="btsubmit">Guardar</button>
 	<input type='button' class='boton2' value='Cancelar' onClick='location.href=\"navegador_ingresomateriales.php\"'>
 </div>
 
 <?php
 
 echo "</div>";
-echo "<script type='text/javascript' language='javascript'  src='dlcalendar.js'></script>";
-
 ?>
 
 

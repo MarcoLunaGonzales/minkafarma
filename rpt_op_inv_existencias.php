@@ -65,8 +65,14 @@ echo"<form method='post' action='rpt_inv_existencias.php' target='_blank'>";
 
 	echo "<tr><th align='left'>Ordenar Por:</th>";
 	echo "<td><select name='rpt_ordenar' class='texto'>";
-	echo "<option value='1'>Producto</option>";
 	echo "<option value='2'>Linea y Producto</option>";
+	echo "<option value='1'>Producto</option>";
+	echo "</tr>";
+
+	echo "<tr><th align='left'>Ver Precios de Venta:</th>";
+	echo "<td><select name='rpt_precioventa' class='texto'>";
+	echo "<option value='0'> No </option>";
+	echo "<option value='1'> Si </option>";
 	echo "</tr>";
 	
 	echo"\n </table><br>";

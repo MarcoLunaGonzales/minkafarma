@@ -150,12 +150,13 @@ while($datDetalle=mysqli_fetch_array($respDetalle)){
 	// En base a la configuración se muestra =>  1: SI, 0: NO
 	if($mostrarStock == 1){
 		$itemStock    = stockProducto($enlaceCon, $globalAlmacen, $codInterno);
-		$nombreMat = "(S: $itemStock) - ".$nombreMat;
+		$nombreMat = "[S:$itemStock]-".$nombreMat;
 	}
+	$nombreMat=$nombreMat."($codInterno)";
 
 	$pdf->SetFont('Arial','',7);
 	//$pdf->SetXY(5,$y+$yyy);		$pdf->MultiCell(60,3,"$nombreMat",1,"C");
-	$pdf->SetXY(7,$y+$yyy);		$pdf->Cell(80,3,"$nombreMat",0,0,"L");
+	$pdf->SetXY(2,$y+$yyy);		$pdf->Cell(80,3,"$nombreMat",0,0,"L");
 	
 	$pdf->SetFont('Arial','',9);
 	

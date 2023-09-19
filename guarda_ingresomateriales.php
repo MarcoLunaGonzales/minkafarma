@@ -124,8 +124,8 @@ if($sql_inserta==1){
 			$sql_inserta2 = mysqli_query($enlaceCon,$consulta);
 			
 			$precioItem=0;			
-			if(isset($_POST["preciocliente$i"])){
-				$precioItem=$_POST["preciocliente$i"];			
+			if(isset($_POST["precioclienteguardar$i"])){
+				$precioItem=$_POST["precioclienteguardar$i"];			
 			}
 
 			//ARMAMOS EL ARRAY CON LOS PRECIOS
