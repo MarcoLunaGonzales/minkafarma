@@ -45,6 +45,9 @@ $banderaMostrarFV=obtenerValorConfiguracion($enlaceCon,20);
 $banderaBuscarPA=obtenerValorConfiguracion($enlaceCon,22);
 //Bandera para mostrar el Codigo con Costo de Compra
 $banderaCodigoCostoCompra=obtenerValorConfiguracion($enlaceCon,26);
+//Bandera para mostrar 1 Decimal o 2 Decimales en el precio
+$bandera1DecimalPrecioVenta=obtenerValorConfiguracion($enlaceCon,27);
+
 
 	$sql="select m.codigo_material, m.descripcion_material,
 	(select concat(p.nombre_proveedor,'-',pl.nombre_linea_proveedor)as nombre_proveedor
@@ -118,7 +121,11 @@ $banderaCodigoCostoCompra=obtenerValorConfiguracion($enlaceCon,26);
 			if($precioProducto=="")
 			{   $precioProducto=0;
 			}
-			$precioProducto=redondear2($precioProducto);
+			if($bandera1DecimalPrecioVenta==1){
+				$precioProducto=round($precioProducto,1);
+			}else{
+				$precioProducto=redondear2($precioProducto);
+			}
 			$mostrarFila=1;
 			if(isset($_GET["stock"])){
 				 if($_GET["stock"]==1&&$stockProducto<=0){

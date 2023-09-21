@@ -1,3 +1,13 @@
+<?php
+
+require('../conexionmysqli.php');
+require('../function_formatofecha.php');
+require('../home_almacen.php');
+require('../funciones.php');
+
+?>
+
+
 <html>
     <head>
         <title>Busqueda</title>
@@ -80,11 +90,6 @@ function anular_pago(f)
 <form method='post' name='form1' action=''>
 <?php
 
-require('../conexionmysqli2.inc');
-require('../function_formatofecha.php');
-require('../home_almacen.php');
-require('../funciones.php');
-
 
 echo "<h1>Registro de Cobranzas</h1>";
 echo "<table border='1' cellspacing='0' class='textomini'><tr><th>Leyenda:</th><th>Cobranza Anulada</th><td bgcolor='#ff8080' width='10%'></td>
@@ -104,7 +109,7 @@ echo "<table border='1' cellspacing='0' class='textomini'><tr><th>Leyenda:</th><
        c.`observaciones`,
        c.`monto_cobro`,
        (
-         select cl.`nombre_cliente`
+         select concat(cl.`nombre_cliente`, ' ',cl.paterno)
          from clientes cl
          where c.`cod_cliente` = cl.`cod_cliente`
        ), c.nro_cobro, (select g.nombre_gestion from gestiones g where g.cod_gestion=c.cod_gestion), c.cod_estado
@@ -125,15 +130,19 @@ order by c.`cod_cobro` desc limit 0, 100";
 		$nroCobranza=$dat[5];
 		$nombreGestion=$dat[6];
 		$codEstado=$dat[7];
+        $estilo_texto = "";
+        $color_fondo = "";
 		if ($codEstado == 2) {
 			$color_fondo = "#ff8080";
+            $estilo_texto = "text-decoration:line-through; color:red";
 			$chkbox = "";
 		}else {
 			$color_fondo = "";
+            $estilo_texto = "";
 			$chkbox = "<input type='checkbox' name='codigo' value='$codPago'>";
 		}
 		
-		echo "<tr bgcolor='$color_fondo'>
+		echo "<tr style='$estilo_texto'>
 		<td align='center'>$chkbox</td>
 		<td align='center'>$nroCobranza</td>
 		<td align='center'>$nombreGestion</td>
@@ -141,7 +150,7 @@ order by c.`cod_cobro` desc limit 0, 100";
 		<td align='center'>$fechaPago</td>
 		<td align='center'>$montoPago</td>
 		<td>&nbsp;$observaciones</td>
-		<td><a href='notaCobranza.php?codCobro=$codPago' target='_blank'><img src='../imagenes/icon_detail.png' alt='Detalle' width='30' heigth='30'></a></td>
+		<td bgcolor='$color_fondo'><a href='notaCobranza.php?codCobro=$codPago' target='_blank'><img src='../imagenes/icon_detail.png' alt='Detalle' width='30' heigth='30'></a></td>
 		</tr>";
 	}
 	echo "</table></center><br>";

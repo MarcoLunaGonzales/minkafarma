@@ -407,7 +407,8 @@ if($sql_inserta==1){
 					Swal.fire({
 				    title: 'SIAT: ".$mensaje."',
 				    html: '".$texto_correo."',
-				    type: 'success'
+				    type: 'success',
+				    timer: 500
 					}).then(function() {
 					   location.href='$url'; 
 					});
@@ -417,7 +418,8 @@ if($sql_inserta==1){
 					Swal.fire({
 				    title: 'SIAT: ".$mensaje."',
 				    html: '".$texto_correo."',
-				    type: 'success'
+				    type: 'success',
+				    timer: 500
 					}).then(function() {
 						 location.href='$url';
 					});
@@ -488,7 +490,8 @@ if($sql_inserta==1){
 					Swal.fire({
 				    title: 'FACTURA CON CAFC REGISTRADO CORRECTAMENTE',
 				    html: '".$texto_correo."',
-				    type: 'success'
+				    type: 'success',
+				    timer: 1000
 					}).then(function() {
 					    location.href='navegadorVentas.php';
 					});

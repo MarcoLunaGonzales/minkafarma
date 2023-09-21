@@ -2,7 +2,6 @@
     <head>
         <title>Busqueda</title>
         <script type="text/javascript" src="../lib/externos/jquery/jquery-1.4.4.min.js"></script>
-        <script type="text/javascript" src="../dlcalendar.js"></script>
         <link href="../stilos.css" rel='stylesheet' type='text/css'>
         <script type='text/javascript' language='javascript'>
 
@@ -42,29 +41,32 @@ function ajaxCargarDeudas(){
 	ajax.send(null)
 }
 
-
 function validar(f)
 {   
 	var codCliente=document.getElementById("cliente").value;
-	var numRegistros=document.getElementById("nroFilas").value;
+	var banderaMontos=0;
+
 	var monto;
 	var nroDoc;
 	if(codCliente==0){
 		alert("Debe seleccionar un Cliente");
+		return false;
 	}else{
-		if(numRegistros>0){
-			for(var i=1; i<=numRegistros; i++){
-				monto=parseFloat(document.getElementById("montoPago"+i).value);
-				nroDoc=parseFloat(document.getElementById("nroDoc"+i).value);
-				//if(monto==0 || nroDoc==0 || monto=="NaN" || nroDoc=="NaN"){
-					//alert("Monto de Pago, Nro. Doc. no pueden estar vacios. Fila: "+i);
-					//return(false);
-				//}
-				f.submit();
-			}
+		/******** Validacion Algun Monto con Datos ********/
+		var inputs = $('form input[name^="montoPago"]');
+		inputs.each(function() {
+		  	var value = $(this).val();
+		  	if(value>0){
+					banderaMontos=1;
+		  	}
+		});
+		if(banderaMontos==0){
+			alert("Debe existir algun monto valido para guardar la cobranza.");
+			return(false);
 		}
-		
+		/******** Fin validacion Cantidades ********/
 	}	
+	return true;
 }
 
 function solonumeros(e)
@@ -92,7 +94,7 @@ require("../conexionmysqli.inc");
 
 ?>
 <body>
-<form action='guardarCobranza.php' method='post' name='form1'>
+<form action='guardarCobranza.php' method='post' name='form1' onsubmit="return validar(this)">
 <h3 align="center">Registrar Pagos</h3>
 
 <table border='0' class='texto' cellspacing='0' align='center' width='80%' style='border:#ccc 1px solid;'>
@@ -103,7 +105,7 @@ $resp1=mysqli_query($enlaceCon, $sql1);
 ?>
 <tr>
 <td align='center'>
-<select name='cliente' id='cliente' class='texto' onChange="ajaxCargarDeudas();">
+<select name='cliente' id='cliente' class='selectpicker' data-style="btn btn-success" data-live-search="true" onChange="ajaxCargarDeudas();">
 	<option value="0">Seleccione una opcion</option>
 <?php
 while($dat1=mysqli_fetch_array($resp1))
@@ -138,8 +140,7 @@ $fecha=date("d/m/Y");
 </div>
 
 
-<center><input type='button' class='boton' value='Guardar' onClick='validar(this.form)'></center>
-<script type='text/javascript' language='javascript'  src='dlcalendar.js'></script>
+<center><input type='submit' class='boton' value='Guardar Cobranza' id='btsubmit' name='btsubmit' ></center>
 
 </form>
 </body>
