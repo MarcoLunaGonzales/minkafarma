@@ -165,6 +165,14 @@ require_once 'datosUsuario.php';
 					<li><a href="cobranzas/rptOpCuentasCobrar.php" target="contenedorPrincipal">Reporte Cuentas x Cobrar</a></li>
 				</ul>	
 			</li>
+			
+			<li><span>Obligaciones</span>
+				<ul>
+					<li><a href="obligaciones/navegadorObligaciones.php" target="contenedorPrincipal">Listado de Obligaciones</a></li>
+					<li><a href="obligaciones/rptOpObligaciones.php" target="contenedorPrincipal">Reporte de Cobros</a></li>
+					<li><a href="obligaciones/rptOpCuentasObligacion.php" target="contenedorPrincipal">Reporte Cuentas x Cobrar</a></li>
+				</ul>	
+			</li>
 
 			<li><a href="rptOpArqueoDiario.php?variableAdmin=1" target="contenedorPrincipal">Cierre de Caja</a></li>
 			<li><a href="rptOpArqueoDiarioGeneral.php?variableAdmin=1" target="contenedorPrincipal">Cierre de Caja General</a></li>
