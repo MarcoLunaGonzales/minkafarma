@@ -190,18 +190,18 @@ $pdf->SetXY(4,$y+19);		$pdf->MultiCell(68,3,utf8_decode($direccionTxt), 0,"C");
 $pdf->SetXY(4,$y+27);		$pdf->Cell(68,0,"Telefono:  ".$telefonoTxt,0,0,"C");
 //$y=$y+6;
 $pdf->SetXY(4,$y+30);		$pdf->Cell(68,0,$ciudadTxt,0,0,"C");
-$pdf->SetXY(4,$y+32);		$pdf->Cell(68,0,"---------------------------------------------------------------------------", 0,0,"C");
+$pdf->SetXY(4,$y+32);		$pdf->Cell(68,0,"-------------------------------------------------------------------------", 0,0,"C");
 $pdf->SetXY(4,$y+35);		$pdf->Cell(68,0,"NIT: $nitTxt", 0,0,"C");
 $pdf->SetFont('Arial','B',8);
 $pdf->SetXY(4,$y+38);		$pdf->Cell(68,0,"$nombreTipoDoc Nro. $nroDocVenta", 0,0,"C");
 $pdf->SetFont('Arial','',8);
 $pdf->SetXY(4,$y+41);		$pdf->MultiCell(68,3,utf8_decode("COD. DE AUTORIZACIÓN: ").$cuf, 0,"C");
-$pdf->SetXY(4,$y+51);		$pdf->Cell(68,0,"---------------------------------------------------------------------------", 0,0,"C");
+$pdf->SetXY(4,$y+51);		$pdf->Cell(68,0,"-------------------------------------------------------------------------", 0,0,"C");
 $pdf->SetXY(4,$y+52);		$pdf->MultiCell(68,3,utf8_decode($txt1),0,"C");
 
-$y=$y+5;
+$y=$y+3;
 
-$pdf->SetXY(4,$y+59);		$pdf->Cell(68,0,"---------------------------------------------------------------------------", 0,0,"C");
+$pdf->SetXY(4,$y+59);		$pdf->Cell(68,0,"-------------------------------------------------------------------------", 0,0,"C");
 
 $pdf->SetXY(4,$y+63);		$pdf->Cell(68,0,utf8_decode("SEÑOR(ES):").utf8_decode($razonSocialCliente),0,0,"C");
 $pdf->SetXY(4,$y+67);		$pdf->Cell(68,0,"NIT/CI/CEX:".$nitCliente." ".$siat_complemento,0,0,"C");

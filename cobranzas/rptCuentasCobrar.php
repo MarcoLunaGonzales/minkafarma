@@ -1,16 +1,20 @@
 
 <?php
 require('../function_formatofecha.php');
-require('../conexionmysqli2.inc');
+require('../conexionmysqli.inc');
 require('../funcion_nombres.php');
 require('../funciones.php');
 require("../estilos_almacenes.inc");
-// error_reporting(E_ALL);
-// ini_set('display_errors', '1');
+
+error_reporting(E_ALL);
+ini_set('display_errors', '1');
 
 
 $fecha_fin=$_GET['fecha_fin'];
 $fecha_ini=$_GET['fecha_ini'];
+
+$globalAlmacen=$_COOKIE["global_almacen"];
+
 
 //desde esta parte viene el reporte en si
 $fecha_iniconsulta=$fecha_ini;
@@ -42,7 +46,7 @@ from `salida_almacenes` s, clientes c where s.`monto_final` >
          and cb.cod_estado<>2 and cb.fecha_cobro between '$fecha_iniconsulta' and
                '$fecha_finconsulta'
       ) and s.`cod_cliente` = c.`cod_cliente` and
-      s.`salida_anulada` = 0 and s.cod_almacen=1000 and s.cod_tiposalida=1001 and s.cod_tipopago=4 and 
+      s.`salida_anulada` = 0 and s.cod_almacen='$globalAlmacen' and s.cod_tiposalida=1001 and s.cod_tipopago=4 and 
       s.`fecha` between '$fecha_iniconsulta' and
       '$fecha_finconsulta'
 order by c.nombre_cliente,

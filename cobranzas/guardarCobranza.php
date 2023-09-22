@@ -2,13 +2,11 @@
         <link href="../stilos.css" rel='stylesheet' type='text/css'>
 </script>
 <?php
-require("../conexionmysqli2.inc");
+require("../conexionmysqli.inc");
 require("../funciones.php");
 
  error_reporting(E_ALL);
  ini_set('display_errors', '1');
-
-
 
 
 $fecha=$_POST["fecha"];
@@ -23,7 +21,7 @@ $observaciones=$_POST["observaciones"];
 
 
 $sql="SELECT cod_cobro FROM cobros_cab ORDER BY cod_cobro DESC";
-echo $sql;
+//echo $sql;
 $resp=mysqli_query($enlaceCon, $sql);
 $dat=mysqli_fetch_array($resp);
 $num_filas=mysqli_num_rows($resp);
@@ -35,8 +33,14 @@ else
 	$codigo++;
 }
 
-$sqlNro="select max(nro_cobro)+1 from cobros_cab where cod_gestion in (select cod_gestion from gestiones where estado=1)";
-$nroCobranza=obtenerCodigo($enlaceCon, $sqlNro);
+$sqlNro="select IFNULL(max(nro_cobro)+1,1) from cobros_cab";
+$resp=mysqli_query($enlaceCon, $sqlNro);
+$dat=mysqli_fetch_array($resp);
+$num_filas=mysqli_num_rows($resp);
+$nroCobranza=$dat[0];
+
+
+
 
 $montoTotal=0;
 
@@ -56,7 +60,7 @@ for($i=1;$i<=$nroFilas;$i++)
 	if($montoPago>0){
 		$sql_inserta="INSERT INTO `cobros_detalle` (`cod_cobro`,`cod_venta`,`monto_detalle`,`nro_doc`) 
 			VALUE ('$codigo','$codVenta','$montoPago','$nroDoc')";
-		echo $sql_inserta;
+		//echo $sql_inserta;
 		$sql_inserta=mysqli_query($enlaceCon, $sql_inserta);
 	}
 	
@@ -70,7 +74,7 @@ for($i=1;$i<=$nroFilas;$i++)
 $sqlInsertC="INSERT INTO `cobros_cab` (`cod_cobro`,`fecha_cobro`,`monto_cobro`,`observaciones`,`cod_cliente`,`cod_estado`,`cod_gestion`,`nro_cobro`) 
 	VALUE ('$codigo','$fecha','$montoTotal','$observaciones','$cliente','1','$globalGestion','$nroCobranza')";
 
-echo $sqlInsertC;
+//echo $sqlInsertC;
 
 $respInsertC=mysqli_query($enlaceCon, $sqlInsertC);
 

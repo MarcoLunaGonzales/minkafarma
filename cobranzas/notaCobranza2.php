@@ -1,6 +1,6 @@
 <?php
 require('../fpdf.php');
-require('../conexionmysqlipdf.inc');
+require('../conexionmysqli.inc');
 require('../funciones.php');
 require('../NumeroALetras.php');
 

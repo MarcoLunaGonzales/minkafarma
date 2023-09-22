@@ -17,7 +17,9 @@ function envia_formulario(f)
 <?php
 
 
-$fecha_rptdefault=date("d/m/Y");
+$fecha_rptdefault_ini=date("Y-m-01");
+$fecha_rptdefault=date("Y-m-d");
+
 echo "<table align='center' class='textotit'><tr><th>Reporte Cuentas x Cobrar</th></tr></table><br>";
 echo"<form method='post' action='rptOpKardexCostos.php'>";
 
@@ -34,7 +36,7 @@ echo"<form method='post' action='rptOpKardexCostos.php'>";
 	echo "</select></td></tr>";
 	
 	echo "<tr><th align='left'>De fecha:</th>";
-	echo" <TD bgcolor='#ffffff'><INPUT  type='date' class='texto' value='$fecha_rptdefault' id='exafinicial' size='10' name='exafinicial'>";
+	echo" <TD bgcolor='#ffffff'><INPUT  type='date' class='texto' value='$fecha_rptdefault_ini' id='exafinicial' size='10' name='exafinicial'>";
 	echo"  </TD>";
 	echo "</tr>";
 
