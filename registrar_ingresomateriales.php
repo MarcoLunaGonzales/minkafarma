@@ -823,6 +823,7 @@ echo "</table><br>";
 ?>
         <div class="contenedor">
         	<div class="codigo-barras div-center">
+				<input class="boton" type="button" value="Nuevo Item (+)" onclick="mas(this)" accesskey="A"/>
 				<input type="text" class="form-codigo-barras" id="input_codigo_barras" placeholder="Ingrese el código de barras." autofocus autocomplete="off">
 			</div>
 
@@ -837,7 +838,6 @@ echo "</table><br>";
 				</tr>
 				<tr>
 					<td align="center" colspan="7">
-						<input class="boton" type="button" value="Nuevo Item (+)" onclick="mas(this)" accesskey="A"/>
 						<!--input class="boton" type="button" value="Agregar por Linea (+)" onclick="modalMasLinea(this)" accesskey="B"/-->
 					</td>
 				</tr>
@@ -850,7 +850,7 @@ echo "</table><br>";
 					<td width="5%" align="center">&nbsp;</td>
 					<td width="30%" align="center">Producto</td>
 					<td width="10%" align="center">Cantidad</td>
-					<td width="10%" align="center">Precio<br>Presentación</td>
+					<td width="10%" align="center">Precio<br>Caja</td>
 					<!--td width="10%" align="center">Lote</td-->
 					<td width="10%" align="center">Vencimiento</td>
 					<!-- <td width="10%" align="center">Precio Distribuidor<br>(Total_item)</td> -->
@@ -1011,9 +1011,9 @@ echo "</div>";
 			for (var i = 0; i < jsonData.length; i++) {
 				tableHTML += '<tr>';
 				tableHTML += '<td>' + jsonData[i].producto + '</td>';
-				tableHTML += '<td style="font-weight: bold; color: red; font-size: 16px;">' + jsonData[i].precioActual + '</td>';
-				tableHTML += '<td style="font-weight: bold; color: red; font-size: 16px;">' + jsonData[i].precioCalculado + '</td>';
-				tableHTML += '<td style="font-weight: bold; color: red; font-size: 16px;">' + jsonData[i].precioActualizar + '</td>';
+				tableHTML += '<td style="font-weight: bold; color: red; font-size: 20px;">' + jsonData[i].precioActual + '</td>';
+				tableHTML += '<td style="font-weight: bold; color: red; font-size: 20px;">' + jsonData[i].precioCalculado + '</td>';
+				tableHTML += '<td style="font-weight: bold; color: red; font-size: 20px;">' + jsonData[i].precioActualizar + '</td>';
 				tableHTML += '</tr>';
 			}
 			
@@ -1028,6 +1028,7 @@ echo "</div>";
 		return tableHTML;
 		// $("#verificarModal").modal("show");
 	}
+	// Verificación de Tipo de Pago
 	$('#cod_tipopago').on('change', function () {
         var selectedValue = $(this).val();
         if (selectedValue === '4') {
