@@ -75,7 +75,10 @@ if ($num_filas != 0) {
 	if($cod_cargo==1002){
 		header("location:indexAlmacenReg.php");
 	}
-	if($cod_cargo==1016 || $cod_cargo==1017){
+	if($cod_cargo==1016){
+		header("location:indexCaja.php");
+	}
+	if($cod_cargo==1017){
 		header("location:indexSecond.php");
 	}
 	if($cod_cargo==1018){
