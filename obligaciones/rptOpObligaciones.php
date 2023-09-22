@@ -5,12 +5,12 @@ require("../estilos_almacenes.inc");
 
 <script>
 function envia_formulario(f)
-{	var rpt_territorio,fecha_ini, fecha_fin, rpt_ver, rpt_cliente;
+{	var rpt_territorio,fecha_ini, fecha_fin, rpt_ver, rpt_proveedor;
 	rpt_territorio=f.rpt_territorio.value;
 	fecha_ini=f.exafinicial.value;
 	fecha_fin=f.exaffinal.value;
-	rpt_cliente=f.rpt_cliente.value;
-	window.open('rptCobranzas.php?rpt_territorio='+rpt_territorio+'&fecha_ini='+fecha_ini+'&fecha_fin='+fecha_fin+'&rpt_cliente='+rpt_cliente,'','scrollbars=yes,status=no,toolbar=no,directories=no,menubar=no,resizable=yes,width=1000,height=800');			
+	rpt_proveedor=f.rpt_proveedor.value;
+	window.open('rptObligaciones.php?rpt_territorio='+rpt_territorio+'&fecha_ini='+fecha_ini+'&fecha_fin='+fecha_fin+'&rpt_proveedor='+rpt_proveedor,'','scrollbars=yes,status=no,toolbar=no,directories=no,menubar=no,resizable=yes,width=1000,height=800');			
 	return(true);
 }
 </script>
@@ -22,7 +22,7 @@ $fecha_rptdefault=date("d/m/Y");
 
 <table align='center' class='textotit'>
     <tr>
-        <th>Reporte de Cobros</th>
+        <th>Reporte de Obligaciones</th>
     </tr>
 </table><br>
 <form method='post' action=''>

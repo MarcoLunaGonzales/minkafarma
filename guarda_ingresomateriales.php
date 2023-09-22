@@ -42,6 +42,12 @@ $createdDate=date("Y-m-d H:i:s");
 
 $fecha_real=date("Y-m-d");
 
+// Tipo de pago "CREDITO"
+$fecha_factura_proveedor = '';
+if($cod_tipopago == 4){
+	$fecha_factura_proveedor = date('Y-m-d', strtotime($fecha_real . " +$dias_credito days"));
+}
+
 $descuentoAdicional = $_POST['descuento_adicional'];
 $descuentoTotal 	= $_POST['descuentoTotal'];
 
@@ -61,8 +67,8 @@ if($tipo_ingreso==1003){
 
 $consulta="insert into ingreso_almacenes (cod_ingreso_almacen,cod_almacen,cod_tipoingreso,fecha,hora_ingreso,observaciones,cod_salida_almacen,
 nota_entrega,nro_correlativo,ingreso_anulado,cod_tipo_compra,cod_orden_compra,nro_factura_proveedor,factura_proveedor,estado_liquidacion,
-cod_proveedor,created_by,modified_by,created_date,modified_date,descuento_adicional,descuento_adicional2,cod_tipopago,dias_credito,monto_ingreso,monto_cancelado) 
-values($codigo,$global_almacen,$tipo_ingreso,'$fecha_real','$hora_sistema','$observaciones','0','$nota_entrega','$nro_correlativo',0,0,0,$nro_factura,0,0,'$proveedor','$createdBy','0','$createdDate','', '$descuentoAdicional','$descuentoTotal', '$cod_tipopago','$dias_credito','$monto_ingreso','$monto_cancelado')";
+cod_proveedor,created_by,modified_by,created_date,modified_date,descuento_adicional,descuento_adicional2,cod_tipopago,dias_credito,monto_ingreso,monto_cancelado,fecha_factura_proveedor) 
+values($codigo,$global_almacen,$tipo_ingreso,'$fecha_real','$hora_sistema','$observaciones','0','$nota_entrega','$nro_correlativo',0,0,0,$nro_factura,0,0,'$proveedor','$createdBy','0','$createdDate','', '$descuentoAdicional','$descuentoTotal', '$cod_tipopago','$dias_credito','$monto_ingreso','$monto_cancelado','$fecha_factura_proveedor')";
 
 $sql_inserta = mysqli_query($enlaceCon,$consulta);
 //echo "aaaa:$consulta";

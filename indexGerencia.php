@@ -170,7 +170,7 @@ require_once 'datosUsuario.php';
 				<ul>
 					<li><a href="obligaciones/navegadorObligaciones.php" target="contenedorPrincipal">Listado de Obligaciones</a></li>
 					<li><a href="obligaciones/rptOpObligaciones.php" target="contenedorPrincipal">Reporte de Pagos</a></li>
-					<li><a href="obligaciones/rptOpCuentasObligacion.php" target="contenedorPrincipal">Reporte Cuentas x Pagar</a></li>
+					<li><a href="obligaciones/rptOpObligacionesPagar.php" target="contenedorPrincipal">Reporte Obligaciones x Pagar</a></li>
 				</ul>	
 			</li>
 

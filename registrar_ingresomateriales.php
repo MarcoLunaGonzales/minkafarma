@@ -672,6 +672,16 @@ function validar(f){
 		return false;
 	}
 
+	// En caso de seleccionar el TIPO DE PAGO "Credito"
+	if ($('#cod_tipopago').val() == "4" && $('#dias_credito').val() == "") {
+		Swal.fire({
+			type: 'warning',
+			title: 'Ops!',
+			text: 'Debe adicionar los Días de Credito.',
+		});
+		return false;
+	}
+
 	f.cantidad_material.value=num;
 	var cantidadItems=num;
 	

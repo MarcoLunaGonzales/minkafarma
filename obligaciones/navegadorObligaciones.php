@@ -143,14 +143,16 @@ function anular_pago(f)
                 $nombreGestion = $dat['nombre_gestion'];
                 $codEstado = $dat[10];
                 if ($codEstado == 2) {
-                    $color_fondo = true;
+                    $color_fondo = "style='background-color: #ff8080;'";
+                    $estilo_texto = "text-decoration:line-through; color:red";
                     $chkbox = "";
                 } else {
-                    $color_fondo = false;
+                    $color_fondo = "";
+                    $estilo_texto = "";
                     $chkbox = "<input type='checkbox' name='codigo' value='$codPago'>";
                 }
             ?>
-            <tr <?=$color_fondo ? "style='background-color: #ff8080;'":"";?>>
+            <tr style='<?=$estilo_texto;?>'>
                 <td align='center'><?=$chkbox;?></td>
                 <td align='center'><?=$nroPago;?></td>
                 <td align='center'><?=$nombreGestion;?></td>
@@ -158,7 +160,7 @@ function anular_pago(f)
                 <td align='center'><?=$fechaPago;?></td>
                 <td align='center'><?=$montoPago;?></td>
                 <td>&nbsp;<?=$observaciones;?></td>
-                <td><a href='notaObligacion.php?codPago=<?=$codPago;?>' target='_blank'><img src='../imagenes/icon_detail.png' alt='Detalle' width='30' heigth='30'></a></td>
+                <td <?=$color_fondo;?>><a href='notaObligacion.php?codPago=<?=$codPago;?>' target='_blank'><img src='../imagenes/icon_detail.png' alt='Detalle' width='30' heigth='30'></a></td>
             </tr>
             <?php
             }

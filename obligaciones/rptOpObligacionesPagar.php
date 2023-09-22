@@ -10,7 +10,7 @@ function envia_formulario(f)
 	fecha_fin=f.exaffinal.value;
 	fecha_ini=f.exafinicial.value;
 	
-	window.open('rptCuentasCobrar.php?rpt_territorio='+rpt_territorio+'&fecha_ini='+fecha_ini+'&fecha_fin='+fecha_fin+'','','scrollbars=yes,status=no,toolbar=no,directories=no,menubar=no,resizable=yes,width=1000,height=800');			
+	window.open('rptObligacionesPagar.php?rpt_territorio='+rpt_territorio+'&fecha_ini='+fecha_ini+'&fecha_fin='+fecha_fin+'','','scrollbars=yes,status=no,toolbar=no,directories=no,menubar=no,resizable=yes,width=1000,height=800');			
 	return(true);
 }
 </script>
@@ -18,7 +18,7 @@ function envia_formulario(f)
 
 
 $fecha_rptdefault=date("d/m/Y");
-echo "<table align='center' class='textotit'><tr><th>Reporte Cuentas x Cobrar</th></tr></table><br>";
+echo "<table align='center' class='textotit'><tr><th>Reporte Obligaciones x Pagar</th></tr></table><br>";
 echo"<form method='post' action='rptOpKardexCostos.php'>";
 
 	echo"\n<table class='texto' border='1' align='center' cellSpacing='0' width='50%'>\n";

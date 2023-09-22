@@ -103,7 +103,7 @@ $resp1=mysqli_query($enlaceCon, $sql1);
 ?>
 <tr>
 <td align='center'>
-<select name='proveedor' id='proveedor' class='texto' onChange="ajaxCargarDeudas();">
+<select name='proveedor' id='proveedor' class='selectpicker' data-style="btn btn-success" data-live-search="true" onChange="ajaxCargarDeudas();">
 	<option value="0">Seleccione una opcion</option>
 <?php
 while($dat1=mysqli_fetch_array($resp1))
@@ -133,7 +133,18 @@ $fecha=date("d/m/Y");
 
 <div id="divDetalle">
 	<table border='0' class='texto' cellspacing='0' align='center' width='90%' style='border:#ccc 1px solid;'>
-		<tr><th>Nro. OC</th><th>Fecha OC</th><th>Monto OC</th><th>A Cuenta</th><th>Saldo OC</th><th>Monto a Pagar</th><th>Nro. Recibo</th></tr>
+		<tr>
+			<th>Nro.</th>
+			<th>Nro. Ingreso</th>
+			<th>Nro. Factura</th>
+			<th>Observaciones</th>
+			<th>Fecha</th>
+			<th>Monto</th>
+			<th>A Cuenta</th>
+			<th>Saldo</th>
+			<th>Monto a Pagar</th>
+			<th>Nro. Doc. Pago</th>
+		</tr>
 	</table>
 </div>
 
