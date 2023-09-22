@@ -847,25 +847,25 @@ echo "</table><br>";
 					</td>				
 				</tr>				
 				<tr class="titulo_tabla" align="center">
-					<td width="5%" align="center">&nbsp;</td>
-					<td width="30%" align="center">Producto</td>
-					<td width="10%" align="center">Cantidad</td>
-					<td width="10%" align="center">Precio<br>Caja</td>
+					<td width="2%" align="center">&nbsp;</td>
+					<td width="25%" align="center">Producto</td>
+					<td width="6%" align="center">Cantidad</td>
+					<td width="5%" align="center">Precio<br>Caja</td>
 					<!--td width="10%" align="center">Lote</td-->
-					<td width="10%" align="center">Vencimiento</td>
+					<td width="8%" align="center">Vencimiento</td>
 					<!-- <td width="10%" align="center">Precio Distribuidor<br>(Total_item)</td> -->
-					<td width="10%" align="center">Subtotal</td>
+					<td width="5%" align="center">Subtotal</td>
 
 					<!-- Descuento Unitario -->
 					<td width="10%" align="center">Desc.<br>Prod</td>
 					<!-- Descuento Adicional -->
-					<td width="10%" align="center">Desc.<br>Adicional</td>
+					<td width="8%" align="center">Desc.<br>Adicional</td>
 					<!-- Monto Total -->
 					<td width="10%" align="center">Total</td>
 
 					<td width="10%" align="center">Precio<br>Venta<br>Calculado</td>
 					<td width="10%" align="center"><span style="font-size:15px;width:80px;color:blue;"><b>Precio Actualizar</b></span></td>
-					<td width="10%" align="center">Acción</td>
+					<td width="3%" align="center">Acción</td>
 				</tr>
 			</table>
 
