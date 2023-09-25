@@ -120,10 +120,10 @@ while($datosSuc=mysqli_fetch_array($respSucursal)){
     }
 
   	if($montoVenta>0){//if($dateInicio==date("Y-m")."-01"){
-  		?><td class="text-right"><small><span><?=number_format($montoVenta,2,'.',',')?><?=$estiloInd?></span></small></td><?php
+  		?><td class="text-right"><?=number_format($montoVenta,2,'.',',')?><?=$estiloInd?></td><?php
   	}else{
       ?>
-        <td class='text-muted text-right'><small></span><?=number_format($montoVenta,2,'.',',')?><?=$estiloInd?></span></small></td>
+        <td class='text-muted text-right'><?=number_format($montoVenta,2,'.',',')?><?=$estiloInd?></td>
       <?php 
   		
   	}

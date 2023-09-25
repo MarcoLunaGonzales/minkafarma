@@ -99,16 +99,17 @@ if(isset($_GET['rpt_territorio'])){
                   $index=0;
                   $cod_tipoEmision=2;//tipo emision OFFLINE
                    $sql="SELECT s.cod_salida_almacenes,a.nombre_almacen as sucursal, s.fecha, s.hora_salida, s.nro_correlativo, (select t.nombre_tipopago from tipos_pago t where t.cod_tipopago=s.cod_tipopago)tipopago, 
-                   (select ts.nro_tarjeta from tarjetas_salidas ts where ts.cod_salida_almacen=s.cod_salida_almacenes)tarjeta, 
-    					  (select c.nombre_cliente from clientes c where c.cod_cliente = s.cod_cliente)cliente, s.cod_tipo_doc, razon_social, nit,s.cod_tipopago,s.monto_final,s.siat_codigotipoemision
-    					  FROM salida_almacenes s join almacenes a on s.cod_almacen=a.cod_almacen
-    					  WHERE s.cod_tiposalida=1001 and s.salida_anulada=0 and s.cod_tipo_doc=1
-    						and s.siat_codigotipoemision=$cod_tipoEmision and s.siat_codigoRecepcion is null $sqladd
-    						order by a.nombre_almacen,s.nro_correlativo";
+                   (select ts.nro_tarjeta from tarjetas_salidas ts where ts.cod_salida_almacen=s.cod_salida_almacenes)tarjeta,  
+                (select c.nombre_cliente from clientes c where c.cod_cliente = s.cod_cliente)cliente, s.cod_tipo_doc, razon_social, nit,s.cod_tipopago,s.monto_final,s.siat_codigotipoemision
+                FROM salida_almacenes s join almacenes a on s.cod_almacen=a.cod_almacen
+                WHERE s.cod_tiposalida=1001 and s.salida_anulada=0 and s.cod_tipo_doc=1
+                and s.siat_codigotipoemision=$cod_tipoEmision and s.siat_codigoRecepcion is null $sqladd
+                order by a.nombre_almacen,s.nro_correlativo";
                   // echo $sql;
                   $resp=mysqli_query($enlaceCon,$sql);
                   while($row=mysqli_fetch_array($resp)){ 
                     // echo "***";
+                    
                     $cod_salida_almacenes=$row['cod_salida_almacenes'];
                     $sucursal=$row['sucursal'];
                     $fecha=$row['fecha'];
@@ -126,8 +127,8 @@ if(isset($_GET['rpt_territorio'])){
                     $cod_tipopago=$row['cod_tipopago'];
                     $monto_final=$row['monto_final'];
                     $cod_tipoEmision=$row['siat_codigotipoemision'];
-                    
-                      $index++;
+                  
+                    $index++;
                       ?>
                     <tr>
 
