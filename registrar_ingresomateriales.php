@@ -546,7 +546,9 @@ function calculaPrecioCliente(preciocompra, index){
 	var cantidad 		= parseFloat(document.getElementById('cantidad_unitaria'+index).value);
 	var precio_unitario = parseFloat(document.getElementById('precio_unitario'+index).value);
 	var cantidad_presentacion = parseFloat(document.getElementById('cantidadpresentacion'+index).value);
-	document.getElementById('precio_old'+index).value = (cantidad > 0 ? cantidad : 0) * (precio_unitario > 0 ? precio_unitario : 0);
+	var subtotal = cantidad * precio_unitario;
+	subtotalF = redondear(subtotal,2);
+	document.getElementById('precio_old'+index).value = subtotalF;
 	var margen		  = document.getElementById('margenlinea'+index).value;
 
 	console.log("cantidad: "+cantidad+" precio: "+precio_unitario);
@@ -576,7 +578,11 @@ function calculaPrecioCliente(preciocompra, index){
 	}
 	var margenNuevo=(preciocliente-costounitario)/costounitario;
 	var margenNuevoF="Margen["+ number_format((margenNuevo*100),0) + "%]";
-	document.getElementById('divmargen'+index).innerHTML=margenNuevoF;
+
+	var precioActual=parseFloat(document.getElementById("precioclienteguardar"+index).value);
+	var margenPrecioActual=(precioActual-costounitario)/costounitario;
+	var margenPrecioActualF="Margen["+ number_format((margenPrecioActual*100),0) + "%]";
+	document.getElementById('divmargen'+index).innerHTML=margenPrecioActualF;
 	// Margen del PRECIO VENTA CALCULADO
 	document.getElementById('divmargenOf'+index).innerHTML=margenNuevoF;
 	console.log("**** fin  calculaPrecioCliente ******");
@@ -842,7 +848,7 @@ echo "</table><br>";
 		<fieldset id="fiel" style="width:98%;border:0;" >
 			<table align="center"class="text" cellSpacing="1" cellPadding="2" width="100%" border="0" id="data0" style="border:#ccc 1px solid;">
 				<tr>
-					<th colspan="4"></th>
+					<th colspan="6"></th>
 					<th>Descuento Final 1</th>
 					<th colspan="2"><input type="text" id="descuento_adicional" name="descuento_adicional" value="0" onkeyup="changeDescuentoAdicional()"></th>
 				</tr>
@@ -851,31 +857,26 @@ echo "</table><br>";
 						<!--input class="boton" type="button" value="Agregar por Linea (+)" onclick="modalMasLinea(this)" accesskey="B"/-->
 					</td>
 				</tr>
-				<tr>
-					<td align="center" colspan="7">
-					<div style="width:100%;" align="center"><b>DETALLE</b></div>
-					</td>				
-				</tr>				
 				<tr class="titulo_tabla" align="center">
-					<td width="2%" align="center">&nbsp;</td>
-					<td width="25%" align="center">Producto</td>
-					<td width="6%" align="center">Cantidad</td>
-					<td width="5%" align="center">Precio<br>Caja</td>
-					<!--td width="10%" align="center">Lote</td-->
-					<td width="8%" align="center">Vencimiento</td>
-					<!-- <td width="10%" align="center">Precio Distribuidor<br>(Total_item)</td> -->
-					<td width="5%" align="center">Subtotal</td>
+					<th width="2%" align="center">&nbsp;</th>
+					<th width="25%" align="center">Producto</th>
+					<th width="6%" align="center">Cantidad</th>
+					<th width="5%" align="center">Precio<br>Caja</th>
+					<!--th width="10%" align="center">Lote</th-->
+					<th width="8%" align="center">Vencimiento</th>
+					<!-- <th width="10%" align="center">Precio Distribuidor<br>(Total_item)</th> -->
+					<th width="5%" align="center">Subtotal</th>
 
 					<!-- Descuento Unitario -->
-					<td width="10%" align="center">Desc.<br>Prod</td>
+					<th width="10%" align="center">Desc.<br>Prod</th>
 					<!-- Descuento Adicional -->
-					<td width="8%" align="center">Desc.<br>Adicional</td>
+					<th width="8%" align="center">Desc.<br>Adicional</th>
 					<!-- Monto Total -->
-					<td width="10%" align="center">Total</td>
+					<th width="10%" align="center">Total</th>
 
-					<td width="10%" align="center">Precio<br>Venta<br>Calculado</td>
-					<td width="10%" align="center"><span style="font-size:15px;width:80px;color:blue;"><b>Precio Actualizar</b></span></td>
-					<td width="3%" align="center">Acción</td>
+					<th width="10%" align="center">Precio<br>Venta<br>Calculado</th>
+					<th width="10%" align="center"><span style="font-size:15px;width:80px;color:blue;"><b>Precio a<br>Actualizar</b></span></th>
+					<th width="3%" align="center">-</th>
 				</tr>
 			</table>
 
@@ -1015,15 +1016,15 @@ echo "</div>";
 		if(jsonData.length > 0){
 			// Construye la tabla HTML
 			tableHTML = '<table class="table table-striped">';
-			tableHTML += "<thead><tr><th><b>Producto</b></th><th><b>Precio Actual</b></th><th><b>Precio Cálculado</b></th><th><b>Precio a Actualizar</b></th></tr></thead>";
+			tableHTML += "<thead><tr><th><b>Producto</b></th><th><b>Precio Actual</b></th><th><b>Precio Calculado</b></th><th><b>Precio a Actualizar</b></th></tr></thead>";
 			tableHTML += '<tbody>';
 			
 			for (var i = 0; i < jsonData.length; i++) {
 				tableHTML += '<tr>';
 				tableHTML += '<td>' + jsonData[i].producto + '</td>';
-				tableHTML += '<td style="font-weight: bold; color: red; font-size: 20px;">' + jsonData[i].precioActual + '</td>';
-				tableHTML += '<td style="font-weight: bold; color: red; font-size: 20px;">' + jsonData[i].precioCalculado + '</td>';
-				tableHTML += '<td style="font-weight: bold; color: red; font-size: 20px;">' + jsonData[i].precioActualizar + '</td>';
+				tableHTML += '<td style="font-weight: bold; color: blue; font-size: 20px;">' + jsonData[i].precioActual + '</td>';
+				tableHTML += '<td style="font-weight: bold; color: blue; font-size: 20px;">' + jsonData[i].precioCalculado + '</td>';
+				tableHTML += '<td style="font-weight: bold; color: red; font-size: 23px;">' + jsonData[i].precioActualizar + '</td>';
 				tableHTML += '</tr>';
 			}
 			

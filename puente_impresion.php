@@ -24,8 +24,8 @@ if($tipoImpresion==0 && $tipoVentaCaja==0){
 	}
 	?>
 	<script>
-		window.parent.self;
-		window.close();
+		//window.parent.self;
+		//window.close();
 		
 		window.open('<?=$url;?>','newwindow');
 		window.open('registrar_salidaventas.php','_self');

@@ -1,8 +1,12 @@
+<?php
+
+require("../conexionmysqli.php");
+
+?>
 <html>
     <head>
         <title>Busqueda</title>
         <script type="text/javascript" src="../lib/externos/jquery/jquery-1.4.4.min.js"></script>
-        <script type="text/javascript" src="../dlcalendar.js"></script>
         <link href="../stilos.css" rel='stylesheet' type='text/css'>
         <script type='text/javascript' language='javascript'>
 
@@ -86,11 +90,7 @@ function solonumeros(e)
 
 
 	</script>
-<?php
 
-require("../conexionmysqli.inc");
-
-?>
 <body>
 <form action='guardarObligacion.php' method='post' name='form1'>
 <h3 align="center">Registrar Pagos</h3>
