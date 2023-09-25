@@ -11,9 +11,55 @@ require("funciones.php");
         <title>Busqueda</title>
         <link  rel="icon"   href="imagenes/card.png" type="image/png" />
         <link href="assets/style.css" rel="stylesheet" />
+		<style>
+			input[type="number"],
+			input[type="text"] {
+				padding: 2px;
+				border: 1px solid #ccc; 
+				border-radius: 5px;
+				box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); 
+				transition: border-color 0.3s, box-shadow 0.3s;
+			}
+			input[type="number"]:focus,
+			input[type="text"]:focus {
+				border-color: #007bff;
+				box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+			}
+			input[type="number"]:invalid,
+			input[type="text"]:invalid {
+				border-color: #ff0000;
+			}
+			select {
+				padding: 2px;
+				border: 1px solid #ccc;
+				border-radius: 5px;
+				background-color: #fff;
+				color: #333;
+				font-size: 16px;
+				box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+				transition: border-color 0.3s, box-shadow 0.3s;
+				-moz-appearance: none;
+				appearance: none;
+			}
+			select:focus {
+				border-color: #007bff;
+				box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+			}
+			select::-ms-expand {
+				display: none;
+			}
+			select::before {
+				content: '\25BC';
+				position: absolute;
+				top: 50%;
+				right: 10px;
+				transform: translateY(-50%);
+				pointer-events: none;
+			}
+		</style>
 		    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <script type='text/javascript' language='javascript'>
-
+		
 function number_format(amount, decimals) {
     amount += ''; // por si pasan un numero en vez de un string
     amount = parseFloat(amount.replace(/[^0-9\.-]/g, '')); // elimino cualquier cosa que no sea numero o punto
@@ -531,6 +577,8 @@ function calculaPrecioCliente(preciocompra, index){
 	var margenNuevo=(preciocliente-costounitario)/costounitario;
 	var margenNuevoF="Margen["+ number_format((margenNuevo*100),0) + "%]";
 	document.getElementById('divmargen'+index).innerHTML=margenNuevoF;
+	// Margen del PRECIO VENTA CALCULADO
+	document.getElementById('divmargenOf'+index).innerHTML=margenNuevoF;
 	console.log("**** fin  calculaPrecioCliente ******");
 	// Ajuste Descuento Adicional
 	ajusteDescuento();
@@ -611,6 +659,29 @@ function ajusteDescuento(){
 }
 
 function validar(f){ 
+	
+	// Verificamos cuantos items hay
+	var cantidadItems = $(".row-item").length;
+	// Verificar si no hay elementos
+	if (cantidadItems === 0) {
+		Swal.fire({
+			type: 'warning',
+			title: 'Ops!',
+			text: 'Por favor, agregue al menos un item.',
+		});
+		return false;
+	}
+
+	// En caso de seleccionar el TIPO DE PAGO "Credito"
+	if ($('#cod_tipopago').val() == "4" && $('#dias_credito').val() == "") {
+		Swal.fire({
+			type: 'warning',
+			title: 'Ops!',
+			text: 'Debe adicionar los Días de Credito.',
+		});
+		return false;
+	}
+
 	f.cantidad_material.value=num;
 	var cantidadItems=num;
 	
@@ -627,10 +698,26 @@ function validar(f){
 		alert("Las cantidades para los productos no son validas.");
 		return(false);
 	}
+	
+	// Verificación de costos
+	Swal.fire({
+		title: 'Modificaciones de Precio',
+		html: verificarCambio(),
+		showCancelButton: true,
+		confirmButtonText: 'Continuar',
+		cancelButtonText: 'Cancelar',
+	}).then((result) => {
+		if (result.value) {
+		document.getElementById("btsubmit").value = "Enviando...";
+		document.getElementById("btsubmit").disabled = true;
+		f.submit();
+		}
+	});
+	return false;
 
-    document.getElementById("btsubmit").value = "Enviando...";
-    document.getElementById("btsubmit").disabled = true;
-    return true;
+    // document.getElementById("btsubmit").value = "Enviando...";
+    // document.getElementById("btsubmit").disabled = true;
+    // return true;
 }
 
 
@@ -703,8 +790,24 @@ while($dat1=mysqli_fetch_array($resp1))
 }
 echo "</select></td>";
 echo "<th>Factura:  <input type='number' class='texto' name='nro_factura' value='' id='nro_factura' required>
-		</th></tr>";
+		</th>";
 
+echo "<th>Tipo de Pago</th>";
+$sql1="SELECT tp.cod_tipopago, tp.nombre_tipopago
+		FROM tipos_pago tp
+		WHERE tp.cod_tipopago = 1
+		OR tp.cod_tipopago = 4
+		ORDER BY tp.cod_tipopago ASC";
+$resp1=mysqli_query($enlaceCon,$sql1);
+echo "<th align='center'><select name='cod_tipopago' id='cod_tipopago' class='texto' style='width:200px' required>";
+while($dat1=mysqli_fetch_array($resp1))
+{   $codigo=$dat1[0];
+    $nombre=$dat1[1];
+	$margenPrecio=$dat1[2];
+	
+    echo "<option value='$codigo'>$nombre</option>";
+}
+echo "</select></th></tr>";
 
 echo "<tr><th>Proveedor</th>";
 $sql1="select p.cod_proveedor, concat(p.nombre_proveedor) from proveedores p 
@@ -722,11 +825,15 @@ while($dat1=mysqli_fetch_array($resp1))
 echo "</select></th>";
 
 echo "<th colspan='1'>Observaciones</th>";
-echo "<th colspan='1' align='center'><input type='text' class='texto' name='observaciones' value='$observaciones' size='40'></th></tr>";
+echo "<th colspan='1' align='center'><input type='text' class='texto' name='observaciones' value='$observaciones' size='40'></th>";
+
+echo "<th colspan='1'>Días de Credito:</th>";
+echo "<th colspan='1'><input type='number' class='texto' name='dias_credito' id='dias_credito' min='0' max='180' readonly></th></tr>";
 echo "</table><br>";
 ?>
         <div class="contenedor">
         	<div class="codigo-barras div-center">
+				<input class="boton" type="button" value="Nuevo Item (+)" onclick="mas(this)" accesskey="A"/>
 				<input type="text" class="form-codigo-barras" id="input_codigo_barras" placeholder="Ingrese el código de barras." autofocus autocomplete="off">
 			</div>
 
@@ -741,7 +848,6 @@ echo "</table><br>";
 				</tr>
 				<tr>
 					<td align="center" colspan="7">
-						<input class="boton" type="button" value="Nuevo Item (+)" onclick="mas(this)" accesskey="A"/>
 						<!--input class="boton" type="button" value="Agregar por Linea (+)" onclick="modalMasLinea(this)" accesskey="B"/-->
 					</td>
 				</tr>
@@ -751,24 +857,25 @@ echo "</table><br>";
 					</td>				
 				</tr>				
 				<tr class="titulo_tabla" align="center">
-					<td width="5%" align="center">&nbsp;</td>
-					<td width="20%" align="center">Producto</td>
-					<td width="10%" align="center">Cantidad</td>
-					<td width="10%" align="center">Precio<br>Presentación</td>
+					<td width="2%" align="center">&nbsp;</td>
+					<td width="25%" align="center">Producto</td>
+					<td width="6%" align="center">Cantidad</td>
+					<td width="5%" align="center">Precio<br>Caja</td>
 					<!--td width="10%" align="center">Lote</td-->
-					<td width="10%" align="center">Vencimiento</td>
+					<td width="8%" align="center">Vencimiento</td>
 					<!-- <td width="10%" align="center">Precio Distribuidor<br>(Total_item)</td> -->
-					<td width="10%" align="center">Subtotal</td>
+					<td width="5%" align="center">Subtotal</td>
 
 					<!-- Descuento Unitario -->
-					<td width="5%" align="center">Desc.<br>Prod</td>
+					<td width="10%" align="center">Desc.<br>Prod</td>
 					<!-- Descuento Adicional -->
-					<td width="10%" align="center">Desc.<br>Adicional</td>
+					<td width="8%" align="center">Desc.<br>Adicional</td>
 					<!-- Monto Total -->
 					<td width="10%" align="center">Total</td>
 
-					<td width="10%" align="center"><span style="font-size:15px;width:80px;color:blue;"><b>PrecioActualizar</b></span><br>PrecioVentaCalculado</td>
-					<td width="10%" align="center">-</td>
+					<td width="10%" align="center">Precio<br>Venta<br>Calculado</td>
+					<td width="10%" align="center"><span style="font-size:15px;width:80px;color:blue;"><b>Precio Actualizar</b></span></td>
+					<td width="3%" align="center">Acción</td>
 				</tr>
 			</table>
 
@@ -853,77 +960,92 @@ echo "</div>";
 <input type='hidden' name='materialActivo' value="0">
 <input type='hidden' name='cantidad_material' value="0">
 
-</form>
 
 
 <!-- El modal -->
 <div class="modal fade" id="verificarModal">
-	<div class="modal-dialog modal-md">
+	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title">Verificación de cambios</h4>
+				<h4 class="modal-title"><b>Verificación de cambios</b></h4>
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
 			</div>
 			<div class="modal-body">
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-primary" id="btnContinuar">Continuar</button>
+				<button type="submit" class="btn btn-primary" id="btnContinuar">Continuar</button>
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
 			</div>
 		</div>
 	</div>
 </div>
 
+
+</form>
+
 <script>
 	var jsonData = [];
 	function verificarCambio() {
-		// console.log(validar($("#form1")))
 		// return true;
 		var jsonData = [];
 
 		// Itera sobre todos los elementos <input> con la clase "row-item"
 		$(".row-item").each(function(index) {
-			var rowItemValue 	= $(this).val();
-			var producto 		= $("#cod_material" + rowItemValue).html();
-			var preciocliente 	= parseFloat($("#preciocliente" + rowItemValue).val());
-			var precioclienteOf = parseFloat($("#precioclienteOf" + rowItemValue).val());
+			var rowItemValue 	 = $(this).val();
+			var producto 		 = $("#cod_material" + rowItemValue).html();
+			
+			var precioTexto  	 = $("#divpreciocliente" + rowItemValue).text();
+			var partes 		 	 = precioTexto.split(":");
+			var precioActual 	 = parseFloat(partes[1].trim());
+			var precioCalculado  = parseFloat($("#preciocliente" + rowItemValue).val());
+			var precioActualizar = parseFloat($("#precioclienteguardar" + rowItemValue).val());
 
-			if (preciocliente !== precioclienteOf) {
+			if (precioActual !== precioCalculado || precioActual !== precioActualizar) {
 				var rowData = {
 					"producto": producto,
-					"preciocliente": preciocliente,
-					"precioclienteOf": precioclienteOf,
+					"precioActual": precioActual,
+					"precioCalculado": precioCalculado,
+					"precioActualizar": precioActualizar,
 					"rowItemValue": rowItemValue
 				};
 				jsonData.push(rowData);
 			}
 		});
-
+		var tableHTML;
 		if(jsonData.length > 0){
 			// Construye la tabla HTML
-			var tableHTML = '<table class="table">';
-			tableHTML += "<thead><tr><th>Producto</th><th>Precio Cliente Modificado</th><th>Precio Cliente Original</th></tr></thead>";
+			tableHTML = '<table class="table table-striped">';
+			tableHTML += "<thead><tr><th><b>Producto</b></th><th><b>Precio Actual</b></th><th><b>Precio Cálculado</b></th><th><b>Precio a Actualizar</b></th></tr></thead>";
 			tableHTML += '<tbody>';
 			
 			for (var i = 0; i < jsonData.length; i++) {
 				tableHTML += '<tr>';
 				tableHTML += '<td>' + jsonData[i].producto + '</td>';
-				tableHTML += '<td>' + jsonData[i].preciocliente + '</td>';
-				tableHTML += '<td>' + jsonData[i].precioclienteOf + '</td>';
+				tableHTML += '<td style="font-weight: bold; color: red; font-size: 20px;">' + jsonData[i].precioActual + '</td>';
+				tableHTML += '<td style="font-weight: bold; color: red; font-size: 20px;">' + jsonData[i].precioCalculado + '</td>';
+				tableHTML += '<td style="font-weight: bold; color: red; font-size: 20px;">' + jsonData[i].precioActualizar + '</td>';
 				tableHTML += '</tr>';
 			}
 			
 			tableHTML += '</tbody>';
 			tableHTML += '</table>';
-			$(".modal-body").html(tableHTML);
-			$("#verificarModal").modal("show");
+			// $(".modal-body").html(tableHTML);
 		}else{
-			$("#form1").submit();
+			// No hubo cambios, muestra la alerta
+			tableHTML = '<div class="alert alert-success" role="alert">No hubo cambios en los precios</div>';
+    		// $(".modal-body").html(alertHTML);
 		}
+		return tableHTML;
+		// $("#verificarModal").modal("show");
 	}
-	// Agrega un controlador de eventos para el botón "Continuar" en el modal
-	$("#btnContinuar").on("click", function() {
-		$("#form1").submit();
-	});
+	// Verificación de Tipo de Pago
+	$('#cod_tipopago').on('change', function () {
+        var selectedValue = $(this).val();
+        if (selectedValue === '4') {
+            $('#dias_credito').prop('readonly', false);
+        } else if (selectedValue === '1') {
+            $('#dias_credito').prop('readonly', true);
+        }
+    });
 </script>
 </body>
