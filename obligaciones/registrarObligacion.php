@@ -96,7 +96,7 @@ function solonumeros(e)
 	</script>
 
 <body>
-<form action='guardarObligacion.php' method='post' name='form1' onsubmit='return validar(this)'>
+<form action='guardarObligacion.php' method='post' name='form1' onsubmit="return validar(this)">
 <h3 align="center">Registrar Pagos</h3>
 
 <table border='0' class='texto' cellspacing='0' align='center' width='80%' style='border:#ccc 1px solid;'>
