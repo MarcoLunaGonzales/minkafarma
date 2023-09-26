@@ -179,11 +179,11 @@ $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
 				echo $cadena_mostrar;
 				$indice++;
 			}
-			if($rpt_ver==2 && $stock_real>0)
+			if($rpt_ver==2 && $stock2>0)
 			{	echo $cadena_mostrar;
 				$indice++;
 			}
-			if($rpt_ver==3 && $stock_real==0)
+			if($rpt_ver==3 && $stock2==0)
 			{	echo $cadena_mostrar;
 				$indice++;
 			}

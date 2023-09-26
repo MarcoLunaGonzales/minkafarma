@@ -1,0 +1,26 @@
+<?php
+
+require_once 'conexionmysqli2.inc';
+require_once 'funcionRecalculoCostos.php';
+
+ error_reporting(E_ALL);
+ ini_set('display_errors', '1');
+
+set_time_limit(0);
+
+$codAlmacen=$_POST["cod_almacen"];
+
+$sqlProductos="SELECT distinct(sd.cod_material) from salida_almacenes s, salida_detalle_almacenes sd where s.cod_salida_almacenes=sd.cod_salida_almacen and s.cod_almacen='1000' and s.salida_anulada=0";
+$respProductos=mysqli_query($enlaceCon,$sqlProductos);
+
+while($datProductos=mysqli_fetch_array($respProductos)){
+  $codigoProducto=$datProductos[0];
+  echo "Codigo Producto Procesado: ".$codigoProducto."<br>";
+
+  $banderaRecalculo=recalculaCostos($enlaceCon, $codigoProducto, $codAlmacen);
+}
+
+echo "Proceso terminado satisfactoriamente!";
+
+?>
+
