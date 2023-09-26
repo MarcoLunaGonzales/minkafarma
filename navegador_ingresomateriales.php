@@ -255,8 +255,28 @@ while ($dat = mysqli_fetch_array($resp)) {
 	$proveedor=$dat[8];
     $codTipoIngreso=$dat[9];
 
-    $sqlMontoCompra="SELECT sum((i.cantidad_unitaria)*(i.costo_almacen)) from ingreso_detalle_almacenes i
-        where i.cod_ingreso_almacen='$codigo'";
+    // QUERY ANTIGUA
+    // $sqlMontoCompra="SELECT sum((i.cantidad_unitaria)*(i.costo_almacen)) from ingreso_detalle_almacenes i
+    //     where i.cod_ingreso_almacen='$codigo'";
+    
+    // // caja
+    // (i.cantidad_unitaria/m.cantidad_presentacion)
+    // // precio bruto
+    // (i.precio_bruto*m.cantidad_presentacion)
+    // // $totalValorItem
+    // (i.cantidad_unitaria/m.cantidad_presentacion)*(i.precio_bruto*m.cantidad_presentacion)
+    // // $descuento_numerico
+    // ((i.cantidad_unitaria/m.cantidad_presentacion) * (i.precio_bruto*m.cantidad_presentacion)) * (i.descuento_unitario/100)
+
+    // // TOTAL
+    // ((i.cantidad_unitaria/m.cantidad_presentacion)*(i.precio_bruto*m.cantidad_presentacion))-((i.cantidad_unitaria/m.cantidad_presentacion) * (i.precio_bruto*m.cantidad_presentacion)) * (i.descuento_unitario/100)
+
+    // QUERY ACTUAL
+    $sqlMontoCompra="SELECT SUM(((i.cantidad_unitaria/m.cantidad_presentacion)*(i.precio_bruto*m.cantidad_presentacion))-((i.cantidad_unitaria/m.cantidad_presentacion) * (i.precio_bruto*m.cantidad_presentacion)) * (i.descuento_unitario/100)) 
+        FROM ingreso_detalle_almacenes i
+        LEFT JOIN material_apoyo m ON m.codigo_material = i.cod_material
+        WHERE i.cod_ingreso_almacen='$codigo'";
+
     //echo $sqlMontoCompra;
     $respMontoCompra=mysqli_query($enlaceCon, $sqlMontoCompra);
     $montoCompra=0;

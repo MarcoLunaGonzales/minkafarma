@@ -29,20 +29,37 @@ else
 	$codigo++;
 }
 
-$sqlNro="SELECT max(nro_pago)+1 from pagos_proveedor_cab where cod_gestion in (SELECT cod_gestion from gestiones where estado=1)";
-$nroPago=obtenerCodigo($enlaceCon, $sqlNro);
+// echo "monto=0";
+// Obtiene Codigo de Gestión
+$sql  = "SELECT cod_gestion FROM gestiones g WHERE estado = '1' LIMIT 1";
+$resp = mysqli_query($enlaceCon, $sql);
+$data = mysqli_fetch_array($resp);
+$globalGestion = '';
+if (mysqli_num_rows($resp) > 0) {
+    $globalGestion = $data['cod_gestion'];
+}
+
+// Obtiene el Numero de Pago
+$sqlNro="SELECT max(nro_pago)+1 as nro_pago
+		FROM pagos_proveedor_cab 
+		WHERE cod_gestion in (SELECT cod_gestion from gestiones where estado = 1)";
+$resp = mysqli_query($enlaceCon, $sqlNro);
+$data = mysqli_fetch_array($resp);
+$nroPago = 1;
+if (mysqli_num_rows($resp) > 0) {
+    $nroPago = $data['nro_pago'];
+}
+
+
 
 $montoTotal=0;
-
-// echo "monto=0";
-$globalGestion=1;
 
 for($i=1;$i<=$nroFilas;$i++)
 {   		
 	// echo $i." iii";
 	$codIngresoAlmacen=$_POST["codIngresoAlmacen$i"];	
 	$montoPago=$_POST["montoPago$i"];
-	$nroDoc=$_POST["nroDoc$i"];
+	$nroDoc=empty($_POST["nroDoc$i"]) ? '' : $_POST["nroDoc$i"];
 	
 	$montoTotal=$montoTotal+$montoPago;
 	if($montoPago>0){

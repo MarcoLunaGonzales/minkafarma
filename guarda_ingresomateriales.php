@@ -43,10 +43,7 @@ $createdDate=date("Y-m-d H:i:s");
 $fecha_real=date("Y-m-d");
 
 // Tipo de pago "CREDITO"
-$fecha_factura_proveedor = '';
-if($cod_tipopago == 4){
-	$fecha_factura_proveedor = date('Y-m-d', strtotime($fecha_real . " +$dias_credito days"));
-}
+$fecha_factura_proveedor = empty($_POST['fecha_factura_proveedor']) ? '' : $_POST['fecha_factura_proveedor'];
 
 $descuentoAdicional = $_POST['descuento_adicional'];
 $descuentoTotal 	= $_POST['descuentoTotal'];

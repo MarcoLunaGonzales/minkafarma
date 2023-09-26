@@ -99,7 +99,7 @@ function anular_pago(f)
         <table class='texto'>
             <tr>
                 <th>#</th>
-                <th>Nro. Pago</th>
+                <th>Nro. Doc. Pago</th>
                 <th>Proveedor</th>
                 <th>Fecha</th>
                 <th>Monto</th>

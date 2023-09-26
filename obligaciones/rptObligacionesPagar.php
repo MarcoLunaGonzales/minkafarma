@@ -36,7 +36,10 @@ $sql="SELECT ia.cod_ingreso_almacen, ia.nro_correlativo, ia.fecha, p.nombre_prov
 			AND pp.fecha 
 			BETWEEN '$fecha_iniconsulta' AND '$fecha_finconsulta'
 		) AS pagado,
-		DATEDIFF(ia.fecha_factura_proveedor, ia.fecha) AS dias_diferencia
+		DATEDIFF(
+			DATE_ADD(ia.fecha_factura_proveedor, INTERVAL ia.dias_credito DAY), 
+			CURDATE()
+		) AS dias_diferencia
 		FROM ingreso_almacenes ia, proveedores p
 		WHERE ia.monto_ingreso >
 		(
