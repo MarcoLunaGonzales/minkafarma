@@ -63,9 +63,9 @@ echo "<br><table cellspacing='0' border=1 align='center' class='texto' width='10
 <tr>
 <th>N.R.</th>
 <th>Fecha</th>
-<th>Cliente</th>
+<th>Proveedor</th>
 <th>MontoVenta</th>
-<th>A Pagar</th>
+<th>A Cuenta</th>
 <th>Saldo</th>
 <th>Días de </br>Vigencia</th>
 </tr>";
@@ -75,7 +75,7 @@ while($datos=mysqli_fetch_array($resp)){
 	$codSalida=$datos[0];
 	$nroVenta=$datos[1];
 	$fechaVenta=$datos[2];
-	$nombreCliente=$datos[3];
+	$nombreProveedor=$datos[3];
 	$montoVenta=$datos[4];
 	$montoPagar=$datos[5];
 	$montoxPagar=$montoVenta-$montoPagar;
@@ -92,7 +92,7 @@ while($datos=mysqli_fetch_array($resp)){
 		echo "<tr>
 		<td align='center'>$nroVenta</td>
 		<td align='center'>$fechaVenta</td>
-		<td>$nombreCliente</td>
+		<td>$nombreProveedor</td>
 		<td align='right'>$montoVenta</td>
 		<td align='right'>$montoPagar</td>
 		<td align='right'>$montoxPagar</td>

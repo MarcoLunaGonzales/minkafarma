@@ -64,7 +64,7 @@ $pdf->SetXY(0,$y+12);		$pdf->Cell(0,0,"-----------------------------------------
 
 
 $pdf->SetXY(0,$y+15);		$pdf->Cell(0,0,"FECHA: $fechaPago",0,0,"C");
-$pdf->SetXY(0,$y+20);		$pdf->Cell(0,0,"Nombre / Proveedor: $nombreProveedor",0,0,"C");
+$pdf->SetXY(0,$y+20);		$pdf->Cell(0,0,"Proveedor: $nombreProveedor",0,0,"C");
 $pdf->SetXY(0,$y+25);		$pdf->Cell(0,0,"Obs: $obsNota",0,0,"C");
 
 
