@@ -100,7 +100,6 @@ function anular_pago(f)
             <tr>
                 <th>#</th>
                 <th>Nro. Pago</th>
-                <th>Gestión</th>
                 <th>Proveedor</th>
                 <th>Fecha</th>
                 <th>Monto</th>
@@ -155,7 +154,6 @@ function anular_pago(f)
             <tr style='<?=$estilo_texto;?>'>
                 <td align='center'><?=$chkbox;?></td>
                 <td align='center'><?=$nroPago;?></td>
-                <td align='center'><?=$nombreGestion;?></td>
                 <td align='center'><?=$nombreProveedor;?></td>
                 <td align='center'><?=$fechaPago;?></td>
                 <td align='center'><?=$montoPago;?></td>

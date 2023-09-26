@@ -1,5 +1,5 @@
 <script>
-        <link href="../stilos.css" rel='stylesheet' type='text/css'>
+        <link href="../../stilos.css" rel='stylesheet' type='text/css'>
 </script>
 <?php
 require("../conexionmysqli2.inc");
@@ -48,7 +48,7 @@ for($i=1;$i<=$nroFilas;$i++)
 	if($montoPago>0){
 		$sql_inserta="INSERT INTO `pagos_proveedor_detalle` (`cod_pago`,`cod_ingreso_almacen`,`monto_detalle`,`nro_doc`) 
 			VALUE ('$codigo','$codIngresoAlmacen','$montoPago','$nroDoc')";
-		echo $sql_inserta;
+		// echo $sql_inserta;
 		$sql_inserta=mysqli_query($enlaceCon, $sql_inserta);
 	}
 	
@@ -63,7 +63,6 @@ $sqlInsertC="INSERT INTO `pagos_proveedor_cab` (`cod_pago`,`fecha`,`monto_pago`,
 // echo $sqlInsertC;
 
 $respInsertC=mysqli_query($enlaceCon, $sqlInsertC);
-
 echo "<script type='text/javascript' language='javascript'>";
 echo "    alert('Los datos fueron insertados correctamente.');";
 echo "    location.href='navegadorObligaciones.php';";

@@ -69,8 +69,8 @@
 			<td><?=$montoV;?></td>
 			<td><?=$montoCanceladoV;?></td>
 			<td><?=$saldoV;?></td>
-			<input type='hidden' value='$saldo' name='saldo<?=$i;?>' id='saldo<?=$i;?>'>
-			<td><input type='text' class='texto' name='montoPago<?=$i;?>' id='montoPago<?=$i;?>' size='10' onKeyPress='javascript:return solonumeros(event)' value='0'></td>
+			<input type='hidden' value='<?=$saldoV?>' name='saldo<?=$i;?>' id='saldo<?=$i;?>'>
+			<td><input type='text' class='texto' name='montoPago<?=$i;?>' id='montoPago<?=$i;?>' size='10' onKeyPress='javascript:return solonumeros(event)' value='0' max='<?=$saldo?>'></td>
 			<td><input type='text' class='texto' name='nroDoc<?=$i;?>' id='nroDoc<?=$i;?>' size='10' onKeyPress='javascript:return solonumeros(event)' value='0'></td>
 		</tr>
 	<?php

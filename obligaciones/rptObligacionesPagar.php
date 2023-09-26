@@ -65,7 +65,7 @@ echo "<br><table cellspacing='0' border=1 align='center' class='texto' width='10
 <th>Fecha</th>
 <th>Cliente</th>
 <th>MontoVenta</th>
-<th>A Pagar</th>
+<th>A Cuenta</th>
 <th>Saldo</th>
 <th>Días de </br>Vigencia</th>
 </tr>";

@@ -45,26 +45,30 @@ function ajaxCargarDeudas(){
 
 function validar(f)
 {   
-	var codProveedor=document.getElementById("proveedor").value;
-	var numRegistros=document.getElementById("nroFilas").value;
+	var codCliente=document.getElementById("proveedor").value;
+	var banderaMontos=0;
+
 	var monto;
 	var nroDoc;
-	if(codProveedor==0){
-		alert("Debe seleccionar un Proveedor");
+	if(codCliente==0){
+		alert("Debe seleccionar un Cliente");
+		return false;
 	}else{
-		if(numRegistros>0){
-			for(var i=1; i<=numRegistros; i++){
-				monto=parseFloat(document.getElementById("montoPago"+i).value);
-				nroDoc=parseFloat(document.getElementById("nroDoc"+i).value);
-				//if(monto==0 || nroDoc==0 || monto=="NaN" || nroDoc=="NaN"){
-					//alert("Monto de Pago, Nro. Doc. no pueden estar vacios. Fila: "+i);
-					//return(false);
-				//}
-				f.submit();
-			}
+		/******** Validacion Algun Monto con Datos ********/
+		var inputs = $('form input[name^="montoPago"]');
+		inputs.each(function() {
+		  	var value = $(this).val();
+		  	if(value>0){
+					banderaMontos=1;
+		  	}
+		});
+		if(banderaMontos==0){
+			alert("Debe existir algun monto valido para guardar la cobranza.");
+			return false;
 		}
-		
-	}	
+		/******** Fin validacion Cantidades ********/
+	}
+	return true;
 }
 
 function solonumeros(e)
@@ -92,7 +96,7 @@ require("../conexionmysqli.inc");
 
 ?>
 <body>
-<form action='guardarObligacion.php' method='post' name='form1'>
+<form action='guardarObligacion.php' method='post' name='form1' onsubmit='return validar(this)'>
 <h3 align="center">Registrar Pagos</h3>
 
 <table border='0' class='texto' cellspacing='0' align='center' width='80%' style='border:#ccc 1px solid;'>
@@ -149,8 +153,8 @@ $fecha=date("d/m/Y");
 </div>
 
 
-<center><input type='button' class='boton' value='Guardar' onClick='validar(this.form)'></center>
-<script type='text/javascript' language='javascript'  src='dlcalendar.js'></script>
+<center><input type='submit' class='boton' value='Guardar'></center>
+<!-- <script type='text/javascript' language='javascript'  src='dlcalendar.js'></script> -->
 
 </form>
 </body>
