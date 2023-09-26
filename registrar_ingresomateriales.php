@@ -1057,13 +1057,14 @@ echo "</div>";
 	// Verificación de Tipo de Pago
 	$('#cod_tipopago').on('change', function () {
         var selectedValue = $(this).val();
-		$('#dias_credito').val('');
-		$('#fecha_factura_proveedor').val('');
+		$('#dias_credito').val(0);
         if (selectedValue === '4') {
             $('#dias_credito').prop('readonly', false);
+			$('#fecha_factura_proveedor').val('<?=date('Y-m-d')?>');
             $('#fecha_factura_proveedor').prop('readonly', false);
         } else if (selectedValue === '1') {
             $('#dias_credito').prop('readonly', true);
+			$('#fecha_factura_proveedor').val('');
             $('#fecha_factura_proveedor').prop('readonly', true);
         }
     });
