@@ -977,26 +977,6 @@ echo "</div>";
 <input type='hidden' name='cantidad_material' value="0">
 
 
-
-<!-- El modal -->
-<div class="modal fade" id="verificarModal">
-	<div class="modal-dialog modal-lg">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h4 class="modal-title"><b>Verificación de cambios</b></h4>
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
-			</div>
-			<div class="modal-body">
-			</div>
-			<div class="modal-footer">
-				<button type="submit" class="btn btn-primary" id="btnContinuar">Continuar</button>
-				<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-			</div>
-		</div>
-	</div>
-</div>
-
-
 </form>
 
 <script>
@@ -1045,14 +1025,11 @@ echo "</div>";
 			
 			tableHTML += '</tbody>';
 			tableHTML += '</table>';
-			// $(".modal-body").html(tableHTML);
 		}else{
 			// No hubo cambios, muestra la alerta
 			tableHTML = '<div class="alert alert-success" role="alert">No hubo cambios en los precios</div>';
-    		// $(".modal-body").html(alertHTML);
 		}
 		return tableHTML;
-		// $("#verificarModal").modal("show");
 	}
 	// Verificación de Tipo de Pago
 	$('#cod_tipopago').on('change', function () {
