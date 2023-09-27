@@ -45,11 +45,10 @@ $sqlNro="SELECT max(nro_pago)+1 as nro_pago
 		WHERE cod_gestion in (SELECT cod_gestion from gestiones where estado = 1)";
 $resp = mysqli_query($enlaceCon, $sqlNro);
 $data = mysqli_fetch_array($resp);
-$nroPago = 1;
 if (mysqli_num_rows($resp) > 0) {
     $nroPago = $data['nro_pago'];
 }
-
+$nroPago = empty($nroPago) ? 1 : $nroPago;
 
 
 $montoTotal=0;
