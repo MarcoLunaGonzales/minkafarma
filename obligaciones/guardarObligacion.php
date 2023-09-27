@@ -1,5 +1,5 @@
 <script>
-        <link href="../../stilos.css" rel='stylesheet' type='text/css'>
+        // <link href="../../stilos.css" rel='stylesheet' type='text/css'>
 </script>
 <?php
 require("../conexionmysqli2.inc");
