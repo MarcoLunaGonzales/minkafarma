@@ -785,7 +785,7 @@ echo "<table border='0' class='texto' cellspacing='0' align='center' width='90%'
 echo "<tr>
 	<th>Nro. Ingreso: <b>$nro_correlativo<b></th>";
 echo"<th>Fecha: <input type='text' disabled='true' class='texto' value='$fecha' id='fecha' size='10' name='fecha'></th>
-	<th>Tipo de Ingreso: ";
+	<th>Tipo de Ingreso: </td><th>";
 $sql1="select cod_tipoingreso, nombre_tipoingreso from tipos_ingreso where cod_tipoingreso<>'999' order by nombre_tipoingreso";
 $resp1=mysqli_query($enlaceCon,$sql1);
 echo "<select name='tipo_ingreso' id='tipo_ingreso' class='texto'>";
@@ -795,27 +795,25 @@ while($dat1=mysqli_fetch_array($resp1))
     echo "<option value='$cod_tipoingreso'>$nombre_tipoingreso</option>";
 }
 echo "</select></td>";
-echo "<th>Factura:  <input type='number' class='texto' name='nro_factura' value='' id='nro_factura' required>
-		</th>";
 
-echo "<th>Tipo de Pago</th>";
-$sql1="SELECT tp.cod_tipopago, tp.nombre_tipopago
-		FROM tipos_pago tp
-		WHERE tp.cod_tipopago = 1
-		OR tp.cod_tipopago = 4
-		ORDER BY tp.cod_tipopago ASC";
+echo"<th colspan='1'>Tipo de Documento: </th><th>";
+$sql1="SELECT td.codigo, td.nombre, td.abreviatura
+		FROM tipos_docs td
+		WHERE td.codigo IN (1,2)";
 $resp1=mysqli_query($enlaceCon,$sql1);
-echo "<th align='center'><select name='cod_tipopago' id='cod_tipopago' class='texto' style='width:200px' required>";
+echo "<select name='tipo_documento' id='tipo_documento' class='texto'>";
 while($dat1=mysqli_fetch_array($resp1))
-{   $codigo=$dat1[0];
-    $nombre=$dat1[1];
-	$margenPrecio=$dat1[2];
-	
-    echo "<option value='$codigo'>$nombre</option>";
+{   $cod_tipoingreso=$dat1[0];
+    $nombre_tipo_documento=$dat1[1];
+    echo "<option value='$cod_tipoingreso'>$nombre_tipo_documento</option>";
 }
-echo "</select></th></tr>";
+echo "</select></td>";
 
-echo "<tr><th>Proveedor</th>";
+echo "<th>Nro. Documento: </th>
+	<th><input type='number' class='texto' name='nro_factura' value='' id='nro_factura' required>
+	</th></tr>";
+
+echo "<tr><th>Proveedor:</th>";
 $sql1="select p.cod_proveedor, concat(p.nombre_proveedor) from proveedores p 
 			order by 2";
 $resp1=mysqli_query($enlaceCon,$sql1);
@@ -830,11 +828,28 @@ while($dat1=mysqli_fetch_array($resp1))
 }
 echo "</select></th>";
 
-echo "<th colspan='1'>Observaciones</th>";
-echo "<th colspan='1' align='center'><input type='text' class='texto' name='observaciones' value='$observaciones' size='40'></th>";
+echo "<th colspan='1'>Observaciones:</th>
+	<th colspan='1'><input type='text' class='texto' name='observaciones' value='$observaciones' size='40'></th>";
 
-echo "<th colspan='1'>Días de Credito:</th>";
-echo "<th colspan='1'><input type='number' class='texto' name='dias_credito' id='dias_credito' min='0' max='180' readonly></th></tr>";
+echo "<th>Tipo de Pago:</th>";
+$sql1="SELECT tp.cod_tipopago, tp.nombre_tipopago
+		FROM tipos_pago tp
+		WHERE tp.cod_tipopago = 1
+		OR tp.cod_tipopago = 4
+		ORDER BY tp.cod_tipopago ASC";
+$resp1=mysqli_query($enlaceCon,$sql1);
+echo "<th align='center'><select name='cod_tipopago' id='cod_tipopago' class='texto' style='width:200px' required>";
+while($dat1=mysqli_fetch_array($resp1))
+{   $codigo=$dat1[0];
+    $nombre=$dat1[1];
+	$margenPrecio=$dat1[2];
+	
+    echo "<option value='$codigo'>$nombre</option>";
+}
+echo "</select></th>";
+
+echo "<th colspan='1'>Días de Credito: <input type='number' class='texto' name='dias_credito' id='dias_credito' min='0' max='180' readonly></th>
+<th colspan='1'>Fecha Documento Proveedor: <input type='date' class='texto' name='fecha_factura_proveedor' id='fecha_factura_proveedor'></th></tr>";
 echo "</table><br>";
 ?>
         <div class="contenedor">
@@ -962,26 +977,6 @@ echo "</div>";
 <input type='hidden' name='cantidad_material' value="0">
 
 
-
-<!-- El modal -->
-<div class="modal fade" id="verificarModal">
-	<div class="modal-dialog modal-lg">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h4 class="modal-title"><b>Verificación de cambios</b></h4>
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
-			</div>
-			<div class="modal-body">
-			</div>
-			<div class="modal-footer">
-				<button type="submit" class="btn btn-primary" id="btnContinuar">Continuar</button>
-				<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-			</div>
-		</div>
-	</div>
-</div>
-
-
 </form>
 
 <script>
@@ -1030,22 +1025,24 @@ echo "</div>";
 			
 			tableHTML += '</tbody>';
 			tableHTML += '</table>';
-			// $(".modal-body").html(tableHTML);
 		}else{
 			// No hubo cambios, muestra la alerta
 			tableHTML = '<div class="alert alert-success" role="alert">No hubo cambios en los precios</div>';
-    		// $(".modal-body").html(alertHTML);
 		}
 		return tableHTML;
-		// $("#verificarModal").modal("show");
 	}
 	// Verificación de Tipo de Pago
 	$('#cod_tipopago').on('change', function () {
         var selectedValue = $(this).val();
+		$('#dias_credito').val(0);
         if (selectedValue === '4') {
             $('#dias_credito').prop('readonly', false);
+			$('#fecha_factura_proveedor').val('<?=date('Y-m-d')?>');
+            $('#fecha_factura_proveedor').prop('readonly', false);
         } else if (selectedValue === '1') {
             $('#dias_credito').prop('readonly', true);
+			$('#fecha_factura_proveedor').val('');
+            $('#fecha_factura_proveedor').prop('readonly', true);
         }
     });
 </script>

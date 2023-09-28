@@ -72,7 +72,7 @@ $y=$y-15;
 
 $pdf->SetXY(0,$y+45);		$pdf->Cell(0,0,"=================================================================================",0,0,"C");
 $pdf->SetXY(7,$y+48);		$pdf->Cell(0,0,"#");
-$pdf->SetXY(25,$y+48);		$pdf->Cell(0,0,"Nro.Correlativo"); // Ingreso Almacen
+$pdf->SetXY(25,$y+48);		$pdf->Cell(0,0,"Nro.Ingreso"); // Ingreso Almacen
 $pdf->SetXY(50,$y+48);		$pdf->Cell(0,0,"Monto");
 $pdf->SetXY(0,$y+52);		$pdf->Cell(0,0,"=================================================================================",0,0,"C");
 

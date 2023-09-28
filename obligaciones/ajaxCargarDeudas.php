@@ -71,7 +71,7 @@
 			<td><?=$saldoV;?></td>
 			<input type='hidden' value='<?=$saldoV?>' name='saldo<?=$i;?>' id='saldo<?=$i;?>'>
             
-			<td><input type='number' class='texto' name='montoPago<?=$i;?>' id='montoPago<?=$i;?>' size='10' onKeyPress='javascript:return solonumeros(event)' value='0' max='<?=$saldoV?>' min="0"></td>
+			<td><input type='number' class='texto' name='montoPago<?=$i;?>' id='montoPago<?=$i;?>' size='10' onKeyPress='javascript:return solonumeros(event)' value='0' max='<?=$saldoV?>' min="0" step='0.01'></td>
 
 			<td><input type='text' class='texto' name='nroDoc<?=$i;?>' id='nroDoc<?=$i;?>' size='10' onKeyPress='javascript:return solonumeros(event)' value='0'></td>
 		</tr>
