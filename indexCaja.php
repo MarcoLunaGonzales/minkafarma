@@ -70,14 +70,14 @@ include("datosUsuario.php");
 				<ul>
 					<li><a href="navegador_material.php" target="contenedorPrincipal">Productos</a></li>
 				</ul>
-			</li>
+			</li!-->
 			<li><span>Ingresos</span>
 				<ul>
-					<li><a href="navegador_ingresomateriales.php" target="contenedorPrincipal">Ingreso de Materiales</a></li>
+					<li><a href="navegador_ingresomateriales.php" target="_blank">Ingreso de Materiales</a></li>
 					<li><a href="navegador_ingresotransito.php" target="contenedorPrincipal">Ingreso de Productos en Transito</a></li>
 				</ul>	
 			</li>
-			<li><span>Salidas</span>
+			<!--li><span>Salidas</span>
 				<ul>
 					<li><a href="navegador_salidamateriales.php" target="contenedorPrincipal">Listado de Traspasos & Salidas</a></li>
 					<li><a href="navegadorVentas.php" target="contenedorPrincipal">Listado de Ventas</a></li>
@@ -96,15 +96,10 @@ include("datosUsuario.php");
 			<li><a href="navegadorVentaCaja.php" target="contenedorPrincipal">Listado de Ventas</a></li>
 			<li><span>Reportes</span>
 				<ul>
-					<li><span>Movimiento de Almacen</span>
-						<ul>
-							<li><a href="rpt_op_inv_kardex.php" target="contenedorPrincipal">Kardex de Movimiento</a></li>
-							<li><a href="rpt_op_inv_existencias.php" target="contenedorPrincipal">Existencias</a></li>
-							<li><a href="rpt_op_inv_ingresos.php" target="contenedorPrincipal">Ingresos</a></li>
-							<li><a href="rpt_op_inv_salidas.php" target="contenedorPrincipal">Salidas</a></li-->
-							<!--li><a href="rptOCPagar.php" target="contenedorPrincipal">OC por Pagar</a></li-->
-						</ul>
-					</li>	
+					<li><a href="rpt_op_inv_kardex.php" target="contenedorPrincipal">Kardex de Movimiento</a></li>
+					<li><a href="rpt_op_inv_existencias.php" target="contenedorPrincipal">Existencias</a></li>
+					<li><a href="rptOpVentasDocumento.php" target="contenedorPrincipal">Ventas x Documento</a></li>
+					<li><a href="rptOpVentasxItem.php" target="contenedorPrincipal">Ventas x Item</a></li>
 				</ul>
 			</li>
 		</div>			
