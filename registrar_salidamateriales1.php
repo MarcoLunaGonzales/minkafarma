@@ -9,7 +9,7 @@
 
 $indexGerencia=1;
 
-require('conexionmysqli2.inc');
+require('conexionmysqli.inc');
 require('estilos_almacenes.inc');
 require('funciones.php');
 
@@ -154,21 +154,27 @@ function Hidden(){
 }
 function setMateriales(f, cod, nombreMat, stockProducto){
 	var numRegistro=f.materialActivo.value;
-	var nombre_material_x, fecha_venc_x, cantidad_presentacionx, venta_solo_cajax;
+	var nombre_material_x, fecha_venc_x, cantidad_presentacionx, venta_solo_cajax, precio_productox;
 	var datos_material=nombreMat.split("####");
  	nombre_material_x=datos_material[0];  
  	fecha_venc_x=datos_material[1];  
  	cantidad_presentacionx=datos_material[2];
  	venta_solo_cajax=datos_material[3];
+	precio_productox=datos_material[4];
+	
 	document.getElementById('materiales'+numRegistro).value=cod;
 
 	document.getElementById('cod_material'+numRegistro).innerHTML=nombre_material_x;
+
+	document.getElementById('div_idprecio'+numRegistro).innerHTML=precio_productox;
+	
 	
 	document.getElementById('divRecuadroExt').style.visibility='hidden';
 	document.getElementById('divProfileData').style.visibility='hidden';
 	document.getElementById('divProfileDetail').style.visibility='hidden';
 	document.getElementById('divboton').style.visibility='hidden';
-	
+
+
 	document.getElementById("cantidad_unitaria"+numRegistro).focus();
 
 	actStock(numRegistro);
@@ -219,7 +225,102 @@ function mas(obj) {
 	}
 	
 }
-		
+
+
+function masMultiple(form) {
+	var banderaItems0=0;
+	console.log("bandera: "+banderaItems0);
+	var numFilas=num;
+	console.log("numFilas: "+numFilas);
+
+	menos(numFilas);
+	console.log("numFilasActualizado: "+numFilas);
+
+	var productosMultiples=new Array();		
+	for(i=0;i<=form.length-1;i++){
+		if(form.elements[i].type=='checkbox'){  	   
+			if(form.elements[i].checked==true && form.elements[i].name.indexOf("idchk")!==-1 ){ 
+				cadena=form.elements[i].value;
+				console.log("i: "+i+" cadena: "+cadena+" name: "+form.elements[i].name);
+				productosMultiples.push(cadena);
+				banderaItems0=1;
+				num++;
+			}
+		}
+	}
+	num--;
+
+	console.log("bandera: "+banderaItems0);
+	if(banderaItems0==1){
+		num++;
+		div_material_linea=document.getElementById("fiel");			
+
+		/*recuperamos las cantidades de los otros productos*/
+		var inputs = $('form input[name^="cantidad_unitaria"]');
+		var arrayCantidades=[];
+		inputs.each(function() {
+		  var name = $(this).attr('name');
+		  var value = $(this).val();
+		  var index = name.charAt(name.length - 1);
+		  console.log("index: "+index);
+		  arrayCantidades.push([name,value,index]);
+		});
+		/*fin recuperar*/
+		/*recuperamos los stocks de los otros productos*/
+		var inputs = $('form input[name^="stock"]');
+		var arrayStocks=[];
+		inputs.each(function() {
+		  var name = $(this).attr('name');
+		  var value = $(this).val();
+		  var index = name.charAt(name.length - 1);
+		  console.log("index: "+index);
+		  arrayStocks.push([name,value,index]);
+		});
+		/*fin recuperar*/
+
+		ajax=nuevoAjax();
+		ajax.open("POST","ajaxMaterialSalidaMultiple.php?codigo="+numFilas+"&productos_multiple="+productosMultiples,true);
+		ajax.onreadystatechange=function(){
+			if (ajax.readyState==4) {
+				div_material_linea.innerHTML=div_material_linea.innerHTML+ajax.responseText;
+			}
+			for (x=0;x<arrayCantidades.length;x++) {
+				console.log("Iniciando recorrido Matriz");
+				var name_set_stock=arrayStocks[x][0];
+				var value_set_stock=arrayStocks[x][1];
+				var index_set_stock=arrayStocks[x][2];
+				document.getElementById(name_set_stock).value=value_set_stock;
+
+				var name_set=arrayCantidades[x][0];
+				var value_set=arrayCantidades[x][1];
+				var index_set=arrayCantidades[x][2];
+				document.getElementById(name_set).value=value_set;
+			}
+		}		
+		ajax.send(null);
+	}
+	console.log("CONTROL NUM: "+num);
+	Hidden();
+}	
+
+function marcarDesmarcar(f,elem){
+	 var i;
+      var j=0;
+	 if(elem.checked==true){      	       
+      for(i=0;i<=f.length-1;i++){
+       if(f.elements[i].type=='checkbox'){       
+		f.elements[i].checked=true;
+        }
+      }	
+    }else{
+		for(i=0;i<=f.length-1;i++){
+       if(f.elements[i].type=='checkbox'){       
+		f.elements[i].checked=false;
+        }
+      }	
+	}
+}
+
 function menos(numero) {
 	cantidad_items--;
 	console.log("TOTAL ITEMS: "+num);
@@ -229,7 +330,7 @@ function menos(numero) {
  	}
 	fi = document.getElementById('fiel');
 	fi.removeChild(document.getElementById('div'+numero));
-	totales();
+	//totales();
 }
 
 function pressEnter(e, f){
@@ -241,55 +342,126 @@ function pressEnter(e, f){
 	}
 }
 	
-function validar(f)
-{   
+function validar(f){
+
 	f.cantidad_material.value=num;
 	var tipoSalida=document.getElementById("tipoSalida").value;
 	var tipoDoc=document.getElementById("tipoDoc").value;
 	var almacenDestino=document.getElementById("almacen").value;
+	var mensajeGuardar="";
 		
 	var cantidadItems=num;
 	if(tipoSalida==0){
-		alert("El tipo de Salida no puede estar vacio.");
+		Swal.fire("Tipo de Salida!", "El tipo de Salida no puede estar vacio.", "warning");
 		return(false);
 	}
 	if(tipoDoc==0){
-		alert("El tipo de Documento no puede estar vacio.");
+		Swal.fire("Tipo de Documento!", "El tipo de Documento no puede estar vacio.", "warning");
 		return(false);
 	}
+
 	/* Validamos el almacen cuando es traspaso. */
 	if(almacenDestino==0 && tipoSalida==1000){   
- 		alert("El Almacen Destino no puede estar vacio.");
+		Swal.fire("Almacen Destino!", "El Almacen Destino no puede estar vacio.", "warning");
 		return(false);
 	}
-	if(cantidadItems>0){		
-		var item="";
-		var cantidad="";
-		var stock="";
-		
-		for(var i=1; i<=cantidadItems; i++){
-			item=parseFloat(document.getElementById("materiales"+i).value);
-			cantidad=parseFloat(document.getElementById("cantidad_unitaria"+i).value);
-			stock=parseFloat(document.getElementById("stock"+i).value);
 	
-			if(item==0){
-				alert("Debe escoger un item en la fila "+i);
-				return(false);
-			}
-			if(stock<cantidad){
-				alert("No puede sacar cantidades mayores a las existencias. Fila "+i);
-				return(false);
-			}
-		}
-		console.log("Enviando");
-      	document.getElementById("btsubmit").value = "Enviando...";
-		document.getElementById("btsubmit").disabled = true;   
-		document.forms[0].submit();
-		//return(true);
-	}else{
-		alert("La transaccion debe tener al menos 1 item.");
+	/******** Validacion productos vacios ********/
+	var banderaValidacionDetalle=0;
+	var inputs = $('form input[name^="materiales"]');
+	inputs.each(function() {
+  	var value = $(this).val();
+  	if(value==0 || value==""){
+			banderaValidacionDetalle=1;
+  	}else{
+  	}
+	});
+	if(banderaValidacionDetalle==1){
+		Swal.fire("Productos!", "Debe seleccionar un producto para cada fila.", "info");
 		return(false);
 	}
+	/******** Fin validacion productos vacios ********/
+
+	/******** Validacion Cantidades ********/
+	var sumaCantidades=0;
+	var banderaValidacionDetalle=0;
+	var inputs = $('form input[name^="cantidad_unitaria"]');
+	inputs.each(function() {
+  	var value = $(this).val();
+  	if(value<=0 || value==""){
+			banderaValidacionDetalle=1;
+  	}else{
+  		sumaCantidades=sumaCantidades+value;
+  	}
+	});
+	if(banderaValidacionDetalle==1){
+		Swal.fire("Cantidades!", "Hay algún campo con la cantidad vacia o en cero.", "info");
+		return(false);
+	}
+	if(sumaCantidades==0){
+		Swal.fire("Cantidades!", "No hay ningun producto en la Salida.", "info");
+		return(false);
+	}
+	/******** Fin validacion Cantidades ********/
+
+
+	/**************************************************/
+	/************ Validacion de Stocks ****************/
+	/**************************************************/
+	var banderaValidacionStock=document.getElementById("bandera_validacion_stock").value;
+	console.log("bandera stocks valid: "+banderaValidacionStock);
+	banderaValidacionDetalle=0;
+	var inputs_stocks = $('form input[name^="stock"]');
+	var inputs_cantidades = $('form input[name^="cantidad_unitaria"]');
+	for (var i = 0; i < inputs_stocks.length; i++) {
+  	var cantidadFila = parseFloat(inputs_cantidades[i].value);
+  	var stockFila = parseFloat(inputs_stocks[i].value);
+  	if(banderaValidacionStock==1){
+  		if(cantidadFila>stockFila){
+  			banderaValidacionDetalle=1;
+  		}
+  	}else{ 				//para todos los otros casos de stocks
+  		if(cantidadFila>stockFila){
+  			banderaValidacionDetalle=2;
+  		}
+  	}
+  	console.log("cantidadStock: "+stockFila);
+  	console.log( "cantidadFila: "+cantidadFila);
+	}
+	console.log("validacionDetalleStocks:"+banderaValidacionDetalle);
+	if(banderaValidacionDetalle==1){
+		Swal.fire("Stocks!", "NO puede sacar cantidades mayores al stock.", "error");
+		return(false);
+	}
+	if(banderaValidacionDetalle==2){
+		mensajeGuardar="La venta provocara NEGATIVO en el STOCK!";				
+	}
+	/**************************************************/
+	/************ Fin Validacion de Stocks ************/
+	/**************************************************/
+
+	Swal.fire({
+		title: '¿Esta seguro de Realizar la Salida?',
+		text: mensajeGuardar,
+		showCancelButton: true,
+		confirmButtonColor: '#3085d6',
+		cancelButtonColor: '#d33',
+		confirmButtonText: 'Si, Realizar Salida!'
+		}).then((result) => {
+				console.log(result);
+				console.log("resultado: "+result.value);
+		    if (result.value) {
+		      console.log("Enviando");
+		      document.getElementById("btsubmit").value = "Enviando...";
+					document.getElementById("btsubmit").disabled = true;   
+					document.forms[0].submit();
+		    }if(result.dismiss){
+						console.log("Cancelando....");
+						return false;
+		    }
+	});		
+
+	return false;
 }
 	
 	
@@ -317,6 +489,7 @@ else
 <input type="hidden" id="almacen_origen" name="almacen_origen" value="<?=$globalAlmacen?>">
 <input type="hidden" id="sucursal_origen" name="sucursal_origen" value="<?=$globalAgencia?>">
 <input type="hidden" id="no_venta" name="no_venta" value="100">
+<input type="hidden" id="bandera_validacion_stock" name="bandera_validacion_stock" value="<?=obtenerValorConfiguracion($enlaceCon,4)?>">
 
 
 <table class='texto' align='center' width='90%'>
@@ -391,10 +564,11 @@ else
 		</td>
 	</tr>
 	<tr align="center">
-		<th width="50%">Material</th>
-		<th width="20%">Stock</th>
-		<th width="20%">Cantidad</th>
-		<th width="10%">&nbsp;</th>
+		<td width="50%"><b>Material</b></td>
+		<td width="20%"><b>Stock</b></td>
+		<td width="10%"><b>Precio</b></td>
+		<td width="10%"><b>Cantidad</b></td>
+		<td width="10%">&nbsp;</td>
 	</tr>
 	</table>
 </fieldset>
@@ -407,8 +581,6 @@ echo "<div class='divBotones'>
 </div>";
 
 echo "</div>";
-echo "<script type='text/javascript' language='javascript'  src='dlcalendar.js'></script>";
-
 ?>
 
 
@@ -452,6 +624,7 @@ echo "<script type='text/javascript' language='javascript'  src='dlcalendar.js'>
 					<div class="custom-control custom-checkbox small float-left">
                     	<input type="checkbox" class="" id="solo_stock" checked="">
                     	<label class="text-dark font-weight-bold" for="solo_stock">&nbsp;&nbsp;&nbsp;Solo Productos con Stock</label>
+                    	<input type="button" class="boton2peque" onclick="javascript:masMultiple(this.form);" value="Incluir Productos Seleccionados">
          			</div>
 				</td>
 			</tr>

@@ -784,9 +784,9 @@ echo "<table border='0' class='textotit' align='center'>
 echo "<table border='0' class='texto' cellspacing='0' align='center' width='90%' style='border:#ccc 1px solid;'>";
 echo "<tr>
 	<th>Nro. Ingreso: <b>$nro_correlativo<b></th>";
-echo"<th>Fecha: <input type='text' disabled='true' class='texto' value='$fecha' id='fecha' size='10' name='fecha'></th>
+echo"<th><input type='text' disabled='true' class='texto' value='$fecha' id='fecha' size='10' name='fecha'></th>
 	<th>Tipo de Ingreso: </td><th>";
-$sql1="select cod_tipoingreso, nombre_tipoingreso from tipos_ingreso where cod_tipoingreso<>'999' order by nombre_tipoingreso";
+$sql1="select cod_tipoingreso, nombre_tipoingreso from tipos_ingreso where cod_tipoingreso='1000' order by nombre_tipoingreso";
 $resp1=mysqli_query($enlaceCon,$sql1);
 echo "<select name='tipo_ingreso' id='tipo_ingreso' class='texto'>";
 while($dat1=mysqli_fetch_array($resp1))
@@ -801,10 +801,10 @@ $sql1="SELECT td.codigo, td.nombre, td.abreviatura
 		FROM tipos_docs td
 		WHERE td.codigo IN (1,2)";
 $resp1=mysqli_query($enlaceCon,$sql1);
-echo "<select name='tipo_documento' id='tipo_documento' class='texto'>";
+echo "<select name='tipo_documento' id='tipo_documento' class='selectpicker' data-style='btn btn-info'>";
 while($dat1=mysqli_fetch_array($resp1))
 {   $cod_tipoingreso=$dat1[0];
-    $nombre_tipo_documento=$dat1[1];
+    $nombre_tipo_documento=$dat1[2];
     echo "<option value='$cod_tipoingreso'>$nombre_tipo_documento</option>";
 }
 echo "</select></td>";
@@ -817,7 +817,8 @@ echo "<tr><th>Proveedor:</th>";
 $sql1="select p.cod_proveedor, concat(p.nombre_proveedor) from proveedores p 
 			order by 2";
 $resp1=mysqli_query($enlaceCon,$sql1);
-echo "<th align='center'><select name='proveedor' id='proveedor' class='texto' style='width:200px' required>";
+echo "<th align='center'>
+<select name='proveedor' id='proveedor' class='selectpicker' data-style='btn btn-info' data-live-search='true' required>";
 echo "<option value=''>-</option>";
 while($dat1=mysqli_fetch_array($resp1))
 {   $codigo=$dat1[0];
@@ -828,9 +829,6 @@ while($dat1=mysqli_fetch_array($resp1))
 }
 echo "</select></th>";
 
-echo "<th colspan='1'>Observaciones:</th>
-	<th colspan='1'><input type='text' class='texto' name='observaciones' value='$observaciones' size='40'></th>";
-
 echo "<th>Tipo de Pago:</th>";
 $sql1="SELECT tp.cod_tipopago, tp.nombre_tipopago
 		FROM tipos_pago tp
@@ -838,7 +836,8 @@ $sql1="SELECT tp.cod_tipopago, tp.nombre_tipopago
 		OR tp.cod_tipopago = 4
 		ORDER BY tp.cod_tipopago ASC";
 $resp1=mysqli_query($enlaceCon,$sql1);
-echo "<th align='center'><select name='cod_tipopago' id='cod_tipopago' class='texto' style='width:200px' required>";
+echo "<th align='center'>
+<select name='cod_tipopago' id='cod_tipopago' class='selectpicker' data-style='btn btn-info' required>";
 while($dat1=mysqli_fetch_array($resp1))
 {   $codigo=$dat1[0];
     $nombre=$dat1[1];
@@ -849,7 +848,15 @@ while($dat1=mysqli_fetch_array($resp1))
 echo "</select></th>";
 
 echo "<th colspan='1'>Días de Credito: <input type='number' class='texto' name='dias_credito' id='dias_credito' min='0' max='180' readonly></th>
-<th colspan='1'>Fecha Documento Proveedor: <input type='date' class='texto' name='fecha_factura_proveedor' id='fecha_factura_proveedor'></th></tr>";
+<th colspan='1'>Fecha Documento Proveedor: <input type='date' class='texto' name='fecha_factura_proveedor' id='fecha_factura_proveedor'></th>";
+
+echo "<th colspan='1'>Observaciones:</th>
+	<th colspan='1'><textarea class='texto' name='observaciones' value='$observaciones' size='20'></textarea></th>";
+
+
+echo "</tr>";
+
+
 echo "</table><br>";
 ?>
         <div class="contenedor">

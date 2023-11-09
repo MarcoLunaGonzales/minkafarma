@@ -231,7 +231,7 @@ function nuevoAjax()
 }
 
 function listaMateriales(f){
-		var stock=0;
+	var stock=0;
 	if($("#solo_stock").is(":checked")){
 		stock=1;
 	}
@@ -873,6 +873,29 @@ function setMateriales(f, cod, nombreMat, stockProducto){
 		console.log('cambiando a venta por caja.'+cantidad_presentacionx);
 	}
 	document.getElementById("cantidad_unitaria"+numRegistro).focus();
+
+	//Validacion para poner en amarillo cuando el stock es menor a la cantidad de presentacion.
+	var tableProductoX=document.getElementById("data"+numRegistro);
+	if(stockProducto<=cantidad_presentacionx){
+		tableProductoX.style.backgroundColor = "yellow";
+	}
+	//Validacion en caso de la fecha de Vencimiento poner en rojo cuando son menos de 3 meses
+	var numeroMesesControlVencimiento = document.getElementById('nro_meses_control_vencimiento').value;
+	console.log("control Vencimiento en meses: "+numeroMesesControlVencimiento);
+	var fechaActual = new Date();
+	var tempFechaDiv = document.createElement("div");
+	tempFechaDiv.innerHTML = fecha_venc_x;
+	var fechaObjetivo = tempFechaDiv.textContent || tempFechaDiv.innerText;
+	console.log("Fecha Vencimiento X: "+fechaObjetivo);
+	var partesFecha = fechaObjetivo.split("/");
+	var mesObjetivo = parseInt(partesFecha[0]);
+	var anioObjetivo = parseInt(partesFecha[1]);
+	var mesesFaltantes = (anioObjetivo - fechaActual.getFullYear()) * 12 + mesObjetivo - (fechaActual.getMonth() + 1);
+	console.log("Meses faltantes: " + mesesFaltantes);
+	if(numeroMesesControlVencimiento>0 && mesesFaltantes<=numeroMesesControlVencimiento){
+		tableProductoX.style.backgroundColor = "red";
+	}
+
 
 	//actStock(numRegistro);
 	ajaxPrecioItem(numRegistro);
@@ -1768,6 +1791,7 @@ if(isset($_GET['file'])){
 	<input type="hidden" id="bandera_validacion_stock" name="bandera_validacion_stock" value="<?=obtenerValorConfiguracion($enlaceCon,4)?>">
 	<input type="hidden" id="bandera_efectivo_recibido" name="bandera_efectivo_recibido" value="<?=obtenerValorConfiguracion($enlaceCon,21)?>">
 	<input type="hidden" id="bandera_msg_guardar" name="bandera_msg_guardar" value="<?=obtenerValorConfiguracion($enlaceCon,23)?>">
+	<input type="hidden" id="nro_meses_control_vencimiento" name="nro_meses_control_vencimiento" value="<?=obtenerValorConfiguracion($enlaceCon,28)?>">
 
 
 <table class='' width='100%' style='width:100%;margin-top:-24px !important;'>
@@ -2056,7 +2080,7 @@ if($banderaMensajesDoblePantalla==1){
 				<div class="custom-control custom-checkbox small float-left">
                     <input type="checkbox" class="" id="solo_stock" checked="">
                     <label class="text-dark font-weight-bold" for="solo_stock">&nbsp;&nbsp;&nbsp;Solo Productos con Stock</label>
-         </div>
+				</div>
 			</td>
 			<td>
 				<div class="row">

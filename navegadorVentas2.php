@@ -341,7 +341,7 @@ function HiddenFacturarEditar(){
             formData.append('edit_cod_vendedor', $('#edit_cod_vendedor').val());
             formData.append('edit_cod_tipopago', $('#edit_cod_tipopago').val());
             $.ajax({
-                url:"actualizarFactura.php?cod_venta_edit="+$('#cod_venta_edit').val()+"&edit_cod_vendedor="+$('#edit_cod_vendedor').val()+"&edit_cod_tipopago="+$('#edit_cod_tipopago').val(),
+                url:"actualizarNR.php?cod_venta_edit="+$('#cod_venta_edit').val()+"&edit_cod_vendedor="+$('#edit_cod_vendedor').val()+"&edit_cod_tipopago="+$('#edit_cod_tipopago').val(),
                 type:"POST",
                 contentType: false,
                 processData: false,

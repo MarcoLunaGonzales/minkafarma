@@ -24,8 +24,8 @@ $banderaDescuentoAbierto=obtenerValorConfiguracion($enlaceCon,54);
 <!--link rel="STYLESHEET" type="text/css" href="stilos.css" /-->
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 
-<table border="0" align="center" width="100%"  class="texto100" id="data<?php echo $num?>" >
-<tr bgcolor="#FFFFFF">
+<table border="0" align="center" width="100%"  class="texto100" id="data<?php echo $num?>" style="background-color: white;">
+<tr>
 
 <td width="10%" align="center">
 	<a href="javascript:buscarMaterial(form1, <?php echo $num;?>)"><img src='imagenes/buscar2.png' title="Buscar Producto" width="30"></a>

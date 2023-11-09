@@ -32,11 +32,11 @@ $sql="SELECT
  m.codigo_anterior, m.descripcion_material, 
  sd.cantidad_unitaria, sd.precio_unitario, sd.descuento_unitario, sd.monto_unitario,
  (select pre.precio from precios pre where pre.cod_precio=1 and pre.cod_ciudad=1 and pre.codigo_material=m.codigo_material)as precio_registrado,
- (select concat(f.paterno,' ',f.nombres) from funcionarios f where f.codigo_funcionario=s.cod_chofer)as vendedor
+ (select concat(f.paterno,' ',f.nombres) from funcionarios f where f.codigo_funcionario=s.cod_chofer)as vendedor, s.descuento, s.monto_total
 from salida_almacenes s, salida_detalle_almacenes sd, material_apoyo m
 where s.cod_salida_almacenes=sd.cod_salida_almacen and  sd.cod_material=m.codigo_material and 
 s.cod_almacen in (select a.cod_almacen from almacenes a where a.cod_ciudad='$rpt_territorio') and s.fecha BETWEEN '$fecha_iniconsulta' and '$fecha_finconsulta' and s.salida_anulada=0  and s.cod_chofer in ($rpt_persona)
-and s.cod_tiposalida=1001 order by vendedor, lineaproveedor, s.fecha, m.descripcion_material;";
+and s.cod_tiposalida=1001 order by vendedor, s.fecha, s.nro_correlativo, m.descripcion_material;";
 
 //echo $sql;
 
@@ -99,7 +99,7 @@ while($datos=mysqli_fetch_array($resp)){
 	$precioRegistradoF=formatonumeroDec($precioRegistrado);
 	
 	$nombreVendedor=$datos[13];
-	
+
 	$diferenciaPorcentualPrecio=(($precioItem-$precioRegistrado)/$precioRegistrado)*100;
 	$diferenciaPorcentualPrecioF=formatonumeroDec($diferenciaPorcentualPrecio);
 	$diferenciaBsPrecio=$precioItem-$precioRegistrado;
@@ -110,12 +110,27 @@ while($datos=mysqli_fetch_array($resp)){
 		$txtDiferenciaBsPrecio="<span style='color:red; font-size:15px;'>$diferenciaBsPrecioF</span>";
 		$sumaDiferenciaPreciosCabecera=$sumaDiferenciaPreciosCabecera+$diferenciaBsPrecio;
 	}
-	
-	$totalItem=$cantidadItem*$precioItem;
-	$totalItemF=formatonumeroDec($totalItem);
 
+
+	$totalItem=$cantidadItem*$precioItem;
+	$totalItemF=formatonumeroDec($totalItem);	
 	$montoItem=$totalItem-$descuentoVenta;
+	
+	/* Esta parte saca el descuento cabecera */
+	$descuentoVentaCab=$datos[14];
+	$montoNotaCab=$datos[15];
+	$descuentoAdiProducto=0;
+	if($descuentoVentaCab>0){
+		$porcentajeVentaProd=($montoItem/$montoNotaCab);
+		$descuentoAdiProducto=($descuentoVentaCab*$porcentajeVentaProd);
+		$montoItem=$montoItem-$descuentoAdiProducto;
+	}
+	/* Fin saca el descuento cabecera */
+
+
 	$montoItemF=formatonumeroDec($montoItem);
+
+	
 
 
 	if($vendedorPivote!=$nombreVendedor && $nombreVendedor!="XXX" ){
@@ -145,15 +160,18 @@ while($datos=mysqli_fetch_array($resp)){
 		$vendedorPivote=$nombreVendedor;
 	}
 
-	$subTotalDescuentos=$subTotalDescuentos+$descuentoVenta;
+	$subTotalDescuentos=$subTotalDescuentos+$descuentoVenta+$descuentoAdiProducto;
+
+	//Sumamos el total de las ventas brutas
 	$subTotalVenta=$subTotalVenta+$totalItem;
+
 	if($diferenciaBsPrecio<0){
 		$subTotalDiferenciaPrecios=$subTotalDiferenciaPrecios+$diferenciaBsPrecio;
 	}
 
 	$totalVenta=$totalVenta+$montoItem;
 	$totalVentaBruta=$totalVentaBruta+$totalItem;
-	$totalDescuentos=$totalDescuentos+$descuentoVenta;
+	$totalDescuentos=$totalDescuentos+$descuentoVenta+$descuentoAdiProducto;
 
 	if($rpt_ver==2){
 		echo "<tr>
@@ -192,22 +210,13 @@ $totalDescuentosF=formatonumeroDec($totalDescuentos);
 
 $sumaDiferenciaPreciosCabeceraF="<span style='color:red; font-size:16px;'>$sumaDiferenciaPreciosCabecera</span>";
 
-/*echo "<tr>
-	<td>&nbsp;</td>
-	<td>&nbsp;</td>
-	<td>&nbsp;</td>
-	<td>&nbsp;</td>
-	<td>&nbsp;</td>
-	<td>&nbsp;</td>
-	<td>&nbsp;</td>
-	<td>&nbsp;</td>
-	<td>&nbsp;</td>
-	<td>Total:</td>
-	<td align='right'>$sumaDiferenciaPreciosCabeceraF</td>
+//<!--td align='right'>$sumaDiferenciaPreciosCabeceraF</td>
+echo "<tr>
+	<td colspan='7'>TOTAL:</td>
 	<td align='right'>$totalVentaBrutaF</td>
 	<td align='right'>$totalDescuentosF</td>
 	<td align='right'>$totalVentaF</td>
-<tr>";*/
+<tr>";
 
 echo "</table>";
 include("imprimirInc.php");

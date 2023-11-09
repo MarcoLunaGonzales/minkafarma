@@ -13,7 +13,7 @@ $contacto  = "";
 ?>
 <center>
     <br/>
-    <h1>Adicionar Distribuidor</h1>
+    <h2>Adicionar Proveedor & Representante</h2>
     <table class="texto">
         <tr>
             <th>Codigo</th>

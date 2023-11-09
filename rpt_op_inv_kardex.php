@@ -74,7 +74,6 @@ function buscarProductoReporte(){
 $global_agencia=$_COOKIE['global_agencia'];
 $fecha_rptdefault=date("d/m/Y");
 
-$rptValorado=$_GET["rpt_valorado"];
 
 echo "<h1>Reporte Kardex de Existencia Fisica</h1><br>";
 echo"<body onLoad='cargalistadoAlmacenes();'>";

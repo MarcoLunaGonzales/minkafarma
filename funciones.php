@@ -241,33 +241,45 @@ function stockProducto($enlaceCon,$almacen, $item){
 function stockProductoAFecha($enlaceCon, $almacen, $item, $fechaInventario){
 	$fechaActual=$fechaInventario;
 	$fechaInicioSistema="2000-01-01";
-		   $sql_ingresos="select IFNULL(sum(id.cantidad_unitaria),0) from ingreso_almacenes i, ingreso_detalle_almacenes id
-			where i.cod_ingreso_almacen=id.cod_ingreso_almacen and i.fecha between '$fechaInicioSistema' and '$fechaActual' and i.cod_almacen='$almacen'
-			and id.cod_material='$item' and i.ingreso_anulado=0";
+	$sqlAlmacenes="select cod_almacen from almacenes where cod_almacen in ($almacen)";
+	$respAlmacenes=mysqli_query($enlaceCon,$sqlAlmacenes);
+	$stock2=0;
+	while($datAlmacenes=mysqli_fetch_array($respAlmacenes)){
 			$cant_ingresos=0;
 			$cant_salidas=0;
+			$codAlmacenX=$datAlmacenes[0];
+
+		   $sql_ingresos="select IFNULL(sum(id.cantidad_unitaria),0) from ingreso_almacenes i, ingreso_detalle_almacenes id
+			where i.cod_ingreso_almacen=id.cod_ingreso_almacen and i.fecha between '$fechaInicioSistema' and '$fechaActual' and i.cod_almacen='$codAlmacenX'
+			and id.cod_material='$item' and i.ingreso_anulado=0";
 			$resp_ingresos=mysqli_query($enlaceCon,$sql_ingresos);
 			if($dat_ingresos=mysqli_fetch_array($resp_ingresos)){
 				$cant_ingresos=$dat_ingresos[0];	
 			}
 			$sql_salidas="select IFNULL(sum(sd.cantidad_unitaria),0) from salida_almacenes s, salida_detalle_almacenes sd
-			where s.cod_salida_almacenes=sd.cod_salida_almacen and s.fecha between '$fechaInicioSistema' and '$fechaActual' and s.cod_almacen='$almacen'
+			where s.cod_salida_almacenes=sd.cod_salida_almacen and s.fecha between '$fechaInicioSistema' and '$fechaActual' and s.cod_almacen='$codAlmacenX'
 			and sd.cod_material='$item' and s.salida_anulada=0";
 			$resp_salidas=mysqli_query($enlaceCon,$sql_salidas);
 			if($dat_salidas=mysqli_fetch_array($resp_salidas)){
 				$cant_salidas=$dat_salidas[0];
 			}
-			$stock2=$cant_ingresos-$cant_salidas;
-			return($stock2);
+			$stock2+=$cant_ingresos-$cant_salidas;		
+	}
+	return($stock2);
 }
+
 function ingresosItemPeriodo($enlaceCon, $almacen, $item, $fechaInicio, $fechaFinal){
-	$sql_ingresos="select IFNULL(sum(id.cantidad_unitaria),0) from ingreso_almacenes i, ingreso_detalle_almacenes id
-	where i.cod_ingreso_almacen=id.cod_ingreso_almacen and i.fecha between '$fechaInicio' and '$fechaFinal' and i.cod_almacen='$almacen'
-	and id.cod_material='$item' and i.ingreso_anulado=0";
+	$sqlAlmacenes="select cod_almacen from almacenes where cod_almacen in ($almacen)";
+	$respAlmacenes=mysqli_query($enlaceCon,$sqlAlmacenes);
 	$cant_ingresos=0;
-	$resp_ingresos=mysqli_query($enlaceCon,$sql_ingresos);
-	if($dat_ingresos=mysqli_fetch_array($resp_ingresos)){
-		$cant_ingresos=$dat_ingresos[0];	
+	while($datAlmacenes=mysqli_fetch_array($respAlmacenes)){
+		$codAlmacenX=$datAlmacenes[0];
+		$sql_ingresos="select IFNULL(sum(id.cantidad_unitaria),0) from ingreso_almacenes i, ingreso_detalle_almacenes id
+		where i.cod_ingreso_almacen=id.cod_ingreso_almacen and i.fecha between '$fechaInicio' and '$fechaFinal' and i.cod_almacen='$codAlmacenX' and id.cod_material='$item' and i.ingreso_anulado=0";
+		$resp_ingresos=mysqli_query($enlaceCon,$sql_ingresos);
+		if($dat_ingresos=mysqli_fetch_array($resp_ingresos)){
+			$cant_ingresos+=$dat_ingresos[0];	
+		}		
 	}
 	return($cant_ingresos);
 }
@@ -282,13 +294,17 @@ function ingresosItemPeriodoxCompra($enlaceCon, $almacen, $item, $fechaInicio, $
 	return($cant_ingresos);
 }
 function salidasItemPeriodo($enlaceCon, $almacen, $item, $fechaInicio, $fechaFinal){
+	$sqlAlmacenes="select cod_almacen from almacenes where cod_almacen in ($almacen)";
+	$respAlmacenes=mysqli_query($enlaceCon,$sqlAlmacenes);
 	$cant_salidas=0;
-	$sql_salidas="select IFNULL(sum(sd.cantidad_unitaria),0) from salida_almacenes s, salida_detalle_almacenes sd
-	where s.cod_salida_almacenes=sd.cod_salida_almacen and s.fecha between '$fechaInicio' and '$fechaFinal' and s.cod_almacen='$almacen'
-	and sd.cod_material='$item' and s.salida_anulada=0";
-	$resp_salidas=mysqli_query($enlaceCon,$sql_salidas);
-	if($dat_salidas=mysqli_fetch_array($resp_salidas)){
-		$cant_salidas=$dat_salidas[0];
+	while($datAlmacenes=mysqli_fetch_array($respAlmacenes)){
+		$codAlmacenX=$datAlmacenes[0];
+		$sql_salidas="select IFNULL(sum(sd.cantidad_unitaria),0) from salida_almacenes s, salida_detalle_almacenes sd
+		where s.cod_salida_almacenes=sd.cod_salida_almacen and s.fecha between '$fechaInicio' and '$fechaFinal' and s.cod_almacen='$codAlmacenX' and sd.cod_material='$item' and s.salida_anulada=0";
+		$resp_salidas=mysqli_query($enlaceCon,$sql_salidas);
+		if($dat_salidas=mysqli_fetch_array($resp_salidas)){
+			$cant_salidas+=$dat_salidas[0];
+		}
 	}
 	return($cant_salidas);
 }
@@ -1036,6 +1052,17 @@ function obtenerNombreDesCiudadesRegistrados($codigo){
   }
 }
 
+function obtenerCiudadDesdeAlmacen($codigo){
+  require("conexionmysqli2.inc");
+  $sql_detalle="SELECT cod_ciudad from almacenes where cod_almacen='$codigo'";
+  $resp=mysqli_query($enlaceCon,$sql_detalle);
+  $codCiudad=0;
+  while($detalle=mysqli_fetch_array($resp)){	
+  	   $codCiudad=$detalle[0];
+  }  
+  return($codCiudad);
+}
+
 function obtenerNombreDesCiudadesRegistradosGeneral($codigo){
   $cantidad=obtenerTotalCiudades();
   require("conexionmysqli2.inc");
@@ -1265,5 +1292,22 @@ function obtenerNombreProveedor($codigo){
   mysqli_close($enlaceCon); 
   return $proveedor;
 }
+function obtenerProveedorLineaInventario($codigo){
+  require("conexionmysqli2.inc");
+  $sql_detalle="SELECT DISTINCT p.nombre_proveedor 
+	FROM inventarios_sucursal_detalle d 
+	JOIN material_apoyo m on m.codigo_material=d.cod_material
+	JOIN proveedores_lineas l on l.cod_linea_proveedor=m.cod_linea_proveedor
+	JOIN proveedores p on p.cod_proveedor=l.cod_proveedor
+	where d.cod_inventariosucursal=$codigo";
+  $proveedor="";			
+  $resp=mysqli_query($enlaceCon,$sql_detalle);
+  while($detalle=mysqli_fetch_array($resp)){	
+  	   $proveedor=$detalle[0];	
+  } 
+  mysqli_close($enlaceCon);
+  return $proveedor; 
+}
+
 
 ?>

@@ -3,33 +3,16 @@
 require("../../conexionmysqli.php");
 require("../../estilos_almacenes.inc");
 
-$codProv   = $_GET["codprov"];
+$codProv   = "";
 $nomProv   = "";
 $direccion = "";
 $telefono1 = "";
 $telefono2 = "";
 $contacto  = "";
-$consulta="
-    SELECT p.cod_proveedor, p.nombre_proveedor, p.direccion, p.telefono1, p.telefono2, p.contacto 
-    FROM proveedores AS p 
-    WHERE p.cod_proveedor = $codProv ORDER BY p.nombre_proveedor ASC
-";
-$rs=mysqli_query($enlaceCon,$consulta);
-$nroregs=mysqli_num_rows($rs);
-if($nroregs==1)
-   {$reg=mysqli_fetch_array($rs);
-    //$codProv = $reg["cod_proveedor"];
-    $nomProv = $reg["nombre_proveedor"];
-    $direccion = $reg["direccion"];
-    $telefono1 = $reg["telefono1"];
-    $telefono2 = $reg["telefono2"];
-    $contacto  = $reg["contacto"];
-   }
 
 ?>
 <center>
-    <br/>
-    <h2>Editar Proveedor & Representante</h2>
+    <h2>Adicionar Distribuidor</h2>
     <table class="texto">
         <tr>
             <th>Codigo</th>
@@ -37,7 +20,7 @@ if($nroregs==1)
             <th>Direccion</th>
         </tr>
         <tr>
-            <td><span id="codpro"><?php echo "$codProv"; ?></span></td>
+            <td><span id="id"><?php echo "$codProv"; ?></span></td>
             <td><input type="text" id="nompro" value="<?php echo "$nomProv"; ?>"/></td>
             <td><input type="text" id="dir" value="<?php echo "$direccion"; ?>"/></td>
         </tr>
@@ -53,7 +36,7 @@ if($nroregs==1)
         </tr>
     </table>
 </center>
-<div class="divBotones"> 
-	<input class="boton" type="button" value="Modificar" onclick="javascript:modificarProveedor();" />
-    <input class="boton2" type="button" value="Cancelar" onclick="javascript:listadoProveedores();" />
+<div class="divBotones">
+    <input class="boton" type="button" value="Guardar" onclick="javascript:adicionarDistribuidor();" />
+    <input class="boton2" type="button" value="Cancelar" onclick="javascript:listadoDistribuidores();" />
 </div>

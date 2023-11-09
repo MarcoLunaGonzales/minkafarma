@@ -25,7 +25,13 @@ require("conexion.inc");
 	</div>
 </td>
 
-<td align="center" width="20%">
+<td width="10%" align="center">
+	<div id='div_idprecio<?php echo $num;?>' class='textomedianonegro'>
+
+	</div>
+</td>
+
+<td align="center" width="10%">
 	<input class="inputnumber" type="number" value="" min="1" id="cantidad_unitaria<?php echo $num;?>" name="cantidad_unitaria<?php echo $num;?>" required> 
 </td>
 

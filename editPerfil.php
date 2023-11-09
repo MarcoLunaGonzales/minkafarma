@@ -256,9 +256,9 @@ if(isset($_POST["clave_ant"])){
   <header>
     
     <!-- here’s the avatar -->
-    <a href="http://ali.shahab.pk">
+    <!--a href="http://ali.shahab.pk"-->
       <img src="imagenes/person5.jpg">
-    </a>
+    <!--/a-->
 
     <!-- the username -->
     <h1><?=$nombreUsuarioSesion?></h1>

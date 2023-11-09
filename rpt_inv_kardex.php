@@ -37,7 +37,7 @@ $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
 	$nombre_almacen=$dat_almacen[0];
 
 	$consultaPrecio="select p.`precio` from precios p where p.`codigo_material`='$rpt_item' and p.cod_precio=1";
-//	echo $consultaPrecio;
+	//echo $consultaPrecio;
   $respProd=mysqli_query($enlaceCon,$consultaPrecio);
   $precioProd=mysqli_fetch_array($respProd);
   $precioVenta=$precioProd[0];
@@ -48,14 +48,9 @@ $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
 
 
 
-	if($tipo_item==1)
-	{	$nombre_tipoitem="Muestra Médica";
-		$sql_item="select descripcion, presentacion from muestras_medicas where codigo='$rpt_item'";
-	}
-	else
-	{	$nombre_tipoitem="Material de Apoyo";
-		$sql_item="select descripcion_material,'' as pres from material_apoyo where codigo_material='$rpt_item'";
-	}
+	$nombre_tipoitem="Material de Apoyo";
+	$sql_item="select descripcion_material,'' as pres from material_apoyo where codigo_material='$rpt_item'";
+
 	$resp_item=mysqli_query($enlaceCon,$sql_item);
 	$dat_item=mysqli_fetch_array($resp_item);
 	$nombre_item="$dat_item[0] $dat_item[1]";
@@ -258,7 +253,7 @@ $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
 			<td align='left' class='bg-plomoclaro'>$nombre_responsable</td></tr>";
 		}
 		//hacemos la consulta para salidas
-		$sql_salidas="select s.nro_correlativo, sd.cantidad_unitaria, ts.nombre_tiposalida, s.observaciones, s.territorio_destino, s.cod_salida_almacenes,sd.cantidad_unitaria,s.created_by,s.cod_tipo_doc,s.razon_social,s.almacen_destino, s.cod_chofer, s.hora_salida
+		$sql_salidas="select s.nro_correlativo, sd.cantidad_unitaria, ts.nombre_tiposalida, s.observaciones, s.territorio_destino, s.cod_salida_almacenes,sd.cantidad_unitaria,s.created_by,s.cod_tipo_doc,s.razon_social,s.almacen_destino, s.cod_chofer, s.hora_salida, (((sd.cantidad_unitaria*sd.precio_unitario)-sd.descuento_unitario)/sd.cantidad_unitaria)as precio_venta
 		from salida_almacenes s, salida_detalle_almacenes sd, tipos_salida ts
 		where s.cod_tiposalida=ts.cod_tiposalida and s.cod_salida_almacenes=sd.cod_salida_almacen and s.cod_almacen='$rpt_almacen' and
 		s.salida_anulada=0 and sd.cod_material='$rpt_item' and s.fecha='$fecha_consulta'";
@@ -275,6 +270,12 @@ $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
 			$territorio_destino=$dat_salidas['almacen_destino'];
 			$codPersonalSalida=$dat_salidas['cod_chofer'];
 			$horaSalida=$dat_salidas['hora_salida'];
+			$precioVentaTransaccion=$dat_salidas['precio_venta'];
+
+			if($precioVentaTransaccion==0){
+				$precioVentaTransaccion=$precioVenta;
+			}
+			$precioVentaTransaccion=number_format($precioVentaTransaccion,2,'.','');
 
           $sqlResponsable="select CONCAT(SUBSTRING_INDEX(nombres,' ', 1),' ',SUBSTR(paterno, 1, 1),'.') from funcionarios where codigo_funcionario='".$codPersonalSalida."'";
 	        $respResponsable=mysqli_query($enlaceCon,$sqlResponsable);
@@ -335,7 +336,7 @@ $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
 			   <td align='right'class=''>0</td>
 			   <td align='right'class=''>$cantidad_salidaF</td>			   
 			   <td align='right'class='bg-verde-claro'>$cantidad_kardexF</td>
-			   <td align='right'class='bg-secundario'>$precioVenta</td>
+			   <td align='right'class='bg-secundario'>$precioVentaTransaccion</td>
 			   <td align='left'>$nombre_salida</td>
 			   <td align='left'>$nombre_territorio_destino</td>
 			   <td align='left'>$nro_ingreso_destino</td><td align='left' class='bg-plomoclaro'>$nombre_responsable</td></tr>";

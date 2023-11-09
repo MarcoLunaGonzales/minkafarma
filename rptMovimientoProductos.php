@@ -6,9 +6,8 @@ require('function_formatofecha.php');
 require('conexionmysqli.php');
 require("funciones.php");
  
-$rpt_territorio=$_POST["rpt_territorio"];
-$rpt_almacen=$_POST["rpt_almacen"];
 
+$rptAlmacen=$_POST["rpt_almacen"];
 $rptGrupo=$_POST["rpt_grupo"];
 
 $rptFechaInicio=$_POST["rpt_ini"];
@@ -19,27 +18,32 @@ $fechaInicioPivot = $rptFechaInicio;
 $fechaInicioPivot=date("Y-m-d",strtotime($fechaInicioPivot."- 1 days")); 
 //echo "inicio pivot: ".$fechaInicioPivot;
 
+//echo "almacen: ".$rptAlmacen;
 
 $rptGrupoS="";
 if($rptGrupo!=""){
 	$rptGrupoS=implode(",",$rptGrupo);
 }
 
+$rptAlmacenS="";
+if($rptAlmacen!=""){
+	$rptAlmacenS=implode(",",$rptAlmacen);
+}
+$rptAlmacenPrincipal=$rptAlmacen[0];
+
+
 $fecha_reporte=date("Y-m-d");
 $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
 
-
-	$sql_nombre_territorio="select descripcion from ciudades where cod_ciudad='$rpt_territorio'";
-	$resp_nombre_territorio=mysqli_query($enlaceCon,$sql_nombre_territorio);
-	$datos_nombre_territorio=mysqli_fetch_array($resp_nombre_territorio);
-	$nombre_territorio=$datos_nombre_territorio[0];
-	$sql_nombre_almacen="select nombre_almacen from almacenes where cod_almacen='$rpt_almacen'";
+	$sql_nombre_almacen="select nombre_almacen from almacenes where cod_almacen in ($rptAlmacenS)";
 	$resp_nombre_almacen=mysqli_query($enlaceCon,$sql_nombre_almacen);
-	$datos_nombre_almacen=mysqli_fetch_array($resp_nombre_almacen);
-	$nombre_almacen=$datos_nombre_almacen[0];
+	$nombre_almacen="";
+	while($datos_nombre_almacen=mysqli_fetch_array($resp_nombre_almacen)){
+		$nombre_almacen.=$datos_nombre_almacen[0]." - ";
+	}	
 	
 	echo "<table align='center' class='textotit' width='70%'><tr><td align='center'>Reporte Movimiento de Productos
-	<br>Territorio: $nombre_territorio <br>Nombre Almacen: <strong>$nombre_almacen</strong>
+	<br>Almacen: <strong>$nombre_almacen</strong>
 	<br>Periodo: <strong>$rptFechaInicio  a  $rptFechaFinal</strong><br>$txt_reporte</td></tr></table>";
 	
 		//desde esta parte viene el reporte en si
@@ -70,17 +74,18 @@ $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
 			$cantidadPresentacion=$datos_item[2];
 			$nombreDistribuidor=$datos_item[3];
 			
+			$rpt_territorio=obtenerCiudadDesdeAlmacen($rptAlmacenPrincipal);
 			$precio0=precioVenta($enlaceCon,$codigo_item,$rpt_territorio);
 
 			$cadena_mostrar="";
 
 			$cadena_mostrar.="<tr><td>$indice</td><td>$nombreDistribuidor</td><td>$codigo_item</td><td>$nombre_item</td><td align='center'>$precio0</td>";
 
-			$stockAnterior=stockProductoAFecha($enlaceCon, $rpt_almacen, $codigo_item, $fechaInicioPivot);
+			$stockAnterior=stockProductoAFecha($enlaceCon, $rptAlmacenS, $codigo_item, $fechaInicioPivot);
 
 			//echo $stock2;
-			$cantidadIngresosPeriodo=ingresosItemPeriodo($enlaceCon, $rpt_almacen, $codigo_item, $rptFechaInicio, $rptFechaFinal);
-			$cantidadSalidasPeriodo=salidasItemPeriodo($enlaceCon, $rpt_almacen, $codigo_item, $rptFechaInicio, $rptFechaFinal);
+			$cantidadIngresosPeriodo=ingresosItemPeriodo($enlaceCon, $rptAlmacenS, $codigo_item, $rptFechaInicio, $rptFechaFinal);
+			$cantidadSalidasPeriodo=salidasItemPeriodo($enlaceCon, $rptAlmacenS, $codigo_item, $rptFechaInicio, $rptFechaFinal);
 			
 			$saldoFinalItem=0;
 			$saldoFinalItem=$stockAnterior+$cantidadIngresosPeriodo-$cantidadSalidasPeriodo;

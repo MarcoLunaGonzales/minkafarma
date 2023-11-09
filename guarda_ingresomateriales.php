@@ -124,11 +124,13 @@ if($sql_inserta==1){
 			$descuento_unitario=0;
 			if(isset($_POST["descuento_porcentaje$i"])){
 				$descuento_unitario = $_POST["descuento_porcentaje$i"];
+				//AQUI SACAMOS EL COSTO UNITARIO CON EL DESCUENTO
+				$costo=$precioUnitario*(1-($descuento_unitario/100));
 			}
 			
 			$consulta="insert into ingreso_detalle_almacenes(cod_ingreso_almacen, cod_material, cantidad_unitaria, cantidad_restante, lote, fecha_vencimiento, 
 			precio_bruto, costo_almacen, costo_actualizado, costo_actualizado_final, costo_promedio, precio_neto, cod_ubicacionestante, cod_ubicacionfila, descuento_unitario) 
-			values($codigo,'$cod_material',$cantidad,$cantidad,'$lote','$fechaVencimiento',$precioUnitario,$precioUnitario,$costo,$costo,$costo,$costo,'0','0','$descuento_unitario')";
+			values($codigo,'$cod_material',$cantidad,$cantidad,'$lote','$fechaVencimiento',$precioUnitario,$costo,$costo,$costo,$costo,$costo,'0','0','$descuento_unitario')";
 			//echo "bbb:$consulta";
 			$sql_inserta2 = mysqli_query($enlaceCon,$consulta);
 			

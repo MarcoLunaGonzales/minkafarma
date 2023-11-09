@@ -15,38 +15,18 @@ echo "<h1>Reporte Movimiento de Productos</h1>";
 
 echo"<form method='POST' action='rptMovimientoProductos.php'  target='_blank'>";
 	
-	echo"\n<table class='texto' align='center' cellSpacing='0' width='50%'>\n";
-	echo "<tr><th align='left'>Territorio</th><td><select name='rpt_territorio' class='texto' onChange='envia_select(this.form)'>";
-	
-	$sql="select cod_ciudad, descripcion from ciudades order by descripcion";
-	
-	$resp=mysqli_query($enlaceCon,$sql);
-	echo "<option value='0'>Todos</option>";
-	while($dat=mysqli_fetch_array($resp))
-	{	$codigo_ciudad=$dat[0];
-		$nombre_ciudad=$dat[1];
-		if($rpt_territorio==$codigo_ciudad)
-		{	echo "<option value='$codigo_ciudad' selected>$nombre_ciudad</option>";
-		}
-		else
-		{	echo "<option value='$codigo_ciudad'>$nombre_ciudad</option>";
-		}
-	}
-	echo "</select></td></tr>";
+	echo"\n<table class='texto' align='center' cellSpacing='0' width='50%'>\n";	
 	
 	
-	echo "<tr><th align='left'>Almacen</th><td><select name='rpt_almacen' class='texto'>";
-	$sql="select cod_almacen, nombre_almacen from almacenes where cod_ciudad='$rpt_territorio'";
+	echo "<tr>
+		<th align='left'>Almacen</th>
+		<td><select name='rpt_almacen[]' id='rpt_almacen' class='texto' size='4' multiple>";
+	$sql="select cod_almacen, nombre_almacen from almacenes order by 2";
 	$resp=mysqli_query($enlaceCon,$sql);
 	while($dat=mysqli_fetch_array($resp))
 	{	$codigo_almacen=$dat[0];
 		$nombre_almacen=$dat[1];
-		if($rpt_almacen==$codigo_almacen || $codigo_almacen==$globalAlmacen)
-		{	echo "<option value='$codigo_almacen' selected>$nombre_almacen</option>";
-		}
-		else
-		{	echo "<option value='$codigo_almacen'>$nombre_almacen</option>";
-		}
+		echo "<option value='$codigo_almacen' selected>$nombre_almacen</option>";
 	}
 	echo "</select></td></tr>";
 
@@ -73,7 +53,7 @@ echo"<form method='POST' action='rptMovimientoProductos.php'  target='_blank'>";
 	
 	
 	echo"\n </table><br>";
-	echo "<center><input type='submit' name='reporte' value='Ver Reporte' class='boton'>
+	echo "<center><input type='submit' name='reporte' value='Ver Reporte' class='boton2'>
 	</center><br>";
 	echo"</form>";
 	echo "</div>";

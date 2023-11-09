@@ -75,16 +75,15 @@ if ($num_filas != 0) {
 	if($cod_cargo==1002){
 		header("location:indexAlmacenReg.php");
 	}
-	if($cod_cargo==1016){
-		header("location:indexCaja.php");
-	}
-	if($cod_cargo==1017){
+	if($cod_cargo==1016 || $cod_cargo==1017){
 		header("location:indexSecond.php");
 	}
 	if($cod_cargo==1018){
 		header("location:indexConta.php");
 	}
-	
+	if($cod_cargo==1020){
+		header("location:indexCaja.php");
+	}
 
 } else {
     echo "<link href='stilos.css' rel='stylesheet' type='text/css'>

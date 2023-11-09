@@ -16,15 +16,15 @@ $tel2 = str_replace("'", "''", $tel2);
 $contacto = str_replace("'", "''", $contacto);
 
 $consulta="
-INSERT INTO proveedores (cod_proveedor, nombre_proveedor, direccion, telefono1, telefono2, contacto)
-VALUES ( (SELECT ifnull(max(p.cod_proveedor),0)+1 FROM proveedores p) , '$nomPro', '$dir', '$tel1', '$tel2', '$contacto')
+INSERT INTO distribuidores (codigo, nombre, direccion, telefono1, telefono2, contacto, estado)
+VALUES ( (SELECT ifnull(max(p.codigo),0)+1 FROM distribuidores p) , '$nomPro', '$dir', '$tel1', '$tel2', '$contacto','1')
 ";
 $resp=mysqli_query($enlaceCon,$consulta);
 if($resp) {
-    echo "<script type='text/javascript' language='javascript'>alert('Se ha adicionado un nuevo proveedor.');listadoProveedores();</script>";
+    echo "<script type='text/javascript' language='javascript'>alert('Se ha adicionado un nuevo proveedor.');listadoDistribuidores();</script>";
 } else {
     //echo "$consulta";
-    echo "<script type='text/javascript' language='javascript'>alert('Error al crear proveedor');</script>";
+    echo "<script type='text/javascript' language='javascript'>alert('Error al crear Distribuidor');</script>";
 }
 
 ?>

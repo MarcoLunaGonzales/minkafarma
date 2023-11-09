@@ -1,42 +1,38 @@
 <html>
 <head>
-	<meta charset="utf-8" />
-	<title>MinkaSoftware</title> 
-	    <link rel="shortcut icon" href="imagenes/icon_farma.ico" type="image/x-icon">
-	<link type="text/css" rel="stylesheet" href="menuLibs/css/demo.css" />
-	<script type="text/javascript" src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
-	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
-	<style>  
-	.boton-rojo
-{
-    text-decoration: none !important;
-    padding: 10px !important;
-    font-weight: 600 !important;
-    font-size: 12px !important;
-    color: #ffffff !important;
-    background-color: #E73024 !important;
-    border-radius: 3px !important;
-    border: 2px solid #E73024 !important;
-}
-.boton-rojo:hover{
-    color: #000000 !important;
-    background-color: #ffffff !important;
-  }
-   .boton-plomo
-{
-    text-decoration: none !important;
-    font-weight: 0 !important;
-    font-size: 12spx !important;
-    color: #ffffFF !important;
-    background-color: #88898A !important;
-    border-radius: 3px !important;
-    border: 2px solid #88898A !important;
-}
-.boton-plomo:hover{
-    color: #000000 !important;
-    background-color: #ffffff !important;
-  }
-
+<meta charset="utf-8" />
+<title>MinkaSoftware</title> 
+    <link rel="shortcut icon" href="imagenes/icon_farma.ico" type="image/x-icon">
+<link type="text/css" rel="stylesheet" href="menuLibs/css/demo.css" />
+<script type="text/javascript" src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
+<style>  
+	.boton-rojo{
+	    text-decoration: none !important;
+	    font-weight: 0 !important;
+	    font-size: 12px !important;
+	    color: #ffffff !important;
+	    background-color: #E73024 !important;
+	    border-radius: 3px !important;
+	    border: 2px solid #E73024 !important;
+	}	
+	.boton-rojo:hover{
+    	color: #000000 !important;
+    	background-color: #ffffff !important;
+  	}
+   .boton-plomo{
+	    text-decoration: none !important;
+	    font-weight: 0 !important;
+	    font-size: 12px !important;
+	    color: white !important;
+	    background-color: red !important;
+	    border-radius: 3px !important;
+	    border: 2px solid #88898A !important;
+	}
+	.boton-plomo:hover{
+    	color: #000000 !important;
+    	background-color: #ffffff !important;
+  	}
 </style>
      <link rel="stylesheet" href="dist/css/demo.css" />
      <link rel="stylesheet" href="dist/mmenu.css" />
@@ -53,12 +49,23 @@ require_once 'datosUsuario.php';
 	<div class="header">
 		<a href="#menu"><span></span></a>
 		TuFarma - <?=$nombreEmpresa;?>
-		<div style="position:absolute; width:95%; height:50px; text-align:right; top:0px; font-size: 9px; font-weight: bold; color: #fff;">
-			[<?=$fechaSistemaSesion;?>][<?=$horaSistemaSesion;?>]
-			<button onclick="location.href='salir.php'" style="position:relative;z-index:99999;right:0px;" class="boton-plomo">Salir del Sistema</button>			
+		<div style="position:absolute; width:95%; height:50px; text-align:right; top:0px; font-size: 15px; font-weight: bold; color: #ffff00;">
+			<button onclick="window.contenedorPrincipal.location.href='manuales_sistema/navegadorManuales.php'" style="position:relative;z-index:99999;right:0px;" class="boton-plomo" title="Manuales TuFarma" formtarget="contenedorPrincipal">
+				<i class="material-icons" style="font-size: 20px">chrome_reader_mode</i>
+			</button>
+			[<?=$fechaSistemaSesion;?> <?=$horaSistemaSesion;?>]
+			<button onclick="location.href='salir.php'" style="position:relative;z-index:99999;right:0px;" class="boton-rojo" title="Salir">
+				<i class="material-icons" style="font-size: 16px">logout</i>
+			</button>			
 		<div>
 		<div style="position:absolute; width:95%; height:50px; text-align:left; top:0px; font-size: 15px; font-weight: bold; color: #ffff00;">
-			[<?=$nombreUsuarioSesion;?>][<?=$nombreAlmacenSesion;?>]
+			[<?=$nombreUsuarioSesion;?>]    [<?=$nombreAlmacenSesion;?>]
+			<button onclick="window.contenedorPrincipal.location.href='cambiarSucursalSesion.php'" style="position:relative;z-index:99999;right:0px;" class="boton-rojo" title="Cambiar Sucursal" formtarget="contenedorPrincipal">
+				<i class="material-icons" style="font-size: 16px">swap_horiz</i>
+			</button>
+			<button onclick="window.contenedorPrincipal.location.href='editPerfil.php'" style="position:relative;z-index:99999;right:0px;" class="boton-rojo" title="Cambiar Clave de Acceso" formtarget="contenedorPrincipal">
+				<i class="material-icons" style="font-size: 16px">person</i>
+			</button>	
 		<div>
 	</div>
 	
@@ -75,7 +82,7 @@ require_once 'datosUsuario.php';
 		<ul>
 			<li><span>Datos Generales</span>
 				<ul>
-					<li><a href="programas/proveedores/inicioProveedores.php" target="contenedorPrincipal">Distribuidores</a></li>
+					<li><a href="programas/proveedores/inicioProveedores.php" target="contenedorPrincipal">Proveedores & Distribuidores</a></li>
 					<li><a href="navegador_material.php" target="contenedorPrincipal">Productos</a></li>
 					<li><a href="navegador_ajustarpreciostock.php" target="contenedorPrincipal">Ajustar Precio/Stock **</a></li>
 					<li><a href="navegador_funcionarios1.php" target="contenedorPrincipal">Funcionarios</a></li>
@@ -122,19 +129,12 @@ require_once 'datosUsuario.php';
 					<li><a href="navegador_salidamateriales.php" target="contenedorPrincipal">Listado de Salidas</a></li>
 					<li><a href="<?=$urlNavVentas;?>" target='_blank'>Listado de Ventas</a></li>
 					<li><a href="registrar_salidaventas_manuales.php" target="_blank">Factura Manual de Contigencia</a></li>
-
 				</ul>	
 			</li>
 			<li><a href="registrar_ingresomateriales.php" target="_blank">Registrar Ingreso **</a></li>
 			<li><a href="registrar_salidaventas.php" target="_blank">Vender / Facturar **</a></li>
 			<li><a href="<?=$urlNavVentas;?>" target='_blank'>Listado de Ventas **</a></li>
-
-			<li><span>Marcados de Personal</span>
-				<ul>
-					<li><a href="registrar_marcado.php" target="contenedorPrincipal">Registro de Marcados</a></li>
-					<li><a href="rptOpMarcados.php" target="contenedorPrincipal">Reporte de Marcados</a></li>
-				</ul>	
-			</li>	
+			<li><a href="control_inventario/list.php" target="contenedorPrincipal">Control de Inventario</a></li>
 			<li><span>Adicionales</span>
 				<ul>
 					<li><span>SIAT</span>
@@ -147,39 +147,50 @@ require_once 'datosUsuario.php';
 							
 						</ul>	
 					</li>
-					<li><a href="campanias/list.php" target="contenedorPrincipal">Campañas</a></li>					
+					<li><span>Ofertas/Campañas</span>
+						<ul>	
+							<li><a href="campanias/list.php" target="contenedorPrincipal">Campañas</a></li>					
+							<li><a href="ofertas/list.php" target="contenedorPrincipal">Ofertas</a></li>
+        		            <li><a href="ofertas/listAdmin.php" target="contenedorPrincipal">Autorización de Ofertas</a></li>
+						</ul>	
+					</li>
+					<li><span>Gastos</span>
+						<ul>	
+		                    <li><a href="navegador_tiposgasto.php" target="contenedorPrincipal">Tipos de Gasto</a></li>		
+		                    <li><a href="navegador_gastos.php" target="contenedorPrincipal">Gastos</a></li>			
+							<li><a href="rptOpGastos.php" target="contenedorPrincipal">Reporte detallado de Gastos</a></li>
+						</ul>	
+					</li>
+					<li><span>Marcados de Personal</span>
+						<ul>
+							<li><a href="registrar_marcado.php" target="contenedorPrincipal">Registro de Marcados</a></li>
+							<li><a href="rptOpMarcados.php" target="contenedorPrincipal">Reporte de Marcados</a></li>
+						</ul>	
+					</li>	
 					<li><a href="navegadorCotizaciones.php" target="contenedorPrincipal">Cotizaciones</a></li>					
-					<li><a href="ofertas/list.php" target="contenedorPrincipal">Ofertas</a></li>
-                    <li><a href="ofertas/listAdmin.php" target="contenedorPrincipal">Autorización de Ofertas</a></li>
-                    <li><a href="navegador_tiposgasto.php" target="contenedorPrincipal">Tipos de Gasto</a></li>		
-                    <li><a href="navegador_gastos.php" target="contenedorPrincipal">Gastos</a></li>			
-					<li><a href="rptOpGastos.php" target="contenedorPrincipal">Reporte detallado de Gastos</a></li>
 					<li><a href="editPerfil.php" target="contenedorPrincipal">Cambiar Clave Acceso</a></li>
 				</ul>	
-			</li>	
-			
-			<li><span>Cobranzas</span>
+			</li>				
+			<li><span>Cobros/Obligaciones</span>
 				<ul>
-					<li><a href="cobranzas/navegadorCobranzas.php" target="contenedorPrincipal">Listado de Cobranzas</a></li>
-					<li><a href="cobranzas/rptOpCobranzas.php" target="contenedorPrincipal">Reporte de Cobros</a></li>
-					<li><a href="cobranzas/rptOpCuentasCobrar.php" target="contenedorPrincipal">Reporte Cuentas x Cobrar</a></li>
+					<li><span>Cobranzas</span>
+						<ul>
+							<li><a href="cobranzas/navegadorCobranzas.php" target="contenedorPrincipal">Listado de Cobranzas</a></li>
+							<li><a href="cobranzas/rptOpCobranzas.php" target="contenedorPrincipal">Reporte de Cobros</a></li>
+							<li><a href="cobranzas/rptOpCuentasCobrar.php" target="contenedorPrincipal">Reporte Cuentas x Cobrar</a></li>
+						</ul>	
+					</li>	
+					<li><span>Obligaciones</span>
+						<ul>
+							<li><a href="obligaciones/navegadorObligaciones.php" target="contenedorPrincipal">Listado de Obligaciones</a></li>
+							<li><a href="obligaciones/rptOpObligaciones.php" target="contenedorPrincipal">Reporte de Pagos</a></li>
+							<li><a href="obligaciones/rptOpObligacionesPagar.php" target="contenedorPrincipal">Reporte Obligaciones x Pagar</a></li>
+						</ul>	
+					</li>
 				</ul>	
 			</li>
-			
-			<li><span>Obligaciones</span>
-				<ul>
-					<li><a href="obligaciones/navegadorObligaciones.php" target="contenedorPrincipal">Listado de Obligaciones</a></li>
-					<li><a href="obligaciones/rptOpObligaciones.php" target="contenedorPrincipal">Reporte de Pagos</a></li>
-					<li><a href="obligaciones/rptOpObligacionesPagar.php" target="contenedorPrincipal">Reporte Obligaciones x Pagar</a></li>
-				</ul>	
-			</li>
-
 			<li><a href="rptOpArqueoDiario.php?variableAdmin=1" target="contenedorPrincipal">Cierre de Caja</a></li>
 			<li><a href="rptOpArqueoDiarioGeneral.php?variableAdmin=1" target="contenedorPrincipal">Cierre de Caja General</a></li>
-			<li><a href="cambiarSucursalSesion.php" target="contenedorPrincipal">Cambiar Almacen</a></li>
-			<!--li><a href="listadoProductosStock.php" target="_blank">Listado de Productos **</a></li-->
-			<!--li><a href="rptProductosVencer.php" target="contenedorPrincipal">Productos proximos a Vencer</a></li-->
-			<!--li><a href="navegador_etiquetas.php" target="contenedorPrincipal">Impresion de Etiquetas</a></li-->
 			<li><span>Reportes</span>
 				<ul>
 					<li><span>Movimiento de Almacen</span>

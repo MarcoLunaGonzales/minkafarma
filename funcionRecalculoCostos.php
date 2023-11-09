@@ -155,12 +155,13 @@ function recalculaCostos($enlaceCon,$codigoItem,$rpt_almacen){
 				}elseif ($codTipoIngreso==1003) {
 					// Cuando es ingreso por traspaso sacamos el costo de la salida.
 					$sqlCostoSalida="SELECT IFNULL(sd.costo_almacen,0) from salida_almacenes s, salida_detalle_almacenes sd where s.cod_salida_almacenes=sd.cod_salida_almacen and sd.cod_material='$codigoItem' and s.cod_salida_almacenes='$codSalidaAlmacenTraspaso'";
+					echo $sqlCostoSalida."<br>";
 					$respCostoSalida=mysqli_query($enlaceCon, $sqlCostoSalida);
 					$costoSalidaTraspaso=mysqli_result($respCostoSalida,0,0);
 
 					$sqlUpdCosto="UPDATE ingreso_detalle_almacenes set costo_almacen='$costoSalidaTraspaso',costo_promedio='$costoSalidaTraspaso' where cod_ingreso_almacen='$codIngresoAlmacen' and cod_material='$codigoItem'";
 					$respUpdCosto=mysqli_query($enlaceCon,$sqlUpdCosto);
-
+					echo $sqlUpdCosto."<br>";
 					$valorNetoIngreso=$costoSalidaTraspaso*$cantidad_ingreso;
 				}
 				$nuevoCostoPromedio=($valorNetoIngreso+$valor_kardex)/$cantidad_kardex;

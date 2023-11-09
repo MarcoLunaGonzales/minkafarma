@@ -162,7 +162,7 @@ $bandera1DecimalPrecioVenta=obtenerValorConfiguracion($enlaceCon,27);
 			  	}else{
 			  		$stockProductoFormat=$stockProducto;
 			  	}
-				echo "<tr><td><input type='checkbox' id='idchk$cont' name='idchk$cont' value='$datosProd' onchange='ver(this)' ></td><td>$codigo</td><td><div class='textograndenegro'><a href='javascript:setMateriales(form1, $codigo, \"$nombre - $linea ($codigo)-$txtCodigoCostoCompra ####$txtFechaVencimiento####$cantidadPresentacion####$ventaSoloCajas \",$stockProducto)'>$nombre</a></div></td>
+				echo "<tr><td><input type='checkbox' id='idchk$cont' name='idchk$cont' value='$datosProd' onchange='ver(this)' ></td><td>$codigo</td><td><div class='textograndenegro'><a href='javascript:setMateriales(form1, $codigo, \"$nombre - $linea ($codigo)-$txtCodigoCostoCompra ####$txtFechaVencimiento####$cantidadPresentacion####$ventaSoloCajas####$precioProducto \",$stockProducto)'>$nombre</a></div></td>
 				<td>$linea</td>
 				<td><small>$principioActivo</small></td>
 				<td><small>$accionTerapeutica</small></td>
