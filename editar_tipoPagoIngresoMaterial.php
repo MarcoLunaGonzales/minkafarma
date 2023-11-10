@@ -7,21 +7,53 @@ echo "<link rel='stylesheet' type='text/css' href='stilos.css'/>";
 
 $codIngreso=$_GET['codigo_ingreso'];
 
+// Detalle de Ingreso
+$sql1="SELECT ia.nro_correlativo, ia.fecha, ia.observaciones, UPPER(p.nombre_proveedor) as nombre_proveedor
+        FROM ingreso_almacenes ia
+        LEFT JOIN proveedores p ON p.cod_proveedor = ia.cod_proveedor
+        WHERE ia.cod_ingreso_almacen = '$codIngreso'";
+$resp1=mysqli_query($enlaceCon,$sql1);
+$nro_correlativo  = '';
+$fecha            = '';
+$observaciones    = '';
+$nombre_proveedor = '';
+while($dat1=mysqli_fetch_array($resp1)){
+    $nro_correlativo  = $dat1[0];
+    $fecha            = $dat1[1];
+    $observaciones    = $dat1[2];
+    $nombre_proveedor = $dat1[3];
+}
 ?>
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <form action="guarda_editarTipoPagoIngresoMaterial.php" method="post">
-                <h1 class="text-center">Modificar Tipo de Pago</h1>
+                <h1 class="text-center">Modificar Tipo de Pago de Ingreso</h1>
                 <input type="hidden" name="codIngreso" id="codIngreso" value="<?php echo $codIngreso?>">
                 <div class="table-responsive">
                     <table class="table texto">
-                        <tbody>
+                        <thead>
+                            
                             <tr>
-                                <th>Tipo de Pago:</th>
+                                <th>Nro de Ingreso:</th>
+                                <th>Fecha de Ingreso:</th>
                             </tr>
                             <tr>
-                                <td>
+                                <td><?=$nro_correlativo?></td>
+                                <td><?=$fecha?></td>
+                            </tr>
+                            <tr>
+                                <th>Proveedor:</th>
+                                <th>Observación:</th>
+                            </tr>
+                            <tr>
+                                <td><?=$nombre_proveedor?></td>
+                                <td><?=$observaciones?></td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="2">
                                     <select name="cod_tipopago" id="cod_tipopago" class="form-control">
                                     <?php
                                         $sql1="SELECT tp.cod_tipopago, tp.nombre_tipopago
@@ -40,18 +72,18 @@ $codIngreso=$_GET['codigo_ingreso'];
                                 </td>
                             </tr>
                             <tr class="select_tipo_pago" hidden>
-                                <th>Días de Credito:</th>
+                                <th colspan="2">Días de Credito:</th>
                             </tr>
                             <tr class="select_tipo_pago" hidden>
-                                <td>
+                                <td colspan="2">
                                     <input type="number" class="form-control" id="dias_credito" name="dias_credito" size="50"/>
                                 </td>
                             </tr>
                             <tr class="select_tipo_pago" hidden>
-                                <th>Fecha Documento Proveedor: </th>
+                                <th colspan="2">Fecha Documento Proveedor: </th>
                             </tr>
                             <tr class="select_tipo_pago" hidden>
-                                <td><input type="date" class="form-control" id="fecha_factura_proveedor" name="fecha_factura_proveedor" size="80"/></td>
+                                <td colspan="2"><input type="date" class="form-control" id="fecha_factura_proveedor" name="fecha_factura_proveedor" size="80"/></td>
                             </tr>
                         </tbody>
                     </table>
