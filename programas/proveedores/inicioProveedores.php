@@ -68,7 +68,8 @@ function adicionarProveedor() {
     var tel1 = $("#tel1").val();
     var tel2 = $("#tel2").val();
     var contacto = $("#contacto").val();
-    var parms="nompro="+nompro+"&dir="+dir+"&tel1="+tel1+"&tel2="+tel2+"&contacto="+contacto+"";
+    var tipoProveedor = $("#tipoProveedor").val();
+    var parms="nompro="+nompro+"&dir="+dir+"&tel1="+tel1+"&tel2="+tel2+"&contacto="+contacto+"&tipoProveedor="+tipoProveedor+"";
     cargarPnl("#pnl00","prgProveedorAdicionar.php",parms);
 }
 function modificarProveedor() {
@@ -78,7 +79,8 @@ function modificarProveedor() {
     var tel1 = $("#tel1").val();
     var tel2 = $("#tel2").val();
     var contacto = $("#contacto").val();
-    var parms="codpro="+codpro+"&nompro="+nompro+"&dir="+dir+"&tel1="+tel1+"&tel2="+tel2+"&contacto="+contacto+"";
+    var tipoProveedor = $("#tipoProveedor").val();
+    var parms="codpro="+codpro+"&nompro="+nompro+"&dir="+dir+"&tel1="+tel1+"&tel2="+tel2+"&contacto="+contacto+"&tipoProveedor="+tipoProveedor+"";
     cargarPnl("#pnl00","prgProveedorModificar.php",parms);
 }
 function eliminarProveedor(cods) {

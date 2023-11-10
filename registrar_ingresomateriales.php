@@ -813,9 +813,11 @@ echo "<th>Nro. Documento: </th>
 	<th><input type='number' class='texto' name='nro_factura' value='' id='nro_factura' required>
 	</th></tr>";
 
-echo "<tr><th>Proveedor:</th>";
-$sql1="select p.cod_proveedor, concat(p.nombre_proveedor) from proveedores p 
-			order by 2";
+echo "<tr><th>Proveedor/Distribuidor:</th>";
+$sql1="SELECT p.cod_proveedor, concat(p.nombre_proveedor, ' (',tp.nombre_tipoventa,')') 
+		FROM proveedores p 
+		LEFT JOIN tipos_proveedor tp ON tp.cod_tipoventa = p.cod_tipoproveedor
+		ORDER BY 2";
 $resp1=mysqli_query($enlaceCon,$sql1);
 echo "<th align='center'>
 <select name='proveedor' id='proveedor' class='selectpicker' data-style='btn btn-info' data-live-search='true' required>";
@@ -829,15 +831,18 @@ while($dat1=mysqli_fetch_array($resp1))
 }
 echo "</select></th>";
 
+// Verificación de Bloqueo de campos
+// 0:Muestra; 1: Oculta
+$banderaCamposEscondidos = obtenerValorConfiguracion($enlaceCon,55);
 echo "<th>Tipo de Pago:</th>";
 $sql1="SELECT tp.cod_tipopago, tp.nombre_tipopago
 		FROM tipos_pago tp
 		WHERE tp.cod_tipopago = 1
 		OR tp.cod_tipopago = 4
-		ORDER BY tp.cod_tipopago ASC";
+		ORDER BY tp.cod_tipopago ASC ".(($banderaCamposEscondidos == 1) ? 'LIMIT 1' : '');
 $resp1=mysqli_query($enlaceCon,$sql1);
 echo "<th align='center'>
-<select name='cod_tipopago' id='cod_tipopago' class='selectpicker' data-style='btn btn-info' required>";
+<select name='cod_tipopago' id='cod_tipopago' class='selectpicker' data-style='btn btn-info' required >";
 while($dat1=mysqli_fetch_array($resp1))
 {   $codigo=$dat1[0];
     $nombre=$dat1[1];
@@ -848,7 +853,7 @@ while($dat1=mysqli_fetch_array($resp1))
 echo "</select></th>";
 
 echo "<th colspan='1'>Días de Credito: <input type='number' class='texto' name='dias_credito' id='dias_credito' min='0' max='180' readonly></th>
-<th colspan='1'>Fecha Documento Proveedor: <input type='date' class='texto' name='fecha_factura_proveedor' id='fecha_factura_proveedor'></th>";
+<th colspan='1'>Fecha Documento Proveedor: <input type='date' class='texto' name='fecha_factura_proveedor' id='fecha_factura_proveedor' ".(($banderaCamposEscondidos == 1) ? 'readonly' : '')."></th>";
 
 echo "<th colspan='1'>Observaciones:</th>
 	<th colspan='1'><textarea class='texto' name='observaciones' value='$observaciones' size='20'></textarea></th>";

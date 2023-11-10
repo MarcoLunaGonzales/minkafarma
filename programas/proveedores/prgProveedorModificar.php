@@ -8,6 +8,7 @@ $dir = $_GET["dir"];
 $tel1 = $_GET["tel1"];
 $tel2 = $_GET["tel2"];
 $contacto = $_GET["contacto"];
+$tipoProveedor = $_GET["tipoProveedor"];
 
 $nomPro = str_replace("'", "''", $nomPro);
 $dir = str_replace("'", "''", $dir);
@@ -21,7 +22,8 @@ $consulta="
     direccion = '$dir',
     telefono1 = '$tel1',
     telefono2 = '$tel2',
-    contacto = '$contacto'
+    contacto = '$contacto',
+    cod_tipoproveedor = '$tipoProveedor'
     WHERE cod_proveedor = $codPro
 ";
 $resp=mysqli_query($enlaceCon,$consulta);
