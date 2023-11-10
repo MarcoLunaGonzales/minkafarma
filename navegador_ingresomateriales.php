@@ -322,7 +322,9 @@ while ($dat = mysqli_fetch_array($resp)) {
 	<td align='center'>$fecha_ingreso_mostrar $hora_ingreso</td><td>$nombre_tipoingreso</td>
 	<td>&nbsp;$proveedor</td><td align='right'>$montoCompraF</td>
 	<td>&nbsp;$obs_ingreso</td><td align='center'>
-	<a target='_BLANK' href='$urlDetalle?codigo_ingreso=$codigo'><img src='imagenes/icon_detail.png' border='0' width='30' heigth='30' alt='Ver Detalles del Ingreso'></a></td></tr>";
+	<a target='_BLANK' href='$urlDetalle?codigo_ingreso=$codigo'><img src='imagenes/icon_detail.png' border='0' width='30' heigth='30' alt='Ver Detalles del Ingreso'></a>
+	<a title='Modificar datos de credito' href='editar_tipoPagoIngresoMaterial.php?codigo_ingreso=$codigo'><img src='imagenes/edit.png' border='0' width='30' heigth='30' alt='Imagen Editar'></a>
+    </td></tr>";
 }
 echo "</table></center><br>";
 echo "</div>";

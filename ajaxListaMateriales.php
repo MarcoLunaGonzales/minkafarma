@@ -2,7 +2,7 @@
 <body>
 <table align='center' class="texto">
 <tr>
-<th><input type='checkbox' id='selecTodo'  onchange="marcarDesmarcar(form1,this)" ></th><th>Codigo</th><th>Producto</th><th>Linea</th><th>Principio Activo</th><th>Accion Terapeutica</th><th>Stock</th><th>Precio</th></tr>
+<th><input type='checkbox' id='selecTodo'  onchange="marcarDesmarcar(form1,this)" ></th><th>Codigo</th><th>FV</th><th>Producto</th><th>Linea</th><th>Principio Activo</th><th>Accion Terapeutica</th><th>Stock</th><th>Precio</th></tr>
 <?php
 require("conexionmysqli2.inc");
 require("funciones.php");
@@ -47,7 +47,8 @@ $banderaBuscarPA=obtenerValorConfiguracion($enlaceCon,22);
 $banderaCodigoCostoCompra=obtenerValorConfiguracion($enlaceCon,26);
 //Bandera para mostrar 1 Decimal o 2 Decimales en el precio
 $bandera1DecimalPrecioVenta=obtenerValorConfiguracion($enlaceCon,27);
-
+// Obtenemos control de fecha
+$numeroMesesControlVencimiento = obtenerValorConfiguracion($enlaceCon, 28);
 
 	$sql="select m.codigo_material, m.descripcion_material,
 	(select concat(p.nombre_proveedor,'-',pl.nombre_linea_proveedor)as nombre_proveedor
@@ -141,6 +142,28 @@ $bandera1DecimalPrecioVenta=obtenerValorConfiguracion($enlaceCon,27);
 				$txtFechaVencimiento="<small><b>$txtFechaVencimiento</b></small>";
 			}
 			/*Fin Fecha de Vencimiento*/
+			
+			/* Se obtiene la diferencia de meses con la fecha actual */
+			$fechaVencimiento = obtenerFechaVencimiento($enlaceCon, $globalAlmacen, $codigo);
+			list($mes, $anio) = explode("/", $fechaVencimiento);
+			$hoy = date('m/Y');
+			list($mesHoy, $anioHoy) = explode("/", $hoy);
+			$mesesDiferencia = (($anio - $anioHoy) * 12) + ($mes - $mesHoy);
+
+			$controlVencimientoArray 	   = json_decode($numeroMesesControlVencimiento, true);
+			usort($controlVencimientoArray, function($a, $b) {
+				return $a['meses'] <=> $b['meses'];
+			});
+			$colorFV = '';
+			foreach ($controlVencimientoArray as $item) {
+				if ($mesesDiferencia <= $item['meses']) {
+					$colorFV = $item['color'];
+					break;
+				} else {
+					$colorFV = '';
+				}
+			}
+			/* Fin diferencia de fecha */
 
 			/**  Codigo Costo Compra***/
 			$txtCodigoCostoCompra="";
@@ -162,11 +185,14 @@ $bandera1DecimalPrecioVenta=obtenerValorConfiguracion($enlaceCon,27);
 			  	}else{
 			  		$stockProductoFormat=$stockProducto;
 			  	}
-				echo "<tr><td><input type='checkbox' id='idchk$cont' name='idchk$cont' value='$datosProd' onchange='ver(this)' ></td><td>$codigo</td><td><div class='textograndenegro'><a href='javascript:setMateriales(form1, $codigo, \"$nombre - $linea ($codigo)-$txtCodigoCostoCompra ####$txtFechaVencimiento####$cantidadPresentacion####$ventaSoloCajas####$precioProducto \",$stockProducto)'>$nombre</a></div></td>
+				echo "<tr><td><input type='checkbox' id='idchk$cont' name='idchk$cont' value='$datosProd' onchange='ver(this)' ></td>
+					<td>$codigo</td>
+					<td><button title='Indicador Fecha Vencimiento' type='button' class='btn btn-sm rounded-circle' style='background-color: $colorFV;border: none;'></button></td>
+					<td><div class='textograndenegro'><a href='javascript:setMateriales(form1, $codigo, \"$nombre - $linea ($codigo)-$txtCodigoCostoCompra ####$txtFechaVencimiento####$cantidadPresentacion####$ventaSoloCajas####$precioProducto \",$stockProducto)'>$nombre</a></div></td>
 				<td>$linea</td>
 				<td><small>$principioActivo</small></td>
 				<td><small>$accionTerapeutica</small></td>
-				<td>$stockProductoFormat</td>
+				<td style='background-color: ".(($stockProducto <= 1) ? 'yellow' : 'transparent')."'>$stockProductoFormat</td>
 				<td>$precioProducto</td>
 				</tr>";
 				$cont++;

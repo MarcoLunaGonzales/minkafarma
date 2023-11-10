@@ -880,7 +880,7 @@ function setMateriales(f, cod, nombreMat, stockProducto){
 		tableProductoX.style.backgroundColor = "yellow";
 	}
 	//Validacion en caso de la fecha de Vencimiento poner en rojo cuando son menos de 3 meses
-	var numeroMesesControlVencimiento = document.getElementById('nro_meses_control_vencimiento').value;
+	var numeroMesesControlVencimiento = document.getElementById('nro_meses_control_vencimiento').textContent.trim();
 	console.log("control Vencimiento en meses: "+numeroMesesControlVencimiento);
 	var fechaActual = new Date();
 	var tempFechaDiv = document.createElement("div");
@@ -892,10 +892,29 @@ function setMateriales(f, cod, nombreMat, stockProducto){
 	var anioObjetivo = parseInt(partesFecha[1]);
 	var mesesFaltantes = (anioObjetivo - fechaActual.getFullYear()) * 12 + mesObjetivo - (fechaActual.getMonth() + 1);
 	console.log("Meses faltantes: " + mesesFaltantes);
-	if(numeroMesesControlVencimiento>0 && mesesFaltantes<=numeroMesesControlVencimiento){
-		tableProductoX.style.backgroundColor = "red";
-	}
 
+	// if(numeroMesesControlVencimiento>0 && mesesFaltantes<=numeroMesesControlVencimiento){
+	// 	console.log("### numeroMesesControlVencimiento: "+numeroMesesControlVencimiento);
+	// 	console.log("### mesesFaltantes: "+mesesFaltantes);
+	// 	tableProductoX.style.backgroundColor = "red";
+	// }
+	
+	// JSON a un objeto
+	var controlVencimientoArray = JSON.parse(numeroMesesControlVencimiento);
+	controlVencimientoArray.sort((a, b) => a.meses - b.meses);
+	var color = '';
+	$.each(controlVencimientoArray, function(index, item) {
+		if (mesesFaltantes <= item.meses) {
+			color = item.color;
+			return false;
+		} else {
+			color = '';
+		}
+	});
+	// Cambiar el color en base al valor de "color" de configuracion
+	if (color && color.trim() !== '') {
+		tableProductoX.style.backgroundColor = color;
+	}
 
 	//actStock(numRegistro);
 	ajaxPrecioItem(numRegistro);
@@ -1791,7 +1810,9 @@ if(isset($_GET['file'])){
 	<input type="hidden" id="bandera_validacion_stock" name="bandera_validacion_stock" value="<?=obtenerValorConfiguracion($enlaceCon,4)?>">
 	<input type="hidden" id="bandera_efectivo_recibido" name="bandera_efectivo_recibido" value="<?=obtenerValorConfiguracion($enlaceCon,21)?>">
 	<input type="hidden" id="bandera_msg_guardar" name="bandera_msg_guardar" value="<?=obtenerValorConfiguracion($enlaceCon,23)?>">
-	<input type="hidden" id="nro_meses_control_vencimiento" name="nro_meses_control_vencimiento" value="<?=obtenerValorConfiguracion($enlaceCon,28)?>">
+	<textarea id="nro_meses_control_vencimiento" name="nro_meses_control_vencimiento" style="display: none">
+		<?=obtenerValorConfiguracion($enlaceCon,28)?>
+	</textarea>
 
 
 <table class='' width='100%' style='width:100%;margin-top:-24px !important;'>
