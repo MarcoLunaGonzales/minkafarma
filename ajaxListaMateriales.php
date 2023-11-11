@@ -192,7 +192,7 @@ $numeroMesesControlVencimiento = obtenerValorConfiguracion($enlaceCon, 28);
 				<td>$linea</td>
 				<td><small>$principioActivo</small></td>
 				<td><small>$accionTerapeutica</small></td>
-				<td style='background-color: ".(($stockProducto <= 1) ? 'yellow' : 'transparent')."'>$stockProductoFormat</td>
+				<td style='background-color: ".(($stockProducto <= $cantidadPresentacion) ? 'yellow' : 'transparent')."'>$stockProductoFormat</td>
 				<td>$precioProducto</td>
 				</tr>";
 				$cont++;

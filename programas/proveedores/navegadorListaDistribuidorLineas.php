@@ -54,7 +54,7 @@ while($reg=mysqli_fetch_array($rs)){
 	if($globalAdmin==1){
 		echo "
 		<td>
-			<a href='editarDistribuidorLineas.php?codDistribuidor=$cod_distribuidor&codLineaProveedor=$cod_linea_proveedor' title='Editar'><img src='../../imagenes/rutero.png' width='40'></a>
+			<a hidden href='editarDistribuidorLineas.php?codDistribuidor=$cod_distribuidor&codLineaProveedor=$cod_linea_proveedor' title='Editar'><img src='../../imagenes/rutero.png' width='40'></a>
 			<a href='eliminarDistribuidorLinea.php?codDistribuidor=$cod_distribuidor&codLineaProveedor=$cod_linea_proveedor' title='Eliminar'><img src='../../imagenes/no2.png' width='40'></a>
 		</td>";
 	}
@@ -63,8 +63,9 @@ while($reg=mysqli_fetch_array($rs)){
 echo "</table>";
 echo "</center>";
 
-echo "<div class='divBotones'><input class='boton' type='button' value='Adicionar' onClick='enviar_nav($codProveedor);'></div>";
-
-
+echo "<div class='divBotones'>
+		<input class='boton' type='button' value='Adicionar' onClick='enviar_nav($codProveedor);'>";
 ?>
+		<input type='button' class='boton2' value='Cancelar' onClick="location.href='inicioProveedores.php'">
+	</div>
 </form>

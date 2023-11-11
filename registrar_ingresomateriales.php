@@ -930,7 +930,7 @@ echo "</table><br>";
 <div class='divBotones'>
 	<!-- <input type='button' class='boton' name='Guardar' value='Guardar'  id='btsubmit' onClick='return validar(this.form);'></center> -->
 	<button type="submit" class="boton" name="Guardar" id="btsubmit">Guardar</button>
-	<input type='button' class='boton2' value='Cancelar' onClick='location.href=\"navegador_ingresomateriales.php\"'>
+	<input type='button' class='boton2' value='Cancelar' onClick="location.href='navegador_ingresomateriales.php'">
 </div>
 
 <?php
