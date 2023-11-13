@@ -40,7 +40,7 @@
 		
 	echo "<table width='80%' border='0' align='center'>
 	<tr>
-		<td width='20%' align='left'><img src='imagenes/$logoEmpresa' width='200'></td>
+		<td width='20%' align='left'><img src='imagenes/$logoEmpresa' width='100'></td>
 		<td width='60%' align='center'><span style='font-size:20px; color:#000011; align:center; width: 600px;'>$nombreEmpresa<br>Cotización</span></td>
 		<td width='20%'></td>
 	<tr>";

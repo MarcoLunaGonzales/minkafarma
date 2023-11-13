@@ -1354,7 +1354,7 @@ function validarCotizacion(f){
 				
 				descuento=parseFloat(document.getElementById("descuentoProducto"+i).value);
 				precioUnit=parseFloat(document.getElementById("precio_unitario"+i).value);				
-				var costoUnit=parseFloat(document.getElementById("costoUnit"+i).value);
+				//var costoUnit=parseFloat(document.getElementById("costoUnit"+i).value);
 		
 				console.log("materiales"+i+" valor: "+item);
 				console.log("stock: "+stock+" cantidad: "+cantidad+ "precio: "+precioUnit);
