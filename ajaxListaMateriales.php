@@ -2,7 +2,7 @@
 <body>
 <table align='center' class="texto">
 <tr>
-<th><input type='checkbox' id='selecTodo'  onchange="marcarDesmarcar(form1,this)" ></th><th>Codigo</th><th>FV</th><th>Producto</th><th>Linea</th><th>Principio Activo</th><th>Accion Terapeutica</th><th>Stock</th><th>Precio</th></tr>
+<th><input type='checkbox' id='selecTodo'  onchange="marcarDesmarcar(form1,this)" ></th><th>Codigo</th><th style='background-color: $colorFV; text-align: center;'>FV</th><th>Producto</th><th>Linea</th><th>Principio Activo</th><th>Accion Terapeutica</th><th>Stock</th><th>Precio</th></tr>
 <?php
 require("conexionmysqli2.inc");
 require("funciones.php");
@@ -160,7 +160,7 @@ $numeroMesesControlVencimiento = obtenerValorConfiguracion($enlaceCon, 28);
 					$colorFV = $item['color'];
 					break;
 				} else {
-					$colorFV = '';
+					$colorFV = 'white';
 				}
 			}
 			/* Fin diferencia de fecha */
@@ -187,7 +187,9 @@ $numeroMesesControlVencimiento = obtenerValorConfiguracion($enlaceCon, 28);
 			  	}
 				echo "<tr><td><input type='checkbox' id='idchk$cont' name='idchk$cont' value='$datosProd' onchange='ver(this)' ></td>
 					<td>$codigo</td>
-					<td><button title='Indicador Fecha Vencimiento' type='button' class='btn btn-sm rounded-circle' style='background-color: $colorFV;border: none;'></button></td>
+					<td style='background-color: $colorFV; text-align: center;'>
+						<b>$fechaVencimiento</b>
+					</td>
 					<td><div class='textograndenegro'><a href='javascript:setMateriales(form1, $codigo, \"$nombre - $linea ($codigo)-$txtCodigoCostoCompra ####$txtFechaVencimiento####$cantidadPresentacion####$ventaSoloCajas####$precioProducto \",$stockProducto)'>$nombre</a></div></td>
 				<td>$linea</td>
 				<td><small>$principioActivo</small></td>
