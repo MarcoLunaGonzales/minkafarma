@@ -1771,6 +1771,24 @@ if(isset($_GET['file'])){
 	unlink($_GET['file']);
 }
 
+// CODIGO DE COTIZACIÓN
+$cod_cotizacion = empty($_GET['codigo']) ? '' : $_GET['codigo'];
+$sqlCotizacion = "SELECT c.razon_social, c.nit, c.observaciones, c.descuento, c.cod_cliente
+					FROM cotizaciones c
+					WHERE c.cod_salida_almacenes = '$cod_cotizacion'";
+$respUsd=mysqli_query($enlaceCon,$sqlCotizacion);
+$cab_razon_social = '';	
+$cab_nit 		  = '';	
+$cab_observacion  = '';	
+$cab_descuento 	  = 0;	
+$cab_cod_cliente  = 0;	
+while($rowCot=mysqli_fetch_array($respUsd)){
+	$cab_razon_social = $rowCot['razon_social'];
+	$cab_nit 		  = $rowCot['nit'];	
+	$cab_observacion  = $rowCot['observaciones'];	
+	$cab_descuento    = $rowCot['descuento'];
+	$cab_cod_cliente  = $rowCot['cod_cliente'];	
+}
 ?>
 <nav class="mb-4 navbar navbar-expand-lg" style='background:#006db3 !important;color:white !important;'>
                 <a class="navbar-brand font-bold" href="#">[<?php echo $fechaSistemaSesion?>][<b id="hora_sistema"><?php echo $horaSistemaSesion;?></b>] [<?php echo $nombreAlmacenSesion;?>]</a>
@@ -1929,7 +1947,7 @@ while($dat2=mysqli_fetch_array($resp2)){
 	</select>
 	</div>
 		<div id='divNIT' class="col-sm-9" style="padding: 0;">
-			<input type='text' value='<?php echo $nitDefault; ?>' name='nitCliente' id='nitCliente'  onChange='ajaxRazonSocial(this.form);' onkeypress="return check(event)" onkeyup="javascript:this.value=this.value.toUpperCase();" class="form-control" required placeholder="INGRESE EL NIT" autocomplete="off">
+			<input type='text' value='<?php echo empty($cab_nit) ? $nitDefault : $cab_nit; ?>' name='nitCliente' id='nitCliente'  onChange='ajaxRazonSocial(this.form);' onkeypress="return check(event)" onkeyup="javascript:this.value=this.value.toUpperCase();" class="form-control" required placeholder="INGRESE EL NIT" autocomplete="off">
 		</div>
 		<!-- style="font-size: 20px;color:#9D09BB"-->		
 	</div>
@@ -1937,7 +1955,7 @@ while($dat2=mysqli_fetch_array($resp2)){
 	</td>	
 	<td colspan="2">
 		<div id='divRazonSocial'>
-          <input type='text' name='razonSocial' id='razonSocial' value='<?php echo $razonSocialDefault; ?>' class="form-control" required placeholder="Ingrese la razon social" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();"  onchange='ajaxNitCliente(this.form);' pattern='[A-Za-z0-9Ññ.& ]+'>          
+          <input type='text' name='razonSocial' id='razonSocial' value='<?php echo empty($cab_razon_social) ? $razonSocialDefault : $cab_razon_social; ?>' class="form-control" required placeholder="Ingrese la razon social" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();"  onchange='ajaxNitCliente(this.form);' pattern='[A-Za-z0-9Ññ.& ]+'>          
         </div>
         <span class="input-group-btn" style="position:absolute;width:10px !important;">
             <a href="#" onclick="ajaxVerificarNitCliente(); return false;" class="btn btn-info btn-sm" style="position:absolute;right: 100%;"><i class="material-icons">refresh</i> Verificar Nit</a>
@@ -1953,8 +1971,20 @@ while($dat2=mysqli_fetch_array($resp2)){
 		<!--span class="input-group-btn" style="position:absolute;width:100px !important;"-->		
 			<select name='cliente' class='selectpicker form-control' data-live-search="true" id='cliente' onChange='ajaxRazonSocialCliente(this.form);' required data-style="btn btn-rose">
 				<option value='146'>NO REGISTRADO</option>
+				<?php
+					$sql = "SELECT c.cod_cliente, c.nombre_cliente, c.nit_cliente
+							FROM clientes c
+							WHERE c.cod_cliente = '$cab_cod_cliente'
+							AND c.cod_cliente != 146";
+					$resp=mysqli_query($enlaceCon,$sql);
+					while($rowCot=mysqli_fetch_array($resp)){
+				?>
+				<option value='<?=$rowCot['cod_cliente']?>' selected><?=$rowCot['nombre_cliente']?></option>
+				<?php
+					}
+				?>
 			</select>
-			<input type='text' name='observaciones' id='observaciones' value='' class="form-control" placeholder="Observaciones" style="text-transform:uppercase;position:absolute;width:300px !important;">
+			<input type='text' name='observaciones' id='observaciones' value='<?=$cab_observacion?>' class="form-control" placeholder="Observaciones" style="text-transform:uppercase;position:absolute;width:300px !important;">
 		<!--/span-->
 	</td>
 	<td>	
@@ -2017,7 +2047,7 @@ while($dat2=mysqli_fetch_array($resp2)){
 
 	</div>
 </td>
-	<!--th align='center' colspan="3">
+	<th align='center' colspan="3">
 		<input type='text' class='texto' name='observaciones' value='' size='40' rows="3">
 	</th-->
 </tr>
@@ -2060,6 +2090,130 @@ if($banderaMensajesDoblePantalla==1){
 		<td width="5%">&nbsp;</td>
 	</tr>
 	</table>
+	<!-- ITEMS DE COTIZACIÓN -->
+	<?php
+	if(!empty($cod_cotizacion)){
+		// Obtenemos control de fecha
+		$numeroMesesControlVencimiento = obtenerValorConfiguracion($enlaceCon, 28);
+
+		$sql2="SELECT cd.cod_material, CONCAT(m.descripcion_material,' - ', (select concat(p.nombre_proveedor,'-',pl.nombre_linea_proveedor)as nombre_proveedor
+		from proveedores p, proveedores_lineas pl where p.cod_proveedor=pl.cod_proveedor and pl.cod_linea_proveedor=m.cod_linea_proveedor), ' (', cd.cod_material, ') - ', (SELECT concat(FORMAT(id.costo_almacen,1),'0',FORMAT((id.costo_almacen*1.25),1)) from ingreso_almacenes i, ingreso_detalle_almacenes id where i.cod_ingreso_almacen=id.cod_ingreso_almacen and 
+						i.ingreso_anulado=0 and i.cod_tipoingreso in (999,1000) and id.cod_material=cd.cod_material order by i.cod_ingreso_almacen desc limit 1)) as nombre_material, m.cantidad_presentacion, cd.cantidad_unitaria, cd.monto_unitario, cd.precio_unitario, cd.descuento_unitario
+				FROM cotizaciones_detalle cd
+				LEFT JOIN material_apoyo m ON m.codigo_material = cd.cod_material
+				WHERE cd.cod_salida_almacen = '$cod_cotizacion'";
+		$resp2=mysqli_query($enlaceCon,$sql2);
+		$nro_materialActivo = 0;
+
+		$cotizacion_total_final = 0;
+		while($rawCotizacion = mysqli_fetch_array($resp2)){
+			$nro_materialActivo++;
+			
+			$stockProducto 		  = stockProducto($enlaceCon,$globalAlmacen, $rawCotizacion['cod_material']);
+			$cantidadPresentacion = $rawCotizacion['cantidad_presentacion'];
+			$cotizacion_cantidad  = $rawCotizacion['cantidad_unitaria'];
+			$cotizacion_total  	  = $rawCotizacion['monto_unitario'];
+			$cotizacion_precio_unitario    = $rawCotizacion['precio_unitario'];
+			$cotizacion_descuento_unitario = $rawCotizacion['descuento_unitario'];
+
+			// Calcular monto final
+			$cotizacion_total_item 		 = round(($cotizacion_total - $cotizacion_descuento_unitario), 2);
+			// Calcular el porcentaje de descuento
+			$cotizacion_descuento_porcentaje = round((($cotizacion_descuento_unitario / $cotizacion_total) * 100), 2);
+
+			// Suma total FINAL
+			$cotizacion_total_final += $cotizacion_total_item;
+						
+			/* Se obtiene la diferencia de meses con la fecha actual */
+			$fechaVencimiento = obtenerFechaVencimiento($enlaceCon, $globalAlmacen, $rawCotizacion['cod_material']);
+			list($mes, $anio) = explode("/", $fechaVencimiento);
+			$hoy = date('m/Y');
+			list($mesHoy, $anioHoy) = explode("/", $hoy);
+			$mesesDiferencia = (($anio - $anioHoy) * 12) + ($mes - $mesHoy);
+
+			$controlVencimientoArray 	   = json_decode($numeroMesesControlVencimiento, true);
+			usort($controlVencimientoArray, function($a, $b) {
+				return $a['meses'] <=> $b['meses'];
+			});
+			$colorFV = '';
+			foreach ($controlVencimientoArray as $item) {
+				if ($mesesDiferencia <= $item['meses']) {
+					$colorFV = $item['color'];
+					break;
+				} else {
+					$colorFV = 'white';
+				}
+			}
+			/* Fin diferencia de fecha */
+	?>
+	<div id="div<?=$nro_materialActivo?>">
+		<link href="stilos.css" rel="stylesheet" type="text/css">
+		<input type="hidden" value="1000" name="<?=$globalAlmacen?>" id="<?=$globalAlmacen?>">
+
+		<!--link rel="STYLESHEET" type="text/css" href="stilos.css" /-->
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+		<table border="0" align="center" width="100%" class="texto100" id="data<?=$nro_materialActivo?>" style="background-color: white;">
+			<tbody>
+				<tr>
+					<td width="10%" align="center">
+						<a href="javascript:buscarMaterial(form1, <?=$nro_materialActivo?>)"><img src="imagenes/buscar2.png" title="Buscar Producto" width="30"></a>
+						<a href="javascript:buscarKardexProducto(form1, <?=$nro_materialActivo?>)" class="btn btn-dark btn-sm btn-fab" style="background:#1d2a76;color:#fff;"><i class="material-icons float-left" title="Ver Kardex">analytics</i></a>
+						<a href="javascript:encontrarMaterial(<?=$nro_materialActivo?>)" class="btn btn-primary btn-sm btn-fab"><i class="material-icons float-left" title="Ver en otras Sucursales">place</i></a>
+					</td>
+
+					<td width="33%" align="center">
+						<input type="hidden" name="materiales<?=$nro_materialActivo?>" id="materiales<?=$nro_materialActivo?>" value="<?=$rawCotizacion['cod_material']?>">
+						<div id="cod_material<?=$nro_materialActivo?>" class="textomedianonegro"><?=$rawCotizacion['nombre_material']?></div>
+					</td>
+
+					<td width="5%" align="center" id="sec_fecha_vencimiento<?=$nro_materialActivo?>" style="background-color: <?=$colorFV?>;">
+						<div id="fecha_vencimiento<?=$nro_materialActivo?>" class="textosmallazul"><small><b><?=$fechaVencimiento?></b></small></div>
+					</td>
+
+					<td width="8%" align="center" id="sec_stock<?=$nro_materialActivo?>" style='background-color: <?=(($stockProducto <= $cantidadPresentacion) ? 'yellow' : 'transparent')?>'>
+						<div id="idstock<?=$nro_materialActivo?>">
+							<input type="number" id="stock<?=$nro_materialActivo?>" name="stock<?=$nro_materialActivo?>" value="<?=$stockProducto?>" readonly="" size="5" style="height:20px;font-size:19px;width:80px;color:red;">
+						</div>
+					</td>
+
+					<td align="center" width="8%">
+						<input class="inputnumber" type="number" value="<?=$cotizacion_cantidad?>" min="1" id="cantidad_unitaria<?=$nro_materialActivo?>" onkeyup="calculaMontoMaterial(<?=$nro_materialActivo?>);" name="cantidad_unitaria<?=$nro_materialActivo?>" onchange="calculaMontoMaterial(<?=$nro_materialActivo?>);" required="">
+						<div id="div_venta_caja<?=$nro_materialActivo?>" class="textosmallazul"></div>
+					</td>
+
+					<!--Cuando Carga el precio no es readonly para validar el precio 0 -->
+					<td align="center" width="8%">
+						<div id="idprecio<?=$nro_materialActivo?>">
+							<link href="stilos.css" rel="stylesheet" type="text/css">
+							<input type="hidden" value="1000" name="<?=$globalAlmacen?>" id="<?=$globalAlmacen?>">
+							<input type="number" id="precio_unitario<?=$nro_materialActivo?>" min="0.01" name="precio_unitario<?=$nro_materialActivo?>" value="<?=$cotizacion_precio_unitario?>" class="inputnumber" step="0.01" readonly="true">
+							<input type="hidden" id="costoUnit<?=$nro_materialActivo?>" value="<?=$cotizacion_precio_unitario?>" name="costoUnit<?=$nro_materialActivo?>">
+						</div>
+					</td>
+
+					<td align="center" width="15%">
+						<input class="inputnumber" type="number" min="0" max="90" step="0.01" value="<?=$cotizacion_descuento_porcentaje?>" id="tipoPrecio<?=$nro_materialActivo?>" name="tipoPrecio<?=$nro_materialActivo?>" style="background:#ADF8FA;" onkeyup="calculaMontoMaterial(<?=$nro_materialActivo?>);" onchange="calculaMontoMaterial(<?=$nro_materialActivo?>);">%
+						<input class="inputnumber" type="number" value="<?=$cotizacion_descuento_unitario?>" id="descuentoProducto<?=$nro_materialActivo?>" name="descuentoProducto<?=$nro_materialActivo?>" step="0.01" style="background:#ADF8FA;" onkeyup="calculaMontoMaterial_bs(<?=$nro_materialActivo?>);" onchange="calculaMontoMaterial_bs(<?=$nro_materialActivo?>);">
+						<div id="divMensajeOferta<?=$nro_materialActivo?>" class="textomedianosangre"></div>
+					</td>
+
+					<td align="center" width="8%">
+						<input class="inputnumber" type="number" value="<?=$cotizacion_total_item?>" id="montoMaterial<?=$nro_materialActivo?>" name="montoMaterial<?=$nro_materialActivo?>" step="0.01" style="height:20px;font-size:19px;width:80px;color:red;" required="" readonly="">
+					</td>
+
+					<td align="center" width="5%">
+						<input class="boton2peque" type="button" value="-" onclick="menos(<?=$nro_materialActivo?>)">
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<?php
+		}
+	}
+	?>
+
 </fieldset>
 
 <!--AQUI ESTA EL MODAL PARA LA BUSQUEDA DE PRODUCTOS-->
@@ -2163,19 +2317,19 @@ if($confDescuentoHabilitado==1){
 		</tr>
 
 		<tr>
-			<td align='right' width='90%' style="color:#777B77;font-size:12px;">Monto Nota</td><td><input type='number' name='totalVenta' id='totalVenta' readonly style="background:#B0B4B3;width:120px;"></td>
+			<td align='right' width='90%' style="color:#777B77;font-size:12px;">Monto Nota</td><td><input type='number' name='totalVenta' id='totalVenta' readonly style="background:#B0B4B3;width:120px;" value="<?=$cotizacion_total_final?>"></td>
 			<td align='center' width='90%' style="color:#777B77;font-size:12px;"><b style="font-size:12px;color:#0691CD;">Efectivo Recibido</b></td>
 		</tr>
 		<tr>
-			<td align='right' width='90%' style="font-weight:bold;color:red;font-size:12px;">Descuento</td><td><input type='number' name='descuentoVenta' id='descuentoVenta' onChange='aplicarDescuento(form1);' style="height:20px;font-size:19px;width:120px;color:red;" onkeyup='aplicarDescuento(form1);' onkeydown='aplicarDescuento(form1);' value="0" step='0.01' required></td>
+			<td align='right' width='90%' style="font-weight:bold;color:red;font-size:12px;">Descuento</td><td><input type='number' name='descuentoVenta' id='descuentoVenta' onChange='aplicarDescuento(form1);' style="height:20px;font-size:19px;width:120px;color:red;" onkeyup='aplicarDescuento(form1);' onkeydown='aplicarDescuento(form1);' value="<?=round($cab_descuento, 2)?>" step='0.01' required></td>
 			<td><input type='number' style="background:#B0B4B3; width:120px;" name='efectivoRecibido' id='efectivoRecibido' readonly step="any" onChange='aplicarCambioEfectivo(form1);' onkeyup='aplicarCambioEfectivo(form1);' onkeydown='aplicarCambioEfectivo(form1);'></td>		
 		</tr>
 		<tr>
-			<td align='right' width='90%' style="font-weight:bold;color:red;font-size:12px;">Descuento %</td><td><input type='number' name='descuentoVentaPorcentaje' id='descuentoVentaPorcentaje' style="height:20px;font-size:19px;width:120px;color:red;" onChange='aplicarDescuentoPorcentaje(form1);' onkeyup='aplicarDescuentoPorcentaje(form1);' onkeydown='aplicarDescuentoPorcentaje(form1);' value="<?=$descuentoTotalOferta;?>" step='0.01'></td>
+			<td align='right' width='90%' style="font-weight:bold;color:red;font-size:12px;">Descuento %</td><td><input type='number' name='descuentoVentaPorcentaje' id='descuentoVentaPorcentaje' style="height:20px;font-size:19px;width:120px;color:red;" onChange='aplicarDescuentoPorcentaje(form1);' onkeyup='aplicarDescuentoPorcentaje(form1);' onkeydown='aplicarDescuentoPorcentaje(form1);' value="<?=(round((($cab_descuento / $cotizacion_total_final) * 100), 2))+$descuentoTotalOferta;?>" step='0.01'></td>
 			<td align='center' width='90%' style="color:#777B77;font-size:12px;"><b style="font-size:12px;color:#0691CD;">Cambio</b></td>
 		</tr>
 		<tr>
-			<td align='right' width='90%' style="font-weight:bold;font-size:12px;color:red;">Monto Final</td><td><input type='number' name='totalFinal' id='totalFinal' readonly style="background:#0691CD;height:20px;font-size:19px;width:120px;;color:#fff;"></td>
+			<td align='right' width='90%' style="font-weight:bold;font-size:12px;color:red;">Monto Final</td><td><input type='number' name='totalFinal' id='totalFinal' readonly style="background:#0691CD;height:20px;font-size:19px;width:120px;;color:#fff;" value="<?=$cotizacion_total_final - $cab_descuento?>"></td>
 			<td><input type='number' name='cambioEfectivo' id='cambioEfectivo' readonly style="background:#7BCDF0;height:20px;font-size:18px;width:120px;"></td>
 		</tr>
 	</table>
@@ -2247,8 +2401,13 @@ if($banderaErrorFacturacion==0 || $tipoDocDefault!=1){
 
 </div>
 
-<input type='hidden' name='materialActivo' id='materialActivo' value="0">
-<input type='hidden' name='cantidad_material' id='cantidad_material' value="0">
+<input type='hidden' name='materialActivo' id='materialActivo' value="<?=$nro_materialActivo?>">
+<script>
+	num 		   = <?=$nro_materialActivo?>;
+	cantidad_items = <?=$nro_materialActivo?>;
+</script>
+
+<input type='hidden' name='cantidad_material' id='cantidad_material' value="<?=$nro_materialActivo?>">
 <!-- small modal -->
 <div class="modal fade modal-primary" id="modalAsignarNit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-md">
