@@ -877,7 +877,8 @@ function setMateriales(f, cod, nombreMat, stockProducto){
 	//Validacion para poner en amarillo cuando el stock es menor a la cantidad de presentacion.
 	var tableProductoX=document.getElementById("data"+numRegistro);
 	if(stockProducto<=cantidad_presentacionx){
-		tableProductoX.style.backgroundColor = "yellow";
+		// tableProductoX.style.backgroundColor = "yellow";
+		document.getElementById('sec_stock' + numRegistro).style.backgroundColor = "yellow";
 	}
 	//Validacion en caso de la fecha de Vencimiento poner en rojo cuando son menos de 3 meses
 	var numeroMesesControlVencimiento = document.getElementById('nro_meses_control_vencimiento').textContent.trim();
@@ -908,13 +909,14 @@ function setMateriales(f, cod, nombreMat, stockProducto){
 			color = item.color;
 			return false;
 		} else {
-			color = '';
+			color = 'white';
 		}
 	});
 	// Cambiar el color en base al valor de "color" de configuracion
-	if (color && color.trim() !== '') {
-		tableProductoX.style.backgroundColor = color;
-	}
+	// if (color && color.trim() !== '') {
+	// 	tableProductoX.style.backgroundColor = color;
+	// }
+	document.getElementById('sec_fecha_vencimiento' + numRegistro).style.backgroundColor = color;
 
 	//actStock(numRegistro);
 	ajaxPrecioItem(numRegistro);

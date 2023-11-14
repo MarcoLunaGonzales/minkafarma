@@ -38,11 +38,11 @@ $banderaDescuentoAbierto=obtenerValorConfiguracion($enlaceCon,54);
 	<div id="cod_material<?php echo $num;?>" class='textomedianonegro'>-</div>
 </td>
 
-<td width="5%" align="center">
+<td width="5%" align="center" id="sec_fecha_vencimiento<?php echo $num;?>">
 	<div id="fecha_vencimiento<?php echo $num;?>" class='textosmallazul'>-</div>
 </td>
 
-<td width="8%" align="center">
+<td width="8%" align="center" id="sec_stock<?php echo $num;?>">
 	<div id='idstock<?php echo $num;?>'>
 		<input type="number" id="stock<?=$num;?>" name="stock<?=$num;?>" value="0" readonly size="5" style="height:20px;font-size:19px;width:80px;color:red;">
 	</div>
