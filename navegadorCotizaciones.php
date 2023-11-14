@@ -352,7 +352,7 @@ echo "<h1>Listado de Cotizaciones</h1>";
         
 echo "<center><table class='texto'>";
 echo "<tr><th>&nbsp;</th><th>Nro. Doc</th><th>Fecha/hora<br>Cotizacion</th><th>Vendedor</th><th>TipoPago</th>
-    <th>Nombre Cotizacion</th><th>Observaciones</th><th>Imprimir</th><th>Imprimir 2</th></tr>";
+    <th>Nombre Cotizacion</th><th>Observaciones</th><th>Imprimir</th><th>Imprimir 2</th><th>Facturar</th></tr>";
     
 echo "<input type='hidden' name='global_almacen' value='$global_almacen' id='global_almacen'>";
 
@@ -431,6 +431,8 @@ while ($dat = mysqli_fetch_array($resp)) {
     echo "<td  bgcolor='$color_fondo'><a href='formatoCotizacionOnLine.php?codigo=$codigo' target='_BLANK'><img src='imagenes/factura1.jpg' width='30' border='0' title='Factura Formato Pequeño'></a>
         </td>";
     echo "<td  bgcolor='$color_fondo'><a href='navegadorDetalleCotizacion.php?codigo=$codigo' target='_BLANK'><img src='imagenes/factura1.jpg' width='30' border='0' title='Factura Formato Pequeño'></a>
+        </td>";
+    echo "<td  bgcolor='$color_fondo'><a href='registrar_salidaventas.php?codigo=$codigo' target='_BLANK'><img src='imagenes/go.png' width='30' border='0' title='Generar Factura'></a>
         </td>";
     echo "</tr>";
 }
