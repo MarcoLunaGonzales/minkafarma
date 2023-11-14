@@ -164,7 +164,8 @@ $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
 				$stockUnidades=$stock2%$cantidadPresentacion;
 				$cadena_mostrar.="<td align='center'>$stockCajas</td><td align='center'>$stockUnidades</td>";
 				if($rptPrecioVenta==1){
-					$precioVentaProducto=precioVenta($enlaceCon,$codigo_item,$globalAgencia);
+					$precioVentaProducto=precioProductoSucursalCalculado($enlaceCon,$codigo_item,$globalAgencia);
+					$precioVentaProducto=redondear2($precioVentaProducto);
 					$cadena_mostrar.="<td align='center'>$precioVentaProducto</td>";
 				}
 				if($rptTipoImpresion==1){
