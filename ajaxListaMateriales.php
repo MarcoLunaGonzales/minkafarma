@@ -109,8 +109,11 @@ $numeroMesesControlVencimiento = obtenerValorConfiguracion($enlaceCon, 28);
 			}else{
 				$stockProducto=stockProducto($enlaceCon,$globalAlmacen, $codigo);
 			}
+			
+			// Stock Producto COLOR
+			$stockColor = ($stockProducto <= $cantidadPresentacion) ? 'yellow' : 'transparent';
 								
-			$datosProd=$codigo."|".$nombre."|".$linea."|".$stockProducto;
+			$datosProd=$codigo."|".$nombre."|".$linea."|".$stockProducto."|".$stockColor;
 		
 
 			$consulta="select p.`precio` from precios p where p.`codigo_material`='$codigo' and p.`cod_precio`='1' and 
@@ -199,7 +202,7 @@ $numeroMesesControlVencimiento = obtenerValorConfiguracion($enlaceCon, 28);
 				<td>$linea</td>
 				<td><small>$principioActivo</small></td>
 				<td><small>$accionTerapeutica</small></td>
-				<td style='background-color: ".(($stockProducto <= $cantidadPresentacion) ? 'yellow' : 'transparent')."'>$stockProductoFormat</td>
+				<td style='background-color: $stockColor;'>$stockProductoFormat</td>
 				<td>$precioProducto</td>
 				</tr>";
 				$cont++;
