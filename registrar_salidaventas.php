@@ -583,10 +583,10 @@ function calculaMontoMaterial_bs(indice){
 function totales(){
 	var subtotal=0;
     for(var ii=1;ii<=num;ii++){
-	 	if(document.getElementById('materiales'+ii)!=null){
-			var monto=document.getElementById("montoMaterial"+ii).value;
-			subtotal=subtotal+parseFloat(monto);
-		}
+		 	if(document.getElementById('materiales'+ii)!=null){
+				var monto=document.getElementById("montoMaterial"+ii).value;
+				subtotal=subtotal+parseFloat(monto);
+			}
     }
     var subtotalPrecio=0;
     for(var ii=1;ii<=num;ii++){
@@ -600,26 +600,26 @@ function totales(){
 
     subtotalPrecio=Math.round(subtotalPrecio*100)/100;
 
-	subtotal=Math.round(subtotal*100)/100;
+		subtotal=Math.round(subtotal*100)/100;
 	
-	var tipo_cambio=$("#tipo_cambio_dolar").val();
+		var tipo_cambio=$("#tipo_cambio_dolar").val();
 
     document.getElementById("totalVenta").value=subtotal;
-	document.getElementById("totalFinal").value=subtotal;
+		document.getElementById("totalFinal").value=subtotal;
 
-	document.getElementById("totalVentaUSD").value=Math.round((subtotal/tipo_cambio)*100)/100;
-	document.getElementById("totalFinalUSD").value=Math.round((subtotal/tipo_cambio)*100)/100;
+		document.getElementById("totalVentaUSD").value=Math.round((subtotal/tipo_cambio)*100)/100;
+		document.getElementById("totalFinalUSD").value=Math.round((subtotal/tipo_cambio)*100)/100;
 
     //setear descuento o aplicar la suma total final con el descuento
-	document.getElementById("descuentoVenta").value=0;
-	document.getElementById("descuentoVentaUSD").value=0;
+		document.getElementById("descuentoVenta").value=0;
+		document.getElementById("descuentoVentaUSD").value=0;
 
-	aplicarDescuentoPorcentaje(form1);
+		aplicarDescuentoPorcentaje(form1);
 
-	aplicarCambioEfectivo();
-	minimoEfectivo();
+		aplicarCambioEfectivo();
+		minimoEfectivo();
 }
-
+s
 function aplicarDescuento(f){
 	var tipo_cambio=$("#tipo_cambio_dolar").val();
 	var total=document.getElementById("totalVenta").value;
