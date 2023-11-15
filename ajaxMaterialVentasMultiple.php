@@ -40,11 +40,14 @@ $lineaProductoX="";
 $stockProductoX=0;
 $precioProductoX=0;
 
+// Obtenemos control de fecha
+$numeroMesesControlVencimiento = obtenerValorConfiguracion($enlaceCon, 28);
+
 for( $j=0;$j<=sizeof($arrayProductosX)-1;$j++ ){
 	$num=$numJS+$j;
 	//echo "num".$num."<br>";
 	$arrayProductosDetalle=$arrayProductosX[$j];
-	list($codigoProductoX,$nombreProductoX,$lineaProductoX,$stockProductoX)=explode("|",$arrayProductosDetalle);
+	list($codigoProductoX,$nombreProductoX,$lineaProductoX,$stockProductoX, $stockColor)=explode("|",$arrayProductosDetalle);
 
 	$arrayPreciosAplicar=precioCalculadoParaFacturacion($enlaceCon,$codigoProductoX,$globalAgencia,$codClienteX);
 	$precioProductoBase=$arrayPreciosAplicar[0];
@@ -55,6 +58,27 @@ for( $j=0;$j<=sizeof($arrayProductosX)-1;$j++ ){
 
 	$precioProductoX=round($precioProductoBase,2);
 
+	/* Se obtiene la diferencia de meses con la fecha actual */
+	$fechaVencimiento = obtenerFechaVencimiento($enlaceCon, $globalAlmacen, $codigoProductoX);
+	list($mes, $anio) = explode("/", $fechaVencimiento);
+	$hoy = date('m/Y');
+	list($mesHoy, $anioHoy) = explode("/", $hoy);
+	$mesesDiferencia = (($anio - $anioHoy) * 12) + ($mes - $mesHoy);
+
+	$controlVencimientoArray 	   = json_decode($numeroMesesControlVencimiento, true);
+	usort($controlVencimientoArray, function($a, $b) {
+		return $a['meses'] <=> $b['meses'];
+	});
+	$colorFV = '';
+	foreach ($controlVencimientoArray as $item) {
+		if ($mesesDiferencia <= $item['meses']) {
+			$colorFV = $item['color'];
+			break;
+		} else {
+			$colorFV = 'white';
+		}
+	}
+	/* Fin diferencia de fecha */
 ?>
 
 <div id="div<?php echo $num?>">
@@ -72,12 +96,16 @@ for( $j=0;$j<=sizeof($arrayProductosX)-1;$j++ ){
 	<div id="cod_material<?php echo $num;?>" class='textomedianonegro'><?=$nombreProductoX;?> - <?=$lineaProductoX;?></div>
 </td>
 
-<td width="5%" align="center">
-	<div id="fecha_vencimiento<?php echo $num;?>" class='textosmallazul'>-</div>
+<td width="5%" style='background-color: <?=$colorFV?>; text-align: center;'>
+	<div id="fecha_vencimiento<?php echo $num;?>">
+		<small>
+			<b><?=$fechaVencimiento?></b>
+		</small>
+	</div>
 </td>
 
 <?php
-echo "<td><div id='idstock<?php echo $num;?>'>";
+echo "<td id='sec_stock$num' style='background-color: $stockColor;'><div id='idstock$num'>";
 echo "<input type='number' id='stock$num' name='stock$num' value='$stockProductoX' readonly size='5' style='height:20px;font-size:19px;width:80px;color:red;'>";
 echo "</div></td>";
 ?>
