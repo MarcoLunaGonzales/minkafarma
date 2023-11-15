@@ -2092,6 +2092,8 @@ if($banderaMensajesDoblePantalla==1){
 	</table>
 	<!-- ITEMS DE COTIZACIÓN -->
 	<?php
+	$nro_materialActivo 	= 0;
+	$cotizacion_total_final = 0;
 	if(!empty($cod_cotizacion)){
 		// Obtenemos control de fecha
 		$numeroMesesControlVencimiento = obtenerValorConfiguracion($enlaceCon, 28);
@@ -2103,9 +2105,6 @@ if($banderaMensajesDoblePantalla==1){
 				LEFT JOIN material_apoyo m ON m.codigo_material = cd.cod_material
 				WHERE cd.cod_salida_almacen = '$cod_cotizacion'";
 		$resp2=mysqli_query($enlaceCon,$sql2);
-		$nro_materialActivo = 0;
-
-		$cotizacion_total_final = 0;
 		while($rawCotizacion = mysqli_fetch_array($resp2)){
 			$nro_materialActivo++;
 			
@@ -2325,7 +2324,11 @@ if($confDescuentoHabilitado==1){
 			<td><input type='number' style="background:#B0B4B3; width:120px;" name='efectivoRecibido' id='efectivoRecibido' readonly step="any" onChange='aplicarCambioEfectivo(form1);' onkeyup='aplicarCambioEfectivo(form1);' onkeydown='aplicarCambioEfectivo(form1);'></td>		
 		</tr>
 		<tr>
-			<td align='right' width='90%' style="font-weight:bold;color:red;font-size:12px;">Descuento %</td><td><input type='number' name='descuentoVentaPorcentaje' id='descuentoVentaPorcentaje' style="height:20px;font-size:19px;width:120px;color:red;" onChange='aplicarDescuentoPorcentaje(form1);' onkeyup='aplicarDescuentoPorcentaje(form1);' onkeydown='aplicarDescuentoPorcentaje(form1);' value="<?=(round((($cab_descuento / $cotizacion_total_final) * 100), 2))+$descuentoTotalOferta;?>" step='0.01'></td>
+			<?php
+				$porcentaje_descuento = ($cotizacion_total_final != 0) ? round((($cab_descuento / $cotizacion_total_final) * 100), 2) : 0;
+
+			?>
+			<td align='right' width='90%' style="font-weight:bold;color:red;font-size:12px;">Descuento %</td><td><input type='number' name='descuentoVentaPorcentaje' id='descuentoVentaPorcentaje' style="height:20px;font-size:19px;width:120px;color:red;" onChange='aplicarDescuentoPorcentaje(form1);' onkeyup='aplicarDescuentoPorcentaje(form1);' onkeydown='aplicarDescuentoPorcentaje(form1);' value="<?=$porcentaje_descuento+$descuentoTotalOferta;?>" step='0.01'></td>
 			<td align='center' width='90%' style="color:#777B77;font-size:12px;"><b style="font-size:12px;color:#0691CD;">Cambio</b></td>
 		</tr>
 		<tr>
