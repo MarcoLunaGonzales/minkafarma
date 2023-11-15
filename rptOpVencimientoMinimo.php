@@ -11,7 +11,7 @@ $global_usuario=$_COOKIE['global_usuario'];
 if($rpt_territorio==""){
 	$rpt_territorio=$globalCiudad;
 }
-echo "<h1>Reporte Movimiento de Productos</h1>"; 
+echo "<h1>Reporte de Vencimientos y Mínimos</h1>"; 
 
 echo"<form method='POST' action='rptVencimientoMinimo.php'  target='_blank'>";
 	
@@ -40,17 +40,11 @@ echo"<form method='POST' action='rptVencimientoMinimo.php'  target='_blank'>";
 	}
 	echo "</select></td></tr>";
 
-	echo "<tr><th align='left'>Fecha Inicio:</th>";
+	echo "<tr><th align='left'>A Fecha:</th>";
 			echo" <TD bgcolor='#ffffff'>
 			<INPUT  type='date' class='text' value='$fecha_rptdefault' id='rpt_ini' name='rpt_ini' readonly>
 			</TD>";
-	echo "</tr>";
-	echo "<tr><th align='left'>Fecha Final:</th>";
-			echo" <TD bgcolor='#ffffff'>
-			<INPUT  type='date' class='text' value='$fecha_rptdefault' id='rpt_fin' name='rpt_fin' readonly>
-			</TD>";
-	echo "</tr>";
-	
+	echo "</tr>";	
 	
 	echo"\n </table><br>";
 	echo "<center><input type='submit' name='reporte' value='Ver Reporte' class='boton2'>

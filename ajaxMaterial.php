@@ -11,7 +11,7 @@ $num=$_GET['codigo'];
 $fechaActual=date("Y-m-d");
 ?>
 
-<table border="0" align="center" cellSpacing="1" cellPadding="1" width="100%" style="border:#ccc 1px solid;" id="data<?php echo $num?>" >
+<table border="1" align="center" cellSpacing="1" cellPadding="1" width="100%" style="border:#ccc 1px solid;" id="data<?php echo $num?>" >
 <tr bgcolor="#FFFFFF">
 
 <!-- row -->
@@ -38,6 +38,7 @@ $fechaActual=date("Y-m-d");
 <td align="center" width="5%">
 <input type="number" class="inputnumber" min="0.01" max="1000000" id="precio_unitario<?php echo $num;?>" name="precio_unitario<?php echo $num;?>" size="5"  value="0" onChange='calculaPrecioCliente(0, <?php echo $num;?>);' onKeyUp='calculaPrecioCliente(0, <?php echo $num;?>);' step="0.01" required>
 </td>
+
 <!-- Fecha de vencimiento -->
 <td align="center" width="8%">
 <input type="date" class="textoform" min="<?php echo $fechaActual; ?>" id="fechaVenc<?php echo $num;?>" name="fechaVenc<?php echo $num;?>" size="5" required>
@@ -49,7 +50,7 @@ $fechaActual=date("Y-m-d");
 </td>
 
 <!-- DESCUENTO PRODUCTO -->
-<td align="center" width="10%">
+<td align="center" width="5%">
 %<input type="number" class="inputnumber" min="0" max="1000000" id="descuento_porcentaje<?php echo $num;?>" name="descuento_porcentaje<?php echo $num;?>" size="5"  value="0" onKeyUp='calcularDescuentoUnitario(1, <?php echo $num;?>);' onChange='calcularDescuentoUnitario(1, <?php echo $num;?>);' step="0.01" required data-tipo="1"><br>
 Bs.<input type="number" class="inputnumber" min="0" max="1000000" id="descuento_numero<?php echo $num;?>" name="descuento_numero<?php echo $num;?>" size="5"  value="0" onKeyUp='calcularDescuentoUnitario(0, <?php echo $num;?>);' onChange='calcularDescuentoUnitario(0, <?php echo $num;?>);' step="0.01" required data-tipo="0">
 </td>
@@ -63,11 +64,13 @@ Bs.<input type="number" class="inputnumber" min="0" max="1000000" id="descuento_
 <td align="center" width="8%">
 <input type="number" class="inputnumber" value="0" id="precio<?php echo $num;?>" name="precio<?php echo $num;?>" size="5" min="0" step="0.01" readonly>
 </td>
+
 <td align="center" width="10%">
 	<!-- Precio Venta Calculado -->
 	<input type="number" class="inputnumber" value="0" id="preciocliente<?php echo $num;?>" name="preciocliente<?php echo $num;?>" size="4" min="0" step="0.01" style="height:20px;font-size:15px;width:80px;color:black;" disabled>
 	<div id="divmargenOf<?php echo $num;?>" class="textopequenorojo2">-</div>
 </td>
+
 <td align="center" width="10%">
 	<!-- PrecioCliente a Guardar -->
 	<input type="number" class="inputnumber" value="0" id="precioclienteguardar<?php echo $num;?>" name="precioclienteguardar<?php echo $num;?>" size="4" min="0" step="0.01" onKeyUp='calculaMargen(this,<?php echo $num;?>);' onChange='calculaMargen(this,<?php echo $num;?>);' style="height:20px;font-size:19px;width:80px;color:blue;" required>

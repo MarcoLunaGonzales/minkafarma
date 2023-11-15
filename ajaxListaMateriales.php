@@ -135,6 +135,7 @@ $numeroMesesControlVencimiento = obtenerValorConfiguracion($enlaceCon, 28);
 			}
 
 			/*Mostrar la Fecha de Vencimiento*/
+			$colorFV = 'white';
 			$txtFechaVencimiento="-";
 			if($banderaMostrarFV==1){
 				$txtFechaVencimiento=obtenerFechaVencimiento($enlaceCon, $globalAlmacen, $codigo);
@@ -145,24 +146,28 @@ $numeroMesesControlVencimiento = obtenerValorConfiguracion($enlaceCon, 28);
 			
 			/* Se obtiene la diferencia de meses con la fecha actual */
 			$fechaVencimiento = obtenerFechaVencimiento($enlaceCon, $globalAlmacen, $codigo);
-			list($mes, $anio) = explode("/", $fechaVencimiento);
-			$hoy = date('m/Y');
-			list($mesHoy, $anioHoy) = explode("/", $hoy);
-			$mesesDiferencia = (($anio - $anioHoy) * 12) + ($mes - $mesHoy);
+			
+			if($fechaVencimiento!=""){
+				list($mes, $anio) = explode("/", $fechaVencimiento);
+				$hoy = date('m/Y');
+				list($mesHoy, $anioHoy) = explode("/", $hoy);
+				$mesesDiferencia = (($anio - $anioHoy) * 12) + ($mes - $mesHoy);
 
-			$controlVencimientoArray 	   = json_decode($numeroMesesControlVencimiento, true);
-			usort($controlVencimientoArray, function($a, $b) {
-				return $a['meses'] <=> $b['meses'];
-			});
-			$colorFV = '';
-			foreach ($controlVencimientoArray as $item) {
-				if ($mesesDiferencia <= $item['meses']) {
-					$colorFV = $item['color'];
-					break;
-				} else {
-					$colorFV = 'white';
-				}
+				$controlVencimientoArray 	   = json_decode($numeroMesesControlVencimiento, true);
+				usort($controlVencimientoArray, function($a, $b) {
+					return $a['meses'] <=> $b['meses'];
+				});
+				$colorFV = '';
+				foreach ($controlVencimientoArray as $item) {
+					if ($mesesDiferencia <= $item['meses']) {
+						$colorFV = $item['color'];
+						break;
+					} else {
+						$colorFV = 'white';
+					}
+				}				
 			}
+
 			/* Fin diferencia de fecha */
 
 			/**  Codigo Costo Compra***/

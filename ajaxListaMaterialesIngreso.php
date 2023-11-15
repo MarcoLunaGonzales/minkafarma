@@ -47,7 +47,7 @@ $itemsNoUtilizar="0";
 				$precioProducto=0;
 			}
 			$margenLinea=margenLinea($enlaceCon,$codigo);			
-			$datosProd=$codigo."|".$nombre."|".$cantidadPresentacion."|".$precioProducto."|".$margenLinea;
+			$datosProd=$codigo."|".$nombre."-".$linea."|".$cantidadPresentacion."|".$precioProducto."|".$margenLinea;
 		
 	
 			echo "<tr><td><input type='checkbox' id='idchk$cont' name='idchk$cont' value='$datosProd' onchange='ver(this)' ></td>

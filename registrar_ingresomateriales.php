@@ -385,15 +385,28 @@ function fun13(cadIdOrg,cadIdDes)
 			  	var name = $(this).attr('name');
 			  	var value = $(this).val();
 			  	var partes = name.split("preciocliente");
+			  	if(!name.includes('precioclienteguardar') && !name.includes('precioclienteOf')){
+					var name_form = partes[0]; 
+					var index_form = partes[1];
+				  	arrayPrecioCliente.push([name,value,index_form]);
+			  	}
+			});
+			var inputs = $('form input[name^="precioclienteguardar"]');
+			var arrayPrecioClienteGuardar=[];
+			inputs.each(function() {
+			  	var name = $(this).attr('name');
+			  	var value = $(this).val();
+			  	var partes = name.split("precioclienteguardar");
 				var name_form = partes[0]; 
 				var index_form = partes[1];
-			  	arrayPrecioCliente.push([name,value,index_form]);
-			});
+			  	arrayPrecioClienteGuardar.push([name,value,index_form]);
+			});			
 			console.log("Array Recuperado Cantidad: "+arrayCantidades);
 			console.log("Array Recuperado Precios: "+arrayPreciosCaja);
 			console.log("Array Recuperado FV: "+arrayFV);
 			console.log("Array Recuperado Descuentos: "+arrayDescuentoPorcentaje);
 			console.log("Array Recuperado PrecioCliente: "+arrayPrecioCliente);
+			console.log("Array Recuperado PrecioClienteGuardar: "+arrayPrecioClienteGuardar);
 			/*fin recuperar*/
 
 			ajax=nuevoAjax();
@@ -431,8 +444,14 @@ function fun13(cadIdOrg,cadIdDes)
 					value_set=arrayPrecioCliente[x][1];
 					index_set=arrayPrecioCliente[x][2];
 					document.getElementById(name_set).value=value_set;
-					calculaMargen(document.getElementById(name_set),index_set);
 					console.log("PRECIOCLIENTE: "+name_set+" "+index_set);
+					/*reponiendo PrecioClienteGuardar*/
+					name_set=arrayPrecioClienteGuardar[x][0];
+					value_set=arrayPrecioClienteGuardar[x][1];
+					index_set=arrayPrecioClienteGuardar[x][2];
+					document.getElementById(name_set).value=value_set;
+					calculaMargen(document.getElementById(name_set),index_set);
+					console.log("PRECIOCLIENTEGUARDAR: "+name_set+" "+index_set);
 				}
 			}		
 			ajax.send(null);

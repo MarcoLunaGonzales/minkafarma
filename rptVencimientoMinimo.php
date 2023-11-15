@@ -12,7 +12,6 @@ $rptAlmacen=$_POST["rpt_almacen"];
 $rptGrupo=$_POST["rpt_grupo"];
 
 $rptFechaInicio=$_POST["rpt_ini"];
-$rptFechaFinal=$_POST["rpt_fin"];
 
 $fechaInicioPivot = $rptFechaInicio;
 //restamos un dia
@@ -48,7 +47,7 @@ $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
 	
 	echo "<table align='center' class='textotit' width='70%'><tr><td align='center'>Reporte de Vencimientos y Mínimos
 	<br>Almacen: <strong>$nombre_almacen</strong>
-	<br>Periodo: <strong>$rptFechaInicio  a  $rptFechaFinal</strong><br>$txt_reporte</td></tr></table>";
+	<br>Fecha a : <strong>$rptFechaInicio </strong><br>$txt_reporte</td></tr></table>";
 	
 		//desde esta parte viene el reporte en si
 		
@@ -140,8 +139,11 @@ $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
 			$resp_linea=mysqli_query($enlaceCon,$sql_linea);			
 			$num_filas=mysqli_num_rows($resp_linea);
 			
-			echo $cadena_mostrar;
-			$indice++;
+			if($stockProducto>0){
+				echo $cadena_mostrar;
+				$indice++;				
+			}
+
 		}
 
 		echo "</table>";
