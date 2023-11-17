@@ -30,6 +30,9 @@ $banderaValidacionStock=obtenerValorConfiguracion($enlaceCon,4);
 /*Bandera de descuento abierto en Venta*/
 $banderaDescuentoAbierto=obtenerValorConfiguracion($enlaceCon,54);
 
+//Bandera para mostrar la Fecha de Vencimiento en la Factura o no
+$banderaMostrarFV=obtenerValorConfiguracion($enlaceCon,20);
+
 
 $arrayProductosX=explode(",",$arrayProductos);
 
@@ -59,26 +62,37 @@ for( $j=0;$j<=sizeof($arrayProductosX)-1;$j++ ){
 	$precioProductoX=round($precioProductoBase,2);
 
 	/* Se obtiene la diferencia de meses con la fecha actual */
-	$fechaVencimiento = obtenerFechaVencimiento($enlaceCon, $globalAlmacen, $codigoProductoX);
-	list($mes, $anio) = explode("/", $fechaVencimiento);
-	$hoy = date('m/Y');
-	list($mesHoy, $anioHoy) = explode("/", $hoy);
-	$mesesDiferencia = (($anio - $anioHoy) * 12) + ($mes - $mesHoy);
+	$colorFV = 'white';
+	$txtFechaVencimiento="-";
+	$fechaVencimiento="";
+	
+	if($banderaMostrarFV==1){
+		/* Se obtiene la diferencia de meses con la fecha actual */
+		$fechaVencimiento = obtenerFechaVencimiento($enlaceCon, $globalAlmacen, $codigoProductoX);		
+			
+		if($fechaVencimiento!=""){
+			list($mes, $anio) = explode("/", $fechaVencimiento);
+			$hoy = date('m/Y');
+			list($mesHoy, $anioHoy) = explode("/", $hoy);
+			$mesesDiferencia = (($anio - $anioHoy) * 12) + ($mes - $mesHoy);
 
-	$controlVencimientoArray 	   = json_decode($numeroMesesControlVencimiento, true);
-	usort($controlVencimientoArray, function($a, $b) {
-		return $a['meses'] <=> $b['meses'];
-	});
-	$colorFV = '';
-	foreach ($controlVencimientoArray as $item) {
-		if ($mesesDiferencia <= $item['meses']) {
-			$colorFV = $item['color'];
-			break;
-		} else {
-			$colorFV = 'white';
+			$controlVencimientoArray 	   = json_decode($numeroMesesControlVencimiento, true);
+			usort($controlVencimientoArray, function($a, $b) {
+				return $a['meses'] <=> $b['meses'];
+			});
+			$colorFV = '';
+			foreach ($controlVencimientoArray as $item) {
+				if ($mesesDiferencia <= $item['meses']) {
+					$colorFV = $item['color'];
+					break;
+				} else {
+					$colorFV = 'white';
+				}
+			}
 		}
+		/* Fin diferencia de fecha */
 	}
-	/* Fin diferencia de fecha */
+
 ?>
 
 <div id="div<?php echo $num?>">

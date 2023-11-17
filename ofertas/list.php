@@ -320,6 +320,11 @@ echo "<script language='Javascript'>
 			//echo "Todos los Medicamentos";
       $lineas="Todos los Medicamentos";
       $productos="";
+		}
+		elseif($dat['por_linea']==3){
+			//echo "Todos los Medicamentos";
+      $lineas="Todos los Productos Market";
+      $productos="";
 		}else{
 			$productos=obtenerNombreDesProdRegistrados($codigo);
 		    $tamanioGlosa=50; 

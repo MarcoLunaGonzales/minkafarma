@@ -16,6 +16,7 @@ $fecha_hora_ini=$fecha_ini." ".$hora_ini;
 $fecha_hora_fin=$fecha_fin." ".$hora_fin;
 
 $stockLimitado=$_POST["stock_limitado"];
+$nivel_descuento=$_POST["nivel_descuento"];
 
 $sql="SELECT IFNULL(max(codigo)+1,1) FROM $table";
 $resp=mysqli_query($enlaceCon,$sql);

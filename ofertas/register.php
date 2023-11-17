@@ -58,6 +58,7 @@ echo "<td align='left' colspan='3'>
 	<select name='nivel_descuento' class='selectpicker form-control' data-style='btn btn-info'>
 		<option value='0'>Producto</option>
 		<option value='2'>Solo Medicamentos</option>
+		<option value='3'>Solo Market</option>
 	</select>	
 </td>";
 echo "</tr>";

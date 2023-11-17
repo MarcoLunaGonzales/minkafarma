@@ -1271,6 +1271,7 @@ function validar(f){
   if(banderaValidacionEfectivoRecibido==1){
 	  if(efectivoRecibido < totalFinalVenta){
 	    Swal.fire("Error en Monto Recibido en Efectivo!", "<b>El monto en efectivo NO puede ser menor al monto total.</b>", "error");
+    	//document.getElementById('efectivoRecibidoUnido').focus();	
 			return (false);
 	  }  	
   }
