@@ -49,6 +49,9 @@ include("datosUsuario.php");
 		<a href="#menu"><span></span></a>
 		TuFarma - <?=$nombreEmpresa;?>
 		<div style="position:absolute; width:95%; height:50px; text-align:right; top:0px; font-size: 15px; font-weight: bold; color: #ffff00;">
+			<button onclick="window.contenedorPrincipal.location.href='manuales_sistema/navegadorManuales.php'" style="position:relative;z-index:99999;right:0px;" class="boton-plomo" title="Manuales TuFarma" formtarget="contenedorPrincipal">
+				<i class="material-icons" style="font-size: 20px">chrome_reader_mode</i>
+			</button>
 			[<?=$fechaSistemaSesion;?> <?=$horaSistemaSesion;?>]
 			<button onclick="location.href='salir.php'" style="position:relative;z-index:99999;right:0px;" class="boton-rojo" title="Salir">
 				<i class="material-icons" style="font-size: 16px">logout</i>

@@ -91,7 +91,6 @@ include("datosUsuario.php");
 				<ul>
 					<li><a href="navegador_salidamateriales.php" target="contenedorPrincipal">Listado de Traspasos & Salidas</a></li>
 					<li><a href="navegadorVentas.php" target="contenedorPrincipal">Listado de Ventas</a></li>
-					<li><a href="control_inventario/list.php" target="contenedorPrincipal">Control de Inventario</a></li>
 					<!--li><a href="registrar_salidaventas_manuales.php" target="_blank">Factura Manual de Contigencia</a></li-->
 				</ul>	
 			</li>
@@ -99,6 +98,7 @@ include("datosUsuario.php");
 			<li><a href="rptOpArqueoDiario.php?variableAdmin=1" target="contenedorPrincipal">Cierre de Caja</a></li>
 			<li><a href="cambiarSucursalSesion.php" target="contenedorPrincipal">Cambiar Almacen</a></li>
 			<li><a href="navegador_ajustarpreciostock.php" target="contenedorPrincipal">Consultar Precios **</a></li>
+					<li><a href="control_inventario/list.php" target="contenedorPrincipal">Control de Inventario</a></li>
 
 			<li><span>Marcados de Personal</span>
 				<ul>
