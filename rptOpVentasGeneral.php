@@ -13,6 +13,7 @@ function envia_formulario(f)
 	rpt_territorio=f.rpt_territorio.value;
 	fecha_ini=f.exafinicial.value;
 	fecha_fin=f.exaffinal.value;
+	rptOrden=f.rpt_orden.value;
 
 	var codPersonal=new Array();
 	var j=0;
@@ -23,7 +24,7 @@ function envia_formulario(f)
 		}
 	}
 
-	window.open('rptVentasGeneral.php?rpt_territorio='+rpt_territorio+'&fecha_ini='+fecha_ini+'&fecha_fin='+fecha_fin+'&codPersonal='+codPersonal+'','','scrollbars=yes,status=no,toolbar=no,directories=no,menubar=no,resizable=yes,width=1000,height=800');			
+	window.open('rptVentasGeneral.php?rpt_territorio='+rpt_territorio+'&fecha_ini='+fecha_ini+'&fecha_fin='+fecha_fin+'&codPersonal='+codPersonal+''+'&rptOrden='+rptOrden+'','','scrollbars=yes,status=no,toolbar=no,directories=no,menubar=no,resizable=yes,width=1000,height=800');			
 	return(true);
 }
 function actualizarDatosPersonal(){
@@ -98,6 +99,11 @@ echo"<form method='post' action=''>";
 			echo" <TD bgcolor='#ffffff'><INPUT  type='date' class='texto' value='$fecha_rptdefault' id='exaffinal' size='10' name='exaffinal'>";
     		echo"  </TD>";
 	echo "</tr>";
+	
+	echo "<tr><th align='left'>Orden de Reporte</th><td><select name='rpt_orden' class='selectpicker' data-live-search='true' data-size='6'>";
+	echo "<option value='1'>Ascendente</option>";	
+	echo "<option value='2'>Descendente</option>";	
+	echo "</select></td></tr>";
 	
 	echo"\n </table><br>";
 	require('home_almacen.php');

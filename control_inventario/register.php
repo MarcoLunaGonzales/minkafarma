@@ -8,6 +8,8 @@ require_once("../funciones.php");
  error_reporting(E_ALL);
  ini_set('display_errors', '1');
 
+$cod_funcionario=$_COOKIE['global_usuario'];
+$codTerritorio=$_COOKIE['global_agencia'];
 $datosHorasInventario=obtenerValorConfiguracion($enlaceCon, 36);
 
 if($datosHorasInventario!=""){
@@ -123,6 +125,26 @@ echo "<tr><td align='left' class='bg-primary text-white'>Productos Max(2000)</td
 echo "<td align='left' colspan='3'>
 	<input type='number' readonly class='form-control' name='cantidad_productos' id='cantidad_productos' value='0' max='2000'>
 </td></tr>";
+
+
+echo "<tr><td align='left' class='bg-info text-white'>Responsable</td>";
+echo "<td align='left'>
+	<select name='rpt_funcionario'  id='rpt_funcionario' class='selectpicker form-control' data-style='btn btn-primary' onchange='cambiarSubLinea()' data-live-search='true' required>
+	<option value='' disabled selected>--Seleccione--</option>";
+	$sql="SELECT distinct(f.codigo_funcionario), CONCAT(f.paterno, ' ', f.nombres, ' ', f.materno)
+    from funcionarios f, cargos c
+    where f.cod_cargo=c.cod_cargo and f.estado=1 and f.cod_ciudad in ($codTerritorio) 
+    order by f.paterno";
+	$resp=mysqli_query($enlaceCon,$sql);
+	while($dat=mysqli_fetch_array($resp))
+	{	$codigo_cat=$dat[0];
+		$nombre_cat=$dat[1];
+		echo "<option value='$codigo_cat'>$nombre_cat</option>";
+	}
+	echo "</select>
+</td>";
+echo "</tr>";
+
 echo "<tr><td align='left' class='bg-info text-white'>A Fecha</td>";
 echo "<td align='left'>
 	<INPUT  type='date' class='form-control' value='$fecha_rptdefault' id='fecha_fin' size='10' name='fecha_fin'>

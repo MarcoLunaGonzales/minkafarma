@@ -46,6 +46,10 @@ $fecha_ini=$_GET['fecha_ini'];
 $fecha_fin=$_GET['fecha_fin'];
 $codPersonal=$_GET['codPersonal'];
 
+$rptOrden=empty($_GET['rptOrden']) ? 1 : $_GET['rptOrden'];
+$ordenRegistros = $rptOrden == 1 ? 'ASC' : 'DESC';
+
+
 $globalAlmacen=$_COOKIE["global_almacen"];
 //desde esta parte viene el reporte en si
 $fecha_iniconsulta=$fecha_ini;//cambia_formatofecha($fecha_ini);
@@ -61,7 +65,7 @@ echo "<table align='center' class='textotit' width='70%'><tr><td align='center'>
 	<br>Territorio: $nombre_territorio <br> De: $fecha_ini A: $fecha_fin
 	<br>Fecha Reporte: $fecha_reporte</tr></table>";
 
-$sql="select s.`fecha`,  
+$sql="SELECT DATE_FORMAT(CONCAT(s.fecha, ' ', s.hora_salida), '%d-%m-%Y %H:%i:%s'),  
 	(select c.nombre_cliente from clientes c where c.`cod_cliente`=s.cod_cliente) as cliente, 
 	s.`razon_social`, s.`observaciones`, 
 	(select t.`abreviatura` from `tipos_docs` t where t.`codigo`=s.cod_tipo_doc),
@@ -70,27 +74,27 @@ $sql="select s.`fecha`,
 	s.`cod_almacen` in (select a.`cod_almacen` from `almacenes` a where a.`cod_ciudad`='$rpt_territorio')
 	and s.`fecha` BETWEEN '$fecha_iniconsulta' and '$fecha_finconsulta' and s.cod_chofer in ($codPersonal) ";
 
-$sql.=" order by s.fecha, s.nro_correlativo";
+$sql.=" order by s.fecha, s.nro_correlativo $ordenRegistros";
 
 $resp=mysqli_query($enlaceCon,$sql);
 
 echo "<br><table align='center' class='texto' width='70%'>
 <tr>
-<th>Personal</th>
-<th>Fecha</th>
-<th>Cliente</th>
-<th>Razon Social</th>
-<th>Documento</th>
-<th>Monto</th>
-<th>
+<th width='15%'>Personal</th>
+<th width='10%'>Fecha</th>
+<th width='10%'>Cliente</th>
+<th width='10%'>Razon Social</th>
+<th width='10%'>Documento</th>
+<th width='35%'>
 	<table width='100%'>
 	<tr>
-		<th width='50%'>Item</th>
-		<th width='25%'>Cantidad</th>
-		<th width='25%'>Monto</th>
+		<th width='60%'>Item</th>
+		<th width='20%'>Cantidad</th>
+		<th width='20%'>Monto por Producto</th>
 	</tr>
 	</table>
 </th>
+<th width='10%'>Monto Documento</th>
 </tr>";
 
 $totalVenta=0;
@@ -132,9 +136,9 @@ while($datos=mysqli_fetch_array($resp)){
 
 		$nombreItemSin = preg_replace("/[^a-zA-Z0-9]+/", "", $nombreItem);
 		$tablaDetalle.="<tr>		
-		<td><a href='#' style='font-size:14px' onclick='mostrarStockProducto(\"$codItem\",\"$nombreItemSin\");return false;'>($codItem) $nombreItem</a></td>
-		<td>$cantidadFormat</td>
-		<td>$montoPtr</td>		
+		<td width='60%'><a href='#' style='font-size:14px' onclick='mostrarStockProducto(\"$codItem\",\"$nombreItemSin\");return false;'>($codItem) $nombreItem</a></td>
+		<td width='20%'>$cantidadFormat</td>
+		<td width='20%'>$montoPtr</td>		
 		</tr>";
 	}
 	$totalPtr=number_format($totalVentaX,2,".",",");
@@ -151,12 +155,13 @@ while($datos=mysqli_fetch_array($resp)){
 	<td>$nombreCliente</td>
 	<td>$razonSocial</td>
 	<td>$datosDoc</td>
-	<td>$montoVentaFormat</td>
 	<td>$tablaDetalle</td>
+	<td>$montoVentaFormat</td>
 	</tr>";
 }
 $totalVentaFormat=number_format($totalVenta,2,".",",");
 echo "<tr>
+	<td>-</td>
 	<td>-</td>
 	<td>-</td>
 	<td>-</td>
