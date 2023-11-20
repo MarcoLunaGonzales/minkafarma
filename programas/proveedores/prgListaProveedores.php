@@ -13,7 +13,8 @@ echo "<tr>";
 echo "<th>&nbsp;</th><th>Codigo</th><th>Nombre</th><th>Direccion</th><th>Telefono 1</th><th>Telefono 2</th><th>Contacto</th><th>Tipo Proveedor</th><th>Detalle Lineas</th><th>Distribuidor Lineas Asociadas</th>
         <th>Ver Lineas</th>
 		<th>Incrementar Precios Todo</th>
-		<th>Incrementar Precios solo con Stock</th>";
+		<th>Incrementar Precios solo con Stock</th>
+		<th>Ver Compras</th>";
 echo "</tr>";
 $consulta="
     SELECT p.cod_proveedor, p.nombre_proveedor, p.direccion, p.telefono1, p.telefono2, p.contacto, p.cod_tipoproveedor, tp.nombre_tipoventa
@@ -54,6 +55,7 @@ while($reg=mysqli_fetch_array($rs))
         echo "<td><a href='navegadorLineasDistribuidores.php?codProveedor=$codProv'><img src='../../imagenes/detalle.png' width='40' title='Ver Lineas'></a></td>";
         echo "<td align='center'><a href='../../navegador_precio_subir.php?codProveedor=$codProv&tipo=0' target='_BLANK'><img src='../../imagenes/edit.png' width='35' title='Incrementar Precio Todo'></a></td>";
         echo "<td align='center'><a href='../../navegador_precio_subir.php?codProveedor=$codProv&tipo=1' target='_BLANK'><img src='../../imagenes/factura1.jpg' width='35' title='Incrementar Precio Stock'></a></td>";
+        echo "<td align='center'><a href='../../navegador_precio_subir.php?codProveedor=$codProv&tipo=1' target='_BLANK'><img src='../../imagenes/documento.png' width='35' title='Incrementar Precio Stock'></a></td>";
     }else{
         echo "<td align='center'>
                 <a href='navegadorListaDistribuidorLineas.php?codProveedor=$codProv'>

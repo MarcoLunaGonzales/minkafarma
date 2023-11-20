@@ -137,9 +137,10 @@ echo "<td align='left'>
     order by f.paterno";
 	$resp=mysqli_query($enlaceCon,$sql);
 	while($dat=mysqli_fetch_array($resp))
-	{	$codigo_cat=$dat[0];
-		$nombre_cat=$dat[1];
-		echo "<option value='$codigo_cat'>$nombre_cat</option>";
+	{	$codigo_fun=$dat[0];
+		$nombre_fun=$dat[1];
+    $select_fun = $codigo_fun==$cod_funcionario ? 'selected' : '';
+		echo "<option value='$codigo_fun' $select_fun>$nombre_fun</option>";
 	}
 	echo "</select>
 </td>";
