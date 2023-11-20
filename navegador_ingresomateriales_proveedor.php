@@ -205,33 +205,50 @@ $anulacionCodigo = $datConf[0];
 //$anulacionCodigo=mysql_result($respConf,0,0);
 
 
+// Codigo de Proveedor
+$cod_proveedor = $_GET['codProveedor'];
+// Obtiene Detalle de Proveedor
+$consultaProv = "SELECT p.nombre_proveedor 
+            FROM proveedores p 
+            where p.cod_proveedor = '$cod_proveedor'
+            LIMIT 1";
+   
+$resp_detalleProv = mysqli_query($enlaceCon, $consultaProv);
+$nombre_proveedor = '';
+if ($resp_detalleProv) {
+    $registro = mysqli_fetch_assoc($resp_detalleProv);
+    $nombre_proveedor = $registro['nombre_proveedor'];
+}
+
 $consulta = "
     SELECT i.cod_ingreso_almacen, i.fecha, i.hora_ingreso, ti.nombre_tipoingreso, i.observaciones, i.nro_factura_proveedor, i.nro_correlativo, i.ingreso_anulado,
 	(select p.nombre_proveedor from proveedores p where p.cod_proveedor=i.cod_proveedor) as proveedor, i.cod_tipoingreso
     FROM ingreso_almacenes i, tipos_ingreso ti
     WHERE i.cod_tipoingreso=ti.cod_tipoingreso
+    AND i.cod_proveedor = '$cod_proveedor'
     AND i.cod_almacen='$global_almacen'";
    $consulta = $consulta."ORDER BY i.nro_correlativo DESC limit 0, 50 ";
 //echo "MAT:$sql";
 $resp = mysqli_query($enlaceCon,$consulta);
-echo "<h1>Ingreso de Materiales</h1>";
+echo "<h1>Ingreso de Materiales - $nombre_proveedor</h1>";
 
-echo "<table border='1' cellspacing='0' class='textomini'><tr><th>Leyenda:</th><th>Ingresos Anulados</th><td bgcolor='#ff8080' width='10%'></td><th>Ingresos con movimiento</th><td bgcolor='#ffff99' width='10%'></td><th>Ingresos sin movimiento</th><td bgcolor='' width='10%'>&nbsp;</td></tr></table><br>";
+// echo "<table border='1' cellspacing='0' class='textomini'><tr><th>Leyenda:</th><th>Ingresos Anulados</th><td bgcolor='#ff8080' width='10%'></td><th>Ingresos con movimiento</th><td bgcolor='#ffff99' width='10%'></td><th>Ingresos sin movimiento</th><td bgcolor='' width='10%'>&nbsp;</td></tr></table><br>";
 
-//<input type='button' value='Editar Ingreso' class='boton' onclick='editar_ingreso(this.form)'>&nbsp;
-echo "<div class='divBotones'><input type='button' value='Registrar Ingreso' name='adicionar' class='boton' onclick='enviar_nav()'>&nbsp;";
-if($anulacionCodigo==1){
-	echo "<input type='button' value='Anular Ingreso' name='adicionar' class='boton2' onclick='anular_ingreso(this.form)'>";	
-}else{
-	echo "<input type='button' value='Anular Ingreso' name='adicionar' class='boton2' onclick='anular_ingreso2(this.form)'>";
-}
-echo"&nbsp; <input type='button' value='Buscar' class='boton' onclick='ShowBuscar()'></div>";
+// //<input type='button' value='Editar Ingreso' class='boton' onclick='editar_ingreso(this.form)'>&nbsp;
+// echo "<div class='divBotones'><input type='button' value='Registrar Ingreso' name='adicionar' class='boton' onclick='enviar_nav()'>&nbsp;";
+// if($anulacionCodigo==1){
+// 	echo "<input type='button' value='Anular Ingreso' name='adicionar' class='boton2' onclick='anular_ingreso(this.form)'>";	
+// }else{
+// 	echo "<input type='button' value='Anular Ingreso' name='adicionar' class='boton2' onclick='anular_ingreso2(this.form)'>";
+// }
+// echo"&nbsp; <input type='button' value='Buscar' class='boton' onclick='ShowBuscar()'></div>";
 
 echo "<div id='divCuerpo'>";
 echo "<br><center><table class='texto'>";
 echo "<tr><th>&nbsp;</th><th>Numero Ingreso</th><th>Nro. Factura Proveedor</th><th>Fecha</th><th>Tipo de Ingreso</th>
 <th>Proveedor</th><th>Monto Compra</th>
 <th>Observaciones</th><th>&nbsp;</th></tr>";
+
 while ($dat = mysqli_fetch_array($resp)) {
     $codigo = $dat[0];
     $fecha_ingreso = $dat[1];
@@ -329,14 +346,14 @@ while ($dat = mysqli_fetch_array($resp)) {
 echo "</table></center><br>";
 echo "</div>";
 
-//<input type='button' value='Editar Ingreso' class='boton' onclick='editar_ingreso(this.form)'>&nbsp;
-echo "<div class='divBotones'><input type='button' value='Registrar Ingreso' name='adicionar' class='boton' onclick='enviar_nav()'>&nbsp;";
-if($anulacionCodigo==1){
-    echo "<input type='button' value='Anular Ingreso' name='adicionar' class='boton2' onclick='anular_ingreso(this.form)'>";    
-}else{
-    echo "<input type='button' value='Anular Ingreso' name='adicionar' class='boton2' onclick='anular_ingreso2(this.form)'>";
-}
-echo"&nbsp; <input type='button' value='Buscar' class='boton' onclick='ShowBuscar()'></div>";
+// //<input type='button' value='Editar Ingreso' class='boton' onclick='editar_ingreso(this.form)'>&nbsp;
+// echo "<div class='divBotones'><input type='button' value='Registrar Ingreso' name='adicionar' class='boton' onclick='enviar_nav()'>&nbsp;";
+// if($anulacionCodigo==1){
+//     echo "<input type='button' value='Anular Ingreso' name='adicionar' class='boton2' onclick='anular_ingreso(this.form)'>";    
+// }else{
+//     echo "<input type='button' value='Anular Ingreso' name='adicionar' class='boton2' onclick='anular_ingreso2(this.form)'>";
+// }
+// echo"&nbsp; <input type='button' value='Buscar' class='boton' onclick='ShowBuscar()'></div>";
 
 
 echo "</form>";
