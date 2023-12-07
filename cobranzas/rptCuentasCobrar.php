@@ -30,21 +30,19 @@ echo "<table align='center' class='textotit' width='100%'><tr><td align='center'
 	<br>Territorio: $nombre_territorio <br> De: $fecha_ini A: $fecha_fin
 	<br>Fecha Reporte: $fecha_reporte</tr></table>";
 
-$sql="select s.`cod_salida_almacenes`, s.`nro_correlativo`, s.`fecha`, concat(c.`nombre_cliente`,' ',c.paterno), s.`monto_final`,
+$sql="SELECT s.`cod_salida_almacenes`, s.`nro_correlativo`, s.`fecha`, concat(c.`nombre_cliente`,' ',c.paterno), s.`monto_final`,
        (
          select COALESCE(sum(cbd.monto_detalle), 0)
          from `cobros_cab` cb, `cobros_detalle` cbd
          where cb.cod_cobro=cbd.cod_cobro and cbd.cod_venta=s.`cod_salida_almacenes`
-         and cb.cod_estado<>2 and cb.fecha_cobro between '$fecha_iniconsulta' and
-               '$fecha_finconsulta'
+         and cb.cod_estado<>2 
        ) cobrado
 from `salida_almacenes` s, clientes c where s.`monto_final` >
       (
         select COALESCE(sum(cbd.monto_detalle), 0)
          from `cobros_cab` cb, `cobros_detalle` cbd
          where cb.cod_cobro=cbd.cod_cobro and cbd.cod_venta=s.`cod_salida_almacenes`
-         and cb.cod_estado<>2 and cb.fecha_cobro between '$fecha_iniconsulta' and
-               '$fecha_finconsulta'
+         and cb.cod_estado<>2 
       ) and s.`cod_cliente` = c.`cod_cliente` and
       s.`salida_anulada` = 0 and s.cod_almacen='$globalAlmacen' and s.cod_tiposalida=1001 and s.cod_tipopago=4 and 
       s.`fecha` between '$fecha_iniconsulta' and

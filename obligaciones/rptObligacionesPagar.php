@@ -33,8 +33,6 @@ $sql="SELECT ia.cod_ingreso_almacen, ia.nro_correlativo, ia.fecha, p.nombre_prov
 			WHERE pp.cod_pago=ppd.cod_pago 
 			AND ppd.cod_ingreso_almacen=ia.cod_ingreso_almacen
 			AND pp.cod_estado<>2 
-			AND pp.fecha 
-			BETWEEN '$fecha_iniconsulta' AND '$fecha_finconsulta'
 		) AS pagado,
 		DATEDIFF(
 			DATE_ADD(ia.fecha_factura_proveedor, INTERVAL ia.dias_credito DAY), 
@@ -48,8 +46,6 @@ $sql="SELECT ia.cod_ingreso_almacen, ia.nro_correlativo, ia.fecha, p.nombre_prov
 			WHERE pp.cod_pago=ppd.cod_pago 
 			AND ppd.cod_ingreso_almacen=ia.cod_ingreso_almacen
 			AND pp.cod_estado<>2 
-			AND pp.fecha 
-			BETWEEN '$fecha_iniconsulta' AND '$fecha_finconsulta'
 		)
 		AND ia.cod_proveedor = p.cod_proveedor
 		AND ia.ingreso_anulado = 0

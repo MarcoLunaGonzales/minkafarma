@@ -17,8 +17,8 @@ $tel2 = str_replace("'", "''", $tel2);
 $contacto = str_replace("'", "''", $contacto);
 
 $consulta="
-INSERT INTO proveedores (cod_proveedor, nombre_proveedor, direccion, telefono1, telefono2, contacto, cod_tipoproveedor)
-VALUES ( (SELECT ifnull(max(p.cod_proveedor),0)+1 FROM proveedores p) , '$nomPro', '$dir', '$tel1', '$tel2', '$contacto', '$tipoProveedor')
+INSERT INTO proveedores (cod_proveedor, nombre_proveedor, direccion, telefono1, telefono2, contacto, cod_tipoproveedor, estado)
+VALUES ( (SELECT ifnull(max(p.cod_proveedor),0)+1 FROM proveedores p) , '$nomPro', '$dir', '$tel1', '$tel2', '$contacto', '$tipoProveedor', 1)
 ";
 $resp=mysqli_query($enlaceCon,$consulta);
 if($resp) {
