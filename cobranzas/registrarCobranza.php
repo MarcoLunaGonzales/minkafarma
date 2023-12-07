@@ -37,6 +37,7 @@ function ajaxCargarDeudas(){
 		}else{
 			contenedor.innerHTML = "Cargando...";
 		}
+		$('.selectpicker').selectpicker('refresh');
 	}
 	ajax.send(null)
 }
@@ -135,7 +136,7 @@ $fecha=date("d/m/Y");
 
 <div id="divDetalle">
 	<table border='0' class='texto' cellspacing='0' align='center' width='90%' style='border:#ccc 1px solid;'>
-		<tr><th>Nro. OC</th><th>Fecha OC</th><th>Monto OC</th><th>A Cuenta</th><th>Saldo OC</th><th>Monto a Pagar</th><th>Nro. Recibo</th></tr>
+		<tr><th>Nro. OC</th><th>Fecha OC</th><th>Monto OC</th><th>A Cuenta</th><th>Saldo OC</th><th>Tipo Pago</th><th>Monto a Pagar</th><th>Nro. Recibo</th></tr>
 	</table>
 </div>
 

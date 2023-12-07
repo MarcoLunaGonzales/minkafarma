@@ -116,7 +116,16 @@ include("datosUsuario.php");
 			<li><a href="registrar_salidaventas.php" target="_blank">Vender / Facturar **</a></li>
 			<li><a href="rptOpArqueoDiario.php?variableAdmin=1" target="contenedorPrincipal">Cierre de Caja</a></li>
 			<li><a href="cambiarSucursalSesion.php" target="contenedorPrincipal">Cambiar Almacen</a></li>
-			<li><a href="rptOpProcesarCostos.php" target="contenedorPrincipal">Procesar Costos</a></li>
+
+
+			<!-- <li><a href="rptOpProcesarCostos.php" target="contenedorPrincipal">Procesar Costos</a></li> -->
+			<li><span>Costos</span>
+				<ul>
+					<li><a href="rptOpProcesarCostos.php" target="contenedorPrincipal">Procesar Costos</a></li>
+					<li><a href="rpt_op_inv_ingresos_costo.php" target="contenedorPrincipal">Ingresos con Costo 0</a></li>
+					<li><a href="rpt_op_inv_salidas_costo.php" target="contenedorPrincipal">Salidas con Costo 0</a></li>
+				</ul>	
+			</li>	
 
 			<li><span>Reportes</span>
 				<ul>

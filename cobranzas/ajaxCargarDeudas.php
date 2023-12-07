@@ -2,7 +2,7 @@
 <body>
 
 <table border='0' class='texto' cellspacing='0' align='center' width='90%' style='border:#ccc 1px solid;'>
-	<tr><th>Tipo Doc</th><th>Nro.</th><th>Fecha</th><th>Monto</th><th>A Cuenta</th><th>Saldo</th><th>Monto a Pagar</th><th>Nro. Doc. Pago</th></tr>
+	<tr><th>Tipo Doc</th><th>Nro.</th><th>Fecha</th><th>Monto</th><th>A Cuenta</th><th>Saldo</th><th>Tipo de Pago</th><th>Monto a Pagar</th><th>Nro. Doc. Pago</th></tr>
 <?php
 require("../conexionmysqli.inc");
 require("../funciones.php");
@@ -25,6 +25,8 @@ $numFilas=mysqli_num_rows($resp);
 
 echo "<input type='hidden' name='nroFilas' id='nroFilas' value='$numFilas'>";
 
+
+
 $i=1;
 while($dat=mysqli_fetch_array($resp)){
 	$codigo=$dat[0];
@@ -39,6 +41,16 @@ while($dat=mysqli_fetch_array($resp)){
 	$montoCanceladoV=redondear2($montoCancelado);
 	$saldoV=redondear2($saldo);
 	
+	$sqlTipoPago  = "SELECT cod_tipopago, nombre_tipopago from tipos_pago where cod_tipopago < 4 order by 1";
+	$respTipoPago = mysqli_query($enlaceCon,$sqlTipoPago);
+	$selectTipoPago .= "<select name='tipoPago$i' class='selectpicker form-control' id='tipoPago$i' data-style='btn-info'>";
+	while($dat=mysqli_fetch_array($respTipoPago)){
+		$codigoTipoPago = $dat[0];
+		$nombreTipoPago = $dat[1];
+		$selectTipoPago .= "<option value='$codigoTipoPago'>$nombreTipoPago</option>";
+	}
+	$selectTipoPago .= "</select>";
+
 	echo "<tr>
 		<input type='hidden' value='$codigo' name='codCobro$i' id='codCobro$i'>
 		<td>$nombreDoc</td>
@@ -48,7 +60,8 @@ while($dat=mysqli_fetch_array($resp)){
 		<td>$montoCanceladoV</td>
 		<td>$saldoV</td>
 		<input type='hidden' value='$saldo' name='saldo$i' id='saldo$i'>
-		<td align='center'><input type='number' class='texto' name='montoPago$i' id='montoPago$i' size='10' onKeyPress='javascript:return solonumeros(event)' value='0' max='$saldo'></td>
+		<td>$selectTipoPago</td>
+		<td align='center'><input type='number' class='texto' name='montoPago$i' id='montoPago$i' size='10' onKeyPress='javascript:return solonumeros(event)' value='0' max='$saldo' step='any'></td>
 		<td align='center'><input type='text' class='texto' name='nroDoc$i' id='nroDoc$i' size='10' onKeyPress='javascript:return solonumeros(event)' value='0'></td>
 		</tr>";
 	$i++;

@@ -104,7 +104,7 @@ echo "<table border='1' cellspacing='0' class='textomini'><tr><th>Leyenda:</th><
 	echo "<tr><th>&nbsp;</th><th>Nro. Cobro</th><th>Gestion</th><th>Cliente</th>
 		<th>Fecha</th><th>Monto</th><th>Observaciones</th><th>&nbsp;</th></tr>";
 	
-	$consulta = "select c.`cod_cobro`,
+	$consulta = "SELECT c.`cod_cobro`,
        c.`fecha_cobro`,
        c.`observaciones`,
        c.`monto_cobro`,

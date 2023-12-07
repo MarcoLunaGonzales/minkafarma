@@ -55,11 +55,12 @@ for($i=1;$i<=$nroFilas;$i++)
 	$codVenta=$_POST["codCobro$i"];	
 	$montoPago=$_POST["montoPago$i"];
 	$nroDoc=$_POST["nroDoc$i"];
+	$tipoPago=$_POST["tipoPago$i"];
 	
 	$montoTotal=$montoTotal+$montoPago;
 	if($montoPago>0){
-		$sql_inserta="INSERT INTO `cobros_detalle` (`cod_cobro`,`cod_venta`,`monto_detalle`,`nro_doc`) 
-			VALUE ('$codigo','$codVenta','$montoPago','$nroDoc')";
+		$sql_inserta="INSERT INTO `cobros_detalle` (`cod_cobro`,`cod_venta`,`monto_detalle`,`nro_doc`, cod_tipopago) 
+			VALUE ('$codigo','$codVenta','$montoPago','$nroDoc', '$tipoPago')";
 		//echo $sql_inserta;
 		$sql_inserta=mysqli_query($enlaceCon, $sql_inserta);
 	}
