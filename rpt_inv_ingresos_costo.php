@@ -1,24 +1,25 @@
 <?php
-require('estilos_reportes_almacencentral.php');
 require_once 'conexionmysqli.php';
-require('function_formatofecha.php');
-require('funciones.php');
+require_once 'estilos_almacenes.inc';
+require_once 'funciones.php';
 
-$rptItem=empty($_GET['rpt_item']) ? '' : $_GET['rpt_item'];
-$tipo_ingreso=empty($_GET['tipo_ingreso']) ? '' : $_GET['tipo_ingreso'];
+$rptItem 	  = empty($_POST['rpt_item']) ? '' : $_POST['rpt_item'];
+$tipo_ingreso = empty($_POST['tipo_ingreso']) ? '' : implode(', ', $_POST['tipo_ingreso']);
+$fecha_ini    = empty($_POST['exafinicial']) ? '' : $_POST['exafinicial'];
+$fecha_fin 	  = empty($_POST['exaffinal']) ? '' : $_POST['exaffinal'];
 
 $fecha_reporte=date("d/m/Y");
 $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
-$sql_tipo_ingreso="select nombre_tipoingreso from tipos_ingreso where cod_tipoingreso='$tipo_ingreso'";
-$resp_tipo_ingreso=mysqli_query($sql_tipo_ingreso);
-$datos_tipo_ingreso=mysqli_fetch_array($resp_tipo_ingreso);
-$nombre_tipoingreso=$datos_tipo_ingreso[0];
-if($tipo_ingreso!="")
-{	$nombre_tipoingresomostrar="Tipo de Ingreso: <strong>$nombre_tipoingreso</strong>";
-}
-else
-{	$nombre_tipoingresomostrar="Todos los tipos de Ingreso";
-}
+
+	$sql_tipo_ingreso="SELECT nombre_tipoingreso from tipos_ingreso where cod_tipoingreso in ($tipo_ingreso)";
+	// echo $sql_tipo_ingreso;
+	$resp_tipo_ingreso=mysqli_query($enlaceCon, $sql_tipo_ingreso);
+	$nombre_tipoingresomostrar="";
+	while($datos_tipo_salida=mysqli_fetch_array($resp_tipo_ingreso)){
+		$nombre_tipoingresomostrar.=$datos_tipo_salida[0]." - ";	
+	}
+
+	$detalle_ingreso = "";
 
 	$detalle_ingreso.="<table border=0 cellspacing='0' align='center' class='textomini' width='100%'>";
 	$detalle_ingreso.="<tr><th width='70%'>Material</th><th width='30%'>Cantidad</th></tr></table>";
@@ -35,22 +36,18 @@ else
 	
 	
 	$sql="SELECT i.cod_ingreso_almacen, i.fecha, ti.nombre_tipoingreso, i.observaciones, i.nota_entrega, i.nro_correlativo, i.ingreso_anulado, i.nro_factura_proveedor, 
-	(select p.nombre_proveedor from proveedores p where p.cod_proveedor=i.cod_proveedor)as proveedor
+	(select p.nombre_proveedor from proveedores p where p.cod_proveedor=i.cod_proveedor)as proveedor, i.monto_ingreso
 	FROM ingreso_almacenes i, tipos_ingreso ti, ingreso_detalle_almacenes id
-	where i.cod_ingreso_almacen=id.cod_ingreso_almacen and i.cod_tipoingreso=ti.cod_tipoingreso and i.cod_almacen='$rpt_almacen' and i.fecha>='$fecha_iniconsulta' and i.fecha<='$fecha_finconsulta' and i.ingreso_anulado=0";
+	where i.cod_ingreso_almacen=id.cod_ingreso_almacen and i.cod_tipoingreso=ti.cod_tipoingreso and i.cod_almacen='$rpt_almacen' and i.fecha>='$fecha_iniconsulta' and i.fecha<='$fecha_finconsulta' and i.ingreso_anulado=0 and i.monto_ingreso = 0 ";
 	if($tipo_ingreso!='')
-	{	$sql.=" and i.cod_tipoingreso='$tipo_ingreso' ";
-	}
-	if($rptItem!=""){
-		$sql.=" and id.cod_material in ($rptItem) ";
+	{	$sql.=" and i.cod_tipoingreso IN ($tipo_ingreso)";
 	}
 	$sql.="order by i.nro_correlativo";
+	// echo $sql;
 	
-	//echo $sql;
-	
-	$resp=mysqli_query($sql);
+	$resp=mysqli_query($enlaceCon, $sql);
 	echo "<center><br><table class='texto' width='100%'>";
-	echo "<tr class='textomini'><th>Nro. Ingreso</th><th>Proveedor</th><th>Nro. Factura</th><th>Fecha</th><th>Tipo de Ingreso</th><th>Observaciones</th><th>Estado</th><th>$detalle_ingreso</th></tr>";
+	echo "<tr class='textomini'><th>Nro. Ingreso</th><th>Proveedor</th><th>Nro. Factura</th><th>Fecha</th><th>Tipo de Ingreso</th><th>Observaciones</th><th>Estado</th><th>Costo</th><th>$detalle_ingreso</th></tr>";
 	while($dat=mysqli_fetch_array($resp))
 	{
 		$codigo=$dat[0];
@@ -63,13 +60,14 @@ else
 		$anulado=$dat[6];
 		$nroFacturaProv=$dat[7];
 		$nombreProveedor=$dat[8];
+		$costo_ingreso = $dat[9];
 		
 		echo "<input type='hidden' name='fecha_ingreso$nro_correlativo' value='$fecha_ingreso_mostrar'>";
 		$bandera=0;
 		$sql_verifica_movimiento="select s.cod_salida_almacenes from salida_almacenes s, salida_detalle_ingreso sdi
 		where s.cod_salida_almacenes=sdi.cod_salida_almacen and s.salida_anulada=0 and sdi.cod_ingreso_almacen='$codigo'";
-		$resp_verifica_movimiento=mysqli_query($sql_verifica_movimiento);
-		$num_filas_movimiento=mysql_num_rows($resp_verifica_movimiento);
+		$resp_verifica_movimiento=mysqli_query($enlaceCon, $sql_verifica_movimiento);
+		$num_filas_movimiento=mysqli_num_rows($resp_verifica_movimiento);
 		if($num_filas_movimiento!=0)
 		{	$estado_ingreso="Con Movimiento";
 		}
@@ -81,43 +79,34 @@ else
 		}
 		//desde esta parte sacamos el detalle del ingreso
 		$sql_detalle="select i.cod_material, i.cantidad_unitaria from ingreso_detalle_almacenes i
-		where i.cod_ingreso_almacen='$codigo' and i.cod_material in ($rptItem)";
-		$resp_detalle=mysqli_query($sql_detalle);
+		where i.cod_ingreso_almacen='$codigo'";
+		// echo $sql_detalle;
+		$resp_detalle=mysqli_query($enlaceCon, $sql_detalle);
 		$bandera=0;
 		$detalle_ingreso="";
 		$detalle_ingreso.="<table border=0 cellspacing='0' align='center' class='textomini' width='100%'>";
 		//$detalle_ingreso.="<tr><th width='70%'>Material</th><th width='30%'>Cantidad</th></tr>";
 		
-		$numFilas=mysql_num_rows($resp_detalle);
+		$numFilas = 0;
+		if ($resp_detalle) {
+			$numFilas = mysqli_num_rows($resp_detalle);
+		}
 		if($numFilas>0){
 			while($dat_detalle=mysqli_fetch_array($resp_detalle))
 			{	$cod_material=$dat_detalle[0];
 				$cantidad_unitaria=$dat_detalle[1];
 				$cantidad_unitaria=redondear2($cantidad_unitaria);
-				if($tipo_item==1)
-				{	$sql_nombre_material="select descripcion, presentacion from muestras_medicas where codigo='$cod_material'";
-				}
-				else
-				{	$sql_nombre_material="select descripcion_material from material_apoyo where codigo_material='$cod_material'";
-				}
-				$resp_nombre_material=mysqli_query($sql_nombre_material);
+				$sql_nombre_material="select descripcion_material from material_apoyo where codigo_material='$cod_material'";
+				$resp_nombre_material=mysqli_query($enlaceCon, $sql_nombre_material);
 				$dat_nombre_material=mysqli_fetch_array($resp_nombre_material);
 				$nombre_material=$dat_nombre_material[0];
-				$presentacion=$dat_nombre_material[1];
-				$detalle_ingreso.="<tr><td width='70%'>$nombre_material $presentacion</td><td align='center'  width='30%'>$cantidad_unitaria</td></tr>";
+				$detalle_ingreso.="<tr><td width='70%'>$nombre_material </td><td align='center'  width='30%'>$cantidad_unitaria</td></tr>";
 			}
 		}
 		$detalle_ingreso.="</table>";
-		if($rpt_linea==0)
-		{	echo "<tr bgcolor='$color_fondo'>
+		echo "<tr>
 			<td align='center'>$nro_correlativo</td><td align='left'>$nombreProveedor</td><td align='center'>$nroFacturaProv</td>
-			<td align='center'>$fecha_ingreso_mostrar</td><td>$nombre_tipoingreso</td><td>&nbsp;$obs_ingreso</td><td>&nbsp;$estado_ingreso</td><td align='center'>$detalle_ingreso</td></tr>";
-		}
-		if($rpt_linea!=0 and $bandera==1)
-		{	echo "<tr bgcolor='$color_fondo'><td align='center'>$nro_correlativo</td>
-			<td align='left'>$nombreProveedor</td><td align='center'>$nroFacturaProv</td>
-			<td align='center'>$fecha_ingreso_mostrar</td><td>$nombre_tipoingreso</td><td>&nbsp;$obs_ingreso</td><td>&nbsp;$estado_ingreso</td><td align='center'>$detalle_ingreso</td></tr>";
-		}
+			<td align='center'>$fecha_ingreso_mostrar</td><td>$nombre_tipoingreso</td><td>&nbsp;$obs_ingreso</td><td>&nbsp;$estado_ingreso</td><td align='center'>$costo_ingreso</td><td align='center'>$detalle_ingreso</td></tr>";
 	}
 	echo "</table></center><br>";
 ?>

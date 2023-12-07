@@ -41,6 +41,8 @@ echo"<form method='post' action='rpt_inv_ingresos_costo.php' target='_blank'>";
 		echo "<option value='$codigo_tipoingreso' selected>$nombre_tipoingreso</option>";
 	}
 	echo "</select></td>";
+
+	
 	echo "<tr><th align='left'>Fecha inicio:</th>";
 			echo "<td>
 			<input type='date' class='texto' value='$fecha_rptdefault_ini' id='exafinicial' size='10' name='exafinicial'>";
