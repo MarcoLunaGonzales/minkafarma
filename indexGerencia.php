@@ -203,7 +203,6 @@ require_once 'datosUsuario.php';
 							<li><a href="rptPrecios.php" target="contenedorPrincipal">Precios</a></li>
 							<li><a href="rptOpProductosAReponer.php" target="contenedorPrincipal">Productos a reponer</a></li>
 							<li><a href="rptProductosVencer.php" target="contenedorPrincipal">Productos proximos a Vencer</a></li>
-							<!--li><a href="rptOCPagar.php" target="contenedorPrincipal">OC por Pagar</a></li-->
 							<li><a href="rptOpVencimientoMinimo.php" target="contenedorPrincipal">Reporte de Vencimientos y Mínimos</a></li>
 						</ul>
 					</li>	

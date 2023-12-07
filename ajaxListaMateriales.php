@@ -7,6 +7,10 @@
 require("conexionmysqli2.inc");
 require("funciones.php");
 
+
+ error_reporting(E_ALL);
+ ini_set('display_errors', '1');
+
 $codigoMat=0;
 $nomAccion="";
 $nomPrincipio="";
@@ -63,11 +67,11 @@ $numeroMesesControlVencimiento = obtenerValorConfiguracion($enlaceCon, 28);
 		$sql=$sql. " and descripcion_material like '%$nombreItem%'";
 	}
 
-	if($tipoSalidaVencimiento==$tipoSalida){
+	/*if($tipoSalidaVencimiento==$tipoSalida){
 		$sql=$sql. " and m.codigo_material in (select id.cod_material from ingreso_almacenes i, ingreso_detalle_almacenes id 
 		where i.cod_ingreso_almacen=id.cod_ingreso_almacen and i.cod_almacen='$globalAlmacen' and i.ingreso_anulado=0 
 		and id.fecha_vencimiento<'$fechaActual') ";
-	}
+	}*/
 	if((int)$codTipo>0){
     	if(isset($_GET["codProv"])){
           $sql=$sql." and m.cod_linea_proveedor in (SELECT cod_linea_proveedor from proveedores_lineas where cod_proveedor=".$_GET["codProv"].")";
@@ -104,12 +108,13 @@ $numeroMesesControlVencimiento = obtenerValorConfiguracion($enlaceCon, 28);
 			
 			$stockProducto=0;
 
-			if($tipoSalida==$tipoSalidaVencimiento){
+			/*if($tipoSalida==$tipoSalidaVencimiento){
 				$stockProducto=stockProductoVencido($enlaceCon,$globalAlmacen, $codigo);
 			}else{
 				$stockProducto=stockProducto($enlaceCon,$globalAlmacen, $codigo);
-			}
-			
+			}*/
+			$stockProducto=stockProducto($enlaceCon,$globalAlmacen, $codigo);
+
 			// Stock Producto COLOR
 			$stockColor = ($stockProducto <= $cantidadPresentacion) ? 'yellow' : 'transparent';
 								

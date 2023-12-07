@@ -117,9 +117,10 @@ $pdf->SetXY(0,$y+25);		$pdf->Cell(0,0,"Tipo Pago: $tipoPago",0,0,"C");
 $y=$y-15;
 
 $pdf->SetXY(0,$y+45);		$pdf->Cell(0,0,"=================================================================================",0,0,"C");
-$pdf->SetXY(10,$y+48);		$pdf->Cell(0,0,"ITEM");
-$pdf->SetXY(35,$y+48);		$pdf->Cell(0,0,"Cant.");
-$pdf->SetXY(50,$y+48);		$pdf->Cell(0,0,"Importe");
+$pdf->SetXY(5,$y+48);		$pdf->Cell(0,0,"Cant.");
+$pdf->SetXY(20,$y+48);		$pdf->Cell(0,0,"P.U.");
+$pdf->SetXY(35,$y+48);		$pdf->Cell(0,0,"Desc.");
+$pdf->SetXY(50,$y+48);		$pdf->Cell(0,0,"SubTotal");
 $pdf->SetXY(0,$y+52);		$pdf->Cell(0,0,"=================================================================================",0,0,"C");
 
 
@@ -134,6 +135,8 @@ $respDetalle=mysqli_query($enlaceCon,$sqlDetalle);
 $yyy=55;
 
 $montoTotal=0;
+$montoUnit1=0;
+$montoUnit2=0;
 while($datDetalle=mysqli_fetch_array($respDetalle)){
 	$codInterno=$datDetalle[0];
 	$cantUnit=$datDetalle[1];
@@ -143,9 +146,11 @@ while($datDetalle=mysqli_fetch_array($respDetalle)){
 	$precioUnit=$datDetalle[3];
 	$precioUnit=redondear2($precioUnit);
 	$descUnit=$datDetalle[4];
-	$montoUnit=$datDetalle[5];
-	$montoUnit=$montoUnit-$descUnit;
-	$montoUnit=redondear2($montoUnit);
+	$descUnit=redondear2($descUnit);
+	$montoUnit1=$datDetalle[5];
+	
+	$montoUnit2=$montoUnit1-$descUnit;
+	$montoUnit2=redondear2($montoUnit2);
 	
 	// En base a la configuración se muestra =>  1: SI, 0: NO
 	if($mostrarStock == 1){
@@ -160,9 +165,11 @@ while($datDetalle=mysqli_fetch_array($respDetalle)){
 	
 	$pdf->SetFont('Arial','',9);
 	
-	$pdf->SetXY(30,$y+$yyy+2);		$pdf->Cell(10,5,"$cantUnit",0,0,"R");
-	$pdf->SetXY(45,$y+$yyy+2);		$pdf->Cell(20,5,"$montoUnit",0,0,"R");
-	$montoTotal=$montoTotal+$montoUnit;
+	$pdf->SetXY(2,$y+$yyy+2);		$pdf->Cell(10,5,"$cantUnit",0,0,"R");
+	$pdf->SetXY(18,$y+$yyy+2);		$pdf->Cell(10,5,"$precioUnit",0,0,"R");
+	$pdf->SetXY(35,$y+$yyy+2);		$pdf->Cell(10,5,"$descUnit",0,0,"R");
+	$pdf->SetXY(45,$y+$yyy+2);		$pdf->Cell(20,5,"$montoUnit2",0,0,"R");
+	$montoTotal=$montoTotal+$montoUnit2;
 		
 	$yyy=$yyy+8;
 }
