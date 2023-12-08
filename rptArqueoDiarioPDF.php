@@ -298,7 +298,7 @@ $sqlCobranza="SELECT
 $respCobranza = mysqli_query($enlaceCon,$sqlCobranza);
 echo "<br><table align='center' class='textomediano' width='100%'>
 		<tr>
-			<th colspan='5'>Cobranza ventas al Credito</th></tr>
+			<th colspan='5'>Cobranzas de Ventas al Credito</th></tr>
 			<tr>
 				<th>Fecha</th>
 				<th>Cliente</th>

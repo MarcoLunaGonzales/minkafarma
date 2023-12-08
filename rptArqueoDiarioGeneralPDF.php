@@ -239,6 +239,81 @@ echo "<tr>
 
 echo "</table></br>";
 
+
+
+// Cobranza
+$sqlCobranza="SELECT 
+					c.cod_cobro,
+					DATE_FORMAT(c.fecha_cobro,'%d-%m-%Y') as fecha, 
+					CONCAT(cli.nombre_cliente, ' ', cli.paterno) as cliente, 
+					CONCAT(t.abreviatura,'-',sa.nro_correlativo) as nota,
+					tp.nombre_tipopago as tipoPago,
+					cd.monto_detalle as montoPago,
+					cd.cod_tipopago
+			FROM cobros_cab c
+			LEFT JOIN cobros_detalle cd ON cd.cod_cobro = c.cod_cobro
+			LEFT JOIN salida_almacenes sa ON cd.cod_venta = sa.cod_salida_almacenes
+			LEFT JOIN tipos_pago tp ON tp.cod_tipopago = cd.cod_tipopago
+			LEFT JOIN tipos_docs t ON t.codigo = sa.cod_tipo_doc
+			LEFT JOIN clientes cli ON cli.cod_cliente = c.cod_cliente
+			WHERE c.cod_estado = 1
+			AND c.fecha_cobro BETWEEN '$fecha_ini' and '$fecha_fin'
+			HAVING montoPago is not null";
+$respCobranza = mysqli_query($enlaceCon,$sqlCobranza);
+echo "<br><table align='center' class='textomediano' width='100%'>
+		<tr>
+			<th colspan='5'>Cobranzas de Ventas al Credito</th></tr>
+			<tr>
+				<th>Fecha</th>
+				<th>Cliente</th>
+				<th>Nota</th>
+				<th>TipoPago</th>
+				<th>Monto [Bs]</th>
+			</tr>";
+
+$total_cobranza = 0;
+while($datos=mysqli_fetch_array($respCobranza)){
+    $cobroCodigo	= $datos['cod_cobro'];	
+	$cobroFecha		= $datos['fecha'];
+	$cobroCliente	= $datos['cliente'];
+	$cobroNota		= $datos['nota'];
+	$cobroTipoPago	= $datos['tipoPago'];
+	$cobroMonto		= $datos['montoPago'];
+	$cobrocodTipopago = $datos['cod_tipopago'];
+	
+	echo "<tr>
+	<td>$cobroFecha</td>
+	<td>$cobroCliente</td>
+	<td>$cobroNota</td>
+	<td>$cobroTipoPago</td>
+	<td align='right'>$cobroMonto</td>
+	</tr>";
+	$total_cobranza = $total_cobranza + $cobroMonto;
+
+	if($cobrocodTipopago==1){
+		$totalEfectivo  += $cobroMonto;
+		$totalEfectivoF += $cobroMonto;
+	}else{
+		$totalTarjeta  +=$cobroMonto;
+		$totalTarjetaF += $cobroMonto;
+	}
+}
+
+$totalCobranzaF=number_format($total_cobranza,2,".",",");
+echo "<tr>
+	<td>&nbsp;</td>
+	<td>&nbsp;</td>
+	<td>&nbsp;</td>
+	<td>&nbsp;</td>
+	<th align='right'>$totalCobranzaF</th>
+</tr>";
+echo "</table></br>";
+// Fin Cobranza
+
+
+
+
+
 $totalGastos=0;
 
 $saldoCajaChica=$montoCajaChica+$totalTarjeta-$totalGastos;
@@ -254,7 +329,7 @@ echo "<br><table align='center' class='textomediano' width='100%'>";
 
 $totalVentaFormat=number_format($totalVenta,2,".",",");
 echo "<tr style='font-size:15px;'>
-	<th>Total Efectivo:</th>
+	<th>Total Efectivo(Ventas) + Cobranzas Efectivo:</th>
 	<th align='right'>$totalEfectivoF</th>
 </tr>";
 echo "<tr style='font-size:15px;'>
