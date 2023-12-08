@@ -36,16 +36,33 @@ $nombre_tiposalidamostrar="Tipo de Salida: <strong>$nombre_tiposalida</strong>";
 	$fecha_iniconsulta=$fechaInicio;
 	$fecha_finconsulta=$fechaFinal;
 
-	$sql="SELECT s.cod_salida_almacenes, concat(s.fecha,' ',s.hora_salida) as fecha, ts.nombre_tiposalida, 
-	(select c.descripcion from ciudades c where c.cod_ciudad=s.territorio_destino)territorio_destino, 
-	(select a.nombre_almacen from almacenes a where a.cod_almacen=s.almacen_destino)as nombre_almacen, s.observaciones, s.estado_salida, s.nro_correlativo, s.salida_anulada, 
-	ma.codigo_material, ma.descripcion_material, sd.cantidad_unitaria, sd.costo_almacen
+	$sql = "SELECT s.cod_salida_almacenes, 
+			CONCAT(s.fecha, ' ', s.hora_salida) AS fecha, 
+			ts.nombre_tiposalida, 
+			(SELECT c.descripcion FROM ciudades c WHERE c.cod_ciudad = s.territorio_destino) AS territorio_destino, 
+			(SELECT a.nombre_almacen FROM almacenes a WHERE a.cod_almacen = s.almacen_destino) AS nombre_almacen,
+			s.observaciones, 
+			s.estado_salida, 
+			s.nro_correlativo, 
+			s.salida_anulada,
+			ma.codigo_material, 
+			ma.descripcion_material, 
+			sd.cantidad_unitaria, 
+			sd.costo_almacen
 	FROM salida_almacenes s, tipos_salida ts, almacenes a, material_apoyo ma, salida_detalle_almacenes sd
-	where s.cod_tiposalida=ts.cod_tiposalida and s.cod_almacen='$rptAlmacen' 
-	and a.cod_almacen=s.cod_almacen and ma.codigo_material=sd.cod_material and s.cod_salida_almacenes=sd.cod_salida_almacen and 
-	s.fecha>='$fecha_iniconsulta' and s.fecha<='$fecha_finconsulta' 
-	and s.cod_tiposalida in ($stringTipoSalida) and s.salida_anulada=0 
-	and sd.costo_almacen = 0 order by s.nro_correlativo";
+	WHERE s.cod_tiposalida = ts.cod_tiposalida 
+	AND s.cod_almacen = '$rptAlmacen' 
+	AND a.cod_almacen = s.cod_almacen 
+	AND ma.codigo_material = sd.cod_material 
+	AND s.cod_salida_almacenes = sd.cod_salida_almacen 
+	AND s.fecha >= '$fecha_iniconsulta' 
+	AND s.fecha <= '$fecha_finconsulta' 
+	AND s.cod_tiposalida IN ($stringTipoSalida) 
+	AND s.salida_anulada = 0 
+	AND (sd.costo_almacen = 0 OR sd.costo_almacen IS NULL) 
+	ORDER BY s.nro_correlativo";
+
+	// echo $sql;
 
 	echo "<center><br><table class='texto'>";
 	echo "<tr><th>Nro.</th><th>Fecha</th><th>Tipo de Salida</th><th>Almacen Destino</th><th>Observaciones</th><th>Cod.Producto</th><th>Producto</th><th>Cantidad</th><th>Costo</th></tr>";
