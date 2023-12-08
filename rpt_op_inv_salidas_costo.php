@@ -30,8 +30,7 @@ echo"<form method='post' action='rpt_inv_salidas_costo.php' target='_blank'>";
 	echo "</select></td></tr>";
 
 	echo "<tr><th align='left'>Tipo de Salida</th>";
-	$sql_tiposalida="select cod_tiposalida, nombre_tiposalida from tipos_salida where cod_tiposalida<>1001
-	 order by nombre_tiposalida";
+	$sql_tiposalida="select cod_tiposalida, nombre_tiposalida from tipos_salida order by nombre_tiposalida";
 	$resp_tiposalida=mysqli_query($enlaceCon, $sql_tiposalida);
 	echo "<td>
 	<select name='tipo_salida[]' class='selectpicker form-control' data-style='btn-success' multiple size='5' required>";
