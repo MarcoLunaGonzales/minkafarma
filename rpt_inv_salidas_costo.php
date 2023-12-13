@@ -35,6 +35,8 @@ $nombre_tiposalidamostrar="Tipo de Salida: <strong>$nombre_tiposalida</strong>";
 	//desde esta parte viene el reporte en si
 	$fecha_iniconsulta=$fechaInicio;
 	$fecha_finconsulta=$fechaFinal;
+	
+	$rpt_almacen = implode(',', $rptAlmacen);
 
 	$sql = "SELECT s.cod_salida_almacenes, 
 			CONCAT(s.fecha, ' ', s.hora_salida) AS fecha, 
@@ -50,8 +52,9 @@ $nombre_tiposalidamostrar="Tipo de Salida: <strong>$nombre_tiposalida</strong>";
 			sd.cantidad_unitaria, 
 			sd.costo_almacen
 	FROM salida_almacenes s, tipos_salida ts, almacenes a, material_apoyo ma, salida_detalle_almacenes sd
+	LEFT JOIN almacenes al ON al.cod_almacen s.cod_almacen
 	WHERE s.cod_tiposalida = ts.cod_tiposalida 
-	AND s.cod_almacen = '$rptAlmacen' 
+	AND s.cod_almacen IN ($rpt_almacen) 
 	AND a.cod_almacen = s.cod_almacen 
 	AND ma.codigo_material = sd.cod_material 
 	AND s.cod_salida_almacenes = sd.cod_salida_almacen 

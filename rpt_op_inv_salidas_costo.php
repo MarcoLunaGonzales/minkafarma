@@ -19,7 +19,7 @@ echo"<form method='post' action='rpt_inv_salidas_costo.php' target='_blank'>";
 	echo "<tr>
 	<th align='left'>Almacen</th>
 	<td>
-	<select name='rpt_almacen' class='selectpicker' data-style='btn-primary'>";
+	<select name='rpt_almacen[]' class='selectpicker form-control' data-style='btn-success' multiple size='5' required>";
 	$sql="select cod_almacen, nombre_almacen from almacenes order by 2";
 	$resp=mysqli_query($enlaceCon, $sql);
 	while($dat=mysqli_fetch_array($resp))
