@@ -55,7 +55,7 @@ while($reg=mysqli_fetch_array($rs))
         echo "<td><a href='navegadorLineasDistribuidores.php?codProveedor=$codProv'><img src='../../imagenes/detalle.png' width='40' title='Ver Lineas'></a></td>";
         echo "<td align='center'><a href='../../navegador_precio_subir.php?codProveedor=$codProv&tipo=0' target='_BLANK'><img src='../../imagenes/edit.png' width='35' title='Incrementar Precio Todo'></a></td>";
         echo "<td align='center'><a href='../../navegador_precio_subir.php?codProveedor=$codProv&tipo=1' target='_BLANK'><img src='../../imagenes/factura1.jpg' width='35' title='Incrementar Precio Stock'></a></td>";
-        echo "<td align='center'><a href='../../navegador_ingresomateriales_proveedor.php?codProveedor=$codProv' target='_BLANK'><img src='../../imagenes/documento.png' width='35' title='Incrementar Precio Stock'></a></td>";
+        echo "<td align='center'><a href='../../navegador_ingresomateriales_proveedor.php?codProveedor=$codProv' target='_BLANK'><img src='../../imagenes/documento.png' width='35' title='Ver Compras'></a></td>";
     }else{
         echo "<td align='center'>
                 <a href='navegadorListaDistribuidorLineas.php?codProveedor=$codProv'>

@@ -84,6 +84,9 @@ if ($num_filas != 0) {
 	if($cod_cargo==1020){
 		header("location:indexCaja.php");
 	}
+	if($cod_cargo==1021){
+		header("location:indexIngresos.php");
+	}
 
 } else {
     echo "<link href='stilos.css' rel='stylesheet' type='text/css'>
