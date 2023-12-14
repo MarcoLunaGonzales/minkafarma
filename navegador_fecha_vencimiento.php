@@ -25,6 +25,7 @@ $consulta = "SELECT
                 p.nombre_proveedor, 
                 COALESCE(ROUND((((ida.cantidad_unitaria/m.cantidad_presentacion)*(ida.precio_bruto*m.cantidad_presentacion))-((ida.cantidad_unitaria/m.cantidad_presentacion) * (ida.precio_bruto*m.cantidad_presentacion)) * (ida.descuento_unitario/100)), 2), 0) as monto,
                 ida.fecha_vencimiento,
+                m.descripcion_material as nombre_material,
 
                 ida.cod_ingreso_almacen,
                 ida.cod_material,
@@ -52,14 +53,14 @@ $resp = mysqli_query($enlaceCon, $consulta);
         <table class="table table-bordered table-hover">
             <thead class="table-secondary">
                 <tr>
-                    <th>Nro Correlativo</th>
-                    <th>Cod Almacen</th>
-                    <th>Nro Factura Proveedor</th>
-                    <th>Fecha</th>
-                    <th>Tipo Ingreso</th>
-                    <th>Proveedor</th>
-                    <th>Monto</th>
-                    <th>Fecha Vencimiento</th>
+                    <th width="5%">Nro Correlativo</th>
+                    <th width="25%">Material</th>
+                    <th width="10%">Nro. Factura <br>Proveedor</th>
+                    <th width="10%">Fecha</th>
+                    <th width="10%">Tipo Ingreso</th>
+                    <th width="20%">Proveedor</th>
+                    <th width="5%">Monto</th>
+                    <th width="15%">Fecha Vencimiento</th>
                 </tr>
             </thead>
             <tbody>
@@ -70,7 +71,7 @@ $resp = mysqli_query($enlaceCon, $consulta);
                 ?>
                     <tr>
                         <td><?= $dat['nro_correlativo'] ?></td>
-                        <td><?= $dat['cod_almacen'] ?></td>
+                        <td><?= $dat['nombre_material'] ?></td>
                         <td><?= $dat['nro_factura_proveedor'] ?></td>
                         <td><?= $dat['fecha'] ?></td>
                         <td><?= $dat['nombre_tipoingreso'] ?></td>
