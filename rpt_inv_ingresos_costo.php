@@ -36,7 +36,8 @@ $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
 	$fecha_iniconsulta=$fecha_ini;
 	$fecha_finconsulta=$fecha_fin;
 	
-	
+	$rpt_almacen = implode(',', $rpt_almacen);
+
 	$sql="SELECT i.cod_ingreso_almacen, 
 				i.fecha, 
 				ti.nombre_tipoingreso, 
@@ -49,12 +50,13 @@ $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
 				id.costo_almacen,
 				id.cantidad_unitaria,
 				ma.codigo_material,
-				ma.descripcion_material
+				ma.descripcion_material,
+				(SELECT a.nombre_almacen FROM almacenes a WHERE a.cod_almacen = i.cod_almacen) AS nombre_almacen
 	FROM ingreso_almacenes i, tipos_ingreso ti, material_apoyo ma, ingreso_detalle_almacenes id
 	where i.cod_ingreso_almacen=id.cod_ingreso_almacen 
 	and i.cod_tipoingreso=ti.cod_tipoingreso 
 	AND ma.codigo_material = id.cod_material 
-	and i.cod_almacen='$rpt_almacen' 
+	and i.cod_almacen IN ($rpt_almacen) 
 	and i.fecha>='$fecha_iniconsulta' 
 	and i.fecha<='$fecha_finconsulta' 
 	and i.ingreso_anulado=0 
@@ -67,7 +69,7 @@ $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
 	
 	$resp=mysqli_query($enlaceCon, $sql);
 	echo "<center><br><table class='texto' width='100%'>";
-	echo "<tr class='textomini'><th>Nro. Ingreso</th><th>Proveedor</th><th>Nro. Factura</th><th>Fecha</th><th>Tipo de Ingreso</th><th>Observaciones</th><th>Estado</th><th>Cod.Producto</th><th>Producto</th><th>Cantidad</th><th>Costo</th><th>$detalle_ingreso</th></tr>";
+	echo "<tr class='textomini'><th>Nro. Ingreso</th><th>Proveedor</th><th>Nro. Factura</th><th>Fecha</th><th>Tipo de Ingreso</th><th>Almacen</th><th>Observaciones</th><th>Estado</th><th>Cod.Producto</th><th>Producto</th><th>Cantidad</th><th>Costo</th><th>$detalle_ingreso</th></tr>";
 	while($dat=mysqli_fetch_array($resp))
 	{
 		$codigo=$dat[0];
@@ -85,6 +87,8 @@ $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
 		$productoCantidad = $dat[10];
 		$productoCodigo   = $dat[11];
 		$productoNombre   = $dat[12];
+		
+		$nombreAlmacen   = $dat[13];
 		
 		echo "<input type='hidden' name='fecha_ingreso$nro_correlativo' value='$fecha_ingreso_mostrar'>";
 		$bandera=0;
@@ -137,6 +141,7 @@ $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
 			<td align='center'>$nroFacturaProv</td>
 			<td align='center'>$fecha_ingreso_mostrar</td>
 			<td>$nombre_tipoingreso</td>
+			<td>$nombreAlmacen</td>
 			<td>&nbsp;$obs_ingreso</td>
 			<td>&nbsp;$estado_ingreso</td>
 			<td align='center'>$productoCodigo</td>
