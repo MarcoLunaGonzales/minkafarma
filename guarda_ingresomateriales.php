@@ -167,9 +167,9 @@ if($sql_inserta==1){
 								
 				//SI NO EXISTE EL PRECIO LO INSERTA CASO CONTRARIO VERIFICA QUE EL PRECIO DEL INGRESO SEA MAYOR AL ACTUAL PARA HACER EL UPDATE
 				if($banderaPrecioUpd==1){
-					if($precioItem!=$precioActual){
-						$respModificarPrecios=actualizarPrecios($enlaceCon,$cod_material,$arrayPreciosModificar,$descuento_unitario);
-					}
+					//if($precioItem!=$precioActual){
+					$respModificarPrecios=actualizarPrecios($enlaceCon,$cod_material,$arrayPreciosModificar,$descuento_unitario);
+					//}
 				}
 				if($banderaPrecioUpd==2){
 					if($precioItem>$precioActual){
@@ -188,8 +188,7 @@ if($sql_inserta==1){
 			$sql_inserta2 = mysqli_query($enlaceCon,$consulta);
 			/************************************************************************/
 
-
-			$aa=recalculaCostos($enlaceCon,$cod_material, $global_almacen);			
+			//$aa=recalculaCostos($enlaceCon,$cod_material, $global_almacen);			
 		}
 	}
 	

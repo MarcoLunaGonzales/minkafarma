@@ -765,6 +765,37 @@ function precioProductoSucursalCalculado($enlaceCon,$item,$sucursal){
 	return($precio);
 }
 
+function precioProductoSucursalCalculadoArray($enlaceCon,$item,$sucursal){
+	//require("conexionmysqli.php");
+	$fechaActual=date("Y-m-d");
+
+	$porcentajeVentaProd=obtenerValorConfiguracion($enlaceCon, 53);
+ 	$porcentajePrecioMayorista=precioMayoristaSucursal($enlaceCon,$sucursal);
+
+	$sql="SELECT p.precio, p.descuento_unitario from precios p where p.`codigo_material`='$item' and p.`cod_precio`='1' 
+				and p.cod_ciudad='$sucursal'";	
+	$resp=mysqli_query($enlaceCon,$sql);
+	$precio=0;
+	$descuentoUnitario=0;
+	$descuentoUnitarioBs=0;
+ 	if (mysqli_num_rows($resp)>0){ 
+		$dat=mysqli_fetch_array($resp);
+		$precio=$dat[0];
+		$descuentoUnitario=$dat[1];
+		$descuentoUnitarioCompra=$descuentoUnitario;
+	}
+	if($descuentoUnitario>0){
+		$descuentoUnitario=$descuentoUnitario*($porcentajeVentaProd/100);
+	}
+	$descuentoUnitario=$descuentoUnitario+$porcentajePrecioMayorista;
+	if($descuentoUnitario>0){
+		$descuentoUnitarioBs=$precio*($descuentoUnitario/100);
+	}
+	$precioFinal=$precio-$descuentoUnitarioBs;
+	$vectorPrecios = array($precio, $precioFinal, $descuentoUnitarioCompra, $porcentajeVentaProd, $porcentajePrecioMayorista);
+	return($vectorPrecios);
+}
+
 function margenLinea($enlaceCon,$item){
 	//require("conexionmysqli.php");
 	$fechaActual=date("Y-m-d");
