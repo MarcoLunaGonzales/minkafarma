@@ -31,7 +31,15 @@ $fechaActual=date("Y-m-d");
 
 <!-- CANTIDAD -->
 <td align="center" width="6%">
-<input type="number" class="inputnumber" min="1" max="1000000" id="cantidad_unitaria<?php echo $num;?>" name="cantidad_unitaria<?php echo $num;?>" size="5"  value="" onChange='calculaPrecioCliente(0, <?php echo $num;?>);' onKeyUp='calculaPrecioCliente(0, <?php echo $num;?>);' required>
+	<input type="number" class="inputnumber" min="1" max="1000000" id="cantidad_unitaria<?php echo $num;?>" name="cantidad_unitaria<?php echo $num;?>" size="5"  value="" onChange='calculaPrecioCliente(0, <?php echo $num;?>);' onKeyUp='calculaPrecioCliente(0, <?php echo $num;?>);' required>    
+	
+	<!-- Botón para mostrar/ocultar el input de bonificación -->
+	<span class="badge badge-secondary" id="badgeSpan<?php echo $num;?>" style="cursor: pointer; background-color: #d3d3d3; padding: 5px;" onclick="toggleBonificacion(<?php echo $num;?>)" title="Bonificación">
+		B
+	</span>
+	<!-- Input de bonificación oculto por defecto -->
+	<input type="number" class="inputnumber" min="1" id="bonificacion<?php echo $num;?>" name="bonificacion<?php echo $num;?>" placeholder="Bonificación" value="0" style="display: none; width: 90px; background-color: #ffffcc; color: blue; font-size: 12px; font-weight: bold;">
+
 </td>
 
 <!-- PRECIO CAJA -->

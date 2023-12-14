@@ -57,7 +57,8 @@ require("funciones.php");
 				pointer-events: none;
 			}
 		</style>
-		    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
         <script type='text/javascript' language='javascript'>
 		
 function number_format(amount, decimals) {
@@ -682,6 +683,27 @@ function ajusteDescuento(){
 	}
 	
 }
+/**
+ * Visualización Bonificación
+ */
+function toggleBonificacion(num) {
+    var bonificacionInput = document.getElementById('bonificacion' + num);
+    var toggleIcon = document.getElementById('toggleIcon' + num);
+    var toggleText = document.getElementById('toggleText' + num);
+    var badgeSpan = document.getElementById('badgeSpan' + num);
+
+    // Cambiar la visibilidad del input de bonificación
+    if (bonificacionInput.style.display === 'none') {
+        bonificacionInput.style.display = 'block';
+        badgeSpan.style.backgroundColor = '#ffcccc';  // Cambiar el color de fondo a rojo suave
+        document.getElementById('bonificacion' + num).value = '';
+    } else {
+        bonificacionInput.style.display = 'none';
+        badgeSpan.style.backgroundColor = '#d3d3d3';  // Restaurar el color de fondo original
+    }
+}
+
+
 
 function validar(f){ 
 	
