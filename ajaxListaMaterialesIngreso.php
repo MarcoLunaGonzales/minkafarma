@@ -3,7 +3,12 @@
 <body>
 <table align='center' class="texto">
 <tr>
-<th><input type='checkbox' id='selecTodo'  onchange="marcarDesmarcar(form1,this)"></th><th>Linea</th><th>Producto</th><th>Stock</th></tr>
+	<th><input type='checkbox' id='selecTodo'  onchange="marcarDesmarcar(form1,this)"></th>
+	<th>Linea</th>
+	<th>Producto</th>
+	<th>Stock</th>
+	<th>Precio</th>
+</tr>
 <?php
 require("conexionmysqli2.inc");
 require("funciones.php");
@@ -42,16 +47,17 @@ $itemsNoUtilizar="0";
 			$linea=$dat[3];
 			
 			$stockProducto=stockProducto($enlaceCon,$globalAlmacen, $codigo);
-			$precioProducto=precioProductoSucursal($enlaceCon,$codigo,$codCiudadIngreso);
+			$precioProducto=precioProductoSucursalCalculadoSinMayorista($enlaceCon,$codigo,$codCiudadIngreso);
 			if($precioProducto==""){
 				$precioProducto=0;
 			}
+			$precioProductoF=formatonumeroDec($precioProducto);
 			$margenLinea=margenLinea($enlaceCon,$codigo);			
 			$datosProd=$codigo."|".$nombre."-".$linea."|".$cantidadPresentacion."|".$precioProducto."|".$margenLinea;
 		
 	
 			echo "<tr><td><input type='checkbox' id='idchk$cont' name='idchk$cont' value='$datosProd' onchange='ver(this)' ></td>
-			<td>$linea</td><td><div class='textograndenegro'><a href='javascript:setMateriales(form1, $codigo, \"$nombre - $linea\", $cantidadPresentacion, $precioProducto, $margenLinea)'>$nombre</a></div></td><td><div class='textograndenegro'>$stockProducto</div></td></tr>";
+			<td>$linea</td><td><div class='textograndenegro'><a href='javascript:setMateriales(form1, $codigo, \"$nombre - $linea\", $cantidadPresentacion, $precioProducto, $margenLinea)'>$nombre</a></div></td><td><div class='textograndenegro'>$stockProducto</div></td><td><div class='textograndenegro'>$precioProductoF</div></td></tr>";
 		}
 	}else{
 		echo "<tr><td colspan='3'>Sin Resultados en la busqueda.</td></tr>";

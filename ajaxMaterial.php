@@ -18,12 +18,12 @@ $fechaActual=date("Y-m-d");
 <input type="hidden" class="row-item" value="<?=$num?>">
 
 <!-- Buscar -->
-<td width="2%" align="center">
-	<a href="javascript:buscarMaterial(form1, <?php echo $num;?>)" accesskey="B"><img src='imagenes/buscar2.png' title="Buscar Producto" width="30"></a>
+<td width="3%" align="center">
+	<a href="javascript:buscarMaterial(form1, <?php echo $num;?>)" accesskey="B"><img src='imagenes/buscar2.png' title="Buscar Producto" width="20"></a>
 </td>
 
 <!-- Producto -->
-<td width="25%" align="left"><!--?php echo $num;?-->
+<td width="26%" align="left"><!--?php echo $num;?-->
 <input type="hidden" name="material<?php echo $num;?>" id="material<?php echo $num;?>" value="0">
 <input type="hidden" name="cantidadpresentacion<?php echo $num;?>" id="cantidadpresentacion<?php echo $num;?>" value="0">
 <div id="cod_material<?php echo $num;?>" class='textomedianorojo'>-</div>
@@ -38,33 +38,33 @@ $fechaActual=date("Y-m-d");
 		B
 	</span>
 	<!-- Input de bonificación oculto por defecto -->
-	<input type="number" class="inputnumber" min="1" id="bonificacion<?php echo $num;?>" name="bonificacion<?php echo $num;?>" placeholder="Bonificación" value="0" style="display: none; width: 90px; background-color: #ffffcc; color: blue; font-size: 12px; font-weight: bold;">
+	<input type="number" class="inputnumber" min="1" id="bonificacion<?php echo $num;?>" name="bonificacion<?php echo $num;?>" placeholder="BonificadoUnit" value="0" style="display: none; width: 90px; background-color: #ffffcc; color: blue; font-size: 10px; font-weight: bold;" size="5">
 
 </td>
 
 <!-- PRECIO CAJA -->
-<td align="center" width="5%">
+<td align="center" width="6%">
 <input type="number" class="inputnumber" min="0.01" max="1000000" id="precio_unitario<?php echo $num;?>" name="precio_unitario<?php echo $num;?>" size="5"  value="0" onChange='calculaPrecioCliente(0, <?php echo $num;?>);' onKeyUp='calculaPrecioCliente(0, <?php echo $num;?>);' step="0.01" required>
 </td>
 
 <!-- Fecha de vencimiento -->
-<td align="center" width="8%">
+<td align="center" width="10%">
 <input type="date" class="textoform" min="<?php echo $fechaActual; ?>" id="fechaVenc<?php echo $num;?>" name="fechaVenc<?php echo $num;?>" size="5" required>
 </td>
 
 <!-- Subtotal -->
-<td align="center" width="5%">
+<td align="center" width="6%">
 <input type="number" class="inputnumber" value="0" id="precio_old<?php echo $num;?>" name="precio_old<?php echo $num;?>" size="5" min="0" step="0.01" onKeyUp='calculaPrecioCliente(this,<?php echo $num;?>);' onChange='calculaPrecioCliente(this,<?php echo $num;?>);' required>
 </td>
 
 <!-- DESCUENTO PRODUCTO -->
-<td align="center" width="5%">
+<td align="center" width="6%">
 %<input type="number" class="inputnumber" min="0" max="1000000" id="descuento_porcentaje<?php echo $num;?>" name="descuento_porcentaje<?php echo $num;?>" size="5"  value="0" onKeyUp='calcularDescuentoUnitario(1, <?php echo $num;?>);' onChange='calcularDescuentoUnitario(1, <?php echo $num;?>);' step="0.01" required data-tipo="1"><br>
 Bs.<input type="number" class="inputnumber" min="0" max="1000000" id="descuento_numero<?php echo $num;?>" name="descuento_numero<?php echo $num;?>" size="5"  value="0" onKeyUp='calcularDescuentoUnitario(0, <?php echo $num;?>);' onChange='calcularDescuentoUnitario(0, <?php echo $num;?>);' step="0.01" required data-tipo="0">
 </td>
 
 <!-- Decuento Adicional -->
-<td align="center" width="8%">
+<td align="center" width="6%">
 <input type="number" class="inputnumber" value="0" id="descuento_adicional<?php echo $num;?>" name="descuento_adicional<?php echo $num;?>" size="5" min="0" step="0.01" disabled>
 </td>
 
@@ -116,7 +116,7 @@ Bs.<input type="number" class="inputnumber" min="0" max="1000000" id="descuento_
 </select>
 </td-->
 <td align="center"  width="3%" >
-	<input class="boton2peque" type="button" value="(-)" onclick="menos(<?php echo $num;?>)" size="5"/></td>
+	<input class="boton2peque" type="button" value="-" onclick="menos(<?php echo $num;?>)" size=""/></td>
 </tr>
 </table>
 

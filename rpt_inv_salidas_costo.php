@@ -52,7 +52,6 @@ $nombre_tiposalidamostrar="Tipo de Salida: <strong>$nombre_tiposalida</strong>";
 			sd.cantidad_unitaria, 
 			sd.costo_almacen
 	FROM salida_almacenes s, tipos_salida ts, almacenes a, material_apoyo ma, salida_detalle_almacenes sd
-	LEFT JOIN almacenes al ON al.cod_almacen s.cod_almacen
 	WHERE s.cod_tiposalida = ts.cod_tiposalida 
 	AND s.cod_almacen IN ($rpt_almacen) 
 	AND a.cod_almacen = s.cod_almacen 
@@ -65,7 +64,7 @@ $nombre_tiposalidamostrar="Tipo de Salida: <strong>$nombre_tiposalida</strong>";
 	AND (sd.costo_almacen = 0 OR sd.costo_almacen IS NULL) 
 	ORDER BY s.nro_correlativo";
 
-	// echo $sql;
+	//echo $sql;
 
 	echo "<center><br><table class='texto'>";
 	echo "<tr><th>Nro.</th><th>Fecha</th><th>Tipo de Salida</th><th>Almacen Destino</th><th>Observaciones</th><th>Cod.Producto</th><th>Producto</th><th>Cantidad</th><th>Costo</th></tr>";

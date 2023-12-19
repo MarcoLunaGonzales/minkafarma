@@ -559,43 +559,48 @@ function calcularDescuentoUnitario(tipo, index){
 // Calculo de montos TOTALES
 function calculaPrecioCliente(preciocompra, index){
 	console.log("****** Ingresando calculaPrecioCliente **********");
-	/************ banderaCalculoPrecio = 0 precionFinal   1 = precioCompra *******************/
-	var banderaCalculoPrecio = document.getElementById('bandera_calculo_precio').value;
-	/****************************************************************************/
+	/*** Cuando no existe la variable de % descuento maximo aplicamos el 100 ****/
+	var porcentajeDescMaxAplicarProducto=parseFloat(document.getElementById('porcentaje_max_descuento_aplicar').value);
+	if(porcentajeDescMaxAplicarProducto<=0){
+		porcentajeDescMaxAplicarProducto=100;
+	}
+
+	/************ Todo se calcula con descuentos *******************/
 	// CALCULAR SUBTOTAL
 	var cantidad 		= parseFloat(document.getElementById('cantidad_unitaria'+index).value);
+	var cantidad_bonificacion = parseFloat(document.getElementById('bonificacion'+index).value);
 	var precio_unitario = parseFloat(document.getElementById('precio_unitario'+index).value);
 	var cantidad_presentacion = parseFloat(document.getElementById('cantidadpresentacion'+index).value);
+	var descuento_porcentaje = parseFloat(document.getElementById('descuento_porcentaje'+index).value);
+
 	var subtotal = cantidad * precio_unitario;
 	subtotalF = redondear(subtotal,2);
 	document.getElementById('precio_old'+index).value = subtotalF;
+
+	var precio_sd = parseFloat(document.getElementById('precio_old'+index).value);
 	var margen		  = document.getElementById('margenlinea'+index).value;
 
-	console.log("cantidad: "+cantidad+" precio: "+precio_unitario);
+	console.log("cantidad: "+cantidad+" precio: "+precio_unitario+" bonificacion: "+cantidad_bonificacion);
 	/****************************************************************************/
-	if(banderaCalculoPrecio==0){
-		console.log("entra banderaCalculoPrecio en 0");
-		//var costo=preciocompra.value;
-		var costo = parseFloat(document.getElementById("precio"+index).value);
-		var costounitario=(costo/cantidad)/cantidad_presentacion;
-		console.log("costoUnitario1: "+costounitario); // s dejo esta parte de codigo
-		var preciocliente=costounitario+(costounitario*(margen/100));
-		console.log("preciocliente1: "+preciocliente); // s dejo esta parte de codigo
-		preciocliente=redondear(preciocliente,2);
-		// preciocliente=number_format(preciocliente,2);
-		document.getElementById('preciocliente'+index).value=preciocliente;	
-		document.getElementById('precioclienteOf'+index).value=preciocliente;
-	}else{
-		console.log("entra banderaCalculoPrecio distinto 0");
-		var costounitario = precio_unitario / cantidad_presentacion;
-		var preciocliente=(costounitario + (costounitario*(margen/100)));
-		console.log('costounitario2:'+costounitario)
-		console.log('(costounitario*(margen/100)):'+(costounitario*(margen/100)))
-		preciocliente=redondear(preciocliente,2);
-		// preciocliente=number_format(preciocliente,2);
-		document.getElementById('preciocliente'+index).value=preciocliente;
-		document.getElementById('precioclienteOf'+index).value=preciocliente;
-	}
+	//var costo=preciocompra.value;
+	var costo = parseFloat(document.getElementById("precio"+index).value);
+	var costounitario=costo/((cantidad*cantidad_presentacion)+cantidad_bonificacion);
+	console.log("costoUnitario1: "+costounitario); // s dejo esta parte de codigo
+	
+	
+	/****** Para el calculo del precio cliente tomamos en cuenta los porcentajes maximos aplicados ******/
+	var precio_unitario_sd=precio_sd/((cantidad*cantidad_presentacion)+cantidad_bonificacion);
+	console.log("precioUnitarioSD: "+precio_unitario_sd); // s dejo esta parte de codigo
+
+	var preciocliente=precio_unitario_sd-(precio_unitario_sd*(descuento_porcentaje*(porcentajeDescMaxAplicarProducto/100)/100));
+	preciocliente=preciocliente+(preciocliente*(margen/100));
+	//var preciocliente=costounitario+(costounitario*(margen/100));
+	console.log("preciocliente1: "+preciocliente); // s dejo esta parte de codigo
+	preciocliente=redondear(preciocliente,2);
+	// preciocliente=number_format(preciocliente,2);
+	document.getElementById('preciocliente'+index).value=preciocliente;	
+	document.getElementById('precioclienteOf'+index).value=preciocliente;
+
 	var margenNuevo=(preciocliente-costounitario)/costounitario;
 	var margenNuevoF="Margen["+ number_format((margenNuevo*100),0) + "%]";
 
@@ -611,8 +616,7 @@ function calculaPrecioCliente(preciocompra, index){
 	totalesMonto();
 }
 
-function totalesMonto(){
-	
+function totalesMonto(){	
 	var cantidadTotal=0;
 	var precioTotal=0;
 	var montoTotal=0;
@@ -647,7 +651,6 @@ function changeDescuentoAdicional(){
  * Ajuste de Descuento del Monto de Venta
 *****************************************/
 function ajusteDescuento(){
-	
 	var cantidadTotal=0;
 	var precioTotal=0;
 	var montoTotal=0;
@@ -792,14 +795,9 @@ if($banderaUpdPreciosSucursales==0){
 	$txtUpdPrecios="*** Los precios seran actualizados en TODAS LAS SUCURSALES del sistema.";
 }
 
-$banderaCalculoPrecioFinal=obtenerValorConfiguracion($enlaceCon,52);
-if($banderaCalculoPrecioFinal!=1){$banderaCalculoPrecioFinal=0;}
-$txtCalculoPrecioFinal="";
-if($banderaCalculoPrecioFinal==1){
-	$txtCalculoPrecioFinal="*** El precio Cliente se calculará por Precio Compra ANTES de descuentos.";
-}else{
-	$txtCalculoPrecioFinal="*** El precio Cliente se calculará por Precio Compra DESPUÉS de descuentos.";
-}
+$porcentajeDescMaxAplicar=obtenerValorConfiguracion($enlaceCon,53);
+$txtPorcentajeDescMaxAplicar="*** El porcentaje de descuento por producto a aplicar en el precio es de: ".$porcentajeDescMaxAplicar."%";
+
 
 $global_almacen=$_COOKIE["global_almacen"];
 
@@ -812,15 +810,15 @@ if($num_filas==1){
 }
 echo "<form action='guarda_ingresomateriales.php' method='post' name='form1' id='form1' onsubmit='return validar(this);'>";
 
-echo "<input type='hidden' name='bandera_calculo_precio' id='bandera_calculo_precio' value='$banderaCalculoPrecioFinal''>";
+echo "<input type='hidden' name='porcentaje_max_descuento_aplicar' id='porcentaje_max_descuento_aplicar' value='$porcentajeDescMaxAplicar''>";
 
 echo "<table border='0' class='textotit' align='center'>
-		<tr><th></th><th>Registrar Ingreso de Productos</th><th></th></tr>
+		<tr><th width='40%'></th><th width='30%'>Registrar Ingreso de Productos</th><th></th></tr>
 		<tr><th align='left'><span class='textopequenorojo' style='background-color:yellow;'><b>$txtUpdPrecios</b></span></th>
 			<th></th>
-			<th align='left'><span class='textopequenorojo' style='background-color:aqua;'><b>$txtCalculoPrecioFinal</b></span></th>
+			<th align='left'><span class='textopequenorojo' style='background-color:aqua;'><b>$txtPorcentajeDescMaxAplicar</b></span></th>
 		</tr>
-		</table><br>";
+		</table>";
 		
 echo "<table border='0' class='texto' cellspacing='0' align='center' width='90%' style='border:#ccc 1px solid;'>";
 echo "<tr>
@@ -913,8 +911,8 @@ echo "</table><br>";
 
         </div>
 		
-		<fieldset id="fiel" style="width:98%;border:0;" >
-			<table align="center"class="text" cellSpacing="1" cellPadding="2" width="100%" border="0" id="data0" style="border:#ccc 1px solid;">
+		<fieldset id="fiel" style="width:100%;border:0;" >
+			<table align="center"class="text" cellSpacing="1" cellPadding="2" width="100%" border="1" id="data0" style="border:#ccc 1px solid;">
 				<tr>
 					<th colspan="6"></th>
 					<th>Descuento Final 1</th>
@@ -926,22 +924,18 @@ echo "</table><br>";
 					</td>
 				</tr>
 				<tr class="titulo_tabla" align="center">
-					<th width="2%" align="center">&nbsp;</th>
-					<th width="25%" align="center">Producto</th>
+					<th width="3%" align="center">&nbsp;</th>
+					<th width="26%" align="center">Producto</th>
 					<th width="6%" align="center">Cantidad</th>
-					<th width="5%" align="center">Precio<br>Caja</th>
-					<!--th width="10%" align="center">Lote</th-->
-					<th width="8%" align="center">Vencimiento</th>
-					<!-- <th width="10%" align="center">Precio Distribuidor<br>(Total_item)</th> -->
-					<th width="5%" align="center">Subtotal</th>
-
+					<th width="6%" align="center">Precio<br>Caja</th>
+					<th width="10%" align="center">Vencimiento</th>
+					<th width="6%" align="center">Subtotal</th>
 					<!-- Descuento Unitario -->
-					<th width="10%" align="center">Desc.<br>Prod</th>
+					<th width="6%" align="center">Desc.<br>Prod</th>
 					<!-- Descuento Adicional -->
-					<th width="8%" align="center">Desc.<br>Adicional</th>
+					<th width="6%" align="center">Desc.<br>Adicional</th>
 					<!-- Monto Total -->
-					<th width="10%" align="center">Total</th>
-
+					<th width="8%" align="center">Total</th>
 					<th width="10%" align="center">Precio<br>Venta<br>Calculado</th>
 					<th width="10%" align="center"><span style="font-size:15px;width:80px;color:blue;"><b>Precio a<br>Actualizar</b></span></th>
 					<th width="3%" align="center">-</th>
