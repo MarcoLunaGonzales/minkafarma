@@ -27,6 +27,7 @@ $consulta = "SELECT
                 ida.fecha_vencimiento,
                 m.descripcion_material as nombre_material,
 
+                ida.cantidad_unitaria,
                 ida.cod_ingreso_almacen,
                 ida.cod_material,
                 ida.lote
@@ -36,12 +37,43 @@ $consulta = "SELECT
             LEFT JOIN proveedores p ON p.cod_proveedor = ia.cod_proveedor
             LEFT JOIN material_apoyo m ON m.codigo_material = ida.cod_material
             WHERE ida.cod_material = '$rpt_item'
-            AND ia.cod_almacen = '$rpt_almacen'";
+            AND ia.cod_almacen = '$rpt_almacen'
+            ORDER BY ia.fecha DESC";
 // echo $consulta;
 $resp = mysqli_query($enlaceCon, $consulta);
 ?>
 <div class="p-4">
-    <h1>Ingreso de Materiales</h1>
+    <div class="container d-flex justify-content-center align-items-center vh-100">
+        <div class="text-center">
+            <h1>Modificar Fecha de Vencimiento</h1>
+            <?php
+                $consultaAlmacen = "SELECT a.nombre_almacen
+                                    FROM almacenes a
+                                    WHERE a.cod_almacen = '$rpt_almacen'";
+                $respAlmacen = mysqli_query($enlaceCon, $consultaAlmacen);
+                // Verifica si se obtuvo algún resultado
+                if ($datAlmacen = mysqli_fetch_array($respAlmacen)) {
+                    $nombreAlmacen = $datAlmacen['nombre_almacen'];
+                } else {
+                    $nombreAlmacen = "No encontrado";
+                }
+            ?>
+            <h5 class="mb-0"><span><b>Almacen:</b></span> <?=$nombreAlmacen?></h5>
+            <?php
+                $consultaMaterial = "SELECT m.descripcion_material as nombre_material
+                                    FROM material_apoyo m
+                                    WHERE m.codigo_material = '$rpt_item'";
+                $respMaterial = mysqli_query($enlaceCon, $consultaMaterial);
+                // Verifica si se obtuvo algún resultado
+                if ($datMaterial = mysqli_fetch_array($respMaterial)) {
+                    $nombreMaterial = $datMaterial['nombre_material'];
+                } else {
+                    $nombreMaterial = "No encontrado";
+                }
+            ?>
+            <h5 class="mb-0"><span><b>Material:</b></span> <?=$nombreMaterial?></h5>
+        </div>
+    </div>
 
     <div class="row">
         <div class="col-md-12">
@@ -59,7 +91,7 @@ $resp = mysqli_query($enlaceCon, $consulta);
                     <th width="10%">Fecha</th>
                     <th width="10%">Tipo Ingreso</th>
                     <th width="20%">Proveedor</th>
-                    <th width="5%">Monto</th>
+                    <th width="5%">Cantidad</th>
                     <th width="15%">Fecha Vencimiento</th>
                 </tr>
             </thead>
@@ -76,7 +108,7 @@ $resp = mysqli_query($enlaceCon, $consulta);
                         <td><?= $dat['fecha'] ?></td>
                         <td><?= $dat['nombre_tipoingreso'] ?></td>
                         <td><?= $dat['nombre_proveedor'] ?></td>
-                        <td><?= $dat['monto'] ?></td>
+                        <td><?= $dat['cantidad_unitaria'] ?></td>
                         <td>
                             <input type="date" id="fecha<?=$index?>" value="<?= $dat['fecha_vencimiento'] ?>">
                             <span class="badge badge-info actualizarFecha" style="cursor: pointer; padding: 5px;" data-cod_ingreso_almacen="<?=$dat['cod_ingreso_almacen']?>" data-cod_material="<?=$dat['cod_material']?>" data-lote="<?=$dat['lote']?>" data-index="<?=$index?>" title="Actualizar">
