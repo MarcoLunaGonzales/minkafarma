@@ -619,7 +619,7 @@ function totales(){
 		aplicarCambioEfectivo();
 		minimoEfectivo();
 }
-s
+
 function aplicarDescuento(f){
 	var tipo_cambio=$("#tipo_cambio_dolar").val();
 	var total=document.getElementById("totalVenta").value;
@@ -1685,6 +1685,147 @@ function encontrarMaterial(numMaterial){
 }
 
 
+/******************************************/
+/*** Datos de Medicos para las recetas ****/
+/******************************************/
+function guardarRecetaVenta(){
+	$("#nom_doctor").val("");
+	$("#ape_doctor").val("");
+	$("#dir_doctor").val("");
+	$("#mat_doctor").val("");
+	$("#n_ins_doctor").val("");
+	$("#nomcli").val($("#razonSocial").val());
+	actualizarTablaMedicos("2");
+	$("#modalRecetaVenta").modal("show");
+}
+
+function nuevaInstitucion(){
+  var institucion=$("#ins_doctor").val();
+  if(institucion==-2){
+  	if($("#div_ins_doctor").hasClass("d-none")){
+  		$("#div_ins_doctor").removeClass("d-none")
+  	}
+  }else{
+  	if(!$("#div_ins_doctor").hasClass("d-none")){
+  		$("#div_ins_doctor").addClass("d-none")
+  	}
+  }
+}
+
+function guardarMedicoReceta(){
+	var nom_doctor=$("#nom_doctor").val();
+	var ape_doctor=$("#ape_doctor").val();
+	var dir_doctor=$("#dir_doctor").val();
+	var mat_doctor=$("#mat_doctor").val();
+	var n_ins_doctor=$("#n_ins_doctor").val();
+	var ins_doctor=$("#ins_doctor").val();
+	var esp_doctor=$("#esp_doctor").val();
+	var esp_doctor2=$("#esp_doctor2").val();
+	if(nom_doctor==""||ape_doctor==""){
+       //alerta
+	}else{
+		if(ins_doctor==-2&&n_ins_doctor==""){
+          //alerta
+		}else{
+			guardarMedicoRecetaAjax(nom_doctor,ape_doctor,dir_doctor,mat_doctor,n_ins_doctor,ins_doctor,esp_doctor,esp_doctor2);
+		}
+	}
+}
+
+function guardarMedicoRecetaAjax(nom_doctor,ape_doctor,dir_doctor,mat_doctor,n_ins_doctor,ins_doctor,esp_doctor,esp_doctor2){
+	var parametros={nom_doctor:nom_doctor,ape_doctor:ape_doctor,dir_doctor:dir_doctor,mat_doctor:mat_doctor,n_ins_doctor:n_ins_doctor,ins_doctor:ins_doctor,esp_doctor:esp_doctor,esp_doctor2:esp_doctor2};
+	$.ajax({
+        type: "GET",
+        dataType: 'html',
+        url: "ajaxNuevoMedico.php",
+        data: parametros,
+        success:  function (resp) {
+        	$("#nom_doctor").val("");
+	        $("#ape_doctor").val("");
+	        $("#dir_doctor").val("");
+	        $("#mat_doctor").val("");
+	        $("#n_ins_doctor").val("");
+        	if(parseInt(resp)==1){
+               Swal.fire("Correcto!", "Se guardó el médico con éxito", "success");   
+               actualizarTablaMedicos("codigo");                 	   
+        	}else{
+               Swal.fire("Error!", "Contactar con el administrador", "error");   
+        	}            
+        }
+    });	
+}
+
+function actualizarTablaMedicos(orden){
+	var codigo=$("#cod_medico").val();
+   var parametros={order_by:orden,cod_medico:codigo};
+   $.ajax({
+        type: "GET",
+        dataType: 'html',
+        url: "ajaxListaMedicos.php",
+        data: parametros,
+        success:  function (resp) {
+        	actualizarListaInstitucion();
+        	$("#datos_medicos").html(resp);                 	   
+        }
+    });	
+}
+
+
+function buscarMedicoTest(){
+   var codigo=$("#cod_medico").val();
+   var nom=$("#buscar_nom_doctor").val();
+   var app=$("#buscar_app_doctor").val();
+   var espe=$("#especialidad_doctor").val();
+   var parametros={order_by:"2",cod_medico:codigo,nom_medico:nom,app_medico:app,espe:espe};
+   $.ajax({
+        type: "GET",
+        dataType: 'html',
+        url: "ajaxListaMedicos.php",
+        data: parametros,
+        success:  function (resp) {
+        	actualizarListaInstitucion();
+        	$("#datos_medicos").html(resp);                 	   
+        }
+    });	
+}
+function actualizarListaInstitucion(){
+   var parametros={cod:""};
+   $.ajax({
+        type: "GET",
+        dataType: 'html',
+        url: "ajaxListaInstitucion.php",
+        data: parametros,
+        success:  function (resp) {
+        	$("#ins_doctor").html(resp);   
+        	$("#ins_doctor").selecpicker("refresh");                 	   
+        }
+    });	
+}
+
+function asignarMedicoVenta(codigo){
+   $("#cod_medico").val(codigo);
+   if(codigo>0){
+  	 $("#boton_receta").attr("style","background:#e6992b");
+  	 $("#mensaje_receta").html("<img src='imagenes/doc.jpg' width='50' height='50'> <b style='font-size:14px;color:#4E836C;'>Dr. "+$("#medico_lista"+codigo).html()+"</b>");
+
+  	 /*if($(".receta_detalle").hasClass("d-none")){
+      $(".receta_detalle").removeClass("d-none");
+   	 }*/
+   }else{
+   	 $("#boton_receta").attr("style","background:#652BE9 !important;");
+   	 $("#mensaje_receta").html("");
+
+   	 /*if(!$(".receta_detalle").hasClass("d-none")){
+      $(".receta_detalle").addClass("d-none");
+   	 }*/
+   }
+
+   $("#modalRecetaVenta").modal("hide");
+}
+/**** Fin de Datos de las Recetas ****/
+
+
+
 </script>
 
 		
@@ -1704,12 +1845,30 @@ while($reg1=mysqli_fetch_array($rs1)){
   $cadComboEdad = "";
 $consultaEdad="SELECT c.codigo,c.nombre, c.abreviatura FROM tipos_edades AS c WHERE c.estado = 1 ORDER BY 1";
 $rs=mysqli_query($enlaceCon,$consultaEdad);
+while($reg=mysqli_fetch_array($rs)){
+	$codigoEdad = $reg["codigo"];
+  $nomEdad = $reg["abreviatura"];
+  $desEdad = $reg["nombre"];
+  $cadComboEdad=$cadComboEdad."<option value='$codigoEdad'>$nomEdad ($desEdad)</option>";
+}
+
+$cadComboInstitucion = "";
+$consulta="SELECT c.codigo, c.nombre FROM instituciones c WHERE estado = 1 ORDER BY c.codigo ASC";
+$rs=mysqli_query($enlaceCon,$consulta);
 while($reg=mysqli_fetch_array($rs))
-   {$codigoEdad = $reg["codigo"];
-    $nomEdad = $reg["abreviatura"];
-    $desEdad = $reg["nombre"];
-    $cadComboEdad=$cadComboEdad."<option value='$codigoEdad'>$nomEdad ($desEdad)</option>";
+   {$codInstitucion = $reg["codigo"];
+    $nomInstitucion = $reg["nombre"];
+    $cadComboInstitucion=$cadComboInstitucion."<option value='$codInstitucion'>$nomInstitucion</option>";
    }
+$cadComboEspecialidades = "";
+$consulta="SELECT c.codigo, c.nombre FROM especialidades c WHERE estado = 1 ORDER BY c.codigo ASC";
+$rs=mysqli_query($enlaceCon,$consulta);
+while($reg=mysqli_fetch_array($rs))
+   {$codEsp = $reg["codigo"];
+    $nomEsp = $reg["nombre"];
+    $cadComboEspecialidades=$cadComboEspecialidades."<option value='$codEsp'>$nomEsp</option>";
+   }
+$iconVentas2="point_of_sale";
 
 
 if(!isset($fecha)||$fecha==""){   
@@ -1727,12 +1886,14 @@ $usuarioVentas=$_COOKIE['global_usuario'];
 $globalAgencia=$_COOKIE['global_agencia'];
 $globalAlmacen=$_COOKIE['global_almacen'];
 
-//SACAMOS LA CONFIGURACION PARA EL DOCUMENTO POR DEFECTO
-$sqlConf="select valor_configuracion from configuraciones where id_configuracion=1";
+//SACAMOS LA CONFIGURACION PARA EL TIPO DE DOCUMENTO POR DEFECTO (FACTURA O NR)
+$tipoDocDefault=1;
+$sqlConf="select cod_tipodoc_default from ciudades where cod_ciudad='$globalAgencia'";
 $respConf=mysqli_query($enlaceCon,$sqlConf);
-$datConf=mysqli_fetch_array($respConf);
-$tipoDocDefault=$datConf[0];
-//$tipoDocDefault=mysql_result($respConf,0,0);
+while($datConf=mysqli_fetch_array($respConf)){
+	$tipoDocDefault=$datConf[0];
+}
+
 
 //SACAMOS LA CONFIGURACION PARA EL CLIENTE POR DEFECTO
 $sqlConf="select valor_configuracion from configuraciones where id_configuracion=2";
@@ -1811,7 +1972,11 @@ while($rowCot=mysqli_fetch_array($respUsd)){
                         <li class="nav-item active">
                             <a class="nav-link" href="#"><i class="fa fa-user"></i> <?php echo $nombreUsuarioSesion?> <span class="sr-only">(current)</span></a>
                         </li>                        
-                      
+
+												<li class="nav-item active">
+                            <a class="btn btn-success btn-fab" href="#" style="background:yellow !important;color:blue;" onclick="guardarRecetaVenta()" title="Registrar Receta"  data-toggle='tooltip' id="boton_receta"><i class="material-icons" >medical_services</i></a>
+                        </li>                      
+                        
                         <li class="nav-item">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>
                     </ul>
                 </div>
@@ -2637,6 +2802,142 @@ if($banderaErrorFacturacion==0 || $tipoDocDefault!=1){
   </div>
 <!--    end small modal -->
 
+<!-- small modal -->
+<div class="modal fade modal-primary" id="modalRecetaVenta" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content card">
+               <div class="card-header card-header-primary card-header-icon">
+                  <div class="card-icon" style="background: #652BE9;color:#fff;">
+                    <i class="material-icons">medical_services</i>
+                  </div>
+                  <h4 class="card-title text-dark font-weight-bold">Datos del Médico</h4>
+                  <button type="button" class="btn btn-danger btn-sm btn-fab float-right" data-dismiss="modal" aria-hidden="true" style="position:absolute;top:0px;right:0;">
+                    <i class="material-icons">close</i>
+                  </button>
+                </div>
+                <div class="card-body">
+<div class="row">
+	<div class="col-sm-6 d-none">
+                <div class="row">
+                  <label class="col-sm-2 col-form-label">Nombre (*)</label>
+                  <div class="col-sm-10">
+                    <div class="form-group">
+                      <input class="form-control" type="text" style="background: #A5F9EA;" id="nom_doctor" required value="" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();"/>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <label class="col-sm-2 col-form-label">Apellidos (*)</label>
+                  <div class="col-sm-10">
+                    <div class="form-group">
+                      <input class="form-control" type="text" style="background: #A5F9EA;" id="ape_doctor" value="" required style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();"/>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <label class="col-sm-2 col-form-label">Dirección</label>
+                  <div class="col-sm-10">
+                    <div class="form-group">
+                      <input class="form-control" type="text" style="background: #A5F9EA;" id="dir_doctor" value="" required style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();"/>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <label class="col-sm-2 col-form-label">Matricula</label>
+                  <div class="col-sm-10">
+                    <div class="form-group">
+                      <input class="form-control" type="text" style="background: #A5F9EA;" id="mat_doctor" value="" required style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();"/>
+                    </div>
+                  </div>
+                </div>
+                <div class="row d-none" id="div_ins_doctor">
+                  <label class="col-sm-2 col-form-label">Institución (*)</label>
+                  <div class="col-sm-10">
+                    <div class="form-group">
+                      <input class="form-control" type="text" style="background: #A5F9EA;" id="n_ins_doctor" id="n_ins_doctor" value="" required style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();"/>
+                    </div><label style='font-size:10px;color:red;'>Ej: CLINICA PRIVADA, CENTRO DE SALUD</label><br>                    
+                  </div>
+                </div>
+                <div class="row d-none">
+                  <label class="col-sm-2 col-form-label">Institución</label>
+                  <div class="col-sm-10">
+                    <div class="form-group">
+                      <select class="selectpicker form-control" name="ins_doctor" id="ins_doctor" data-style="btn btn-primary" data-live-search="true" data-size='6' onchange="nuevaInstitucion();" required>
+                           <?php echo "$cadComboInstitucion"; ?>
+                       </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <label class="col-sm-2 col-form-label">Especialidad</label>
+                  <div class="col-sm-10">
+                    <div class="form-group">
+                      <select class="selectpicker form-control" name="esp_doctor"id="esp_doctor" data-style="btn btn-info" data-live-search="true" data-size='6' required >
+                           <?php echo "$cadComboEspecialidades"; ?>
+                       </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <label class="col-sm-2 col-form-label">2da Esp.</label>
+                  <div class="col-sm-10">
+                    <div class="form-group">
+                      <select class="selectpicker form-control" name="esp_doctor2"id="esp_doctor2" data-style="btn btn-info" data-live-search="true" data-size='6' required>
+                      	<option value="0">Ninguna</option>
+                          <?php echo "$cadComboEspecialidades"; ?>
+                       </select>
+                    </div>
+                  </div>
+                </div>
+                <br>
+                <div class="float-left">
+                        <button class="btn btn-default" onclick="guardarMedicoReceta();">Guardar Nuevo</button>
+                </div>                 
+                <br><br>
+       </div>
+	   <div class="col-sm-12">    
+	            <div class="row">
+                  <!-- <label class="col-sm-2 col-form-label">Nombres</label>
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                      <input class="form-control" type="text" style="background: #A5F9EA;" id="buscar_nom_doctor" value="" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();"/>
+                    </div>
+                  </div> -->
+                  <label class="col-sm-2 col-form-label">Nombres y Apellidos</label>
+                  <div class="col-sm-5">
+                    <div class="form-group">
+                      <input class="form-control" type="text" style="background: #A5F9EA;" id="buscar_app_doctor" value="" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();"/>
+                    </div>
+                  </div>
+                  <label class="col-sm-1 col-form-label">Especialidad</label>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <select class="selectpicker form-control" name="especialidad_doctor"id="especialidad_doctor" data-style="btn btn-info" data-live-search="true" data-size='6' required >
+                      	<option value="0">TODAS</option>
+                           <?php echo "$cadComboEspecialidades"; ?>
+                       </select>
+                    </div>
+                  </div>
+                  <a href="#" class='btn btn-success btn-sm btn-fab float-right' onclick='buscarMedicoTest()'><i class='material-icons'>search</i></a>
+                </div>
+                <br>
+                <div style=" height:350px !important;overflow: scroll;">
+                   <table class="table table-bordered table-condensed">
+                   	  <thead>
+                   	  	<!-- <tr class="" style="background: #652BE9;color:#fff;"><th width="60%">Nombre</th><th>Matricula</th><th>-</th></tr> -->
+                   	  	<tr class="" style="background: #652BE9;color:#fff;"><th width="60%">Nombre</th><th>Especialidad</th><th>-</th></tr>
+                   	  </thead>
+                   	  <tbody id="datos_medicos">                   	  	
+                   	  </tbody>
+                   </table>  
+                   </div>                    
+       </div>
+</div>                      
+                </div>
+      </div>  
+    </div>
+  </div>
+<!--    end small modal -->
 
 
 

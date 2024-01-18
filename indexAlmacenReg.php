@@ -81,6 +81,7 @@ include("datosUsuario.php");
 			<li><span>Ingresos</span>
 				<ul>
 					<li><a href="navegador_ingresomateriales.php" target="_blank">Ingreso de Materiales</a></li>
+					<li><a href="navegador_op_fecha_vencimiento.php" target="contenedorPrincipal">Modificar Fechas de Vencimiento</a></li>
 				</ul>	
 			</li>
 			<li><span>Salidas</span>

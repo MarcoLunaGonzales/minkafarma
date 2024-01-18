@@ -132,15 +132,15 @@ echo "<td align='left'>
 	<select name='rpt_funcionario'  id='rpt_funcionario' class='selectpicker form-control' data-style='btn btn-primary' onchange='cambiarSubLinea()' data-live-search='true' required>
 	<option value='' disabled selected>--Seleccione--</option>";
 	$sql="SELECT distinct(f.codigo_funcionario), CONCAT(f.paterno, ' ', f.nombres, ' ', f.materno)
-    from funcionarios f, cargos c
-    where f.cod_cargo=c.cod_cargo and f.estado=1 and f.cod_ciudad in ($codTerritorio) 
+    from funcionarios f, cargos c, funcionarios_agencias fa
+    where f.cod_cargo=c.cod_cargo and f.estado=1 and fa.cod_ciudad in ($codTerritorio) 
     order by f.paterno";
 	$resp=mysqli_query($enlaceCon,$sql);
 	while($dat=mysqli_fetch_array($resp))
 	{	$codigo_fun=$dat[0];
 		$nombre_fun=$dat[1];
     $select_fun = $codigo_fun==$cod_funcionario ? 'selected' : '';
-		echo "<option value='$codigo_fun' $select_fun>$nombre_fun</option>";
+		echo "<option value='$codigo_fun' $select_fun>$nombre_fun ($codigo_fun)</option>";
 	}
 	echo "</select>
 </td>";

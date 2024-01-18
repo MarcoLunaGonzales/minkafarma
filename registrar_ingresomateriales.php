@@ -569,6 +569,11 @@ function calculaPrecioCliente(preciocompra, index){
 	// CALCULAR SUBTOTAL
 	var cantidad 		= parseFloat(document.getElementById('cantidad_unitaria'+index).value);
 	var cantidad_bonificacion = parseFloat(document.getElementById('bonificacion'+index).value);
+	if(cantidad_bonificacion>0){
+		cantidad_bonificacion=cantidad_bonificacion;
+	}else{
+		cantidad_bonificacion=0;
+	}
 	var precio_unitario = parseFloat(document.getElementById('precio_unitario'+index).value);
 	var cantidad_presentacion = parseFloat(document.getElementById('cantidadpresentacion'+index).value);
 	var descuento_porcentaje = parseFloat(document.getElementById('descuento_porcentaje'+index).value);
@@ -602,7 +607,7 @@ function calculaPrecioCliente(preciocompra, index){
 	document.getElementById('precioclienteOf'+index).value=preciocliente;
 
 	var margenNuevo=(preciocliente-costounitario)/costounitario;
-	var margenNuevoF="Margen["+ number_format((margenNuevo*100),0) + "%]";
+	var margenNuevoF="Margen["+ number_format((margenNuevo*100),0) + "%] CU:"+number_format(costounitario,2);
 
 	var precioActual=parseFloat(document.getElementById("precioclienteguardar"+index).value);
 	var margenPrecioActual=(precioActual-costounitario)/costounitario;

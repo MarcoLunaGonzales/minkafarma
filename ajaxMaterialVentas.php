@@ -71,6 +71,11 @@ $banderaDescuentoAbierto=obtenerValorConfiguracion($enlaceCon,54);
 	<input class="inputnumber" type="number" value="0" id="montoMaterial<?php echo $num;?>" name="montoMaterial<?php echo $num;?>" value="0"  step="0.01" style="height:20px;font-size:19px;width:80px;color:red;" required readonly> 
 </td>
 
+<td class="receta_detalle">
+	<input type="checkbox" checked="checked" class="check_box" name="receta_medica<?php echo $num;?>" id="receta_medica<?php echo $num;?>">
+    <label for="receta_medica<?php echo $num;?>">PCR</label>
+</td>
+
 <td align="center"  width="5%" ><input class="boton2peque" type="button" value="-" onclick="menos(<?php echo $num;?>)" /></td>
 
 </tr>

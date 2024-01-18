@@ -38,7 +38,7 @@ $fechaActual=date("Y-m-d");
 		B
 	</span>
 	<!-- Input de bonificación oculto por defecto -->
-	<input type="number" class="inputnumber" min="1" id="bonificacion<?php echo $num;?>" name="bonificacion<?php echo $num;?>" placeholder="BonificadoUnit" value="0" style="display: none; width: 90px; background-color: #ffffcc; color: blue; font-size: 10px; font-weight: bold;" size="5">
+	<input type="number" class="inputnumber" min="0" id="bonificacion<?php echo $num;?>" name="bonificacion<?php echo $num;?>" placeholder="BonificadoUnit" value="0" style="display: none; width: 90px; background-color: #ffffcc; color: blue; font-size: 10px; font-weight: bold;" size="5" onChange='calculaPrecioCliente(0, <?php echo $num;?>);' onKeyUp='calculaPrecioCliente(0, <?php echo $num;?>);'>
 
 </td>
 

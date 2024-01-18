@@ -174,7 +174,7 @@ $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
 			
 			echo "<tr><td align='center' bgcolor='#F1C40F'>$fecha_consulta</td>
 			<td bgcolor='#F1C40F'>Ingreso</td>
-			<td align='center' bgcolor='#F1C40F'>$nro_ingreso</td>
+			<td align='center' bgcolor='#F1C40F'><a href='navegador_detalleingresomateriales.php?codigo_ingreso=$codIngresoX' target='_blank'>$nro_ingreso</a></td>
 			<td align='right' bgcolor='$coloresCantidades'>$cantidadIngresoX</td>
 			<td align='right' bgcolor='$coloresCantidades'>0</td>
 			<td align='right' bgcolor='$coloresCantidades'>$cantidadKardexX</td>

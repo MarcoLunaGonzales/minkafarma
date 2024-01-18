@@ -75,7 +75,7 @@ $global_agencia=$_COOKIE['global_agencia'];
 $fecha_rptdefault=date("d/m/Y");
 
 
-echo "<h1>Filtro Ingresos Material - Fechas de Vencimiento</h1><br>";
+echo "<h1>Modificar Fechas de Vencimiento en Ingresos de Producto</h1><br>";
 echo"<body onLoad='cargalistadoAlmacenes();'>";
 
 echo"<form method='GET' action='navegador_fecha_vencimiento.php'>";

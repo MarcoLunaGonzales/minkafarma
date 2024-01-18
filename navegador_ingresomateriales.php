@@ -309,7 +309,7 @@ while ($dat = mysqli_fetch_array($resp)) {
         $chkbox = "<input type='checkbox' name='codigo' value='$codigo'>";
     }
 	//if ($anio_ingreso != $globalGestionActual) {
-    if ($anio_ingreso != 2023 ) {
+    if ($anio_ingreso != 2024 ) {
         $chkbox = "";
     }
     $urlDetalle="";
