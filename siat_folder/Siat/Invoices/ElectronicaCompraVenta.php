@@ -11,7 +11,6 @@ class ElectronicaCompraVenta extends SiatInvoice
 		parent::__construct();
 		$this->classAlias 						= 'facturaElectronicaCompraVenta';
 		$this->cabecera->codigoDocumentoSector 	= DocumentTypes::FACTURA_COMPRA_VENTA;
-		// $this->endpoint							= 'https://pilotosiatservicios.impuestos.gob.bo/v2/ServicioFacturacionElectronica?wsdl';
 		$this->endpoint							= conexionSiatUrl::wsdlFacturacionElectronica;
 	}
 	public function validate()

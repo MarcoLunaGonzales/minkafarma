@@ -2672,7 +2672,7 @@ if($banderaErrorFacturacion==0 || $tipoDocDefault!=1){
  			<tr><td><b>FECHA CUFD IMPUESTOS</b></td><td align="left"><?=date("d/m/Y")?></td></tr>
  		</table>
  	</center><?php 			
-					?><center><a href="siat_folder/siat_cuis_cufd/generar_cufd.php?cod_ciudad=<?=$_COOKIE['global_agencia']?>&l=1" class="btn btn-warning" style="height: 60px;font-size: 20px;">Obtener CUFD <br> <img src="imagenes/actua.gif" width="80" height="80" style="position: absolute;top:0;right:0;"></a></center><?php			
+					?><center><a href="siat_folder/siat_cuis_cufd/generar_cufd.php?cod_ciudad=<?=$_COOKIE['global_agencia']?>&cod_entidad=1" class="btn btn-warning" style="height: 60px;font-size: 20px;">Obtener CUFD <br> <img src="imagenes/actua.gif" width="80" height="80" style="position: absolute;top:0;right:0;"></a></center><?php			
 
  	?>  
  </div>

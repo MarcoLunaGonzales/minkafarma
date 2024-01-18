@@ -34,7 +34,12 @@ if(isset($_GET['rpt_territorio'])){
   $sqladd=" and a.cod_ciudad in ($rpt_territorio)"; 
 }else{
   $rpt_territorio=0;
-  $sqladd=" "; 
+  if(isset($_COOKIE['globalIdEntidad'])){
+    $entidad=$_COOKIE['globalIdEntidad'];
+    $sqladd=" and a.cod_ciudad in (select cod_ciudad from ciudades where cod_entidad='$entidad')"; 
+  }else{
+    $sqladd=" ";   
+  }
 }
 ?>
 <div class="content">
@@ -44,7 +49,7 @@ if(isset($_GET['rpt_territorio'])){
         <div class="card">
           <div class="card-header card-header-icon">
             <div class="card-icon bg-blanco">
-              <img class="" width="40" height="40" src="../../imagenes/factura.png">
+              <img class="" width="40" height="40" src="../../imagenes/icon_farma.png">
             </div>
             <h4 class="card-title text-center">FACTURAS EMISION OFFLINE <br></h4>            
             <div class="row">
@@ -124,17 +129,15 @@ if(isset($_GET['rpt_territorio'])){
                 <thead>
                   <tr>
                     <tr class='bg-info text-white'><th></th><th>&nbsp;</th><th>Sucursal</th><th>Nro. Factura</th><th>Fecha Emisión<br></th>
-                  <th>TipoPago</th><th>Tarjeta</th><th>Razon Social</th><th>NIT</th><th>Proceso</th><th>Monto</th></tr>
+                  <th>Cliente</th><th>Razon Social</th><th>NIT</th><th>Proceso</th><th>Monto</th></tr>
                   </tr>                                  
                 </thead>
                 <tbody>
                   <?php
                   $index=0;
                   $cod_tipoEmision=2;//tipo emision OFFLINE
-                   $sql="SELECT s.cod_salida_almacenes,a.nombre_almacen as sucursal, s.fecha, s.hora_salida, s.nro_correlativo,
-                (select t.nombre_tipopago from tipos_pago t where t.cod_tipopago=s.cod_tipopago)tipopago, 
-                (select ts.nro_tarjeta from tarjetas_salidas ts where ts.cod_salida_almacen=s.cod_salida_almacenes)tarjeta, 
-                s.cod_tipo_doc, razon_social, nit,s.cod_tipopago,s.monto_final,s.siat_codigotipoemision,s.siat_codigotipodocumentoidentidad, s.siat_complemento
+                   $sql="SELECT s.cod_salida_almacenes,a.nombre_almacen as sucursal, s.fecha, s.hora_salida, s.nro_correlativo,  
+                (select c.nombre_cliente from clientes c where c.cod_cliente = s.cod_cliente)cliente, s.cod_tipo_doc, razon_social, nit,s.cod_tipopago,s.monto_final,s.siat_codigotipoemision
                 FROM salida_almacenes s join almacenes a on s.cod_almacen=a.cod_almacen
                 WHERE s.cod_tiposalida=1001 and s.salida_anulada=0 and s.cod_tipo_doc=1
                 and s.siat_codigotipoemision=$cod_tipoEmision and s.siat_codigoRecepcion is null $sqladd
@@ -147,19 +150,15 @@ if(isset($_GET['rpt_territorio'])){
                     $sucursal=$row['sucursal'];
                     $fecha=$row['fecha'];
                     $hora_salida=$row['hora_salida'];
+
                     $nro_correlativo=$row['nro_correlativo'];
-                    $tipopago=$row['tipopago'];
-                    $nroTarjeta=$row['tarjeta'];
+                    $cliente=$row['cliente'];
                     // $cod_tipo_doc=$row['cod_tipo_doc'];
                     $razon_social=$row['razon_social'];
                     $nit=$row['nit'];
                     $cod_tipopago=$row['cod_tipopago'];
                     $monto_final=$row['monto_final'];
                     $cod_tipoEmision=$row['siat_codigotipoemision'];
-                    $tipoDocSIAT=$row['siat_codigotipodocumentoidentidad'];
-                    $complementoTipoDocSIAT=$row['siat_complemento'];
-
-                    $nitMostrar=$tipoDocSIAT."-".$nit."-".$complementoTipoDocSIAT;
                     
                       $index++;
                       ?>
@@ -175,10 +174,10 @@ if(isset($_GET['rpt_territorio'])){
                       <td class="text-left small"><?=$sucursal;?></td>
                       <td class="text-center small"><?=$nro_correlativo;?></td>
                       <td class="text-left small"><?=$fecha;?> <?=$hora_salida;?></td>
-                      <td class="text-left small"><?=$tipopago;?></td>
-                      <td class="text-left small"><?=$nroTarjeta;?></td>                    
+                      <td class="text-left small"><?=$cliente;?></td>
+                    
                       <td class="text-center small"><?=$razon_social;?></td>
-                      <td class="text-left small"><?=$nitMostrar;?></td>
+                      <td class="text-left small"><?=$nit;?></td>
                       <td class="text-right small"><?=$cod_salida_almacenes;?></td>
                       <td class="text-right small"><?=number_format($monto_final,1,'.',',');?></td>
 

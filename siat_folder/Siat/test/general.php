@@ -374,6 +374,49 @@ class GeneralTest
 	}
 }
 
+public static function testObtencionCuis($codigoPuntoVenta)
+{
+	try
+	{			
+		$config = self::buildConfig();
+		$config->validate();
+		// $codigoPuntoVenta = 1;
+		$codigoSucursal = 0;
+		$serviceCodigos = new ServicioFacturacionCodigos(null, null, $config->tokenDelegado);
+		$serviceCodigos->setConfig((array)$config);
+		$resCuis = $serviceCodigos->cuis($codigoPuntoVenta, $codigoSucursal);
+		print_r($resCuis);			
+		echo "Codigo CUIS: ", $resCuis->RespuestaCuis->codigo, "\n";			
+	}
+	catch(Exception $e)
+	{
+		echo "\033[0;31m", $e->getMessage(), "\033[0m", "\n\n";
+		print $e->getTraceAsString();
+	}
+}
+
+public static function testCrearPuntoVenta($cuis){
+	try
+	{
+		$config = self::buildConfig();
+		$config->validate();			
+		$codigoSucursal = 0;
+		$tipoPuntoVenta=5;
+		$nombrePuntoVenta="Punto 2";
+		// $cuis="553EE336";
+		$serviceCodigos = new ServicioOperaciones;
+		$serviceCodigos->setConfig((array)$config);
+		$serviceCodigos->cuis=$cuis;
+		$resCuis = $serviceCodigos->registroPuntoVenta($codigoSucursal,$tipoPuntoVenta,$nombrePuntoVenta);
+
+		print_r($resCuis);			
+	}
+	catch(Exception $e)
+	{
+		echo "\033[0;31m", $e->getMessage(), "\033[0m", "\n\n";
+		print $e->getTraceAsString();
+	}
+}
 
 date_default_timezone_set('America/La_Paz');
 

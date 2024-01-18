@@ -1,9 +1,11 @@
 <?php
 require "../funciones_siat.php";
 if(isset($_GET['act'])){
-  sincronizarParametrosSiat($_GET['act']);  
+  $cod_entidad=$_GET['cod_entidad'];
+  sincronizarParametrosSiat($_GET['act'],$cod_entidad);  
 }else{
-  sincronizarParametrosSiat();  
+  $cod_entidad=$_GET['cod_entidad'];
+  sincronizarParametrosSiat("",$cod_entidad);  
 }
 
 require "../../conexionmysqli.inc";

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="https://siat.impuestos.gob.bo/">
+	<SOAP-ENV:Body>
+		<ns1:recepcionFactura>
+			<SolicitudServicioRecepcionFactura>
+				<codigoAmbiente>2</codigoAmbiente>
+				<codigoDocumentoSector>1</codigoDocumentoSector>
+				<codigoEmision>1</codigoEmision>
+				<codigoModalidad>2</codigoModalidad>
+				<codigoPuntoVenta>0</codigoPuntoVenta>
+				<codigoSistema>6D307F64485BE20AEB91C0F</codigoSistema>
+				<codigoSucursal>0</codigoSucursal>
+				<cufd>BQcKhQlkxJkpBNkTIwQUVCOTFDMEY=QzlZNENUS01WVUFQzMDdGNjQ0ODVCR</cufd>
+				<cuis>CAC33D71</cuis>
+				<nit>9665224017</nit>
+				<tipoFacturaDocumento>1</tipoFacturaDocumento>
+				<archivo>SDRzSUFBQUFBQUFBRTZWVlRYTWFPUkM5NTFlbzJEUE1COFl4bEZBS0EzWjVZd2d3NE0zbUpxVEdWandqc1pJR3NQL1RudlluNUk5dER4NFkyNlFxaDNBUmVpMTF2KzczRVBUVExrdkpCcXhUUm5kclVTT3NFZERDU0tYdnU3WGNyK29YdFUvc0ExMXg0WFBMK3laYjU1NWI5Y3psZm1QNUhXalBDV2JScnJOenFsdDc4SDdkQ1lMdGR0dllOaHZHM2dkeEdFYkIxOUZ0SWg0ZzQzV2xuZWRhUUkzZytZNDJZNTZCVzNNQkwvRmJJN2pmc3ltTERsTVEzaHF0eE91U2paMlROVVlGWDRJQXl4blZ5Zzh6NVl4bDdmUHpWaHlmaGRGSEdsUW90ZnpaNk1RSXhkTVNHZzF2cjNzek1obk9odC9JcURlNzZaRmtrZlRHUFJxY0hxWlpqaFRVV3BtQVVROHBySXd1dnVvOEEydXVYcml5ankycytRYWhJbCt4NWlxS0xwWnhxeTJiNTIwUi91cHpPUldmSDZicDQrN1B4L1hsK0hGK3M1MHU3dnBmNWxlRDBmRHY3dlE1L1RZZWpoZEpHUDExdDdpYVBvOEc4bnI4ZlJwK0dkejFaelFvQ2haVkpmdnRQQklUb1JudVRaS0wzRHFlc2hEeHR3aVZ5b0lRS0JtYmdMU0dmTGFvcUNWL1JHR2JCbFd3ekRUSnRUZWxhd3I5VmRxdGVadERyVXBkSFdGMEJlS0JGeElVS2VJd2p1cFJYQS9iODdqWkNjODZZZGlJWXJ6MzVoVFZKbHRhbUZVU3N0NUdwZUJRbXBOSXFkL0FDRnl4TEdzMnd5aHVuUjlrckFMSVAxdW5zTis4b3g0Y211dW5Dc1BBK3YzNk1jL2JTSGx3Qk41SU0rSDNsWVhtM0g2SGs2bGdPRE5ZY1c0OHNvMncxMWZiVjZFa3g4dm1ac09QWEVaR2d5eTJYcTFObjJmTHZYT3JHOGY0SHJwV0s5L25WcDZXbCtCRVhqVGRrNm9ROHNVRVAwSEx1c09kZ0hVQi9XUklmQ1ZPMFJTZVFFdk9idUdKak5FL1o2MW1oOHh4WE9DSUJMVFBneUdjNEtxV3loS2xWOFptWEtnZi8ybmlETXBKVXU2STRCWi9jR0IvL09zOHZoU09QQkdCZllGVzBoUnBTSXFMQTdzcDJEcnlUdzRrOXlwVkFseURCZ2NLTkhjNVBtK0c0WERNWmU0VWNuQmtnZmRJR05IZ0VDMDdQWG9qd1JjS240am9JUGI3QU9MSGQwcWl4bW1LUmtDNmFxTWtsME1rYWpJa2ZaUnVZbzNNOFdhaTlBbFdLbUxWZnNiN29XcGZwTm1YUDN5bitGamhPZ0tKQzJ0ZElQZlhBRjBYNHpRTGZCNzNEUlcrZWdlOTJHSndrSmtkbkZjaDFPWEx5cGJIVFdubkJLeUNvN2x2TWxDNENZN2RCNy80UzJFZi9nY092TGlTbkFZQUFBPT0=</archivo>
+				<fechaEnvio>2021-12-09T19:04:00.120</fechaEnvio>
+				<hashArchivo>c326d5f0b8c9ac1a9d01229d0a1f665d22dcc8618eac35669a1a72ab44c74efa</hashArchivo>
+			</SolicitudServicioRecepcionFactura>
+		</ns1:recepcionFactura>
+	</SOAP-ENV:Body>
+</SOAP-ENV:Envelope>

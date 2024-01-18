@@ -62,7 +62,7 @@ echo ".";//sin este echo no muestra el primer error
     if($DatosConexion[0]==1){
       $string_codigos=trim($string_codigos,",");
       $cod_tipoEmision=2;//tipo emision OFFLINE
-      $sql="SELECT DATE_FORMAT(s.siat_fechaemision,'%Y-%m-%d')as siat_fechaemisionx,s.cod_almacen,a.nombre_almacen,(select cod_impuestos from ciudades where cod_ciudad= a.cod_ciudad)as cod_impuestos,a.cod_ciudad,sc.cufd
+      $sql="SELECT DATE_FORMAT(s.siat_fechaemision,'%Y-%m-%d')as siat_fechaemisionx,s.cod_almacen,a.nombre_almacen,(select cod_impuestos from ciudades where cod_ciudad= a.cod_ciudad)as cod_impuestos,a.cod_ciudad,sc.cufd,s.siat_codigocufd,(select cc.cod_entidad from ciudades cc where cc.cod_ciudad=a.cod_ciudad) as cod_entidad
         FROM salida_almacenes s join almacenes a on s.cod_almacen=a.cod_almacen join siat_cufd sc on s.siat_codigocufd=sc.codigo
         WHERE s.cod_salida_almacenes in ($string_codigos)
         GROUP BY s.cod_almacen,siat_fechaemisionx,s.siat_codigocufd
@@ -77,6 +77,8 @@ echo ".";//sin este echo no muestra el primer error
         $nombre_almacen=$row['nombre_almacen'];
         $cod_impuestos=$row['cod_impuestos'];
         $cod_ciudad=$row['cod_ciudad'];
+        $cod_entidad=$row['cod_entidad'];
+        $siat_codigocufd=$row['siat_codigocufd'];
         $cod_impuestos=intval($cod_impuestos);
         $codigoPuntoVenta=obtenerPuntoVenta_BD($cod_ciudad);
         $cuis=obtenerCuis_siat($codigoPuntoVenta,$cod_impuestos);
@@ -89,19 +91,22 @@ echo ".";//sin este echo no muestra el primer error
           echo "<br> * CUFD VIGENTE NO ENCONTRADO EL DIA DE HOY.<br>";
           // $descripcionError.="CUFD VIGENTE NO ENCONTRADO EL DIA DE HOY.<br>";
           deshabilitarCufd($cod_ciudad,$cuis,$fecha_X);
-          $cufdNuevo=generarCufd($cod_ciudad,$cod_impuestos,$codigoPuntoVenta);
+          //$cufdNuevo=generarCufd($cod_ciudad,$cod_impuestos,$codigoPuntoVenta);
+          $cufdNuevo=generarCufd($cod_ciudad,$cod_impuestos,$codigoPuntoVenta,$cod_entidad);
           $cufd=obtenerCufd_Vigente_BD($cod_ciudad,$fecha_X,$cuis);
           // $descripcionError.="NUEVO CUFD OBTENIDO.<br>";
           echo "<br> * NUEVO CUFD OBTENIDO.<br>";
         }
         if($cufd<>"0"){
            // echo $cufd;
-          $datos_hora=obtenerFechasEmisionFacturas($string_codigos,$cod_almacen,$fecha);
+          //$datos_hora=obtenerFechasEmisionFacturas($string_codigos,$cod_almacen,$fecha);
+          $datos_hora=obtenerFechasEmisionFacturas($string_codigos,$cod_almacen,$fecha,$siat_codigocufd);
           $fecha_inicio=$fecha."T".$datos_hora[0]; 
           $fecha_fin=$fecha."T".$datos_hora[1];
           //buscamos algun evento disponible en ese rango de fechas
           $sw=0;
-          $codigoEvento_datos=obtenerEventosignificativo_BD($codigoMotivoEvento,$codigoPuntoVenta,$cod_impuestos,$fecha_fin,$fecha_inicio);
+          // $codigoEvento_datos=obtenerEventosignificativo_BD($codigoMotivoEvento,$codigoPuntoVenta,$cod_impuestos,$fecha_fin,$fecha_inicio,$cuis);
+          $codigoEvento_datos=obtenerEventosignificativo_BD($codigoMotivoEvento,$codigoPuntoVenta,$cod_impuestos,$fecha_fin,$fecha_inicio,$cuis);
           $codigoEvento=$codigoEvento_datos[0];
           $sw=$codigoEvento_datos[1];
           $descripcionEvento=" SELECCIONADO ";
@@ -119,9 +124,9 @@ echo ".";//sin este echo no muestra el primer error
             // if($nuevo_cufd==1){
             //   deshabilitarCufd($cod_ciudad,$cuis,$fecha_X);
             //   $cufdNuevo=generarCufd($cod_ciudad,$cod_impuestos,$codigoPuntoVenta);
+            //$cufdNuevo=generarCufd($cod_ciudad,$cod_impuestos,$codigoPuntoVenta,$cod_entidad);
             //   $cufd=obtenerCufd_Vigente_BD($cod_ciudad,$fecha_X,$cuis);
             // }
-
             $respEvento=solicitudEventoSignificativo($codigoMotivoEvento,$descripcion,$codigoPuntoVenta,$cod_impuestos,$cufd,$cufdEvento,$fecha_fin,$fecha_inicio,$cuis);
             // echo "<br>**".print_r($respEvento)."**<br>";
             $codigoEvento=$respEvento[0];
@@ -131,7 +136,7 @@ echo ".";//sin este echo no muestra el primer error
           if($codigoEvento<>-1){
             //registamos el evento
            if($sw==0){          
-              $sql="INSERT INTO siat_eventos(codigoMotivoEvento,codigoPuntoVenta,codigoSucursal,cufd,cufdEvento,descripcion,fechaHoraInicioEvento,fechaHoraFinEvento,codigoRecepcionEventoSignificativo) values('$codigoMotivoEvento','$codigoPuntoVenta','$cod_impuestos','$cufd','$cufdEvento','$descripcionX','$fecha_inicio','$fecha_fin','$codigoEvento')";
+              $sql="INSERT INTO siat_eventos(codigoMotivoEvento,codigoPuntoVenta,codigoSucursal,cufd,cufdEvento,descripcion,fechaHoraInicioEvento,fechaHoraFinEvento,codigoRecepcionEventoSignificativo,cod_cuis) values('$codigoMotivoEvento','$codigoPuntoVenta','$cod_impuestos','$cufd','$cufdEvento','$descripcionX','$fecha_inicio','$fecha_fin','$codigoEvento','$cuis')";
                // echo $sql;
               $sql_inserta = mysqli_query($enlaceCon,$sql);
             }
@@ -182,7 +187,8 @@ echo ".";//sin este echo no muestra el primer error
 
         if($nuevo_cufd==1){
             deshabilitarCufd($cod_ciudad,$cuis,$fecha_X);
-            $cufdNuevo=generarCufd($cod_ciudad,$cod_impuestos,$codigoPuntoVenta);
+            // $cufdNuevo=generarCufd($cod_ciudad,$cod_impuestos,$codigoPuntoVenta);
+            $cufdNuevo=generarCufd($cod_ciudad,$cod_impuestos,$codigoPuntoVenta,$cod_entidad);
             $cufd=obtenerCufd_Vigente_BD($cod_ciudad,$fecha_X,$cuis);
           }
 
@@ -192,7 +198,7 @@ echo ".";//sin este echo no muestra el primer error
           html: '<table style=\"border:1px;font-size:14px\"><tr><td>".$descripcionError."</td></tr></table>',
           type: 'success'
         }).then(function() {
-            
+              ".$url_retorno."
         });
         </script>";
       }

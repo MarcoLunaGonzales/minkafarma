@@ -13,7 +13,7 @@ use SinticBolivia\SBFramework\Modules\Invoices\Classes\Siat\SiatConfig;
 use SinticBolivia\SBFramework\Modules\Invoices\Classes\Siat\Services\ServicioOperaciones;
 use SinticBolivia\SBFramework\Modules\Invoices\Classes\Siat\Services\ServicioFacturacionComputarizada;
 
-// use SinticBolivia\SBFramework\Modules\Invoices\Classes\Siat\Services\ServicioFacturacionElectronica;
+use SinticBolivia\SBFramework\Modules\Invoices\Classes\Siat\Services\ServicioFacturacionElectronica;
 use SinticBolivia\SBFramework\Modules\Invoices\Classes\Siat\Messages\SolicitudServicioRecepcionFactura;
 use SinticBolivia\SBFramework\Modules\Invoices\Classes\Siat\Messages\SolicitudServicioRecepcionPaquete;
 use SinticBolivia\SBFramework\Modules\Invoices\Classes\Siat\Messages\SolicitudServicioValidacionRecepcionPaquete;
@@ -36,7 +36,7 @@ class FacturacionOffLine
 			'tipo' 			=> $siat_tipo,
 			'nit'			=> $siat_nit,
 			'razonSocial'	=> $siat_razonSocial,
-			'modalidad'     => ServicioSiat::MOD_COMPUTARIZADA_ENLINEA,
+			'modalidad'     => $siat_modalidad,//1 para electronica en linea y 2 para computarizada
 			// 'ambiente'      => ServicioSiat::AMBIENTE_PRUEBAS,
 			'ambiente'      => conexionSiatUrl::AMBIENTE_ACTUAL,
 			'tokenDelegado'	=> $siat_tokenDelegado,
@@ -74,7 +74,7 @@ class FacturacionOffLine
 		$serviceOps->codigoSucursal=$codigoSucursal;
 		$serviceOps->cufd=$cufd;
 		$serviceOps->cuis=$cuis;
-		 echo $fechaInicio."--->".$fechaFin."<br>".$cufdAntiguo;
+		 //echo $fechaInicio."--->".$fechaFin."<br>".$cufdAntiguo;
 		$resEvent = $serviceOps->registroEventoSignificativo($codigoClasificador, $descripcion, $cufdAntiguo, $fechaInicio, $fechaFin,$codigoSucursal,$codigoPuntoVenta);
 		echo "<br>Evento:<br>";
 		print_r($resEvent);
@@ -104,11 +104,22 @@ class FacturacionOffLine
 			$config = self::buildConfig();
 			$config->validate();
 			
-			$service = new ServicioFacturacionComputarizada($cuis, $cufd, $config->tokenDelegado);
-			// $service->wsdl=conexionSiatUrl::wsdlFacturacionElectronica;
-			$service->setConfig((array)$config);
-			// $service->setPrivateCertificateFile($privCert);
-			// $service->setPublicCertificateFile($pubCert);
+			if($config->modalidad==1){//electronica
+				include dirname(__DIR__). SB_DS ."conexioncert.php";
+				$privCert = MOD_SIAT_DIR . SB_DS . 'certs' . SB_DS . $privatekey;
+				$pubCert = MOD_SIAT_DIR . SB_DS . 'certs' . SB_DS . $publickey;
+				$service = new ServicioFacturacionElectronica($cuis, $cufd, $config->tokenDelegado);
+				// $service->wsdl=conexionSiatUrl::wsdlFacturacionElectronica;
+				$service->setConfig((array)$config);
+				//$service->codigoControl = $dataFact['codigoControl_generado'];
+				$service->setPrivateCertificateFile($privCert);
+				$service->setPublicCertificateFile($pubCert);
+
+			}else{//computarizada
+				$service = new ServicioFacturacionComputarizada($cuis, $cufd, $config->tokenDelegado);
+				$service->setConfig((array)$config);
+			}
+
 			$service->debug = true;
 			$service->fechaEnvio = date("Y-m-d\TH:i:s.000");
 			$facturas = [];
@@ -128,16 +139,20 @@ class FacturacionOffLine
 		    $facturax= new FacturaOnline();
 		    $facturax->endpoint=conexionSiatUrl::endpoint;
 		    $facturax->wsdl=conexionSiatUrl::wsdl;
+
 		    $cafc=null;
 		    $cod_ciudad=null;
 		    while($row=mysqli_fetch_array($resp)){ 
 		      	$cod_salida_almacenes=$row['cod_salida_almacenes'];
 		      	$cod_ciudad=$row['cod_ciudad'];
 		      	$cafc=$row['cafc'];
+
 				$factura=$facturax::testRecepcionFacturaElectronica($cod_salida_almacenes,2,false,1,$nuevo_cuf);
+				// print_r($factura);
 				if($cafc<>null&&$row['cod_tipo_doc']==4){
 					$factura->cabecera->cafc=$cafc;
 				}
+
 				$codigo_cuf=$factura->cabecera->cuf;
 				$codigoTipoDocumentoIdentidad=$factura->cabecera->codigoTipoDocumentoIdentidad;
 				$codigoExcepcion=$factura->cabecera->codigoExcepcion;
@@ -259,10 +274,7 @@ class FacturacionOffLine
 		}
 		
 		$fechaActual=date("Y-m-d");
-		$consulta="SELECT s.cuis,c.cod_impuestos,(SELECT codigoPuntoVenta from siat_puntoventa where cod_ciudad=c.cod_ciudad limit 1) as punto_venta,(SELECT cufd from siat_cufd where fecha='$fechaActual' and cod_ciudad=c.cod_ciudad and s.cuis=cuis and estado=1 order by fecha limit 1)as siat_cufd from siat_cuis s join ciudades c on c.cod_ciudad=s.cod_ciudad where s.cod_ciudad='$global_agencia' and cod_gestion=YEAR(NOW()) and estado=1";		
-		
-		//echo "consulta: ".$consulta;
-
+		$consulta="SELECT s.cuis,c.cod_impuestos,(SELECT codigoPuntoVenta from siat_puntoventa where cod_ciudad=c.cod_ciudad limit 1) as punto_venta,(SELECT cufd from siat_cufd where fecha='$fechaActual' and cod_ciudad=c.cod_ciudad and s.cuis=cuis and estado=1 order by fecha limit 1)as siat_cufd from siat_cuis s join ciudades c on c.cod_ciudad=s.cod_ciudad where s.cod_ciudad='$global_agencia' and cod_gestion=YEAR(NOW()) and estado=1 order by s.codigo desc limit 1";		
 		$resp = mysqli_query($enlaceCon,$consulta);	
 		$dataList = $resp->fetch_array(MYSQLI_ASSOC);
 		$cuis = $dataList['cuis'];
@@ -280,14 +292,10 @@ class FacturacionOffLine
 		$serviceOps->codigoSucursal=$codigoSucursal;
 		$serviceOps->cufd=$cufd;
 		$serviceOps->cuis=$cuis;
-		
-		 //echo "*+*";
-		 //print_r($serviceOps);
-		
+		 // echo "*+*";
+		 // print_r($serviceOps);
 		$res2 = $serviceOps->consultaEventoSignificativo($codigoSucursal,$codigoPuntoVenta,$fechaEvento);
-		
-		 //print_r($res2);
-		
+		// print_r($res2);
 		 return $res2;
 
 	}

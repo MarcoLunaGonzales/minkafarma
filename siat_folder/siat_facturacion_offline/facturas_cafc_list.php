@@ -18,8 +18,14 @@ if(isset($_GET['rpt_territorio'])){
   $rpt_territorio=$_GET['rpt_territorio'];
   $sqladd=" and a.cod_ciudad in ($rpt_territorio)"; 
 }else{
+  if(isset($_COOKIE['globalIdEntidad'])){
+    $entidad=$_COOKIE['globalIdEntidad'];
+    $sqladd=" and a.cod_ciudad in (select cod_ciudad from ciudades where cod_entidad='$entidad')"; 
+  }else{
+    $sqladd=" ";   
+  }
   $rpt_territorio=0;
-  $sqladd=" "; 
+  
 }
 ?>
 <div class="content">

@@ -336,6 +336,7 @@ if($sql_inserta==1){
 				}else{
 					$facturaImpuestos=generarFacturaVentaImpuestos($codigo,false,$errorConexion);	
 				}
+				// exit;
 				$fechaEmision=$facturaImpuestos[1];
 				$cuf=$facturaImpuestos[2];		
 				if(isset($facturaImpuestos[0]->RespuestaServicioFacturacion->codigoRecepcion)){
