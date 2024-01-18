@@ -78,10 +78,16 @@ include("datosUsuario.php");
 		<div id="panel-menu">
 		
 		<ul>
+			<li><span>Datos Generales</span>
+				<ul>
+					<li><a href="programas/proveedores/inicioProveedores.php" target="contenedorPrincipal">Proveedores & Distribuidores</a></li>
+					<li><a href="navegador_material.php" target="contenedorPrincipal">Productos</a></li>
+				</li>					
+				</ul>	
+			</li>
 			<li><span>Ingresos</span>
 				<ul>
 					<li><a href="navegador_ingresomateriales.php" target="_blank">Ingreso de Materiales</a></li>
-					<li><a href="navegador_op_fecha_vencimiento.php" target="contenedorPrincipal">Modificar Fechas de Vencimiento</a></li>
 				</ul>	
 			</li>
 			<li><span>Salidas</span>

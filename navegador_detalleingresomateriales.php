@@ -9,7 +9,7 @@
 	where i.cod_tipoingreso=ti.cod_tipoingreso and i.cod_almacen='$global_almacen' and i.cod_ingreso_almacen='$codigo_ingreso'";
 	
 	$resp=mysqli_query($enlaceCon,$sql);
-	echo "<center><table border='0' class='textotit' align='center' width='100%'><tr><th align='center'>Detalle de Ingreso</th></tr></table></center><br>";
+	echo "<center><h1>Detalle de Ingreso</h1><br>";
 	
 	echo "<table border='0' class='texto' align='center'>";
 	echo "<tr><th>Nro. de Ingreso</th><th>Fecha</th><th>Tipo de Ingreso</th><th>Proveedor</th><th>Nro. Factura</th>
@@ -28,7 +28,7 @@
 	echo "</table>";
 	$sql_detalle="select i.cod_material, i.cantidad_unitaria, i.precio_neto, i.lote, DATE_FORMAT(i.fecha_vencimiento, '%d/%m/%Y'),
 	(select u.nombre from ubicaciones_estantes u where u.codigo=i.cod_ubicacionestante)as estante,
-	(select u.nombre from ubicaciones_filas u where u.codigo=i.cod_ubicacionfila)as fila, i.descuento_unitario, i.precio_bruto, m.cantidad_presentacion
+	(select u.nombre from ubicaciones_filas u where u.codigo=i.cod_ubicacionfila)as fila, i.descuento_unitario, i.precio_bruto, m.cantidad_presentacion, cantidad_bonificacion
 	from ingreso_detalle_almacenes i, material_apoyo m
 	where i.cod_ingreso_almacen='$codigo' and m.codigo_material=i.cod_material";
 	$resp_detalle=mysqli_query($enlaceCon,$sql_detalle);
@@ -37,8 +37,9 @@
 		<th>Codigo</th>
 		<th>Producto</th>
 		<th>Vencimiento</th>
-		<th>Cantidad Caja</th>
-		<th>Cantidad Unitaria</th>
+		<th>Cantidad Compra</th>
+		<th>Bonificacion [u]</th>
+		<th>Cantidad Unitaria Equivalente<br>Total Cantidad de Ingreso</th>
 		<th>Precio Compra</th>
 		<th>Subtotal</th>
 		<th>Descuento %</th>
@@ -60,7 +61,11 @@
 		$precioBruto=redondear2($dat_detalle[8]);
 		$cantidadPresentacion=$dat_detalle[9];
 
+		$cantidadBonificacion=$dat_detalle[10];
+
 		$cantidadCaja=$cantidad_unitaria/$cantidadPresentacion;
+
+		$cantidadCompraSinBonificacion=($cantidad_unitaria-$cantidadBonificacion)/$cantidadPresentacion;
 
 		# Nuevo valores #
 		$precioBruto=redondear2($dat_detalle[8]*$cantidadPresentacion);
@@ -89,7 +94,8 @@
 		<td align='center'>$cod_material</td>
 		<td>$nombre_material</td>
 		<td align='center'>$fechaVenc</td>
-		<td align='center'>$cantidadCaja</td>
+		<td align='center'>$cantidadCompraSinBonificacion</td>
+		<td align='center'>$cantidadBonificacion</td>
 		<td align='center'>$cantidad_unitaria</td>
 		<td align='center'>$precioBruto</td>
 		<td align='center'>".redondear2($cantidadCaja*$precioBruto)."</td>
@@ -103,6 +109,7 @@
 		<td align='center'>-</td>
 		<td align='center'>&nbsp;</td>
 		<td>&nbsp;</td><td align='center'>&nbsp;</td>
+		<td align='center'>&nbsp;</td>
 		<td align='center'>&nbsp;</td>
 		<td align='center'>&nbsp;</td>
 		<td align='center'>&nbsp;</td>

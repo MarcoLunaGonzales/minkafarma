@@ -123,7 +123,7 @@ $txt_reporte="Fecha de Reporte <strong>$fecha_reporte</strong>";
 				if($cantidadPresentacion>0){
 					$stockUnidades=$stock2%$cantidadPresentacion;
 				}
-				$precioUnitario=costoVenta($enlaceCon,$codigo_item,$rpt_territorio);
+				$precioUnitario=costoVentaGeneral($enlaceCon,$codigo_item,$rpt_territorio);
 				$costoItem=$stock2*$precioUnitario;				
 				
 				$costoItemF=formatonumeroDec($costoItem);

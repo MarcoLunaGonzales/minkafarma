@@ -122,7 +122,7 @@ require_once 'datosUsuario.php';
 					<li><a href="navegador_ingresomateriales.php" target="_blank">Ingreso de Materiales</a></li>
 					<li><a href="navegador_ingresotransito.php" target="contenedorPrincipal">Ingreso de Productos en Transito</a></li>
 <!--li><a href="navegadorLiquidacionIngresos.php" target="contenedorPrincipal">Liquidacion de Ingresos</a></li-->
-					<li><a href="navegador_op_fecha_vencimiento.php" target="_blank">Modificar Fechas de Vencimiento</a></li>
+					<li><a href="navegador_op_fecha_vencimiento.php" target="contenedorPrincipal">Modificar Fechas de Vencimiento</a></li>
 				</ul>	
 			</li>
 			<li><span>Salidas</span>

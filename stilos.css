@@ -204,7 +204,7 @@ table {
     box-shadow: 0 1px 0 rgba(255,255,255,.8) inset;        
 }
 .texto th {
-    text-align: left;
+    text-align: center;
     text-shadow: 0 1px 0 rgba(255,255,255,.5); 
     border-bottom: 1px solid #ccc;
     background-color: #eee;

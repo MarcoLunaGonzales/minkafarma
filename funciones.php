@@ -568,6 +568,22 @@ function costoVenta($enlaceCon,$codigo,$agencia){
 	return $costoVenta;
 }
 
+function costoVentaGeneral($enlaceCon,$codigo,$agencia){	
+	$consulta="select id.costo_almacen from ingreso_almacenes i, ingreso_detalle_almacenes id where 
+	i.cod_ingreso_almacen=id.cod_ingreso_almacen and i.ingreso_anulado=0 
+	and id.cod_material='$codigo' and i.cod_tipoingreso in (999,1000) and id.costo_almacen>0 
+	order by i.cod_ingreso_almacen desc limit 0,1";
+	$rs=mysqli_query($enlaceCon,$consulta);
+	$registro=mysqli_fetch_array($rs);
+	$costoVenta=$registro[0];
+	if($costoVenta=="")
+	{   $costoVenta=0;
+	}
+
+	$costoVenta=redondear2($costoVenta);
+	return $costoVenta;
+}
+
 
 function codigoSalida($enlaceCon,$cod_almacen){	
 	$consulta="select IFNULL(max(s.cod_salida_almacenes)+1,1) as codigo from salida_almacenes s";
@@ -736,8 +752,40 @@ function precioProductoSucursalMasDescuento($enlaceCon,$item,$sucursal){
 	return($arrayPrecios);
 }
 
+function precioProductoSucursalCalculadoSinMayorista($enlaceCon,$item,$sucursal){
+	/**** Este es el precio que se utilizara en todo lado es el oficial menos el mayorista  *****/
+	$fechaActual=date("Y-m-d");
+	$banderaPorcentajeDescuentoPrecio=obtenerValorConfiguracion($enlaceCon, 52);
+	$porcentajeVentaProd=obtenerValorConfiguracion($enlaceCon, 53);
+	
+	$sql="SELECT p.precio, p.descuento_unitario from precios p where p.`codigo_material`='$item' and p.`cod_precio`='1' 
+				and p.cod_ciudad='$sucursal'";	
+	$resp=mysqli_query($enlaceCon,$sql);
+	$precio=0;
+	$descuentoUnitario=0;
+	$descuentoUnitarioBs=0;
+ 	if (mysqli_num_rows($resp)>0){ 
+		$dat=mysqli_fetch_array($resp);
+		$precio=$dat[0];
+		$descuentoUnitario=$dat[1];
+	}
+	if($banderaPorcentajeDescuentoPrecio==1){
+		if($descuentoUnitario>0){
+			$descuentoUnitario=$descuentoUnitario*($porcentajeVentaProd/100);
+		}
+		if($descuentoUnitario>0){
+			$descuentoUnitarioBs=$precio*($descuentoUnitario/100);
+		}		
+	}else{
+		$descuentoUnitarioBs=0;
+	}
+
+	$precio=$precio-$descuentoUnitarioBs;
+	return($precio);
+}
+
 function precioProductoSucursalCalculado($enlaceCon,$item,$sucursal){
-	//require("conexionmysqli.php");
+	/***** Este precio es el final calculado para una sucursal incluye el porcentaje mayor y el porcentaje de mayoreo *****/
 	$fechaActual=date("Y-m-d");
 
 	$porcentajeVentaProd=obtenerValorConfiguracion($enlaceCon, 53);
@@ -1000,15 +1048,27 @@ function precioMayoristaSucursal($enlaceCon, $sucursal){
 
 function obtenerFechaVencimiento($enlaceCon, $almacen, $codProducto){
 	$sql="SELECT DATE_FORMAT(id.fecha_vencimiento, '%m/%Y')as fecha_vencimiento from ingreso_almacenes i, ingreso_detalle_almacenes id
-		where i.cod_ingreso_almacen=id.cod_ingreso_almacen and i.cod_almacen='$almacen' 
+		where i.cod_ingreso_almacen=id.cod_ingreso_almacen  
 		and i.ingreso_anulado=0 and id.cantidad_restante>0 and i.cod_tipoingreso in (1000,1003) and id.cod_material='$codProducto' 
 		and id.fecha_vencimiento not in ('1969-12-30','0000-00-00')
 		order by id.fecha_vencimiento asc limit 0,1";
+	/*and i.cod_almacen='$almacen'*/	
  	$resp=mysqli_query($enlaceCon,$sql);
    $fechaVencimiento="";				
    if($detalle=mysqli_fetch_array($resp)){
 	   $fechaVencimiento=$detalle[0];
    }  
+   if($fechaVencimiento==""){
+   	$sql="SELECT DATE_FORMAT(id.fecha_vencimiento, '%m/%Y')as fecha_vencimiento from ingreso_almacenes i, ingreso_detalle_almacenes id
+		where i.cod_ingreso_almacen=id.cod_ingreso_almacen  
+		and i.ingreso_anulado=0 and i.cod_tipoingreso in (1000,1003) and id.cod_material='$codProducto' 
+		and id.fecha_vencimiento not in ('1969-12-30','0000-00-00')
+		order by id.fecha_vencimiento desc limit 0,1";
+	 	$resp=mysqli_query($enlaceCon,$sql);
+	   if($detalle=mysqli_fetch_array($resp)){
+		   $fechaVencimiento=$detalle[0];
+	   }	
+   }
    return $fechaVencimiento;
 }
 

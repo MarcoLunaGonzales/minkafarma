@@ -81,7 +81,9 @@ if($sql_inserta==1){
 
 			//La Cantidad llega en Cantidad Presentacion
 			$cantidad=$_POST["cantidad_unitaria$i"];
-			$cantidad=$cantidad*$cantidadPresentacion;
+			$cantidadBonificacion=$_POST["bonificacion$i"];
+			
+			$cantidad=($cantidad*$cantidadPresentacion)+$cantidadBonificacion;
 
 
 			$precioBruto=$_POST["precio_unitario$i"];
@@ -129,8 +131,8 @@ if($sql_inserta==1){
 			}
 			
 			$consulta="insert into ingreso_detalle_almacenes(cod_ingreso_almacen, cod_material, cantidad_unitaria, cantidad_restante, lote, fecha_vencimiento, 
-			precio_bruto, costo_almacen, costo_actualizado, costo_actualizado_final, costo_promedio, precio_neto, cod_ubicacionestante, cod_ubicacionfila, descuento_unitario) 
-			values($codigo,'$cod_material',$cantidad,$cantidad,'$lote','$fechaVencimiento',$precioUnitario,$costo,$costo,$costo,$costo,$costo,'0','0','$descuento_unitario')";
+			precio_bruto, costo_almacen, costo_actualizado, costo_actualizado_final, costo_promedio, precio_neto, cod_ubicacionestante, cod_ubicacionfila, descuento_unitario, cantidad_bonificacion) 
+			values($codigo,'$cod_material',$cantidad,$cantidad,'$lote','$fechaVencimiento',$precioUnitario,$costo,$costo,$costo,$costo,$costo,'0','0','$descuento_unitario','$cantidadBonificacion')";
 			//echo "bbb:$consulta";
 			$sql_inserta2 = mysqli_query($enlaceCon,$consulta);
 			
@@ -166,14 +168,16 @@ if($sql_inserta==1){
 				}
 								
 				//SI NO EXISTE EL PRECIO LO INSERTA CASO CONTRARIO VERIFICA QUE EL PRECIO DEL INGRESO SEA MAYOR AL ACTUAL PARA HACER EL UPDATE
+				/*Con la modificacion del precio cliente en pantalla de ingreso el descuento unitario siempre debe ser 0*/
+				$descuentoUnitarioPrecio=0;
 				if($banderaPrecioUpd==1){
 					//if($precioItem!=$precioActual){
-					$respModificarPrecios=actualizarPrecios($enlaceCon,$cod_material,$arrayPreciosModificar,$descuento_unitario);
+					$respModificarPrecios=actualizarPrecios($enlaceCon,$cod_material,$arrayPreciosModificar,$descuentoUnitarioPrecio);
 					//}
 				}
 				if($banderaPrecioUpd==2){
 					if($precioItem>$precioActual){
-						$respModificarPrecios=actualizarPrecios($enlaceCon,$cod_material,$arrayPreciosModificar,$descuento_unitario);
+						$respModificarPrecios=actualizarPrecios($enlaceCon,$cod_material,$arrayPreciosModificar,$descuentoUnitarioPrecio);
 					}
 				}
 			}

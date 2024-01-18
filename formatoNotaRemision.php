@@ -13,7 +13,7 @@ $sqlNro="select count(*) from `salida_detalle_almacenes` s where s.`cod_salida_a
 $respNro=mysqli_query($enlaceCon,$sqlNro);
 $nroItems=mysqli_result($respNro,0,0);
 
-$tamanoLargo=240+($nroItems*3)-3;
+$tamanoLargo=400+($nroItems*5)-3;
 
 $pdf=new FPDF('P','mm',array(74,$tamanoLargo));
 //$pdf=new FPDF('P','mm',array(100,$tamanoLargo));
