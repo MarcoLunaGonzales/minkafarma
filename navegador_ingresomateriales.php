@@ -211,7 +211,7 @@ $consulta = "
     FROM ingreso_almacenes i, tipos_ingreso ti
     WHERE i.cod_tipoingreso=ti.cod_tipoingreso
     AND i.cod_almacen='$global_almacen'";
-   $consulta = $consulta."ORDER BY i.nro_correlativo DESC limit 0, 50 ";
+   $consulta = $consulta."ORDER BY i.nro_correlativo DESC limit 0, 100 ";
 //echo "MAT:$sql";
 $resp = mysqli_query($enlaceCon,$consulta);
 echo "<h1>Ingreso de Materiales</h1>";
