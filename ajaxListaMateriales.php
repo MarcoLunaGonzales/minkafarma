@@ -126,7 +126,7 @@ $numeroMesesControlVencimiento = obtenerValorConfiguracion($enlaceCon, 28);
 					
 			$rs=mysqli_query($enlaceCon,$consulta);
 			$registro=mysqli_fetch_array($rs);
-			$precioProducto=$registro[0];
+			$precioProducto=empty($registro[0]) ? 0 : $registro[0];
 			if($precioProducto=="")
 			{   $precioProducto=0;
 			}
