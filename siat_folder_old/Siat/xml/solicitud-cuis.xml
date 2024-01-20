@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="https://siat.impuestos.gob.bo/">
+	<SOAP-ENV:Body>
+		<ns1:cuis>
+			<SolicitudCuis>
+				<codigoAmbiente>2</codigoAmbiente>
+				<codigoModalidad>2</codigoModalidad>
+				<codigoPuntoVenta>0</codigoPuntoVenta>
+				<codigoSistema>6D32E2B9FBF0FE7B3BAC3DF</codigoSistema>
+				<codigoSucursal>0</codigoSucursal>
+				<nit>243212020</nit>
+			</SolicitudCuis>
+		</ns1:cuis>
+	</SOAP-ENV:Body>
+</SOAP-ENV:Envelope>

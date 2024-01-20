@@ -55,9 +55,15 @@ class ServicioFacturacionElectronica extends ServicioFacturacion
 	}
 	public function buildInvoiceXml(SiatInvoice $invoice)
 	{
-		$invoiceXml = $invoice->toXml(null, true)->asXML();
+		$invoiceXml = $invoice->toXml(null, true);
+
+		//para modalida compra venta no es necesario, solo para sector educacion
+		unset($invoiceXml->cabecera->nombreEstudiante);
+		unset($invoiceXml->cabecera->periodoFacturado);
+
+		$invoiceXml2 = $invoiceXml->asXML();
 		
-		$invoiceXml = $this->signInvoice($invoiceXml);
-		return $invoiceXml;
+		$invoiceXml2 = $this->signInvoice($invoiceXml2);
+		return $invoiceXml2;
 	}
 }

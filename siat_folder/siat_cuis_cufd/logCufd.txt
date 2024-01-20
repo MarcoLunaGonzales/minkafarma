@@ -1,0 +1,29 @@
+﻿CUIS : stdClass Object
+(
+    [RespuestaCuis] => stdClass Object
+        (
+            [codigo] => CB8FFF92
+            [fechaVigencia] => 2024-06-12T20:47:41.123-04:00
+            [mensajesList] => stdClass Object
+                (
+                    [codigo] => 980
+                    [descripcion] => EXISTE UN CUIS VIGENTE PARA LA SUCURSAL O PUNTO DE VENTA
+                )
+
+            [transaccion] => 
+        )
+
+)
+CUFD NUEVO : stdClass Object
+(
+    [RespuestaCufd] => stdClass Object
+        (
+            [codigo] => BQcKhQ25VQ0JBNzTg3RjNCRTk4QTY=QjlecDFLUkdYVVFFFNEUwNkEzNkY4N
+            [codigoControl] => 9A5D4A8E53AFD74
+            [direccion] => CALLE LANZA NRO.324 EDIFICIO ORION PISO 5 DPTO. 507 ZONA CENTRO
+            [fechaVigencia] => 2023-06-17T10:52:41.946-04:00
+            [transaccion] => 1
+        )
+
+)
+

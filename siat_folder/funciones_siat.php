@@ -1,8 +1,9 @@
 <?php
 require "Siat/siat_cobofar/siat_facturacionoffline.php";   
 date_default_timezone_set('America/La_Paz');
+
 function obtenerFechasEmisionFacturas($string_codigos,$cod_almacen,$fecha,$siat_codigocufd){
-	$sql="SELECT max(s.siat_fechaemision)as fin,min(s.siat_fechaemision)as inicio
+  $sql="SELECT max(s.siat_fechaemision)as fin,min(s.siat_fechaemision)as inicio
     FROM salida_almacenes s 
     WHERE s.cod_salida_almacenes in ($string_codigos) and s.cod_almacen=$cod_almacen and DATE_FORMAT(s.siat_fechaemision,'%Y-%m-%d') = '$fecha' and s.siat_codigocufd=$siat_codigocufd";
     // echo  $sql;
@@ -27,12 +28,12 @@ function solicitudEventoSignificativo($codigoClasificador,$descripcion,$codigoPu
  	return array($resEvent[0],$resEvent[1]);
 }
 
-function obtenerCuis_vigente_BD($cod_ciudad){
-	$sql="SELECT cuis from siat_cuis where cod_ciudad=$cod_ciudad and estado=1";
-	 // echo $sql;
+function obtenerCuis_vigente_BD($cod_ciudad,$cod_entidad){
+	$sql="SELECT cuis from siat_cuis where cod_ciudad=$cod_ciudad and estado=1 order by codigo desc limit 1";
+  //echo "sql CUIS VIGENTE: ".$sql;    
   $valor="0";
-  // require("../../conexionmysqli.inc");
-  require dirname(__DIR__)."/conexionmysqli.inc";
+  // require("../../conexionmysqli2.php");
+  require dirname(__DIR__)."/conexionmysqli2.php";
   $resp=mysqli_query($enlaceCon,$sql);
   while($row=mysqli_fetch_array($resp)){ 
     $valor=$row['cuis'];
@@ -45,8 +46,8 @@ function obtenerCufd_vigente_BD($cod_ciudad,$fecha,$cuis){
 	$sql="select cufd from siat_cufd where cod_ciudad=$cod_ciudad and fecha = '$fecha' and estado=1 and cuis='$cuis' AND (cufd <> '' or cufd <> null)";
 	 	   // echo $sql;
   $valor="0";
-  // require("../../conexionmysqli.inc");
-  require dirname(__DIR__)."/conexionmysqli.inc";
+  // require("../../conexionmysqli2.php");
+  require dirname(__DIR__)."/conexionmysqli2.php";
   $resp=mysqli_query($enlaceCon,$sql);
   while($row=mysqli_fetch_array($resp)){ 
     $valor=$row['cufd'];
@@ -54,13 +55,13 @@ function obtenerCufd_vigente_BD($cod_ciudad,$fecha,$cuis){
   // echo $valor;
   return $valor;
 }
-function obtenerEventosignificativo_BD($codigoMotivoEvento,$codigoPuntoVenta,$cod_impuestos,$fecha_fin,$fecha_inicio){
-  $sql="select codigoRecepcionEventoSignificativo from siat_eventos where codigoMotivoEvento='$codigoMotivoEvento' and codigoPuntoVenta='$codigoPuntoVenta' and codigoSucursal='$cod_impuestos' and fechaHoraInicioEvento <= '$fecha_inicio' and  '$fecha_fin'<=fechaHoraFinEvento ";//and codigoRecepcionPaquete is null
+function obtenerEventosignificativo_BD($codigoMotivoEvento,$codigoPuntoVenta,$cod_impuestos,$fecha_fin,$fecha_inicio,$cuis=0){
+  $sql="select codigoRecepcionEventoSignificativo from siat_eventos where codigoMotivoEvento='$codigoMotivoEvento' and codigoPuntoVenta='$codigoPuntoVenta' and cod_cuis='$cuis' and fechaHoraInicioEvento <= '$fecha_inicio' and  '$fecha_fin'<=fechaHoraFinEvento ";//and codigoRecepcionPaquete is null
         // echo $sql;
   $valor="-1";
   $sw=0;
-  // require("../../conexionmysqli.inc");
-  require dirname(__DIR__)."/conexionmysqli.inc";
+  // require("../../conexionmysqli2.php");
+  require dirname(__DIR__)."/conexionmysqli2.php";
   $resp=mysqli_query($enlaceCon,$sql);
   while($row=mysqli_fetch_array($resp)){ 
     $valor=$row['codigoRecepcionEventoSignificativo'];
@@ -73,11 +74,14 @@ function obtenerEventosignificativo_BD($codigoMotivoEvento,$codigoPuntoVenta,$co
 
 
 function obtenerPuntoVenta_BD($cod_ciudad){
+
+
+
   $sql="select codigoPuntoVenta from siat_puntoventa where cod_ciudad=$cod_ciudad";
        // echo $sql;
   $valor="0";
-  // require("../conexionmysqli.inc");
-  require dirname(__DIR__)."/conexionmysqli.inc";   
+  // require("../conexionmysqli2.php");
+  require dirname(__DIR__)."/conexionmysqli2.php";   
   $resp=mysqli_query($enlaceCon,$sql);
   while($row=mysqli_fetch_array($resp)){ 
     $valor=$row['codigoPuntoVenta'];
@@ -91,9 +95,9 @@ function obtenerCufd_anterior_BD($cod_ciudad,$fecha,$cuis){
 	$sql="select cufd from siat_cufd where cod_ciudad=$cod_ciudad and fecha='$fecha' and cuis='$cuis' AND cufd <> '' or cufd <> null ";
 	 // echo $sql;
   $valor="0";
-  // require("../../conexionmysqli.inc");
-  require dirname(__DIR__)."/conexionmysqli.inc";
-  // require dirname(__DIR__)."/conexionmysqli.inc";
+  // require("../../conexionmysqli2.php");
+  require dirname(__DIR__)."/conexionmysqli2.php";
+  // require dirname(__DIR__)."/conexionmysqli2.php";
   $resp=mysqli_query($enlaceCon,$sql);
   while($row=mysqli_fetch_array($resp)){ 
     $valor=$row['cufd'];
@@ -120,50 +124,48 @@ function obtenerFechaHoraSiat(){
    return $sincro::testSync('sincronizarFechaHora');
 }
 
-function sincronizarParametrosSiat($act = ""){    
+function sincronizarParametrosSiat($act = "",$cod_entidad){    
    require "Siat/siat_cobofar/siat_sincronizacion.php";   
    $sincro= new SyncTest();
    if($act!=""){
-      $sincro::testSyncInsert($act);
+      $sincro::testSyncInsert($act,$cod_entidad);
    }else{
-       $sincro::testSyncInsert('sincronizarActividades');
-       $sincro::testSyncInsert('sincronizarListaActividadesDocumentoSector');
-       $sincro::testSyncInsert('sincronizarListaLeyendasFactura');
-       $sincro::testSyncInsert('sincronizarListaMensajesServicios');
-       $sincro::testSyncInsert('sincronizarListaProductosServicios');
-       $sincro::testSyncInsert('sincronizarParametricaEventosSignificativos');
-       $sincro::testSyncInsert('sincronizarParametricaMotivoAnulacion');
-       $sincro::testSyncInsert('sincronizarParametricaTipoDocumentoIdentidad');
-       $sincro::testSyncInsert('sincronizarParametricaTipoDocumentoSector');
-       $sincro::testSyncInsert('sincronizarParametricaTipoEmision');
-       $sincro::testSyncInsert('sincronizarParametricaTipoMetodoPago');
-       $sincro::testSyncInsert('sincronizarParametricaTipoMoneda');
+       $sincro::testSyncInsert('sincronizarActividades',$cod_entidad);
+       $sincro::testSyncInsert('sincronizarListaActividadesDocumentoSector',$cod_entidad);
+       $sincro::testSyncInsert('sincronizarListaLeyendasFactura',$cod_entidad);
+       $sincro::testSyncInsert('sincronizarListaMensajesServicios',$cod_entidad);
+       $sincro::testSyncInsert('sincronizarListaProductosServicios',$cod_entidad);
+       $sincro::testSyncInsert('sincronizarParametricaEventosSignificativos',$cod_entidad);
+       $sincro::testSyncInsert('sincronizarParametricaMotivoAnulacion',$cod_entidad);
+       $sincro::testSyncInsert('sincronizarParametricaTipoDocumentoIdentidad',$cod_entidad);
+       $sincro::testSyncInsert('sincronizarParametricaTipoDocumentoSector',$cod_entidad);
+       $sincro::testSyncInsert('sincronizarParametricaTipoEmision',$cod_entidad);
+       $sincro::testSyncInsert('sincronizarParametricaTipoMetodoPago',$cod_entidad);
+       $sincro::testSyncInsert('sincronizarParametricaTipoMoneda',$cod_entidad);
    }   
 }
-function abrirPuntoVenta($ciudad,$codigoSucursal,$tipoPuntoVenta,$nombrePuntoVenta){
+function abrirPuntoVenta($ciudad,$codigoSucursal,$tipoPuntoVenta,$nombrePuntoVenta,$cod_entidad){
    require "Siat/siat_cobofar/siat_puntoventa.php";  
    $punto= new PuntoVentaTest();
-   $punto::testCrearPuntoVenta($ciudad,$codigoSucursal,$tipoPuntoVenta,$nombrePuntoVenta);
+   $punto::testCrearPuntoVenta($ciudad,$codigoSucursal,$tipoPuntoVenta,$nombrePuntoVenta,$cod_entidad);
 }
 
-function cerrarPuntoVenta($ciudad,$codigoSucursal){
+function cerrarPuntoVenta($ciudad,$codigoSucursal,$cod_entidad){
    require "Siat/siat_cobofar/siat_puntoventa.php";  
    $punto= new PuntoVentaTest();
-   $punto::testCerrarPuntoVenta($ciudad,$codigoSucursal);
+   $punto::testCerrarPuntoVenta($ciudad,$codigoSucursal,$cod_entidad);
 }
 
-function obtenerCantidadPuntosVenta($codTipo){
-    $sql="SELECT count(*) from ciudades where cod_impuestos>0";
+function obtenerCantidadPuntosVenta($codTipo,$globalEmpresa){
+    $sql="SELECT count(*) from ciudades where cod_empresa=$globalEmpresa";
     $total=0;
     require dirname(__DIR__)."/conexionmysqli2.inc";    
-    // print_r($enlaceCon);
     $resp=mysqli_query($enlaceCon,$sql);
     while($row=mysqli_fetch_array($resp)){ 
       $total=$row[0];
     }
-
     $abiertos=0;
-    $sql="SELECT count(*) from siat_puntoventa";
+    $sql="SELECT count(*) from siat_puntoventa where cod_empresa=$globalEmpresa";
     $resp=mysqli_query($enlaceCon,$sql);
     while($row=mysqli_fetch_array($resp)){ 
       $abiertos=$row[0];
@@ -172,27 +174,28 @@ function obtenerCantidadPuntosVenta($codTipo){
     if($codTipo==1){
       return $abiertos;  
     }else{
-      return $total-$abiertos;    
+      return $total-$abiertos;
     }
 }
 
-function generarCuis($ciudad,$codigoSucursal,$codigoPuntoVenta){
-   require_once "Siat/siat_cobofar/siat_cuis.php";  
+function generarCuis($ciudad,$codigoSucursal,$codigoPuntoVenta,$cod_entidad){
+   require_once "Siat/siat_cobofar/siat_cuis.php";
    $test= new CuisTest();
-   $test::testCuis($ciudad,$codigoSucursal,$codigoPuntoVenta);
+   $test::testCuis($ciudad,$codigoSucursal,$codigoPuntoVenta,$cod_entidad);
 }
-function generarCufd($ciudad,$codigoSucursal,$codigoPuntoVenta){
+function generarCufd($ciudad,$codigoSucursal,$codigoPuntoVenta,$cod_entidad){
    require_once "Siat/siat_cobofar/siat_cufd.php";  
    $test= new CufdTest();
-   $test::testCufd($ciudad,$codigoSucursal,$codigoPuntoVenta);
+   $test::testCufd($ciudad,$codigoSucursal,$codigoPuntoVenta,$cod_entidad);
 }
 
-function deshabilitarCufd($cod_ciudad,$cuis,$fecha_X){
+function deshabilitarCufd($cod_ciudad,$cuis,$fecha_X,$cod_entidad){
+   
+  
    // echo $sql;
   $valor="0";
-  // require("../../conexionmysqli.inc");
-  require dirname(__DIR__)."/conexionmysqli.inc";
-  
+  // require("../../conexionmysqli2.php");
+  require dirname(__DIR__)."/conexionmysqli2.php";
   $sqlUpdate="UPDATE siat_cufd SET estado=0 where cod_ciudad='$cod_ciudad' and fecha='$fecha_X' and cuis='$cuis' and estado=1;";
   mysqli_query($enlaceCon,$sqlUpdate);
 
@@ -219,21 +222,21 @@ function anulacionFactura_siat($codigoPuntoVenta,$codigoSucursal,$cuis,$cufd,$cu
   return array($resFac[0],$resFac[1]);
 }
 
-function verificarNitClienteSiat($nit){
+function verificarNitClienteSiat($nit,$cod_ciduad=1){
   require_once "Siat/siat_cobofar/siat_factura_online.php";   
   $factura= new FacturaOnline();
-  return $factura::verificarNitCliente($nit);
+  return $factura::verificarNitCliente($nit,$cod_ciduad);
 }
-function verificarEstadoFactura($codVenta){
+function verificarEstadoFactura($codVenta,$global_agencia=null){
   require_once "Siat/siat_cobofar/siat_factura_online.php";   
   $factura= new FacturaOnline();
-  return $factura::verificarEstadoFactura($codVenta);  
+  return $factura::verificarEstadoFactura($codVenta,$global_agencia);  
 }
 
 
-function ultimaHoraActualizacion($act){
+function ultimaHoraActualizacion($act,$globalEntidad){
   $act=strtolower($act);
-  $sql="SELECT MAX(created_at) from siat_".$act."";
+  $sql="SELECT MAX(created_at) from siat_".$act." where cod_entidad=$globalEntidad";
   //echo $sql;
     $fecha="";
     require dirname(__DIR__)."/conexionmysqli2.inc";    
@@ -251,12 +254,11 @@ function verificarConexion(){
   return array($resFac[0],$resFac[1]);  
 }
 
-
 function consultaEventoSignificativo($fechaEvento,$global_agencia=null){
   // require_once "Siat/siat_cobofar/siat_factura_online.php";   
   // $factura= new FacturaOnline();
-  //echo "entra eventoSignificativo;";
   $eventoSignificativo= new FacturacionOffLine();
   return $eventoSignificativo::consultaEventoSignificativo($fechaEvento,$global_agencia);  
 }
+
 ?>

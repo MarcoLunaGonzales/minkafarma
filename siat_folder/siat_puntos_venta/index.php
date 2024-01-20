@@ -2,16 +2,17 @@
 require "../../conexionmysqli.php";
 require "../funciones_siat.php";
 
+$globalEntidad=$_COOKIE['globalIdEntidad'];
 $fechaHoraActual=date('Y-m-d\TH:i:s.v', time());
+$nroAbiertos=obtenerCantidadPuntosVenta(1,$globalEntidad);
+$nroCerrados=obtenerCantidadPuntosVenta(0,$globalEntidad);
 
-$nroAbiertos=obtenerCantidadPuntosVenta(1);
-$nroCerrados=obtenerCantidadPuntosVenta(0);
 
 ?>
 <script type="text/javascript">
-  function cerrarPuntoVenta(ciudad){
+  function cerrarPuntoVenta(ciudad,globalEntidad){
    Swal.fire({
-        title: '¿Esta seguro de cerrar?',
+        title: '¿Estás seguro de cerrar?',
         text: "Se procederá con el cierre de la sucursal",
          type: 'info',
         showCancelButton: true,
@@ -23,15 +24,15 @@ $nroCerrados=obtenerCantidadPuntosVenta(0);
        }).then((result) => {
           if (result.value) {
             Swal.fire('Procesando...','Espere estamos procesando. Gracias! :)','warning');
-            window.location.href='cerrar_punto.php?cod_ciudad='+ciudad;                           
+            window.location.href='cerrar_punto.php?cod_ciudad='+ciudad+'&codEntidad='+globalEntidad;                           
           } else if (result.dismiss === Swal.DismissReason.cancel) {
             return(false);
           }
     });
 }
-function abrirPuntoVenta(ciudad){
+function abrirPuntoVenta(ciudad,globalEntidad){
    Swal.fire({
-        title: '¿Esta seguro de abrir?',
+        title: '¿Estás seguro de abrir?',
         text: "Se procederá con el apertura de la sucursal",
          type: 'info',
         showCancelButton: true,
@@ -43,7 +44,7 @@ function abrirPuntoVenta(ciudad){
        }).then((result) => {
           if (result.value) {
             Swal.fire('Procesando...','Espere estamos procesando. Gracias! :)','warning');
-            window.location.href='abrir_punto.php?cod_ciudad='+ciudad;                           
+            window.location.href='abrir_punto.php?cod_ciudad='+ciudad+'&codEntidad='+globalEntidad;                           
           } else if (result.dismiss === Swal.DismissReason.cancel) {
             return(false);
           }
@@ -61,7 +62,7 @@ function abrirPuntoVenta(ciudad){
                   <div class="card-icon">
                     <i class="material-icons">receipt</i>
                   </div>
-                  <h4 class="card-title">Puntos de Venta - Sucursales(SIAT)</h4>
+                  <h4 class="card-title"><b>Puntos de Venta - Sucursales(SIAT)</b></h4>
                   <hr>
                   <h5 class="text-dark">Sucursales Abiertas <b class="text-muted">[<?=$nroAbiertos?>]</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sucursales Cerradas <b class="text-danger">[<?=$nroCerrados?>]</b></h5>
                 </div>
@@ -69,7 +70,7 @@ function abrirPuntoVenta(ciudad){
                   <div class="table-responsive">
                     <table class="table table-bordered table-condensed small">
                       <thead class="fondo-boton">
-                        <tr class="bg-primary text-white">
+                        <tr class="bg-dark text-white">
                           <th align="center">Codigo</th>
                           <th align="center">Sucursal</th>
                           <th align="center">Dirección</th>
@@ -81,7 +82,10 @@ function abrirPuntoVenta(ciudad){
                       </thead>
                       <tbody>
                            <?php
-                        $sql="SELECT c.cod_ciudad,c.nombre_ciudad,c.direccion,c.cod_impuestos,(SELECT codigoPuntoVenta from siat_puntoventa where cod_ciudad=c.cod_ciudad)as codigoPuntoVenta  from ciudades c where c.cod_impuestos>=0 order by c.cod_ciudad;";
+                        $sql="SELECT c.cod_ciudad,c.nombre_ciudad,c.direccion,c.cod_impuestos,(SELECT codigoPuntoVenta from siat_puntoventa where cod_ciudad=c.cod_ciudad)as codigoPuntoVenta  from ciudades c where c.cod_impuestos>=0 and cod_entidad=$globalEntidad order by c.cod_ciudad;";
+                        
+                        //echo $sql;
+                        
                         $resp=mysqli_query($enlaceCon,$sql);
                         while($dat=mysqli_fetch_array($resp)){
                           $codigo=$dat[0];
@@ -91,11 +95,11 @@ function abrirPuntoVenta(ciudad){
                           $codigoPuntoVenta=$dat[4];
 
                           if($codigoPuntoVenta>0){
-                            $estadoList="<a href='#' class='btn btn-sm btn-success'>Sucursal Abierta!</a>";
-                            $botonPuntoVenta='<a href="#" onclick="cerrarPuntoVenta('.$codigo.');return false;" class=" btn btn-sm btn-default" title="CERRAR PUNTO VENTA"><i class="material-icons">door_back</i> CERRAR</a>';
+                            $estadoList="<span class='badge badge-success'>Sucursal Abierta!</span>";
+                            $botonPuntoVenta='<a href="#" onclick="cerrarPuntoVenta('.$codigo.','.$globalEntidad.');return false;" class=" btn btn-sm btn-default" title="CERRAR PUNTO VENTA"><i class="material-icons">door_back</i> CERRAR</a>';
                           }else{
-                            $estadoList="<a href='#' class='btn btn-sm btn-danger'>Sucursal Cerrada!</a>";
-                            $botonPuntoVenta='<ahref="#" onclick="abrirPuntoVenta('.$codigo.');return false;" class=" btn btn-sm btn-warning" title="ABRIR PUNTO VENTA"><i class="material-icons">meeting_room</i> ABRIR</a>';
+                            $estadoList="<span class='badge badge-danger'>Sucursal Cerrada!</span>";
+                            $botonPuntoVenta='<ahref="#" onclick="abrirPuntoVenta('.$codigo.','.$globalEntidad.');return false;" class=" btn btn-sm btn-warning" title="ABRIR PUNTO VENTA"><i class="material-icons">meeting_room</i> ABRIR</a>';
                           }
 
 

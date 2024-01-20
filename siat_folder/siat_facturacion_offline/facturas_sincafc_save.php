@@ -46,17 +46,19 @@ require("../funciones_siat.php");
       });
       </script>"; 
   }else{
+    //echo "aqui";
     $descripcionError="";
     $DatosConexion=verificarConexion();
     if($DatosConexion[0]==1){
+
       $string_codigos=trim($string_codigos,",");
       $cod_tipoEmision=2;//tipo emision OFFLINE
-      $sql="SELECT DATE_FORMAT(s.siat_fechaemision,'%Y-%m-%d')as fecha2,s.cod_almacen,a.nombre_almacen,(select cod_impuestos from ciudades where cod_ciudad= a.cod_ciudad)as cod_impuestos,a.cod_ciudad,sc.cufd,s.siat_codigocufd
+      $sql="SELECT DATE_FORMAT(s.siat_fechaemision,'%Y-%m-%d')as fecha2,s.cod_almacen,a.nombre_almacen,(select cod_impuestos from ciudades where cod_ciudad= a.cod_ciudad)as cod_impuestos,a.cod_ciudad,sc.cufd,s.siat_codigocufd,(select cc.cod_entidad from ciudades cc where cc.cod_ciudad=a.cod_ciudad) as cod_entidad
         FROM salida_almacenes s join almacenes a on s.cod_almacen=a.cod_almacen join siat_cufd sc on s.siat_codigocufd=sc.codigo
         WHERE s.cod_salida_almacenes in ($string_codigos)
         GROUP BY s.cod_almacen,s.fecha,s.siat_codigocufd
         ORDER BY a.nombre_almacen,fecha2";
-        // echo $sql;
+      //echo $sql;
         $fecha_X=date('Y-m-d');
         // $fecha_X=date('2022-07-02');
       $resp1=mysqli_query($enlaceCon,$sql);
@@ -66,9 +68,8 @@ require("../funciones_siat.php");
         $nombre_almacen=$row['nombre_almacen'];
         $cod_impuestos=$row['cod_impuestos'];
         $cod_ciudad=$row['cod_ciudad'];
-
+        $cod_entidad=$row['cod_entidad'];
         $siat_codigocufd=$row['siat_codigocufd'];
-        // $cod_ciudad=85;
         $cod_impuestos=intval($cod_impuestos);
         $codigoPuntoVenta=obtenerPuntoVenta_BD($cod_ciudad);
         $cuis=obtenerCuis_siat($codigoPuntoVenta,$cod_impuestos);
@@ -80,10 +81,14 @@ require("../funciones_siat.php");
         // echo  $cuis;
         if($cufd=="0"){
           echo "<br> * CUFD VIGENTE NO ENCONTRADO EL DIA DE HOY.<br>";
-          // $descripcionError.="CUFD VIGENTE NO ENCONTRADO EL DIA DE HOY.<br>";
-          deshabilitarCufd($cod_ciudad,$cuis,$fecha_X);
-          $cufdNuevo=generarCufd($cod_ciudad,$cod_impuestos,$codigoPuntoVenta);
-          $cufd=obtenerCufd_Vigente_BD($cod_ciudad,$fecha_X,$cuis);
+            // $cod_entidad=2;
+            
+            //echo $cod_ciudad."-".$cuis."-".$fecha_X;
+            
+            deshabilitarCufd($cod_ciudad,$cuis,$fecha_X,$cod_entidad);
+            // echo $cod_ciudad."-".$cod_ciudad."-".$fecha_X;
+            $cufdNuevo=generarCufd($cod_ciudad,$cod_impuestos,$codigoPuntoVenta,$cod_entidad);
+            $cufd=obtenerCufd_Vigente_BD($cod_ciudad,$fecha_X,$cuis);
           // $descripcionError.="NUEVO CUFD OBTENIDO.<br>";
           echo "<br> * NUEVO CUFD OBTENIDO.<br>";
         }
@@ -94,7 +99,7 @@ require("../funciones_siat.php");
           $fecha_fin=$fecha."T".$datos_hora[1];
           $sw=0;
           //buscamos algun evento disponible en ese rango de fechas
-          $codigoEvento_datos=obtenerEventosignificativo_BD($codigoMotivoEvento,$codigoPuntoVenta,$cod_impuestos,$fecha_fin,$fecha_inicio);
+          $codigoEvento_datos=obtenerEventosignificativo_BD($codigoMotivoEvento,$codigoPuntoVenta,$cod_impuestos,$fecha_fin,$fecha_inicio,$cuis);
           $codigoEvento=$codigoEvento_datos[0];
           // echo "eveto:".$codigoEvento;
           $sw=$codigoEvento_datos[1];
@@ -103,27 +108,46 @@ require("../funciones_siat.php");
             if($fecha_inicio==$fecha_fin){//solo es una factura
               $fecha_z=$fecha." ".$datos_hora[1]; 
               $fechanueva = new DateTime($fecha_z); 
-              // $fechanueva->modify('-5 hours'); 
-              $fechanueva->modify('+10 second'); 
-              // $fechanueva->modify('-30 second'); 
+              switch ($addminute) {
+                case 0://una hora
+                  $fechanueva->modify('60 minute');
+                  $seconds=".000";
+                break;
+                case 1://30 in
+                  $fechanueva->modify('30 minute');
+                  $seconds=".000";
+                break;
+                case 2://un min
+                  $fechanueva->modify('1 minute');
+                  $seconds=".000";
+                break;
+                case 3://10 sec
+                  $fechanueva->modify('10 second');
+                  $seconds=".000";
+                break;
+                case 4://1 sec
+                  $fechanueva->modify('1 second');
+                  $seconds=".000";
+                break;
+                case 5://un milisegundo
+                  $seconds=".001";
+                break;
+              }
               $fecha_fin=$fechanueva->format('Y-m-d H:i:s');
               $fecha_fin_datos=explode(" ", $fecha_fin);
-              $fecha_fin=$fecha_fin_datos[0]."T".$fecha_fin_datos[1].".000";//agregamos milisegundos 
+              $fecha_fin=$fecha_fin_datos[0]."T".$fecha_fin_datos[1].$seconds;//agregamos milisegundos 
             }
-            // if($nuevo_cufd==1){
-            //   deshabilitarCufd($cod_ciudad,$cuis,$fecha_X);
-            //   $cufdNuevo=generarCufd($cod_ciudad,$cod_impuestos,$codigoPuntoVenta);
-            //   $cufd=obtenerCufd_Vigente_BD($cod_ciudad,$fecha_X,$cuis);
-            // }
             $respEvento=solicitudEventoSignificativo($codigoMotivoEvento,$descripcion,$codigoPuntoVenta,$cod_impuestos,$cufd,$cufdEvento,$fecha_fin,$fecha_inicio,$cuis);
             // echo "<br>**".print_r($respEvento)."**<br>";
             $codigoEvento=$respEvento[0];
             $descripcionEvento=$respEvento[1];
           }
+
+
           if($codigoEvento<>-1){
             //registamos el evento
            if($sw==0){
-              $sql="INSERT INTO siat_eventos(codigoMotivoEvento,codigoPuntoVenta,codigoSucursal,cufd,cufdEvento,descripcion,fechaHoraInicioEvento,fechaHoraFinEvento,codigoRecepcionEventoSignificativo) values('$codigoMotivoEvento','$codigoPuntoVenta','$cod_impuestos','$cufd','$cufdEvento','$descripcionX','$fecha_inicio','$fecha_fin','$codigoEvento')";
+              $sql="INSERT INTO siat_eventos(codigoMotivoEvento,codigoPuntoVenta,codigoSucursal,cufd,cufdEvento,descripcion,fechaHoraInicioEvento,fechaHoraFinEvento,codigoRecepcionEventoSignificativo,cod_cuis) values('$codigoMotivoEvento','$codigoPuntoVenta','$cod_impuestos','$cufd','$cufdEvento','$descripcionX','$fecha_inicio','$fecha_fin','$codigoEvento','$cuis')";
                // echo $sql;
               $sql_inserta = mysqli_query($enlaceCon,$sql);
             }
@@ -138,12 +162,12 @@ require("../funciones_siat.php");
             }else{
               $error=true;
               $descripcionError="<b>Evento:</b> ".$descripcionEvento."<br> <b>Paquete: <br>Paso 1.-</b> ".$descripcionPaquete."<br><b>Paso 2.-</b> ".$descripcionValidacion;
-              break;
+              // break;
             }
           }else{
             $error=true;
             $descripcionError="<b>Evento:</b> ".$descripcionEvento;
-            break;
+            //break;
           }
         }else{
           $descripcionError="";
@@ -154,12 +178,11 @@ require("../funciones_siat.php");
             $descripcionError.=" NO ENCONTRADO CUFD de FECHA: $fecha<br>";
           }
           $error=true;
-          break;
+          // break;
         }
       }
 
       if($error){
-
         echo "<script language='Javascript'>
         Swal.fire({
           title: 'ERROR :(',
@@ -172,10 +195,13 @@ require("../funciones_siat.php");
       }else{
         
         if($nuevo_cufd==1){
-            deshabilitarCufd($cod_ciudad,$cuis,$fecha_X);
-            $cufdNuevo=generarCufd($cod_ciudad,$cod_impuestos,$codigoPuntoVenta);
-            $cufd=obtenerCufd_Vigente_BD($cod_ciudad,$fecha_X,$cuis);
-          }
+          // $cod_entidad=2;
+          // echo $cod_ciudad."-".$cuis."-".$fecha_X;
+          deshabilitarCufd($cod_ciudad,$cuis,$fecha_X,$cod_entidad);
+          // echo $cod_ciudad."-".$cod_ciudad."-".$fecha_X;
+          $cufdNuevo=generarCufd($cod_ciudad,$cod_impuestos,$codigoPuntoVenta,$cod_entidad);
+          $cufd=obtenerCufd_Vigente_BD($cod_ciudad,$fecha_X,$cuis);
+        }
         
         echo "<script language='Javascript'>
         Swal.fire({

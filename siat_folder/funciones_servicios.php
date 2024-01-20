@@ -140,4 +140,16 @@ function generarCufd_minka($cod_entidad,$nitEmpresa,$codSucursal,$enlaceCon){
   return $banderaCUFD;
 }
 
+
+function obtenerEntidadDesdeCiudad($cod_externo){
+  require dirname(__DIR__)."/conexionmysqli2.inc";    
+  $sql="SELECT c.cod_entidad from ciudades c where c.cod_externo='$cod_externo';";
+  $resp=mysqli_query($enlaceCon,$sql);
+  $codigoEntidad=1;
+  while($datos=mysqli_fetch_array($resp)){      
+    $codigoEntidad=$datos[0];
+  }
+  return($codigoEntidad);   
+}
+
 ?>

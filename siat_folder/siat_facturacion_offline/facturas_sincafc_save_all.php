@@ -8,10 +8,10 @@ require("../funciones_siat.php");
   $codigoMotivoEvento=$_POST['cod_motivo'];
   if($_POST['rpt_territorio']>0){
     $rpt_territorio=$_POST['rpt_territorio'];
-    $url_retorno="location.href='facturas_sincafc_list_all.php?rpt_territorio=".$rpt_territorio."';";
+    $url_retorno="location.href='facturas_sincafc_list.php?rpt_territorio=".$rpt_territorio."';";
   }else{
     $rpt_territorio=0;
-    $url_retorno="location.href='facturas_sincafc_list_all.php';";
+    $url_retorno="location.href='facturas_sincafc_list.php';";
   }
   $nuevo_cufd=0;
   if(isset($_POST['nuevo_cufd'])){ $nuevo_cufd=1;//si se generará nuevo cufd
@@ -97,7 +97,7 @@ require("../funciones_siat.php");
           $fecha_fin=$fecha."T".$datos_hora[1];
           $sw=0;
           //buscamos algun evento disponible en ese rango de fechas
-          $codigoEvento_datos=obtenerEventosignificativo_BD($codigoMotivoEvento,$codigoPuntoVenta,$cod_impuestos,$fecha_fin,$fecha_inicio);
+          $codigoEvento_datos=obtenerEventosignificativo_BD($codigoMotivoEvento,$codigoPuntoVenta,$cod_impuestos,$fecha_fin,$fecha_inicio,$cuis);
           $codigoEvento=$codigoEvento_datos[0];
           // echo "eveto:".$codigoEvento;
           $sw=$codigoEvento_datos[1];

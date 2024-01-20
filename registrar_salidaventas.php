@@ -1721,38 +1721,59 @@ function guardarMedicoReceta(){
 	var ins_doctor=$("#ins_doctor").val();
 	var esp_doctor=$("#esp_doctor").val();
 	var esp_doctor2=$("#esp_doctor2").val();
-	if(nom_doctor==""||ape_doctor==""){
-       //alerta
-	}else{
-		if(ins_doctor==-2&&n_ins_doctor==""){
-          //alerta
-		}else{
-			guardarMedicoRecetaAjax(nom_doctor,ape_doctor,dir_doctor,mat_doctor,n_ins_doctor,ins_doctor,esp_doctor,esp_doctor2);
+	// Verificar si alguno de los campos obligatorios está vacío
+	if (!nom_doctor.trim() || !ape_doctor.trim()) {
+		// Mostrar alerta de campos obligatorios
+		alert("Por favor, complete los campos obligatorios: Nombre y Apellido del doctor.");
+	} else {
+		// Verificar si es necesario validar el número de inscripción
+		if (ins_doctor == -2 && !n_ins_doctor.trim()) {
+			// Mostrar alerta de número de inscripción obligatorio
+			alert("Por favor, ingrese el número de inscripción del doctor.");
+		} else {
+			// Llamar a la función para guardar el médico (si todos los campos están llenos)
+			guardarMedicoRecetaAjax(nom_doctor, ape_doctor, dir_doctor, mat_doctor, n_ins_doctor, ins_doctor, esp_doctor, esp_doctor2);
 		}
 	}
 }
 
 function guardarMedicoRecetaAjax(nom_doctor,ape_doctor,dir_doctor,mat_doctor,n_ins_doctor,ins_doctor,esp_doctor,esp_doctor2){
-	var parametros={nom_doctor:nom_doctor,ape_doctor:ape_doctor,dir_doctor:dir_doctor,mat_doctor:mat_doctor,n_ins_doctor:n_ins_doctor,ins_doctor:ins_doctor,esp_doctor:esp_doctor,esp_doctor2:esp_doctor2};
-	$.ajax({
+    var parametros = {
+        nom_doctor: nom_doctor,
+        ape_doctor: ape_doctor,
+        dir_doctor: dir_doctor,
+        mat_doctor: mat_doctor,
+        n_ins_doctor: n_ins_doctor,
+        ins_doctor: ins_doctor,
+        esp_doctor: esp_doctor,
+        esp_doctor2: esp_doctor2
+    };
+
+    $.ajax({
         type: "GET",
-        dataType: 'html',
         url: "ajaxNuevoMedico.php",
         data: parametros,
-        success:  function (resp) {
-        	$("#nom_doctor").val("");
-	        $("#ape_doctor").val("");
-	        $("#dir_doctor").val("");
-	        $("#mat_doctor").val("");
-	        $("#n_ins_doctor").val("");
-        	if(parseInt(resp)==1){
-               Swal.fire("Correcto!", "Se guardó el médico con éxito", "success");   
-               actualizarTablaMedicos("codigo");                 	   
-        	}else{
-               Swal.fire("Error!", "Contactar con el administrador", "error");   
-        	}            
+        success: function (resp) {
+			console.log(resp)
+            // Limpiar los campos después de la solicitud AJAX
+            $("#nom_doctor, #ape_doctor, #dir_doctor, #mat_doctor, #n_ins_doctor").val("");
+
+            // Verificar la respuesta del servidor
+            if (parseInt(resp) == 1) {
+                // Éxito al guardar el médico
+                Swal.fire("Correcto!", "Se guardó el médico con éxito", "success");
+                actualizarTablaMedicos("codigo");
+            } else {
+                // Error al guardar el médico
+                Swal.fire("Error!", "Contactar con el administrador", "error");
+            }
+        },
+        error: function () {
+            // Error en la solicitud AJAX
+            Swal.fire("Error!", "Hubo un problema al comunicarse con el servidor.", "error");
         }
-    });	
+    });
+
 }
 
 function actualizarTablaMedicos(orden){
@@ -1783,6 +1804,7 @@ function buscarMedicoTest(){
         url: "ajaxListaMedicos.php",
         data: parametros,
         success:  function (resp) {
+			console.log(resp)
         	actualizarListaInstitucion();
         	$("#datos_medicos").html(resp);                 	   
         }
@@ -1806,7 +1828,7 @@ function asignarMedicoVenta(codigo){
    $("#cod_medico").val(codigo);
    if(codigo>0){
   	 $("#boton_receta").attr("style","background:#e6992b");
-  	 $("#mensaje_receta").html("<img src='imagenes/doc.jpg' width='50' height='50'> <b style='font-size:14px;color:#4E836C;'>Dr. "+$("#medico_lista"+codigo).html()+"</b>");
+  	 $("#mensaje_receta").html("<img src='imagenes/doc.jpg' width='50' height='50'> <b style='font-size:14px;color:white;'>Dr. "+$("#medico_lista"+codigo).html()+"</b>");
 
   	 /*if($(".receta_detalle").hasClass("d-none")){
       $(".receta_detalle").removeClass("d-none");
@@ -1952,6 +1974,7 @@ while($rowCot=mysqli_fetch_array($respUsd)){
 	$cab_cod_cliente  = $rowCot['cod_cliente'];	
 }
 ?>
+
 <nav class="mb-4 navbar navbar-expand-lg" style='background:#006db3 !important;color:white !important;'>
                 <a class="navbar-brand font-bold" href="#">[<?php echo $fechaSistemaSesion?>][<b id="hora_sistema"><?php echo $horaSistemaSesion;?></b>] [<?php echo $nombreAlmacenSesion;?>]</a>
                 <span style='background:#FFDA33 !important;color:yellow;font-size:20px; !important;'><?=$txtPrecioMayorista;?></span>
@@ -1975,7 +1998,8 @@ while($rowCot=mysqli_fetch_array($respUsd)){
 
 												<li class="nav-item active">
                             <a class="btn btn-success btn-fab" href="#" style="background:yellow !important;color:blue;" onclick="guardarRecetaVenta()" title="Registrar Receta"  data-toggle='tooltip' id="boton_receta"><i class="material-icons" >medical_services</i></a>
-                        </li>                      
+                        </li>       
+						<li><div id='mensaje_receta' class='float-right'></div></li>               
                         
                         <li class="nav-item">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>
                     </ul>
@@ -1988,6 +2012,7 @@ while($rowCot=mysqli_fetch_array($respUsd)){
 	<input type="hidden" id="confirmacion_guardado" value="0">
 	<input type="hidden" id="tipo_cambio_dolar" name="tipo_cambio_dolar"value="<?=$tipoCambio?>">
 	<input type="hidden" id="global_almacen" value="<?=$globalAlmacen?>">
+	<input type="hidden" id="cod_medico" name="cod_medico" value="0">
 
 	<input type="hidden" id="almacen_origen" name="almacen_origen" value="<?=$globalAlmacen?>">
 	<input type="hidden" id="sucursal_origen" name="sucursal_origen" value="<?=$globalAgencia?>">
@@ -2817,7 +2842,7 @@ if($banderaErrorFacturacion==0 || $tipoDocDefault!=1){
                 </div>
                 <div class="card-body">
 <div class="row">
-	<div class="col-sm-6 d-none">
+	<div class="col-sm-6">
                 <div class="row">
                   <label class="col-sm-2 col-form-label">Nombre (*)</label>
                   <div class="col-sm-10">
@@ -2895,7 +2920,7 @@ if($banderaErrorFacturacion==0 || $tipoDocDefault!=1){
                 </div>                 
                 <br><br>
        </div>
-	   <div class="col-sm-12">    
+	   <div class="col-sm-6">    
 	            <div class="row">
                   <!-- <label class="col-sm-2 col-form-label">Nombres</label>
                   <div class="col-sm-4">
@@ -2903,25 +2928,16 @@ if($banderaErrorFacturacion==0 || $tipoDocDefault!=1){
                       <input class="form-control" type="text" style="background: #A5F9EA;" id="buscar_nom_doctor" value="" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();"/>
                     </div>
                   </div> -->
-                  <label class="col-sm-2 col-form-label">Nombres y Apellidos</label>
-                  <div class="col-sm-5">
+                  <label class="col-sm-3 col-form-label">Nombres y Apellidos</label>
+                  <div class="col-sm-8">
                     <div class="form-group">
                       <input class="form-control" type="text" style="background: #A5F9EA;" id="buscar_app_doctor" value="" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();"/>
-                    </div>
-                  </div>
-                  <label class="col-sm-1 col-form-label">Especialidad</label>
-                  <div class="col-sm-3">
-                    <div class="form-group">
-                      <select class="selectpicker form-control" name="especialidad_doctor"id="especialidad_doctor" data-style="btn btn-info" data-live-search="true" data-size='6' required >
-                      	<option value="0">TODAS</option>
-                           <?php echo "$cadComboEspecialidades"; ?>
-                       </select>
                     </div>
                   </div>
                   <a href="#" class='btn btn-success btn-sm btn-fab float-right' onclick='buscarMedicoTest()'><i class='material-icons'>search</i></a>
                 </div>
                 <br>
-                <div style=" height:350px !important;overflow: scroll;">
+
                    <table class="table table-bordered table-condensed">
                    	  <thead>
                    	  	<!-- <tr class="" style="background: #652BE9;color:#fff;"><th width="60%">Nombre</th><th>Matricula</th><th>-</th></tr> -->
@@ -2929,8 +2945,7 @@ if($banderaErrorFacturacion==0 || $tipoDocDefault!=1){
                    	  </thead>
                    	  <tbody id="datos_medicos">                   	  	
                    	  </tbody>
-                   </table>  
-                   </div>                    
+                   </table>                      
        </div>
 </div>                      
                 </div>
@@ -2947,6 +2962,7 @@ if($banderaErrorFacturacion==0 || $tipoDocDefault!=1){
 
 <!--<script src="dist/selectpicker/dist/js/bootstrap-select.js"></script>-->
  <script type="text/javascript" src="dist/js/functionsGeneral.js"></script>
+<script type="text/javascript">nuevaInstitucion();</script>
 
 
  <div id="dosificar_factura_sucursal" style="position: fixed;width:100%;height:100%;background: rgba(0, 0, 0,0.7);top:0;z-index: 9999999;color:#FFC300;" class="d-none"> 	
@@ -2973,7 +2989,7 @@ if($banderaErrorFacturacion==0 || $tipoDocDefault!=1){
  			<tr><td><b>FECHA CUFD IMPUESTOS</b></td><td align="left"><?=date("d/m/Y")?></td></tr>
  		</table>
  	</center><?php 			
-					?><center><a href="siat_folder/siat_cuis_cufd/generar_cufd.php?cod_ciudad=<?=$_COOKIE['global_agencia']?>&l=1" class="btn btn-warning" style="height: 60px;font-size: 20px;">Obtener CUFD <br> <img src="imagenes/actua.gif" width="80" height="80" style="position: absolute;top:0;right:0;"></a></center><?php			
+					?><center><a href="siat_folder/siat_cuis_cufd/generar_cufd.php?cod_ciudad=<?=$_COOKIE['global_agencia']?>&cod_entidad=1" class="btn btn-warning" style="height: 60px;font-size: 20px;">Obtener CUFD <br> <img src="imagenes/actua.gif" width="80" height="80" style="position: absolute;top:0;right:0;"></a></center><?php			
 
  	?>  
  </div>

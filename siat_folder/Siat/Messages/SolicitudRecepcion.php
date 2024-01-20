@@ -41,8 +41,9 @@ class SolicitudRecepcion extends Message
 			throw new Exception($tag . 'Invalid data, "cufd", required non empty string');
 		if( empty($this->cuis) )
 			throw new Exception($tag . 'Invalid data, "cuis", required non empty string');
-		if( !is_int($this->nit) )
-			throw new Exception($tag . 'Invalid data, "nit", required long ', $this->nit);
+		// echo $this->nit;
+		// if( !is_int($this->nit) )
+		// 	throw new Exception($tag . 'Invalid data, "nit", required long ', $this->nit);
 		if( !is_int($this->tipoFacturaDocumento) )
 			throw new Exception($tag . 'Invalid data, "tipoFacturaDocumento", required integer');
 	}

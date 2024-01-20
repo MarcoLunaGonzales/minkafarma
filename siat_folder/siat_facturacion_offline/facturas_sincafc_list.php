@@ -18,7 +18,12 @@ if(isset($_GET['rpt_territorio'])){
   $sqladd=" and a.cod_ciudad in ($rpt_territorio)"; 
 }else{
   $rpt_territorio=0;
-  $sqladd=" "; 
+  if(isset($_COOKIE['globalIdEntidad'])){
+    $entidad=$_COOKIE['globalIdEntidad'];
+    $sqladd=" and a.cod_ciudad in (select cod_ciudad from ciudades where cod_entidad='$entidad')"; 
+  }else{
+    $sqladd=" ";   
+  }
 }
 ?>
 <div class="content">
@@ -39,7 +44,7 @@ if(isset($_GET['rpt_territorio'])){
           <div class="card-body">
             <div class="row">
               <label class="col-sm-1 col-form-label">Motivo </label>
-              <div class="col-sm-4">
+              <div class="col-sm-3">
                 <div class="form-group">
                     <select id="cod_motivo" name="cod_motivo" class="selectpicker form-control " data-style="btn btn-primary" data-show-subtext="true" data-live-search="true" required="true">
                     <?php
@@ -47,7 +52,7 @@ if(isset($_GET['rpt_territorio'])){
                       $resp=mysqli_query($enlaceCon,$sql);
                       while($row=mysqli_fetch_array($resp)){ 
                      ?>
-                      <option  value="<?=$row["codigo"];?>"><?=$row["descripcion"];?></option>
+                      <option  value="<?=$row["codigo"];?>" selected><?=$row["descripcion"];?></option>
                     <?php } ?> 
                     </select>
                 </div>
@@ -81,10 +86,19 @@ if(isset($_GET['rpt_territorio'])){
                       </label>
                     </div>
                 </div>
-              </div><?php
-              // }
-              ?>            
-
+              </div>        
+              <div class="col-sm-2">
+                <div class="form-group">
+                    <select id="addminute" name="addminute" class="selectpicker form-control " data-style="btn btn-primary" data-show-subtext="true" data-live-search="true" required="true">
+                      <option  value="0">1 Hora</option>
+                      <option  value="1">30 Minutos</option>
+                      <option  value="2">1 Minuto</option>
+                      <option  value="3">10 Segundos</option>
+                      <option  value="4">1 Segundo</option>
+                      <option  value="5" selected>1 Milisegundos</option>                    
+                    </select>
+                </div>
+              </div>
 
             </div>
             <div class="table-responsive">
@@ -100,16 +114,15 @@ if(isset($_GET['rpt_territorio'])){
                   $cod_tipoEmision=2;//tipo emision OFFLINE
                    $sql="SELECT s.cod_salida_almacenes,a.nombre_almacen as sucursal, s.fecha, s.hora_salida, s.nro_correlativo, (select t.nombre_tipopago from tipos_pago t where t.cod_tipopago=s.cod_tipopago)tipopago, 
                    (select ts.nro_tarjeta from tarjetas_salidas ts where ts.cod_salida_almacen=s.cod_salida_almacenes)tarjeta,  
-                (select c.nombre_cliente from clientes c where c.cod_cliente = s.cod_cliente)cliente, s.cod_tipo_doc, razon_social, nit,s.cod_tipopago,s.monto_final,s.siat_codigotipoemision
-                FROM salida_almacenes s join almacenes a on s.cod_almacen=a.cod_almacen
-                WHERE s.cod_tiposalida=1001 and s.salida_anulada=0 and s.cod_tipo_doc=1
-                and s.siat_codigotipoemision=$cod_tipoEmision and s.siat_codigoRecepcion is null $sqladd
-                order by a.nombre_almacen,s.nro_correlativo";
+    					  (select c.nombre_cliente from clientes c where c.cod_cliente = s.cod_cliente)cliente, s.cod_tipo_doc, razon_social, nit,s.cod_tipopago,s.monto_final,s.siat_codigotipoemision
+    					  FROM salida_almacenes s join almacenes a on s.cod_almacen=a.cod_almacen
+    					  WHERE s.cod_tiposalida=1001 and s.salida_anulada=0 and s.cod_tipo_doc=1
+    						and s.siat_codigotipoemision=$cod_tipoEmision and s.siat_codigoRecepcion is null $sqladd
+    						order by a.nombre_almacen,s.nro_correlativo";
                   // echo $sql;
                   $resp=mysqli_query($enlaceCon,$sql);
                   while($row=mysqli_fetch_array($resp)){ 
                     // echo "***";
-                    
                     $cod_salida_almacenes=$row['cod_salida_almacenes'];
                     $sucursal=$row['sucursal'];
                     $fecha=$row['fecha'];
@@ -127,17 +140,18 @@ if(isset($_GET['rpt_territorio'])){
                     $cod_tipopago=$row['cod_tipopago'];
                     $monto_final=$row['monto_final'];
                     $cod_tipoEmision=$row['siat_codigotipoemision'];
-                  
-                    $index++;
+                    
+                      $index++;
                       ?>
                     <tr>
 
                       <td class="td-actions text-right">
                       <input type="hidden" id="factura_seleccionada_s<?=$index?>" name="factura_seleccionada_s<?=$index?>"  value="0">
                       <input type="hidden" id="cod_salida_almacenes<?=$index?>" name="cod_salida_almacenes<?=$index?>"  value="<?=$cod_salida_almacenes?>">
+                      
                         <input type="checkbox"  data-toggle="toggle" title="Seleccionar" id="factura_seleccionada<?=$index?>" name="factura_seleccionada<?=$index?>" onchange="activar_input_salida_almacen(<?=$index?>)">
                       </td>
-                      
+
                       <td class="text-center small"><?=$index;?></td>
                       <td class="text-left small"><?=$sucursal;?></td>
                       <td class="text-center small"><?=$nro_correlativo;?></td>
@@ -148,7 +162,6 @@ if(isset($_GET['rpt_territorio'])){
                       <td class="text-left small"><?=$nit;?></td>
                       <td class="text-right small"><?=$cod_salida_almacenes;?></td>
                       <td class="text-right small"><?=number_format($monto_final,1,'.',',');?></td>
-                      
 
                     </tr>
                     <?php   

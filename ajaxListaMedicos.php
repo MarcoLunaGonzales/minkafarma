@@ -47,5 +47,7 @@ while($dat=mysqli_fetch_array($resp)){
     	$filas.='<tr><td align="left" id="medico_lista'.$codigo.'" style="text-align:left;padding-left:20px">'.$nombres.'</td><td>'.$especialidad.'</td><td><a href="#" onclick="asignarMedicoVenta(\''.$codigo.'\')" title="Seleccionar" class="btn btn-danger btn-fab btn-sm"><i class="material-icons">check_circle</i></a></td></tr>';
     }
 }
+// Limpiar el búfer de salida
+ob_clean();
 
 echo $filaSeleccionado.$filas;

@@ -19,4 +19,11 @@ $esp_doctor2=$_GET["esp_doctor2"];
 $sql="INSERT INTO medicos(nombres,apellidos,direccion,matricula,cod_institucion,cod_especialidad,cod_especialidad2,estado,institucion) VALUES('$nom_doctor','$ape_doctor','$dir_doctor','$mat_doctor','$ins_doctor','$esp_doctor','$esp_doctor2',1,'$n_ins_doctor')";
 $resp=mysqli_query($enlaceCon,$sql);
 
-echo $resp;
+
+ob_clean();
+// Verificar si la consulta fue exitosa
+if ($resp) {
+    echo 1;
+} else {
+    echo 0;
+}
