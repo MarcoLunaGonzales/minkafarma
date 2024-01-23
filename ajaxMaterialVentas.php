@@ -24,10 +24,10 @@ $banderaDescuentoAbierto=obtenerValorConfiguracion($enlaceCon,54);
 <!--link rel="STYLESHEET" type="text/css" href="stilos.css" /-->
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 
-<table border="0" align="center" width="100%"  class="texto100" id="data<?php echo $num?>" style="background-color: white;">
+<table border="1" align="center" width="100%"  class="texto100" id="data<?php echo $num?>" style="background-color: white;">
 <tr>
 
-<td width="10%" align="center">
+<td width="9%" align="center">
 	<a href="javascript:buscarMaterial(form1, <?php echo $num;?>)"><img src='imagenes/buscar2.png' title="Buscar Producto" width="30"></a>
 	<a href="javascript:buscarKardexProducto(form1, <?php echo $num;?>)" class="btn btn-dark btn-sm btn-fab" style='background:#1d2a76;color:#fff;'><i class='material-icons float-left' title="Ver Kardex">analytics</i></a>
 	<a href="javascript:encontrarMaterial(<?php echo $num;?>)" class="btn btn-primary btn-sm btn-fab"><i class='material-icons float-left' title="Ver en otras Sucursales">place</i></a>
@@ -38,23 +38,23 @@ $banderaDescuentoAbierto=obtenerValorConfiguracion($enlaceCon,54);
 	<div id="cod_material<?php echo $num;?>" class='textomedianonegro'>-</div>
 </td>
 
-<td width="5%" align="center" id="sec_fecha_vencimiento<?php echo $num;?>">
+<td width="6%" align="center" id="sec_fecha_vencimiento<?php echo $num;?>">
 	<div id="fecha_vencimiento<?php echo $num;?>" class='textosmallazul'>-</div>
 </td>
 
-<td width="8%" align="center" id="sec_stock<?php echo $num;?>">
+<td width="7%" align="center" id="sec_stock<?php echo $num;?>">
 	<div id='idstock<?php echo $num;?>'>
 		<input type="number" id="stock<?=$num;?>" name="stock<?=$num;?>" value="0" readonly size="5" style="height:20px;font-size:19px;width:80px;color:red;">
 	</div>
 </td>
 
-<td align="center" width="8%">
+<td align="center" width="7%">
 	<input class="inputnumber" type="number" value="" min="1" id="cantidad_unitaria<?php echo $num;?>" onKeyUp='calculaMontoMaterial(<?php echo $num;?>);' name="cantidad_unitaria<?php echo $num;?>" onChange='calculaMontoMaterial(<?php echo $num;?>);' required> 
 	<div id="div_venta_caja<?=$num;?>" class="textosmallazul"></div>
 </td>
 
 <!--Cuando Carga el precio no es readonly para validar el precio 0 -->
-<td align="center" width="8%">
+<td align="center" width="7%">
 	<div id='idprecio<?php echo $num;?>'>
 		<input class="inputnumber" type="number" min="0.01" value="0" id="precio_unitario<?php echo $num;?>" name="precio_unitario<?php echo $num;?>" step="0.01">
 	</div>
@@ -67,17 +67,15 @@ $banderaDescuentoAbierto=obtenerValorConfiguracion($enlaceCon,54);
 	<div id="divMensajeOferta<?=$num;?>" class="textomedianosangre"></div>
 </td>
 
-<td align="center" width="5%">
+<td align="center" width="8%">
 	<input class="inputnumber" type="number" value="0" id="montoMaterial<?php echo $num;?>" name="montoMaterial<?php echo $num;?>" value="0"  step="0.01" style="height:20px;font-size:19px;width:80px;color:red;" required readonly> 
 </td>
 
-<td class="receta_detalle" width="3%">
+<td align="center"  width="8%" >
 	<input type="checkbox" checked="checked" class="check_box" name="receta_medica<?php echo $num;?>" id="receta_medica<?php echo $num;?>">
-    <label for="receta_medica<?php echo $num;?>">PCR</label>
-</td>
+    <label for="receta_medica<?php echo $num;?>">RM</label>
 
-<td align="center"  width="5%" ><input class="boton2peque" type="button" value="-" onclick="menos(<?php echo $num;?>)" /></td>
-
+	<input class="boton2peque" type="button" value="-" onclick="menos(<?php echo $num;?>)" /></td>
 </tr>
 </table>
 

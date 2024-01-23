@@ -2262,7 +2262,7 @@ if($banderaMensajesDoblePantalla==1){
 </div>
 
 <fieldset id="fiel" style="width:100%;border:0;">
-	<table align="center" class="texto" width="100%" id="data0" border="0">
+	<table align="center" class="texto" width="100%" id="data0" border="1">
 	<!--tr>
 		<td align="center" colspan="9">
 			<b>Detalle de la Venta</b>
@@ -2270,15 +2270,15 @@ if($banderaMensajesDoblePantalla==1){
 	</tr-->
 
 	<tr align="center">
-		<td width="10%">&nbsp;</td>
+		<td width="9%">&nbsp;</td>
 		<td width="33%">Material</td>
-		<td width="5%">FV</td>
-		<td width="8%">Stock</td>
-		<td width="8%">Cantidad</td>
-		<td width="8%">Precio </td>
+		<td width="6%">FV</td>
+		<td width="7%">Stock</td>
+		<td width="7%">Cantidad</td>
+		<td width="7%">Precio </td>
 		<td width="15%">Desc.</td>
 		<td width="8%">Monto</td>
-		<td width="5%">&nbsp;</td>
+		<td width="8%">&nbsp;</td>
 	</tr>
 	</table>
 	<!-- ITEMS DE COTIZACIÓN -->

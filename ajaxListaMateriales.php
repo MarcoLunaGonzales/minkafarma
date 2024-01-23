@@ -103,8 +103,12 @@ $numeroMesesControlVencimiento = obtenerValorConfiguracion($enlaceCon, 28);
 			$ventaSoloCajas=$dat[5];
 			$cantidadPresentacion=$dat[6];
 			
+			$nombre = str_replace(",", "", $nombre);
+			$linea = str_replace(",", "", $linea);
+
 			$nombre=addslashes($nombre);
 			$linea=addslashes($linea);
+			
 			
 			$stockProducto=0;
 

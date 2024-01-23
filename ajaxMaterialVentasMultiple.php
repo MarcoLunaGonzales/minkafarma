@@ -96,10 +96,10 @@ for( $j=0;$j<=sizeof($arrayProductosX)-1;$j++ ){
 ?>
 
 <div id="div<?php echo $num?>">
-<table border="0" align="center" width="100%"  class="texto100" id="data<?php echo $num?>" >
+<table border="1" align="center" width="100%"  class="texto100" id="data<?php echo $num?>" >
 <tr bgcolor="#FFFFFF">
 
-<td width="10%" align="center">
+<td width="9%" align="center">
 	<a href="javascript:buscarMaterial(form1, <?php echo $num;?>)"><img src='imagenes/buscar2.png' title="Buscar Producto" width="30"></a>
 	<a href="javascript:buscarKardexProducto(form1, <?php echo $num;?>)" class="btn btn-dark btn-sm btn-fab" style='background:#1d2a76;color:#fff;'><i class='material-icons float-left' title="Ver Kardex">analytics</i></a>
 	<a href="javascript:encontrarMaterial(<?php echo $num;?>)" class="btn btn-primary btn-sm btn-fab"><i class='material-icons float-left' title="Ver en otras Sucursales">place</i></a>   	    
@@ -110,7 +110,7 @@ for( $j=0;$j<=sizeof($arrayProductosX)-1;$j++ ){
 	<div id="cod_material<?php echo $num;?>" class='textomedianonegro'><?=$nombreProductoX;?> - <?=$lineaProductoX;?></div>
 </td>
 
-<td width="5%" style='background-color: <?=$colorFV?>; text-align: center;'>
+<td width="6%" style='background-color: <?=$colorFV?>; text-align: center;'>
 	<div id="fecha_vencimiento<?php echo $num;?>">
 		<small>
 			<b><?=$fechaVencimiento?></b>
@@ -119,18 +119,18 @@ for( $j=0;$j<=sizeof($arrayProductosX)-1;$j++ ){
 </td>
 
 <?php
-echo "<td id='sec_stock$num' style='background-color: $stockColor;'><div id='idstock$num'>";
+echo "<td width='7%' id='sec_stock$num' style='background-color: $stockColor;'><div id='idstock$num'>";
 echo "<input type='number' id='stock$num' name='stock$num' value='$stockProductoX' readonly size='5' style='height:20px;font-size:19px;width:80px;color:red;'>";
 echo "</div></td>";
 ?>
 
-<td align="center" width="8%">
+<td align="center" width="7%">
 	<input class="inputnumber" type="number" value="" min="1" id="cantidad_unitaria<?php echo $num;?>" onKeyUp='calculaMontoMaterial(<?php echo $num;?>);' name="cantidad_unitaria<?php echo $num;?>" onChange='calculaMontoMaterial(<?php echo $num;?>);' required>
 	<div id="div_venta_caja<?=$num;?>" class="textosmallazul"></div>
 </td>
 
 
-<td align="center" width="8%">
+<td align="center" width="7%">
 	<div id='idprecio<?php echo $num;?>'>
 		<input class="inputnumber" type="number" min="1" id="precio_unitario<?php echo $num;?>" name="precio_unitario<?php echo $num;?>" step="0.01" value="<?php echo $precioProductoX;?>" <?=$txtValidacionPrecioCero;?> >
 	</div>
@@ -143,17 +143,14 @@ echo "</div></td>";
 	<div id="divMensajeOferta<?=$num;?>" class="textomedianosangre"><?=$nombrePrecioAplicar;?></div>
 </td>
 
-<td align="center" width="5%">
+<td align="center" width="8%">
 	<input class="inputnumber" type="number" value="0" id="montoMaterial<?php echo $num;?>" name="montoMaterial<?php echo $num;?>" value="0"  step="0.01" style="height:20px;font-size:19px;width:80px;color:blue;" readonly> 
 </td>
 
-<td class="receta_detalle" width="3%">
+<td align="center"  width="8%" >
 	<input type="checkbox" checked="checked" class="check_box" name="receta_medica<?php echo $num;?>" id="receta_medica<?php echo $num;?>">
-    <label for="receta_medica<?php echo $num;?>">PCR</label>
-</td>
-
-<td align="center"  width="5%" ><input class="boton2peque" type="button" value="-" onclick="menos(<?php echo $num;?>)" /></td>
-
+    <label for="receta_medica<?php echo $num;?>">RM</label>
+	<input class="boton2peque" type="button" value="-" onclick="menos(<?php echo $num;?>)" /></td>
 </tr>
 </table>
 </div>

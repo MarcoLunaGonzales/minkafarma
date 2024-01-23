@@ -251,6 +251,7 @@ do {
 
 if($sql_inserta==1){
 	$code="";
+	
 	//TARJETA INSERTAR
    if(isset($_POST['nro_tarjeta'])&&$_POST['nro_tarjeta']!=""){//&&$tipoVenta==2
        $nro_tarjeta=$_POST['nro_tarjeta'];
@@ -260,6 +261,14 @@ if($sql_inserta==1){
        $sql_tarjeta="INSERT INTO tarjetas_salidas (nro_tarjeta,monto,cod_banco,cod_salida_almacen,estado) VALUES('$nro_tarjeta','$monto_tarjeta','$banco_tarjeta','$codigo',1)";
        $sql_tarjeta=mysqli_query($enlaceCon,$sql_tarjeta);
    }
+
+	//INSERTAMOS RECETA FACTURA
+	if(isset($_POST['cod_medico'])){
+       $cod_medico=$_POST['cod_medico'];
+       $sql_medico="INSERT INTO recetas_salidas (cod_salida_almacen,cod_medico) VALUES('$codigo','$cod_medico')";
+       $sql_medico=mysqli_query($enlaceCon,$sql_medico);
+    }
+
 	if($facturacionActivada==1 && $tipoDoc==1){
 		//insertamos la factura
 		$sqlInsertFactura="insert into facturas_venta (cod_dosificacion, cod_sucursal, nro_factura, cod_estado, razon_social, nit, fecha, importe, 
@@ -269,6 +278,7 @@ if($sql_inserta==1){
 		$respInsertFactura=mysqli_query($enlaceCon,$sqlInsertFactura);	
 	}
 
+	$estado_receta=0;
 	$montoTotalVentaDetalle=0;
 	for($i=1;$i<=$cantidad_material;$i++)
 	{   	
@@ -278,6 +288,12 @@ if($sql_inserta==1){
 			$cantidadUnitaria=$_POST["cantidad_unitaria$i"];
 			$precioUnitario=$_POST["precio_unitario$i"];
 			$descuentoProducto=$_POST["descuentoProducto$i"];
+
+			if(!isset($_POST["receta_medica$i"])){
+          	$estado_receta=0;
+			}else{
+    			$estado_receta=1;	
+			}
 
 			//SE DEBE CALCULAR EL MONTO DEL MATERIAL POR CADA UNO PRECIO*CANTIDAD - EL DESCUENTO ES UN DATO ADICIONAL
 			$montoMaterial=$precioUnitario*$cantidadUnitaria;
