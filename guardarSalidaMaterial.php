@@ -305,13 +305,13 @@ if($sql_inserta==1){
 				/* Aca realizamos la validacion de la cantidad restante en caso de que la bandera de validacion sea 1 */
 				$cantidadRestanteProducto=cantidadRestanteIngresos($enlaceCon,$almacenOrigen,$codMaterial);
 				if($cantidadRestanteProducto>=$cantidadUnitaria){
-					$respuesta=descontar_inventarios($enlaceCon,$codigo,$almacenOrigen,$codMaterial,$cantidadUnitaria,$precioUnitario,$descuentoProducto,$montoMaterial,$i);
+					$respuesta=descontar_inventarios($enlaceCon,$codigo,$almacenOrigen,$codMaterial,$cantidadUnitaria,$precioUnitario,$descuentoProducto,$montoMaterial,$i,$estado_receta);
 				}else{
 					$banderaErrorCantidadRestante=1;
 				}
 			}
 			if($banderaValidacionStock==0 || $banderaErrorCantidadRestante==1){
-				$respuesta=insertar_detalleSalidaVenta($enlaceCon,$codigo, $almacenOrigen,$codMaterial,$cantidadUnitaria,$precioUnitario,$descuentoProducto,$montoMaterial,$banderaValidacionStock, $i);
+				$respuesta=insertar_detalleSalidaVenta($enlaceCon,$codigo, $almacenOrigen,$codMaterial,$cantidadUnitaria,$precioUnitario,$descuentoProducto,$montoMaterial,$banderaValidacionStock, $i, $estado_receta);
 			}
 	
 			if($respuesta!=1){
