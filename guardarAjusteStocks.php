@@ -100,9 +100,9 @@ if($sql_inserta==1){
                 if($cantidadInsertX>0){
                     //echo "PRODUCTO: ".$codProductoX." STOCK: ".$stockProductoX." CANT INSERT: ".$cantidadInsertX;
                     if($banderaValidacionStock==1){
-                    $respuesta=descontar_inventarios($enlaceCon,$codigo, $almacenOrigen,$codigoProductoX,$cantidadInsertX,$precioUnitario,$descuentoProducto,$montoMaterial,$i);
+                    $respuesta=descontar_inventarios($enlaceCon,$codigo, $almacenOrigen,$codigoProductoX,$cantidadInsertX,$precioUnitario,$descuentoProducto,$montoMaterial,$i,0);
                     }else{
-                        $respuesta=insertar_detalleSalidaVenta($enlaceCon,$codigo, $almacenOrigen,$codigoProductoX,$cantidadInsertX,$precioUnitario,$descuentoProducto,$montoMaterial,$banderaValidacionStock, $i);
+                        $respuesta=insertar_detalleSalidaVenta($enlaceCon,$codigo, $almacenOrigen,$codigoProductoX,$cantidadInsertX,$precioUnitario,$descuentoProducto,$montoMaterial,$banderaValidacionStock, $i,0);
                     }
                     if($respuesta!=1){
                         echo "<script>
