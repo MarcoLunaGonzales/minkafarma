@@ -1400,5 +1400,33 @@ function obtenerProveedorLineaInventario($codigo){
   return $proveedor; 
 }
 
+/**
+ * Verificación de Stock de Producto en todas las Sucursales
+ * FALSE: No existe Stock en todas las sucursales
+ * TRUE: Existe Stock en alguna sucursal
+ */
+function verificaStockSucursales($cod_producto){
+	require("conexionmysqli2.inc");
+	// Realizar la consulta SQL
+	$sql = "SELECT cod_almacen, nombre_almacen FROM almacenes";	
+	$resp = mysqli_query($enlaceCon, $sql);
+
+	$productoEncontrado = false;
+	// Verificar si se obtuvieron resultados
+	if ($resp) {
+		// Recorrer los resultados con un bucle while
+		while ($fila = mysqli_fetch_assoc($resp)) {
+			$codAlmacen = $fila['cod_almacen'];
+			$stock = stockProducto($enlaceCon,$codAlmacen, $cod_producto);        
+			// Verificar si se encontró al menos un producto en stock
+			if ($stock > 0) {
+				// Cambiar el estado de la bandera y salir del bucle
+				$productoEncontrado = true;
+				break;
+			}
+		}
+	}
+	return $productoEncontrado;
+}
 
 ?>

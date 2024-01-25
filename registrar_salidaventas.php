@@ -2698,10 +2698,10 @@ if($banderaErrorFacturacion==0 || $tipoDocDefault!=1){
                 </div>
                 <div class="card-body">                	
                 <div class="row">
-                  <label class="col-sm-2 col-form-label text-white">Nombre (*)</label>
+                  <label class="col-sm-2 col-form-label text-white">Nombre <span class="text-danger">(*)</span></label>
                   <div class="col-sm-4">
                     <div class="form-group">
-                      <input class="form-control" style="color:black;background: #fff;text-transform:uppercase;" type="text" id="nomcli" required value="<?php echo "$nomCliente"; ?>" placeholder="Nombre del Cliente" onkeyup="javascript:this.value=this.value.toUpperCase();"/>
+                      <input class="form-control form_client" style="color:black;background: #fff;text-transform:uppercase;" type="text" id="nomcli" required value="<?php echo "$nomCliente"; ?>" placeholder="Nombre del Cliente" onkeyup="javascript:this.value=this.value.toUpperCase();"/>
                     </div>
                   </div>
                   <label class="col-sm-1 col-form-label text-white">Apellidos</label>
@@ -2712,13 +2712,13 @@ if($banderaErrorFacturacion==0 || $tipoDocDefault!=1){
                   </div>
                 </div>
                 <div class="row">                  
-                  <label class="col-sm-2 col-form-label text-white">Teléfono (*)</label>
+                  <label class="col-sm-2 col-form-label text-white">Teléfono <span class="text-danger">(*)</span></label>
                   <div class="col-sm-4">
                     <div class="form-group">
-                      <input class="form-control" style="color:black;background: #fff;" type="text" id="tel1" value="<?php echo "$telefono1"; ?>" required placeholder="Telefono/Celular"/>
+                      <input class="form-control form_client" style="color:black;background: #fff;" type="text" id="tel1" value="<?php echo "$telefono1"; ?>" required placeholder="Telefono/Celular"/>
                     </div>
                   </div>
-                  <label class="col-sm-1 col-form-label text-white">Email (*)</label>
+                  <label class="col-sm-1 col-form-label text-white">Email</label>
                   <div class="col-sm-5">
                     <div class="form-group">
                       <input class="form-control" style="color:black;background: #fff;" type="email" id="mail" value="<?php echo "$email"; ?>" required placeholder="cliente@correo.com"/>
@@ -2726,24 +2726,24 @@ if($banderaErrorFacturacion==0 || $tipoDocDefault!=1){
                   </div>
                 </div>
                 <div class="row">
-                  <label class="col-sm-2 col-form-label text-white">CI</label>
-                  <div class="col-sm-4">
+                  <label class="col-sm-2 col-form-label text-white" hidden>CI</label>
+                  <div class="col-sm-4" hidden>
                     <div class="form-group">
                       <input class="form-control" style="color:black;background: #fff;" type="text" id="ci" value="<?php echo "$ciCliente"; ?>"required/>
                     </div>
                   </div>
-                  <label class="col-sm-1 col-form-label text-white">NIT(*)</label>
-                  <div class="col-sm-5">
+                  <label class="col-sm-2 col-form-label text-white">NIT/CI <span class="text-danger">(*)</span></label>
+                  <div class="col-sm-4">
                     <div class="form-group">
-                      <input class="form-control" style="color:black;background: #fff;" type="text" id="nit" value="<?php echo "$nitCliente"; ?>" readonly/>
+                      <input class="form-control form_client" style="color:black;background: #fff;" type="text" id="nit" value="<?php echo "$nitCliente"; ?>" readonly/>
                     </div>
                   </div>                  
                 </div>
                 <div class="row">
-                	<label class="col-sm-2 col-form-label text-white">Razon Social ó Nombre Factura</label>
+                	<label class="col-sm-2 col-form-label text-white">Razon Social ó Nombre Factura <span class="text-danger">(*)</span></label>
                   <div class="col-sm-10">
                     <div class="form-group">
-                      <input class="form-control" style="color:black;background: #fff;" type="text" id="fact" value="<?php echo "$nomFactura"; ?>" required/>
+                      <input class="form-control form_client" style="color:black;background: #fff;" type="text" id="fact" value="<?php echo "$nomFactura"; ?>" required/>
                     </div>
                   </div>
                 </div>
@@ -2791,6 +2791,12 @@ if($banderaErrorFacturacion==0 || $tipoDocDefault!=1){
     </div>
   </div>
 </div>  
+<style>
+    /* Define la animación de zoom */
+	.form_client:invalid {
+		background-color: #ffdddd !important;
+	}
+</style>
 <!--    end small modal -->
 
 <!-- small modal -->

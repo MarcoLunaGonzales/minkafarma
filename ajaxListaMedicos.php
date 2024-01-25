@@ -26,9 +26,9 @@ if(isset($_GET["espe"])&&$_GET["espe"]>0){
    $sql.=" or codigo='$cod_medico'";
 }*/
 if($order_by=="codigo"){
-   $sql.=") order by $order_by desc limit 100 ";   
+   $sql.=" order by $order_by desc limit 100 )";   
 }else{
-   $sql.=") order by $order_by limit 100 ";
+   $sql.=" order by $order_by limit 100 )";
 }
 
 //echo $sql;
@@ -49,5 +49,6 @@ while($dat=mysqli_fetch_array($resp)){
 }
 // Limpiar el búfer de salida
 ob_clean();
+echo "##########".$cod_medico."$$$$";
 
 echo $filaSeleccionado.$filas;
