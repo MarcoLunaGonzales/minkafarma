@@ -321,8 +321,19 @@ while ($dat = mysqli_fetch_array($resp)) {
     echo "<tr bgcolor='$color_fondo'><td align='center'>$chkbox</td><td align='center'>$nro_correlativo</td><td align='center'>&nbsp;$nota_entrega</td>
 	<td align='center'>$fecha_ingreso_mostrar $hora_ingreso</td><td>$nombre_tipoingreso</td>
 	<td>&nbsp;$proveedor</td><td align='right'>$montoCompraF</td>
-	<td>&nbsp;$obs_ingreso</td><td align='center'>
-	<a target='_BLANK' href='$urlDetalle?codigo_ingreso=$codigo'><img src='imagenes/icon_detail.png' border='0' width='30' heigth='30' alt='Ver Detalles del Ingreso'></a>
+	<td>&nbsp;$obs_ingreso</td><td align='center'>";
+
+    // Funcionalidad para Generar Nuevo Ingreso en Base a un Ingreso anterior
+    if($codTipoIngreso==1000){
+        echo "
+        <a target='_BLANK'
+            href='registrar_ingresomateriales_ref.php?codigo_ingreso=$codigo' 
+            title='Generar Ingreso en base a: Nro. $nro_correlativo'>
+            <img src='imagenes/enter.jpg' border='0' width='30' heigth='30' alt='Imagen'>
+        </a>";
+    }
+
+	echo "<a target='_BLANK' href='$urlDetalle?codigo_ingreso=$codigo'><img src='imagenes/icon_detail.png' border='0' width='30' heigth='30' alt='Ver Detalles del Ingreso'></a>
 	<a title='Modificar datos de credito' href='editar_tipoPagoIngresoMaterial.php?codigo_ingreso=$codigo'><img src='imagenes/edit.png' border='0' width='30' heigth='30' alt='Imagen Editar'></a>
     </td></tr>";
 }

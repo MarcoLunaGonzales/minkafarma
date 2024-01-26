@@ -233,6 +233,8 @@ require_once 'datosUsuario.php';
 							<!--li><a href="rptOpKardexCliente.php" target="contenedorPrincipal">Kardex x Cliente</a></li-->
 						</ul>	
 					</li>
+							
+					<li><a href="rptOpVentasRecetas.php" target="contenedorPrincipal">Recetas Registradas</a></li>
 					<!--li><span>Utilidades</span>
 						<ul>
 							<li><a href="rptOpUtilidadesDocumento.php" target="contenedorPrincipal">Utilidades x Documento</a></li>
