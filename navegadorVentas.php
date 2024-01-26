@@ -574,12 +574,22 @@ while ($dat = mysqli_fetch_array($resp)) {
     <td>$stikea&nbsp;$montoVentaFormat $stikec</td>
     <td>$stikea &nbsp;$obs_salida $stikec</td>";
 
+    $nombreMedico="";
     if($configAsignacionMedico){
         // Asignación de Médico
+        if($codMedico>0){
+            $sqlMedico="SELECT CONCAT(m.apellidos,' ', m.nombres) as medico from recetas_salidas r, medicos m 
+                where m.codigo=r.cod_medico and r.cod_salida_almacen=$codigo";
+            $respMedico=mysqli_query($enlaceCon, $sqlMedico);
+            if($dat=mysqli_fetch_array($respMedico)){
+                $nombreMedico=$dat[0];
+            }
+        }
         echo "<td align='center'>
-                <button type='button' class='btn btn-warning btn-fab' onclick=\"asignarMedico('$codigo', '$codMedico')\">
+                <button type='button' class='btn btn-sm btn-warning btn-fab' onclick=\"asignarMedico('$codigo', '$codMedico')\">
                     <i class='material-icons'>medical_services</i>
-                </button>
+                </button><br>
+                <small>$nombreMedico</small>
             </td>";
     }
 

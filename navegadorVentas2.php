@@ -1,6 +1,6 @@
 <?php
 
-require("conexionmysqli.inc");
+require("conexionmysqli.php");
 require('funciones.php');
 require('function_formatofecha.php');
 require("estilos_almacenes.inc");
@@ -15,11 +15,7 @@ require("estilos_almacenes.inc");
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link href="lib/externos/jquery/jquery-ui/completo/jquery-ui-1.8.9.custom.css" rel="stylesheet" type="text/css"/>
         <link href="lib/css/paneles.css" rel="stylesheet" type="text/css"/>
-        
-        <script src="//code.jquery.com/jquery-1.11.0.min.js"></script> 
-        <script type="text/javascript" src="js/bootstrap.js"></script>
-        
-        <script type="text/javascript" src="lib/externos/jquery/jquery-1.4.4.min.js"></script>
+        <!-- <script type="text/javascript" src="lib/externos/jquery/jquery-1.4.4.min.js"></script>
         <script type="text/javascript" src="lib/externos/jquery/jquery-ui/minimo/jquery.ui.core.min.js"></script>
         <script type="text/javascript" src="lib/externos/jquery/jquery-ui/minimo/jquery.ui.widget.min.js"></script>
         <script type="text/javascript" src="lib/externos/jquery/jquery-ui/minimo/jquery.ui.button.min.js"></script>
@@ -29,8 +25,9 @@ require("estilos_almacenes.inc");
         <script type="text/javascript" src="lib/externos/jquery/jquery-ui/minimo/jquery.ui.resizable.min.js"></script>
         <script type="text/javascript" src="lib/externos/jquery/jquery-ui/minimo/jquery.ui.dialog.min.js"></script>
         <script type="text/javascript" src="lib/externos/jquery/jquery-ui/minimo/jquery.ui.datepicker.min.js"></script>
-        <script type="text/javascript" src="lib/js/xlibPrototipo-v0.1.js"></script>
+        <script type="text/javascript" src="lib/js/xlibPrototipo-v0.1.js"></script> -->
         <script type='text/javascript' language='javascript'>
+
 
 function nuevoAjax()
 {   var xmlhttp=false;
@@ -370,6 +367,11 @@ $fecha_sistema="";
 $estado_preparado="";
 $view=1;
 
+
+// Configuración para la Asignación de Medico
+$configAsignacionMedico = obtenerValorConfiguracion($enlaceCon, 56);
+
+
 if(isset($_GET["nroCorrelativoBusqueda"])){
     $nroCorrelativoBusqueda = $_GET["nroCorrelativoBusqueda"];    
 }
@@ -409,7 +411,7 @@ echo "<div class='divBotones'>
         
 echo "<center><table class='texto'>";
 echo "<tr><th>&nbsp;</th><th>Nro. Doc</th><th>Fecha/hora<br>Registro Salida</th><th>Vendedor</th><th>TipoPago</th>
-    <th>Razon Social</th><th>NIT</th><th>Monto</th><th>Observaciones</th><th>Imprimir</th><th>Editar</br>DatosVenta</th></tr>";
+    <th>Razon Social</th><th>NIT</th><th>Monto</th><th>Observaciones</th><th>AsignarMedico</th><th>Imprimir</th><th>Editar</br>DatosVenta</th></tr>";
     
 echo "<input type='hidden' name='global_almacen' value='$global_almacen' id='global_almacen'>";
 
@@ -421,7 +423,8 @@ $consulta = "
     (select concat(f.paterno,' ',f.nombres) from funcionarios f where f.codigo_funcionario=s.cod_chofer)as vendedor,
     (select t.nombre_tipopago from tipos_pago t where t.cod_tipopago=s.cod_tipopago)as tipopago,
     s.cod_chofer,
-    s.cod_tipopago, s.monto_final
+    s.cod_tipopago, s.monto_final,
+    (SELECT rs.cod_medico FROM recetas_salidas rs WHERE rs.cod_salida_almacen = s.cod_salida_almacenes LIMIT 1) as cod_medico
     FROM salida_almacenes s, tipos_salida ts 
     WHERE s.cod_tiposalida = ts.cod_tiposalida AND s.cod_almacen = '$global_almacen' and s.cod_tiposalida=1001 and 
     s.cod_tipo_doc not in (1,4) ";
@@ -468,6 +471,8 @@ while ($dat = mysqli_fetch_array($resp)) {
     $codTipoPago = $dat[17];
 
     $montoVenta = $dat[18];
+    $codMedico = $dat[19];
+
     $montoVentaFormat=formatonumeroDec($montoVenta);
 
     echo "<input type='hidden' name='fecha_salida$nro_correlativo' value='$fecha_salida_mostrar'>";
@@ -492,6 +497,26 @@ while ($dat = mysqli_fetch_array($resp)) {
     echo "<td>$vendedor</td>";
     echo "<td>$tipoPago</td>";
     echo "<td>&nbsp;$razonSocial</td><td>&nbsp;$nitCli</td><td>&nbsp;$montoVentaFormat</td><td>&nbsp;$obs_salida</td>";
+
+    $nombreMedico="";
+    if($configAsignacionMedico){
+        // Asignación de Médico
+        if($codMedico>0){
+            $sqlMedico="SELECT CONCAT(m.apellidos,' ', m.nombres) as medico from recetas_salidas r, medicos m 
+                where m.codigo=r.cod_medico and r.cod_salida_almacen=$codigo";
+            $respMedico=mysqli_query($enlaceCon, $sqlMedico);
+            if($dat=mysqli_fetch_array($respMedico)){
+                $nombreMedico=$dat[0];
+            }
+        }
+        echo "<td align='center'>
+                <button type='button' class='btn btn-sm btn-warning btn-fab' onclick=\"asignarMedico('$codigo', '$codMedico')\">
+                    <i class='material-icons'>medical_services</i>
+                </button><br>
+                <small>$nombreMedico</small>
+            </td>";
+    }
+
     $url_notaremision = "navegador_detallesalidamuestras.php?codigo_salida=$codigo";    
 
     /*echo "<td bgcolor='$color_fondo'><a href='javascript:llamar_preparado(this.form, $estado_preparado, $codigo)'>
@@ -716,6 +741,142 @@ echo "</form>";
   </div>
 <!--    end small modal -->
 
+
+        <!-- Modal Asignación de Medico -->
+        <div class="modal fade modal-primary" id="modalRecetaVenta" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content card">
+                    <div class="card-header card-header-primary card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">medical_services</i>
+                        </div>
+                        <h4 class="card-title text-dark font-weight-bold">Datos del Médico</h4>
+                        <button type="button" class="btn btn-danger btn-sm btn-fab float-right" data-dismiss="modal" aria-hidden="true" style="position:absolute;top:0px;right:0;">
+                            <i class="material-icons">close</i>
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <!-- Codigo de "Salida Ventas" -->
+                            <input type="hidden" id="cod_salida_almacen">
+                            <!-- Codigo de "Medico" Seleccionado -->
+                            <input type="hidden" id="cod_medico">
+                            <div class="col-sm-12">    
+                                <div class="row">
+                                    <label class="col-sm-3 col-form-label">Nombres y Apellidos</label>
+                                    <div class="col-sm-8">
+                                        <div class="form-group">
+                                            <input class="form-control" type="text" style="background: #A5F9EA;" id="buscar_app_doctor" value="" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();"/>
+                                        </div>
+                                    </div>
+                                    <a href="#" class='btn btn-success btn-sm btn-fab float-right' onclick='buscarMedicoTest()'><i class='material-icons'>search</i></a>
+                                </div>
+                                <br>
+                                <table class="table table-bordered table-condensed">
+                                    <thead>
+                                        <tr style="background: #652BE9;color:#fff;">
+                                            <th width="60%">Nombre</th>
+                                            <th>Especialidad</th>
+                                            <th>-</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="datos_medicos">                          
+                                    </tbody>
+                                </table>                      
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <script>
+            /**
+             * Obtiene lista de Medicos
+             */
+            function asignarMedico(cod_salida_almacen, cod_medico){
+                $('#cod_salida_almacen').val(cod_salida_almacen);
+                $('#cod_medico').val(cod_medico);
+
+                var orden  = 'codigo';
+                var codigo = cod_medico;
+                var parametros={order_by:orden,cod_medico:cod_medico};
+
+                $.ajax({
+                    type: "GET",
+                    dataType: 'html',
+                    url: "ajaxListaMedicos.php",
+                    data: parametros,
+                    success:  function (resp) {
+                        $("#datos_medicos").html(resp);      
+                        $('#modalRecetaVenta').modal('show');                  
+                    }
+                }); 
+            }
+            /**
+             * Buscar Medico
+             */
+            function buscarMedicoTest(){
+                var codigo=$("#cod_medico").val();
+                var nom=$("#buscar_nom_doctor").val();
+                var app=$("#buscar_app_doctor").val();
+                var espe=$("#especialidad_doctor").val();
+                var parametros={order_by:"2",cod_medico:codigo,nom_medico:nom,app_medico:app,espe:espe};
+                $.ajax({
+                    type: "GET",
+                    dataType: 'html',
+                    url: "ajaxListaMedicos.php",
+                    data: parametros,
+                    success:  function (resp) {
+                        // console.log(resp)
+                        $("#datos_medicos").html(resp);                        
+                    }
+                }); 
+            }
+            /**
+             * Selecciona Médico
+             */
+            function asignarMedicoVenta(cod_medico_select){
+                var cod_salida_almacen = $('#cod_salida_almacen').val();
+                var nombre_medico = $('body #medico_lista'+cod_medico_select).html();
+                    Swal.fire({
+                    title: '¿Está seguro?',
+                    text: 'Se asignara el médico '+ nombre_medico + ' a la venta seleccionada.',
+                    type: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí',
+                    cancelButtonText: 'No',
+                    allowOutsideClick: false  // Evita que se cierre al hacer clic fuera del cuadro de diálogo
+                }).then((result) => {
+                    if (result.value) {
+                        $.ajax({
+                            type: "POST",
+                            url: "edit_medico_venta.php",
+                            data: { 
+                                cod_medico: cod_medico_select,
+                                cod_salida_almacen: cod_salida_almacen,
+                            },
+                            success: function(response) {
+                                let resp = JSON.parse(response);
+                                Swal.fire({
+                                    type: 'success',
+                                    title: 'Mensaje',
+                                    text: resp.message,
+                                    confirmButtonText: 'Aceptar'
+                                }).then(() => {
+                                    $('#modalRecetaVenta').modal('toggle');
+                                    location.reload();
+                                });
+                            },
+                            error: function(xhr, status, error) {
+                                console.error(xhr.responseText);
+                            }
+                        });
+                    }
+                });
+            }
+        </script>
 
     </body>
 </html>
