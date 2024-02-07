@@ -15,7 +15,7 @@ require("estilos_almacenes.inc");
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link href="lib/externos/jquery/jquery-ui/completo/jquery-ui-1.8.9.custom.css" rel="stylesheet" type="text/css"/>
         <link href="lib/css/paneles.css" rel="stylesheet" type="text/css"/>
-        <!-- <script type="text/javascript" src="lib/externos/jquery/jquery-1.4.4.min.js"></script>
+        <script type="text/javascript" src="lib/externos/jquery/jquery-1.4.4.min.js"></script>
         <script type="text/javascript" src="lib/externos/jquery/jquery-ui/minimo/jquery.ui.core.min.js"></script>
         <script type="text/javascript" src="lib/externos/jquery/jquery-ui/minimo/jquery.ui.widget.min.js"></script>
         <script type="text/javascript" src="lib/externos/jquery/jquery-ui/minimo/jquery.ui.button.min.js"></script>
@@ -25,7 +25,7 @@ require("estilos_almacenes.inc");
         <script type="text/javascript" src="lib/externos/jquery/jquery-ui/minimo/jquery.ui.resizable.min.js"></script>
         <script type="text/javascript" src="lib/externos/jquery/jquery-ui/minimo/jquery.ui.dialog.min.js"></script>
         <script type="text/javascript" src="lib/externos/jquery/jquery-ui/minimo/jquery.ui.datepicker.min.js"></script>
-        <script type="text/javascript" src="lib/js/xlibPrototipo-v0.1.js"></script> -->
+        <script type="text/javascript" src="lib/js/xlibPrototipo-v0.1.js"></script>
         <script type='text/javascript' language='javascript'>
 
 
@@ -58,8 +58,8 @@ function HiddenBuscar(){
     document.getElementById('divProfileDetail').style.visibility='hidden';
 }
     
-function funOk(codReg,funOkConfirm)
-{   $.get("programas/salidas/frmConfirmarCodigoSalida.php","codigo="+codReg, function(inf1) {
+function funOk(codReg,funOkConfirm){
+    $.get("programas/salidas/frmConfirmarCodigoSalida.php","codigo="+codReg, function(inf1) {
         dlgAC("#pnldlgAC","Codigo de confirmacion",inf1,function(){
             var cad1=$("input#idtxtcodigo").val();
             var cad2=$("input#idtxtclave").val();
@@ -157,7 +157,7 @@ function anular_salida(f)
         }
         else
         {   funOk(j_cod_registro,function() {
-                        location.href='anular_venta.php?codigo_registro='+j_cod_registro;
+                location.href='anular_venta.php?codigo_registro='+j_cod_registro;
             });
         }
     }
