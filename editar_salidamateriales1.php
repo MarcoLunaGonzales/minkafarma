@@ -483,8 +483,39 @@ else
     $codigo++;
 }
 ?>
-<form action='guardarSalidaMaterial.php' method='POST' name='form1' onsubmit="return validar(this)">
-<h1>Registrar Salida de Almacen</h1>
+
+<?php
+	/*********************
+	 * ? OBTIENE CABECERA
+	 *********************/
+	$editar_codigo   = $_GET['codigo'];
+	$sql = "SELECT cod_tiposalida, 
+								cod_tipo_doc, 
+								nro_correlativo, 
+								almacen_destino, 
+								observaciones 
+						FROM salida_almacenes 
+						WHERE cod_salida_almacenes='$editar_codigo'
+						LIMIT 1";
+	$resp_editar = mysqli_query($enlaceCon,$sql);
+	$data_editar = mysqli_fetch_array($resp_editar, MYSQLI_ASSOC);
+	$editar_tipo_salida  = '';
+	$editar_tipo_doc 	 = '';
+	$editar_nro_salida   = '';
+	$editar_almacen_dest = '';
+	$editar_observacion  = '';
+	if ($data_editar) {
+		$editar_tipo_salida  = $data_editar['cod_tiposalida'];
+		$editar_tipo_doc 	 = $data_editar['cod_tipo_doc'];
+		$editar_nro_salida   = $data_editar['nro_correlativo'];
+		$editar_almacen_dest = $data_editar['almacen_destino'];
+		$editar_observacion  = $data_editar['observaciones'];
+	}
+?>
+<form action='actualizarSalidaMaterial1.php' method='POST' name='form1' onsubmit="return validar(this)">
+<h1>Editar Salida de Almacen</h1>
+
+<input type="hidden" id="cod_salida_almacenes" name="cod_salida_almacenes" value="<?=$editar_codigo?>">
 
 <input type="hidden" id="almacen_origen" name="almacen_origen" value="<?=$globalAlmacen?>">
 <input type="hidden" id="sucursal_origen" name="sucursal_origen" value="<?=$globalAgencia?>">
@@ -504,8 +535,9 @@ else
 	while($datTipo=mysqli_fetch_array($respTipo)){
 		$codigo=$datTipo[0];
 		$nombre=$datTipo[1];
+		$select = $editar_tipo_salida == $codigo ? 'selected' : '';
 ?>
-		<option value='<?php echo $codigo?>'><?php echo $nombre?></option>
+		<option value='<?php echo $codigo?>' <?=$select?>><?php echo $nombre?></option>
 <?php		
 	}
 ?>
@@ -513,11 +545,28 @@ else
 </td>
 <td align='center'>
 	<div id='divTipoDoc'>
-		<select name='tipoDoc' id='tipoDoc'><option value="0"></select>
+		<select name='tipoDoc' id='tipoDoc'>
+			<?php
+				if($codTipoSalida==1001){
+					$sql="select codigo, nombre, abreviatura from tipos_docs where codigo in (1,2) order by 2 desc";
+				}else{
+					$sql="select codigo, nombre, abreviatura from tipos_docs where codigo in (3) order by 2 desc";
+				}
+				$resp=mysqli_query($enlaceCon,$sql);
+				echo "<option value='0'>---</option>";
+				while($dat=mysqli_fetch_array($resp)){
+					$codigo=$dat[0];
+					$nombre=$dat[1];
+					$select = $editar_tipo_doc == $codigo ? 'selected' : '';
+					echo "<option value='$codigo' $select>$nombre</option>";
+				}
+			?>
+		</select>
 	</div>
 </td>
 <td align='center'>
 	<div id='divNroDoc' class='textogranderojo'>
+		<?=$editar_nro_salida?>
 	</div>
 </td>
 
@@ -537,8 +586,9 @@ else
 	while($dat3=mysqli_fetch_array($resp3)){
 		$cod_almacen=$dat3[0];
 		$nombre_almacen="$dat3[1] $dat3[2] $dat3[3]";
+		$select = $editar_almacen_dest == $cod_almacen ? 'selected' : '';
 ?>
-		<option value="<?php echo $cod_almacen?>"><?php echo $nombre_almacen?></option>
+		<option value="<?php echo $cod_almacen?>" <?=$select?>><?php echo $nombre_almacen?></option>
 <?php		
 	}
 ?>
@@ -549,7 +599,7 @@ else
 <tr>
 	<th>Observaciones</th>
 	<th align='center' colspan="4">
-		<input type='text' class='texto' name='observaciones' value='' size='100' rows="2">
+		<input type='text' class='texto' name='observaciones' value='<?=$editar_observacion?>' size='100' rows="2">
 	</th>
 </tr>
 </table>
@@ -571,6 +621,116 @@ else
 		<td width="10%">&nbsp;</td>
 	</tr>
 	</table>
+	
+	<!-- INICIO DE EDICIÓN DE ITEMS -->
+	<?php
+		/*****************************
+		 * ? OBTIENE DETALLE DE ITEMS
+		 *****************************/
+		$editar_codigo   = $_GET['codigo'];
+		$sql = "SELECT cod_material,  
+						cantidad_unitaria,
+						precio_unitario
+				FROM salida_detalle_almacenes 
+				WHERE cod_salida_almacen='$editar_codigo'";
+		// echo $sql;
+		$resp_editar = mysqli_query($enlaceCon,$sql);
+		$num = 0;
+		while ($fila = mysqli_fetch_assoc($resp_editar)) {
+			$cod_material 	= $fila['cod_material'];
+			$cantidad_unitaria = $fila['cantidad_unitaria'];
+			// MATERIAL
+			/** Proveedor - Linea **/
+			$sql="SELECT m.codigo_material, m.descripcion_material,
+				(SELECT concat(p.nombre_proveedor,'-',pl.nombre_linea_proveedor) as nombre_proveedor
+					FROM proveedores p, proveedores_lineas pl 
+					WHERE p.cod_proveedor=pl.cod_proveedor 
+					AND pl.cod_linea_proveedor=m.cod_linea_proveedor) as nombre_proveedor, 
+				m.principio_activo, 
+				m.accion_terapeutica, 
+				m.bandera_venta_unidades, 
+				m.cantidad_presentacion
+				from material_apoyo m where estado=1 and m.codigo_material = '$cod_material'";
+			// echo $sql;
+			$resp = mysqli_query($enlaceCon, $sql);
+			$fila = mysqli_fetch_assoc($resp);
+			$nombre_proveedor = $fila['nombre_proveedor'];
+			$nombre_material  = $fila['descripcion_material'];
+			/** Codigo Costo Compra***/
+			$txtCodigoCostoCompra="";
+			$sqlCostoCompra="SELECT concat(FORMAT(id.costo_almacen,1),'0',FORMAT((id.costo_almacen*1.25),1)) from ingreso_almacenes i, ingreso_detalle_almacenes id where i.cod_ingreso_almacen=id.cod_ingreso_almacen and 
+				i.ingreso_anulado=0 and i.cod_tipoingreso in (999,1000) and id.cod_material='$cod_material' order by i.cod_ingreso_almacen desc limit 0,1";
+			$respCostoCompra=mysqli_query($enlaceCon,$sqlCostoCompra);
+			if($datCostoCompra=mysqli_fetch_array($respCostoCompra)){
+				$txtCodigoCostoCompra=$datCostoCompra[0];
+			}
+			$nombre_material_final = "$nombre_material - $nombre_proveedor ($cod_material)-$txtCodigoCostoCompra";
+			/** Stock **/
+			$stockProducto = stockProducto($enlaceCon,$globalAlmacen, $cod_material) + $cantidad_unitaria;
+			/** Precio **/
+			$consulta="SELECT p.precio
+						FROM precios p 
+						WHERE p.codigo_material='$cod_material' 
+						AND p.cod_precio='1' 
+						AND cod_ciudad='$globalAgencia'";
+			$rs=mysqli_query($enlaceCon,$consulta);
+			$registro=mysqli_fetch_array($rs);
+			$precioProducto=empty($registro[0]) ? 0 : round($registro[0], 2);
+			if($precioProducto==""){
+				$precioProducto=0;
+			}
+
+			// Nro Fila
+			$num = $num + 1;
+	?>
+	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+	<html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<link rel="STYLESHEET" type="text/css" href="stilos.css" />
+			<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+			<div id="div<?=$num?>">
+				<table border="0" align="center" width="100%"  class="texto" id="data<?php echo $num?>" >
+				<tr bgcolor="#FFFFFF">
+				<td>
+					<a href="javascript:buscarMaterial(form1, <?php echo $num;?>)"><img src='imagenes/buscar2.png' title="Buscar Producto" width="30"></a>
+				</td>
+				<td width="50%" align="center">
+					<input type="hidden" name="materiales<?php echo $num;?>" id="materiales<?php echo $num;?>" value="<?=$cod_material?>">
+					<div id="cod_material<?php echo $num;?>" class='textomedianonegro'><?=$nombre_material_final?></div>
+				</td>
+
+				<td width="20%" align="center">
+					<div id='idstock<?php echo $num;?>'>
+						<input type="hidden" value="<?=$globalAlmacen?>" name="global_almacen" id="global_almacen">
+						<input type="text" id="stock<?php echo $num;?>" name="stock<?php echo $num;?>" value="<?=$stockProducto?>" readonly="" size="4" style="height:20px;font-size:19px;width:80px;color:red;">
+					</div>
+				</td>
+
+				<td width="10%" align="center">
+					<div id='div_idprecio<?php echo $num;?>' class='textomedianonegro'>
+						<?=$precioProducto?>
+					</div>
+				</td>
+
+				<td align="center" width="10%">
+					<input class="inputnumber" type="number" value="<?=$cantidad_unitaria?>" min="1" id="cantidad_unitaria<?php echo $num;?>" name="cantidad_unitaria<?php echo $num;?>" required> 
+				</td>
+
+				<td align="center"  width="10%" ><input class="boton2peque" type="button" value="-" onclick="menos(<?php echo $num;?>)" /></td>
+
+				</tr>
+				</table>
+			</div>
+		</head>
+	</html>
+		<script>
+			num++;
+			cantidad_items++;
+		</script>
+	<?php
+		}
+	?>
+	<!-- FIN DE EDICIÓN DE ITEMS -->
 </fieldset>
 
 <?php
@@ -634,8 +794,8 @@ echo "</div>";
 	
 	</div>
 </div>
-<input type='hidden' name='materialActivo' value="0">
-<input type='hidden' name='cantidad_material' value="0">
+<input type='hidden' name='materialActivo' value="<?=$num?>">
+<input type='hidden' name='cantidad_material' value="<?=$num?>">
 
 </form>
 </body>

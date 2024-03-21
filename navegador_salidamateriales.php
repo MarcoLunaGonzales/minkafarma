@@ -255,6 +255,30 @@ function enviar_datosdespacho(f)
 function llamar_preparado(f, estado_preparado, codigo_salida)
 {   window.open('navegador_detallesalidamateriales.php?codigo_salida='+codigo_salida,'popup','');
 }
+    function editarRegistro(){
+        var checkboxes = document.getElementsByName('codigo');
+        var codigoSeleccionado = null;
+        var contadorSeleccionados = 0;
+
+        for (var i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i].checked) {
+                contadorSeleccionados++;
+                if (contadorSeleccionados == 1) {
+                    codigoSeleccionado = checkboxes[i].value;
+                } else {
+                    alert("Solo debe seleccionar un registro.");
+                    return;
+                }
+            }
+        }
+
+        // Si no se selecciona ningún checkbox, mostrar un mensaje de error
+        if (contadorSeleccionados == 0) {
+            alert("Debe seleccionar un registro.");
+            return;
+        }
+        window.open('editar_salidamateriales1.php?codigo=' + codigoSeleccionado, '_blank');
+    }
         </script>
     </head>
     <body>
@@ -292,6 +316,7 @@ echo "<table border='1' class='textomini' cellspacing='0' width='90%'><tr><th>Le
 echo "<div class='divBotones'>
 <input type='button' value='Registrar Salida' name='adicionar' class='boton' onclick='enviar_nav()'>
 		<input type='button' value='Buscar' class='boton' onclick='ShowBuscar()'>
+		<input type='button' value='Editar' class='boton' onclick='editarRegistro()'>
 		<input type='button' value='Anular Salida' class='boton2' onclick='anular_salida(this.form)'>
 </div>";
 
@@ -302,8 +327,7 @@ echo "<tr><th>&nbsp;</th><th>Numero Salida</th><th>Fecha/hora<br>Registro Salida
 	
 	
 //
-$consulta = "
-	SELECT s.cod_salida_almacenes, s.fecha, s.hora_salida, ts.nombre_tiposalida, 
+$consulta = "SELECT s.cod_salida_almacenes, s.fecha, s.hora_salida, ts.nombre_tiposalida, 
 	(select a.nombre_almacen from almacenes a where a.`cod_almacen`=s.almacen_destino), s.observaciones, 
 	s.estado_salida, s.nro_correlativo, s.salida_anulada, s.almacen_destino, 
 	(select c.nombre_cliente from clientes c where c.cod_cliente = s.cod_cliente), s.cod_tipo_doc,
