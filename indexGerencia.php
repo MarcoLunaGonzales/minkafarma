@@ -211,7 +211,8 @@ require_once 'datosUsuario.php';
 					<li><span>Costos</span>
 						<ul>
 							<li><a href="rptOpKardexCostos.php" target="contenedorPrincipal">Kardex de Movimiento Precio Promedio</a></li>
-							<li><a href="rptOpExistenciasCostos.php" target="contenedorPrincipal">Existencias</a></li>			<li><a href="rptOpUtilidadesDocItem.php" target="contenedorPrincipal">Costo Ventas x Documento e Item</a></li>				
+							<li><a href="rptOpExistenciasCostos.php" target="contenedorPrincipal">Existencias</a></li>			<li><a href="rptOpUtilidadesDocItem.php" target="contenedorPrincipal">Costo Ventas x Documento e Item</a></li>	
+							<li><a href="rptOpMovimientoProductosCostos.php" target="contenedorPrincipal">Movimiento de Productos</a></li>			
 						</ul>
 					</li>
 					<li><span>Ventas</span>
@@ -233,8 +234,12 @@ require_once 'datosUsuario.php';
 							<!--li><a href="rptOpKardexCliente.php" target="contenedorPrincipal">Kardex x Cliente</a></li-->
 						</ul>	
 					</li>
+					<li><span>Recetas</span>
+						<ul>
+							<li><a href="rptOpVentasRecetas.php" target="contenedorPrincipal">Recetas Registradas</a></li>
+						</ul>	
+					</li>
 							
-					<li><a href="rptOpVentasRecetas.php" target="contenedorPrincipal">Recetas Registradas</a></li>
 					<!--li><span>Utilidades</span>
 						<ul>
 							<li><a href="rptOpUtilidadesDocumento.php" target="contenedorPrincipal">Utilidades x Documento</a></li>

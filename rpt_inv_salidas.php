@@ -12,6 +12,7 @@ $tipoSalida=$_POST['tipo_salida'];
 $rptAlmacen=$_POST['rpt_almacen'];
 $fechaInicio=$_POST['exafinicial'];
 $fechaFinal=$_POST['exaffinal'];
+$rptVer=$_POST['rpt_ver'];
 
 $stringTipoSalida=implode(",", $tipoSalida);
 
@@ -47,7 +48,11 @@ $nombre_tiposalidamostrar="Tipo de Salida: <strong>$nombre_tiposalida</strong>";
 	and s.cod_tiposalida in ($stringTipoSalida) and s.salida_anulada=0 order by s.nro_correlativo";
 
 	echo "<center><br><table class='texto'>";
-	echo "<tr><th>Nro.</th><th>Fecha</th><th>Tipo de Salida</th><th>Almacen Destino</th><th>Observaciones</th><th>Cod.Producto</th><th>Producto</th><th>Cantidad</th></tr>";
+	echo "<tr><th>Nro.</th><th>Fecha</th><th>Tipo de Salida</th><th>Almacen Destino</th><th>Observaciones</th><th>Cod.Producto</th><th>Producto</th><th>Cantidad</th>";
+	if($rptVer==1){
+		echo "<th>Costo</th><th>Costo Transaccion</th>";
+	}
+	echo "</tr>";
 	$resp=mysqli_query($enlaceCon, $sql);
 	while($dat=mysqli_fetch_array($resp)){
 		$codigo=$dat[0];

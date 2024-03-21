@@ -12,6 +12,10 @@ $sqlUTF=mysqli_query($enlaceCon, "SET NAMES utf8");
 
 $fecha_ini=$_POST['fecha_ini'];
 $fecha_fin=$_POST['fecha_fin'];
+
+$hora_ini=$_POST['exahorainicial'];
+$hora_fin=$_POST['exahorafinal'];
+
 $rpt_ordenar=$_POST['rpt_ordenar'];
 $rpt_ver=$_POST['rpt_ver'];
 
@@ -28,6 +32,10 @@ $nombrePersonalX=nombrePersonalMultiple($enlaceCon, $rptPersonalX);
 $fecha_iniconsulta=$fecha_ini;
 $fecha_finconsulta=$fecha_fin;
 
+$fecha_iniconsultahora=$fecha_iniconsulta." ".$hora_ini.":00";
+$fecha_finconsultahora=$fecha_finconsulta." ".$hora_fin.":59";
+
+
 
 $rpt_territorio=$_POST['rpt_territorio'];
 
@@ -36,14 +44,14 @@ $fecha_reporte=date("d/m/Y H:i:s");
 $nombre_territorio=nombreTerritorio($enlaceCon, $rpt_territorio);
 
 echo "<table align='center' class='textotit' width='100%'><tr><td align='center'>Ranking de Ventas x Item
-	<br>Territorio: $nombre_territorio <br> De: $fecha_ini A: $fecha_fin
+	<br>Territorio: $nombre_territorio <br> De: $fecha_iniconsultahora A: $fecha_finconsultahora
 	<br>Fecha Reporte: $fecha_reporte
 	<br>Personal: $nombrePersonalX</tr></table>";
 	
 $sql="select m.`codigo_material`, m.`descripcion_material`, (select p.nombre_proveedor from proveedores p, proveedores_lineas pl where p.cod_proveedor=pl.cod_proveedor and pl.cod_linea_proveedor=m.cod_linea_proveedor)as linea, m.codigo_barras, 
 	(sum(sd.monto_unitario)-sum(sd.descuento_unitario))montoVenta, sum(sd.cantidad_unitaria)cantidadventa, s.descuento, s.monto_total, s.cod_almacen
 	from `salida_almacenes` s, `salida_detalle_almacenes` sd, `material_apoyo` m 
-	where s.`cod_salida_almacenes`=sd.`cod_salida_almacen` and s.`fecha` BETWEEN '$fecha_iniconsulta' and '$fecha_finconsulta'
+	where s.`cod_salida_almacenes`=sd.`cod_salida_almacen` and CONCAT(s.fecha,' ',s.hora_salida) BETWEEN '$fecha_iniconsultahora' and '$fecha_finconsultahora' 
 	and s.`salida_anulada`=0 and sd.`cod_material`=m.`codigo_material` and s.`cod_tiposalida`=1001 and  
 	s.`cod_almacen` in (select a.`cod_almacen` from `almacenes` a where a.`cod_ciudad`='$rpt_territorio') and 
 	s.cod_chofer in ($rptPersonalX)

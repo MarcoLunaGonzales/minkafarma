@@ -87,11 +87,15 @@ while($dat_detalle_salida=mysqli_fetch_array($resp_detalle_salida))
 	$cantidad_unitaria=redondear2($cantidad_unitaria);
 	
 	echo "<tr><td align='center'>$indice_detalle</td>";
-	$sql_materiales="select codigo_material, descripcion_material from material_apoyo where 
-	codigo_material='$cod_material' and codigo_material<>0 order by descripcion_material";
+	$sql_materiales="select m.codigo_material, m.descripcion_material, p.nombre_proveedor, pl.nombre_linea_proveedor
+	from material_apoyo m
+	LEFT JOIN proveedores_lineas pl ON pl.cod_linea_proveedor=m.cod_linea_proveedor
+	LEFT JOIN proveedores p ON p.cod_proveedor=pl.cod_proveedor
+	where 
+	m.codigo_material='$cod_material' and m.codigo_material<>0 order by m.descripcion_material";
 	$resp_materiales=mysqli_query($enlaceCon,$sql_materiales);
 	$dat_materiales=mysqli_fetch_array($resp_materiales);
-	$nombre_material="$dat_materiales[1]";
+	$nombre_material=$dat_materiales[1]." - ".$dat_materiales[2]." ".$dat_materiales[3];
 
 	/*************************************************/
 	/*** Verificar los Precios en origen y Destino ***/

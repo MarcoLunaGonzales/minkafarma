@@ -15,8 +15,8 @@ $globalAdmin=$_COOKIE["global_admin_cargo"];
 $globalAlmacen=$_COOKIE["global_almacen"];
 $globalAgencia=$_COOKIE["global_agencia"];
 
-$numJS=$_POST['codigo'];
-$arrayProductos=$_POST['productos_multiple'];
+$numJS=$_GET['codigo'];
+$arrayProductos=$_GET['productos_multiple'];
 $fechaActual=date("Y-m-d");
 
 /*Esta Bandera es para la validacion de stocks*/
@@ -73,7 +73,7 @@ for( $j=0;$j<=sizeof($arrayProductosX)-1;$j++ ){
 </td>
 
 <td align="center" width="10%">
-	<input class="inputnumber" type="number" value="<?=$stockProductoX;?>" min="1" id="cantidad_unitaria<?php echo $num;?>" name="cantidad_unitaria<?php echo $num;?>" required> 
+	<input class="inputnumber" type="number" value="1" min="1" id="cantidad_unitaria<?php echo $num;?>" name="cantidad_unitaria<?php echo $num;?>" required> 
 </td>
 
 <td align="center"  width="10%" ><input class="boton2peque" type="button" value="-" onclick="menos(<?php echo $num;?>)" /></td>

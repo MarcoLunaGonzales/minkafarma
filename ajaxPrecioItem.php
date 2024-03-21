@@ -22,6 +22,10 @@ $arrayPreciosAplicar=precioCalculadoParaFacturacion($enlaceCon,$codMaterial,$cod
 
 $precioProductoBase=$arrayPreciosAplicar[0];
 $txtValidacionPrecioCero=$arrayPreciosAplicar[1];
+/*Cuando el precio es abierto se envia una cadena con |xxx|*/
+$txtValidacionPrecioCero=str_replace("|xxx|", $indice, $txtValidacionPrecioCero);
+
+
 $descuentoBs=$arrayPreciosAplicar[2];
 $descuentoPorcentaje=$arrayPreciosAplicar[3];
 $nombrePrecioAplicar=$arrayPreciosAplicar[4];

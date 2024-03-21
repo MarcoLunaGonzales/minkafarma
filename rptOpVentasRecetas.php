@@ -34,7 +34,7 @@ require("conexionmysqli2.inc");
 require("estilos_almacenes.inc");
 
 $fecha_rptdefault=date("Y-m-d");
-echo "<h1>Reporte - Recetas</h1><br>";
+echo "<h1>Recetas Registradas</h1><br>";
 echo"<form method='post' action='rptOpKardexCostos.php'>";
 
 	echo"\n<table class='texto' align='center' cellSpacing='0' width='50%'>\n";

@@ -1,9 +1,23 @@
 <?php
 
+if (!function_exists('mysqli_result')) {
+    function mysqli_result($result, $number, $field=0) {
+        mysqli_data_seek($result, $number);
+        $row = mysqli_fetch_array($result);
+        return $row[$field];
+    }
+}
+
+require_once 'config.php';
+$enlaceCon=mysqli_connect(DATABASE_HOST,DATABASE_USER,DATABASE_PASSWORD,DATABASE_NAME);
+
 require('fpdf.php');
-require('conexionmysqlipdf.inc');
+//require('conexionmysqlipdf.inc');
 require('funciones.php');
 require('NumeroALetras.php');
+
+ error_reporting(E_ALL);
+ ini_set('display_errors', '1');
 
 $codigoVenta=$_GET["codVenta"];
 $globalAlmacen=$_COOKIE['global_almacen'];

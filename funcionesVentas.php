@@ -3,6 +3,8 @@
 function precioCalculadoParaFacturacion($enlaceCon,$codMaterial,$codigoCiudadGlobal,$codCliente){
 	require_once("funciones.php");
 	
+	$banderaInputPrecioAbierto=obtenerValorConfiguracion($enlaceCon,57);
+
 	$fechaActual=date("Y-m-d");
 
 	$globalAdmin=$_COOKIE["global_admin_cargo"];
@@ -146,11 +148,16 @@ function precioCalculadoParaFacturacion($enlaceCon,$codMaterial,$codigoCiudadGlo
 	/*************************************************************************/
 	/*********************** Fin Revision de las ofertas ********************/
 	$txtValidacionPrecioCero="";
-	if($cadRespuesta>0){
+	if($cadRespuesta>0 && $banderaInputPrecioAbierto==0){
 		$txtValidacionPrecioCero="readonly='true'";
+	}elseif ($cadRespuesta<=0 && $banderaInputPrecioAbierto==0) {
+		$txtValidacionPrecioCero="onkeyup='return false;' onkeydown='return false;' onkeypress='return false;' required";
+	}elseif($banderaInputPrecioAbierto==1){
+		$txtValidacionPrecioCero="onkeyup='calculaMontoMaterial(|xxx|);' onkeydown='calculaMontoMaterial(|xxx|);' onkeypress='calculaMontoMaterial(|xxx|);' required";
 	}else{
 		$txtValidacionPrecioCero="onkeyup='return false;' onkeydown='return false;' onkeypress='return false;' required";
 	}
+
 
 	
 	/*********  VERIFICAMOS PRECIOS CLIENTE  **********/
