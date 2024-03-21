@@ -1,11 +1,15 @@
 <?php
 
-$estilosVenta=0; //para no ejecutar las librerias js css
+//require("conexionmysqlipdf.inc");
+require_once 'config.php';
+$enlaceCon=mysqli_connect(DATABASE_HOST,DATABASE_USER,DATABASE_PASSWORD,DATABASE_NAME);
 
-
-require("conexionmysqli.php");
 require("funciones.php");
 require("funcion_nombres.php");
+
+ error_reporting(E_ALL);
+ ini_set('display_errors', '1');
+
 $usuario = $_POST["usuario"];
 $contrasena = $_POST["contrasena"];
 $contrasena = str_replace("'", "''", $contrasena);
@@ -33,14 +37,14 @@ if ($num_filas != 0) {
 	setcookie("global_logo", $imgLogo);    
 
 
-	
+	$datGestion=0;
 	//sacamos la gestion activa
 	$sqlGestion="select cod_gestion, nombre_gestion from gestiones where estado=1";
 	$respGestion=mysqli_query($enlaceCon,$sqlGestion);
 	$datGestion=mysqli_fetch_array($respGestion);
-	$globalGestion=datGestion[0];
+	$globalGestion=$datGestion[0];
 	//$globalGestion=mysqli_result($respGestion,0,0);
-	$nombreG=datGestion[1];
+	$nombreG=$datGestion[1];
 	//$nombreG=mysqli_result($respGestion, 0, 1);
 	
 	//almacen
@@ -66,6 +70,7 @@ if ($num_filas != 0) {
 	}
 
 
+	//echo "intentaremos con javascdript";
 	if($cod_cargo==1000 || $cod_cargo==1019){
 		header("location:indexGerencia.php");
 	}

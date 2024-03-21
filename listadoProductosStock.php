@@ -25,9 +25,12 @@
 </script>
 
 <?php
-	require("conexion.inc");
+	require("conexionmysqli.inc");
 	require('estilos.inc');
 	require('funciones.php');
+
+	 error_reporting(E_ALL);
+ ini_set('display_errors', '1');
 	
 	echo "<h1>Listado de Productos Registrados</h1>";
 
@@ -39,10 +42,10 @@
 		(select f.nombre_forma_far from formas_farmaceuticas f where f.cod_forma_far=m.cod_forma_far), 
 		(select pl.nombre_linea_proveedor from proveedores p, proveedores_lineas pl where p.cod_proveedor=pl.cod_proveedor and pl.cod_linea_proveedor=m.cod_linea_proveedor)linea,
 		(select t.nombre_tipoventa from tipos_venta t where t.cod_tipoventa=m.cod_tipoventa), m.cantidad_presentacion, m.principio_activo 
-		from material_apoyo m
-		where m.estado='1' order by linea, m.descripcion_material";
+		from material_apoyo m where m.cod_linea_proveedor=17 and m.estado='1' order by linea, m.descripcion_material";
 
-	$resp=mysql_query($sql);
+	//echo $sql;
+	$resp=mysqli_query($enlaceCon, $sql);
 
 	echo "<center><table class='texto' id='myTable'>";
 	echo "<thead>";
@@ -54,7 +57,7 @@
 	echo "<tbody>";
 
 	$indice_tabla=1;
-	while($dat=mysql_fetch_array($resp))
+	while($dat=mysqli_fetch_array($resp))
 	{
 		$codigo=$dat[0];
 		$nombreProd=$dat[1];
@@ -66,17 +69,17 @@
 		$cantPresentacion=$dat[7];
 		$principioActivo=$dat[8];
 		
-		$precioProducto=precioProducto($codigo);
-		$precioF=formatNumberDec($precioProducto);
-		$stockProducto=stockProducto($globalAlmacen, $codigo);
-		$ubicacionProducto=ubicacionProducto($globalAlmacen, $codigo);
+		$precioProducto=precioProducto($enlaceCon, $codigo);
+		$precioF=formatonumeroDec($precioProducto);
+		$stockProducto=stockProducto($enlaceCon, $globalAlmacen, $codigo);
+		//$ubicacionProducto=ubicacionProducto($globalAlmacen, $codigo);
 		
 		$txtAccionTerapeutica="";
 		$sqlAccion="select a.nombre_accionterapeutica from acciones_terapeuticas a, material_accionterapeutica m
 			where m.cod_accionterapeutica=a.cod_accionterapeutica and 
 			m.codigo_material='$codigo'";
-		$respAccion=mysql_query($sqlAccion);
-		while($datAccion=mysql_fetch_array($respAccion)){
+		$respAccion=mysqli_query($enlaceCon, $sqlAccion);
+		while($datAccion=mysqli_fetch_array($respAccion)){
 			$nombreAccionTerX=$datAccion[0];
 			$txtAccionTerapeutica=$txtAccionTerapeutica." - ".$nombreAccionTerX;
 		}
@@ -88,7 +91,7 @@
 		<td align='center'>$cantPresentacion</td>
 		<td align='right'><div class='textomedianorojo'>$precioF</div></td>
 		<td>$stockProducto</td>
-		<td>$ubicacionProducto</td>
+		<td>-</td>
 		<td>$formaFar</td>
 		<td>$principioActivo</td><td>$txtAccionTerapeutica</td>
 		

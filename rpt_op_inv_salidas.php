@@ -30,7 +30,7 @@ echo"<form method='post' action='rpt_inv_salidas.php' target='_blank'>";
 	echo "</select></td></tr>";
 
 	echo "<tr><th align='left'>Tipo de Salida</th>";
-	$sql_tiposalida="select cod_tiposalida, nombre_tiposalida from tipos_salida where cod_tiposalida<>1001
+	$sql_tiposalida="select cod_tiposalida, nombre_tiposalida from tipos_salida where cod_tiposalida<>0
 	 order by nombre_tiposalida";
 	$resp_tiposalida=mysqli_query($enlaceCon, $sql_tiposalida);
 	echo "<td>
@@ -52,6 +52,16 @@ echo"<form method='post' action='rpt_inv_salidas.php' target='_blank'>";
 			<input type='date' class='texto' value='$fecha_rptdefault' id='exaffinal' size='10' name='exaffinal'>";
     		echo "</td>";
 	echo "</tr>";
+
+
+	echo "<tr>
+		<th align='left'>Ver</th>
+		<td>
+			<select name='rpt_ver' class='selectpicker form-control' data-style='btn-success' required>";
+	echo "<option value='0' selected>Solo Cantidades</option>";
+	echo "<option value='1' >Cantidad y Costo</option>";
+
+	echo "</select></td>";
 
 	echo"\n </table><br>";
 	echo "<center><input type='submit' name='reporte' value='Ver Reporte' onClick='envia_formulario(this.form)' class='boton'></center><br>";

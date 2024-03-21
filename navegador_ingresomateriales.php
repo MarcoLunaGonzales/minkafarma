@@ -207,7 +207,9 @@ $anulacionCodigo = $datConf[0];
 
 $consulta = "
     SELECT i.cod_ingreso_almacen, i.fecha, i.hora_ingreso, ti.nombre_tipoingreso, i.observaciones, i.nro_factura_proveedor, i.nro_correlativo, i.ingreso_anulado,
-	(select p.nombre_proveedor from proveedores p where p.cod_proveedor=i.cod_proveedor) as proveedor, i.cod_tipoingreso
+	(select p.nombre_proveedor from proveedores p where p.cod_proveedor=i.cod_proveedor) as proveedor, i.cod_tipoingreso,
+    (select s.nro_correlativo from salida_almacenes s where s.cod_salida_almacenes=i.cod_salida_almacen), 
+    (select a.nombre_almacen from salida_almacenes s, almacenes a where a.cod_almacen=s.cod_almacen and s.cod_salida_almacenes=i.cod_salida_almacen)
     FROM ingreso_almacenes i, tipos_ingreso ti
     WHERE i.cod_tipoingreso=ti.cod_tipoingreso
     AND i.cod_almacen='$global_almacen'";
@@ -229,7 +231,7 @@ echo"&nbsp; <input type='button' value='Buscar' class='boton' onclick='ShowBusca
 
 echo "<div id='divCuerpo'>";
 echo "<br><center><table class='texto'>";
-echo "<tr><th>&nbsp;</th><th>Numero Ingreso</th><th>Nro. Factura Proveedor</th><th>Fecha</th><th>Tipo de Ingreso</th>
+echo "<tr><th>&nbsp;</th><th>Numero Ingreso</th><th>Nro. Factura Proveedor</th><th>Fecha</th><th>Tipo de Ingreso</th><th>Almacen Origen</th>
 <th>Proveedor</th><th>Monto Compra</th>
 <th>Observaciones</th><th>&nbsp;</th></tr>";
 while ($dat = mysqli_fetch_array($resp)) {
@@ -254,6 +256,9 @@ while ($dat = mysqli_fetch_array($resp)) {
     $anulado = $dat[7];
 	$proveedor=$dat[8];
     $codTipoIngreso=$dat[9];
+
+    $nroSalidaOrigen=$dat[10];
+    $almacenOrigenTraspaso=$dat[11];
 
     // QUERY ANTIGUA
     // $sqlMontoCompra="SELECT sum((i.cantidad_unitaria)*(i.costo_almacen)) from ingreso_detalle_almacenes i
@@ -319,7 +324,7 @@ while ($dat = mysqli_fetch_array($resp)) {
         $urlDetalle="navegador_detalleingresomateriales2.php";
     }
     echo "<tr bgcolor='$color_fondo'><td align='center'>$chkbox</td><td align='center'>$nro_correlativo</td><td align='center'>&nbsp;$nota_entrega</td>
-	<td align='center'>$fecha_ingreso_mostrar $hora_ingreso</td><td>$nombre_tipoingreso</td>
+	<td align='center'>$fecha_ingreso_mostrar $hora_ingreso</td><td>$nombre_tipoingreso</td><td>$almacenOrigenTraspaso - $nroSalidaOrigen</td>
 	<td>&nbsp;$proveedor</td><td align='right'>$montoCompraF</td>
 	<td>&nbsp;$obs_ingreso</td><td align='center'>";
 

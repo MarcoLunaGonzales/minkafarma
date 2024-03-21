@@ -479,7 +479,8 @@ while ($dat = mysqli_fetch_array($resp)) {
     $montoVentaFormat=formatonumeroDec($montoVenta);
 
     echo "<input type='hidden' name='fecha_salida$nro_correlativo' value='$fecha_salida_mostrar'>";
-    
+
+
     $sqlEstadoColor="select color from estados_salida where cod_estado='$estado_almacen'";
     $respEstadoColor=mysqli_query($enlaceCon,$sqlEstadoColor);
     $numFilasEstado=mysqli_num_rows($respEstadoColor);
@@ -491,15 +492,24 @@ while ($dat = mysqli_fetch_array($resp)) {
     $chk = "<input type='checkbox' name='codigo' value='$codigo'>";
 
     
+    $stikea="";
+    $stikec="";
+    if($salida_anulada==1){
+        $stikea="<strike class='text-danger'>";        
+        $stikec=" (ANULADO)</strike>";
+        // $datosAnulacion="title='<small><b class=\"text-primary\">$nro_correlativo ANULADA<br>Caja:</b> ".nombreVisitador($dat['cod_chofer_anulacion'])."<br><b class=\"text-primary\">F:</b> ".date("d/m/Y H:i",strtotime($dat['fecha_anulacion']))."</small>' data-toggle='tooltip'";
+        $chk="";
+    }
+
+    
     echo "<input type='hidden' name='estado_preparado' value='$estado_preparado'>";
-    //echo "<tr><td><input type='checkbox' name='codigo' value='$codigo'></td><td align='center'>$fecha_salida_mostrar</td><td>$nombre_tiposalida</td><td>$nombre_ciudad</td><td>$nombre_almacen</td><td>$nombre_funcionario</td><td>&nbsp;$obs_salida</td><td>$txt_detalle</td></tr>";
     echo "<tr>";
     echo "<td align='center'>&nbsp;$chk</td>";
-    echo "<td align='center'>$nombreTipoDoc-$nro_correlativo</td>";
-    echo "<td align='center'>$fecha_salida_mostrar $hora_salida</td>";
-    echo "<td>$vendedor</td>";
-    echo "<td>$tipoPago</td>";
-    echo "<td>&nbsp;$razonSocial</td><td>&nbsp;$nitCli</td><td>&nbsp;$montoVentaFormat</td><td>&nbsp;$obs_salida</td>";
+    echo "<td align='center'>$stikea $nombreTipoDoc-$nro_correlativo $stikec</td>";
+    echo "<td align='center'>$stikea $fecha_salida_mostrar $hora_salida $stikec</td>";
+    echo "<td>$stikea $vendedor $stikec</td>";
+    echo "<td>$stikea $tipoPago $stikec</td>";
+    echo "<td>$stikea $razonSocial $stikec</td><td>$stikea $nitCli $stikec</td><td>$stikea $montoVentaFormat $stikec</td><td>$stikea $obs_salida $stikec</td>";
 
     $nombreMedico="";
     if($configAsignacionMedico){

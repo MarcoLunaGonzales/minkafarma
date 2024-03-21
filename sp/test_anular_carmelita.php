@@ -14,9 +14,9 @@ $cod_entidad=1;
 
 $sql="select s.cod_salida_almacenes, s.siat_cuis, sc.cufd, s.siat_cuf from salida_almacenes s, siat_cufd sc 
 where s.siat_codigocufd=sc.codigo and s.salida_anulada=0 and s.cod_salida_almacenes in 
-(41802,41825,41839,41842,41887,41907,41954,41974,41987,42022,42071,42129,42346,42377,42587,42588,42589,42699,42701,42736,42788,42887)";
+(44511,44647,44661,44715,44786,44837,44951,45029,45072,45247,45331,45342,45343,45480,45481)";
 
-/**/
+/*febrero 2024*/
 
 echo $sql;
 

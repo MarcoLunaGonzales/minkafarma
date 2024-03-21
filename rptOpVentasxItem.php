@@ -29,6 +29,10 @@ function actualizarDatosPersonal(){
 
 
 $fecha_rptdefault=date("Y-m-d");
+
+$hora_rptinidefault="06:00";
+$hora_rptfindefault="23:59";
+
 echo "<h1>Ranking de Ventas x Item</h1>";
 
 echo"<form method='post' action='rptVentasxItem.php' target='_blank'>";
@@ -63,12 +67,14 @@ echo"<form method='post' action='rptVentasxItem.php' target='_blank'>";
 	
 	echo "<tr><th align='left'>Fecha inicio:</th>";
 			echo" <TD bgcolor='#ffffff'>
-			<INPUT  type='date' class='texto' value='$fecha_rptdefault' id='fecha_ini' size='10' name='fecha_ini' required>";
+			<INPUT  type='date' class='texto' value='$fecha_rptdefault' id='fecha_ini' size='10' name='fecha_ini' required>
+			<INPUT  type='time' class='texto' value='$hora_rptinidefault' id='exahorainicial' size='10' name='exahorainicial'>";
     		echo" </TD>";
 	echo "</tr>";
 	echo "<tr><th align='left'>Fecha final:</th>";
 			echo" <TD bgcolor='#ffffff'>
-			<INPUT  type='date' class='texto' value='$fecha_rptdefault' id='fecha_fin' size='10' name='fecha_fin' required>";
+			<INPUT  type='date' class='texto' value='$fecha_rptdefault' id='fecha_fin' size='10' name='fecha_fin' required>
+			<INPUT  type='time' class='texto' value='$hora_rptfindefault' id='exahorafinal' size='10' name='exahorafinal'>";
     		echo" </TD>";
 	echo "</tr>";
 

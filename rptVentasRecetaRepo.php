@@ -1,15 +1,19 @@
 <html>
 <head>
   <meta charset="utf-8" />
+  <link rel="STYLESHEET" type="text/css" href="stilos.css" />
 </head>
 <body>
 <?php
 set_time_limit(0);
-require('estilos_reportes_almacencentral.php');
-require('function_formatofecha.php');
-require('conexionmysqli.inc');
+
+require("conexionmysqli2.inc");
+require("estilos_almacenes.inc");
+
 require('funcion_nombres.php');
 require('funciones.php');
+
+
 $fecha_ini=$_GET['fecha_ini'];
 $fecha_fin=$_GET['fecha_fin'];
 $codSubGrupo=$_GET['codSubGrupo'];
@@ -37,9 +41,11 @@ $fecha_reporte=date("d/m/Y");
             overflow:scroll;
         }
     </style>
-<table style='margin-top:-90 !important' align='center' class='textotit' width='70%'><tr><td align='center'>Reporte Recetas Registradas
-  <br> De: <?=$fecha_ini?> A: <?=$fecha_fin?>
-  <br>Fecha Reporte: <?=$fecha_reporte?></tr></table>
+
+<h1>Recetas Registradas</h1>
+<h2>De: <?=$fecha_ini?> A: <?=$fecha_fin?></h2>
+<h2>Fecha Reporte: <?=$fecha_reporte?></h2>
+
 <?php
 $descOrden="";
 if($rpt_formato==1){
@@ -49,6 +55,7 @@ if($rpt_formato==1){
 $sql="SELECT s.cod_salida_almacenes, 
             s.fecha, rs.cod_medico, 
             CONCAT(med.apellidos,' ',med.nombres) as medico, 
+            (select e.abreviatura from especialidades e where e.codigo=med.cod_especialidad) as especialidad, 
             med.cod_especialidad, 
             m.codigo_material, 
             m.descripcion_material, 
@@ -74,9 +81,12 @@ $resp=mysqli_query($enlaceCon,$sql);
 <br><center><table align='center' class='texto' width='70%' id='ventasLinea'>
   <thead>
 <tr>
-  <th width="5%">N.</th>
+  <th width="5%">&nbsp;</th>
   <th>Fecha</th>
+  <th>Cod.Médico</th>
   <th>Médico</th>
+  <th>Especialidad</th>
+  <th>Cod.Producto</th>
   <th>Material</th>
   <th>Cantidad</th>
 </tr>
@@ -89,7 +99,10 @@ $resp=mysqli_query($enlaceCon,$sql);
     <tr>
         <td><?=$index?></td>
         <td><?=$data['fecha']?></td>
+        <td><?=$data['cod_medico']?></td>
         <td><?=$data['medico']?></td>
+        <td><?=$data['especialidad']?></td>
+        <td><?=$data['codigo_material']?></td>
         <td><?=$data['descripcion_material']?></td>
         <td><?=number_format($data['cantidad_unitaria'],2,'.',',')?></td>
     </tr>
