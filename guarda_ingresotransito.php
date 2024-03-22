@@ -90,12 +90,12 @@ if($cod_Ingreso2>0){
 			if($cod_material!=0){
 				$cantidad=$_POST["cantidad_unitaria$i"];
 				$precioBruto=$_POST["precio$i"];
+
 				$lote="0";
 				$ubicacionEstante=0;
 				$ubicacionFila=0;
 
-				$fechaVencimiento=$_POST["fechaVenc$i"];
-				$fechaVencimiento=UltimoDiaMes($fechaVencimiento);
+				$fechaVencimiento=$_POST["fecha_vencimiento$i"];
 
 				$precioUnitario=0;
 				

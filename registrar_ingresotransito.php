@@ -21,7 +21,7 @@ if($banderaActPreciosTraspaso==1){
 	$txtActPrecios="*** Los precios NO seran actualizados en el Traspaso.";
 }
 
-$sql_datos_salidaorigen="select s.nro_correlativo, s.cod_tiposalida, a.nombre_almacen, a.cod_ciudad from salida_almacenes s, almacenes a
+$sql_datos_salidaorigen="select s.nro_correlativo, s.cod_tiposalida, a.nombre_almacen, a.cod_ciudad, a.cod_almacen from salida_almacenes s, almacenes a
 where a.cod_almacen=s.cod_almacen and s.cod_salida_almacenes='$codigo_registro'";
 $resp_datos_salidaorigen=mysqli_query($enlaceCon,$sql_datos_salidaorigen);
 $datos_salidaorigen=mysqli_fetch_array($resp_datos_salidaorigen);
@@ -29,6 +29,8 @@ $correlativo_salidaorigen=$datos_salidaorigen[0];
 $tipo_salidaorigen=$datos_salidaorigen[1];
 $nombre_almacen_origen=$datos_salidaorigen[2];
 $codSucursalOrigen=$datos_salidaorigen[3];
+$codAlmacenOrigen=$datos_salidaorigen[4];
+
 $observaciones="";
 
 
@@ -71,7 +73,13 @@ $cantidad_materiales=mysqli_num_rows($resp_detalle_salida);
 
 echo "<input type='hidden' name='codigo_salida' value='$codigo_registro'>";
 echo "<input type='hidden' name='cantidad_material' value='$cantidad_materiales'>";
-echo "<tr><th width='5%'>&nbsp;</th><th width='30%'>Material</th><th width='20%'>Cantidad de Origen</th><th width='20%'>Cantidad Recibida</th><th width='25%'>Obs</th></tr>";
+echo "<tr><th>&nbsp;</th>
+	<th>Material</th>
+	<th>Cantidad Origen</th>
+	<th>Fecha Vencimiento</th>
+	<th>Cantidad Recibida</th>
+	<th>Obs</th>
+	</tr>";
 
 $indice_detalle=1;
 
@@ -87,15 +95,31 @@ while($dat_detalle_salida=mysqli_fetch_array($resp_detalle_salida))
 	$cantidad_unitaria=redondear2($cantidad_unitaria);
 	
 	echo "<tr><td align='center'>$indice_detalle</td>";
-	$sql_materiales="select m.codigo_material, m.descripcion_material, p.nombre_proveedor, pl.nombre_linea_proveedor
+	$sql_materiales="select m.codigo_material, m.descripcion_material, p.nombre_proveedor, pl.nombre_linea_proveedor, id.fecha_vencimiento
 	from material_apoyo m
 	LEFT JOIN proveedores_lineas pl ON pl.cod_linea_proveedor=m.cod_linea_proveedor
 	LEFT JOIN proveedores p ON p.cod_proveedor=pl.cod_proveedor
+	LEFT JOIN salida_detalle_almacenes sd ON sd.cod_material=m.codigo_material
+  	LEFT JOIN ingreso_almacenes i ON sd.cod_ingreso_almacen=i.cod_ingreso_almacen
+ 	LEFT JOIN ingreso_detalle_almacenes id ON i.cod_ingreso_almacen=id.cod_ingreso_almacen and id.cod_material=sd.cod_material
 	where 
-	m.codigo_material='$cod_material' and m.codigo_material<>0 order by m.descripcion_material";
+	m.codigo_material='$cod_material' and sd.cod_salida_almacen='$codigo_registro' and m.codigo_material<>0 order by m.descripcion_material";
+
+	//echo $sql_materiales;
+
 	$resp_materiales=mysqli_query($enlaceCon,$sql_materiales);
 	$dat_materiales=mysqli_fetch_array($resp_materiales);
-	$nombre_material=$dat_materiales[1]." - ".$dat_materiales[2]." ".$dat_materiales[3];
+	$nombre_material="<b>".$dat_materiales[1]."</b> - <small>".$dat_materiales[2]." ".$dat_materiales[3]."</small>";
+	$fechaVencimientoIngreso=$dat_materiales[4];
+
+	if($fechaVencimientoIngreso=="1969-12-30"){
+        $fechaVencimiento=obtenerFechaVencimiento($enlaceCon, $codAlmacenOrigen, $cod_material);
+        $fecha_array = explode('/', $fechaVencimiento);
+        $month = $fecha_array[0];
+        $year = $fecha_array[1];
+        $ultimo_dia_mes = date("t", strtotime("$year-$month-01"));
+        $fechaVencimientoIngreso = $year."-".$month."-".$ultimo_dia_mes;
+  	}
 
 	/*************************************************/
 	/*** Verificar los Precios en origen y Destino ***/
@@ -127,6 +151,9 @@ while($dat_detalle_salida=mysqli_fetch_array($resp_detalle_salida))
 	echo "<input type='hidden' name='precio_unitario$indice_detalle' id='precio_unitario$indice_detalle' value='0'>";
 	
 	echo "<td align='center'>$cantidad_unitaria</td>";
+	
+	echo "<td align='center'><input type='date' name='fecha_vencimiento$indice_detalle' id='fecha_vencimiento$indice_detalle' value='$fechaVencimientoIngreso' required></td>";
+
 	echo "<td><input type='number' name='cantidad_unitaria$indice_detalle' step='0.1' value='$cantidad_unitaria' class='texto' required></td>";
 	echo "<td><span style='color:blue;'>Precio Origen: $precioSucursalOrigenF Precio Destino: $precioSucursalDestinoF</span><br>$txtObsPrecios</td>";
 	echo "</tr>";

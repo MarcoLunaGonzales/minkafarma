@@ -37,7 +37,7 @@ $consulta = "SELECT
             LEFT JOIN proveedores p ON p.cod_proveedor = ia.cod_proveedor
             LEFT JOIN material_apoyo m ON m.codigo_material = ida.cod_material
             WHERE ida.cod_material = '$rpt_item'
-            AND ia.cod_almacen = '$rpt_almacen' and ia.cod_tipoingreso in (999,1000,1002)
+            AND ia.cod_almacen = '$rpt_almacen' and ia.cod_tipoingreso in (999,1000,1002,1003)
             ORDER BY ia.fecha DESC";
 // echo $consulta;
 $resp = mysqli_query($enlaceCon, $consulta);

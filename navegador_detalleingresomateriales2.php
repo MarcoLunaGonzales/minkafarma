@@ -44,7 +44,7 @@
 	where i.cod_ingreso_almacen='$codigo' and m.codigo_material=i.cod_material";
 	$resp_detalle=mysqli_query($enlaceCon,$sql_detalle);
 	echo "<br><table border=0 class='texto' align='center'>";
-	echo "<tr><th>&nbsp;</th><th>Proveedor/Distribuidor</th><th>Material</th><th>Cantidad</th></tr>";
+	echo "<tr><th>&nbsp;</th><th>Proveedor/Distribuidor</th><th>Material</th><th>Fecha Vencimiento</th><th>Cantidad</th></tr>";
 	$indice=1;
 	while($dat_detalle=mysqli_fetch_array($resp_detalle))
 	{	$cod_material=$dat_detalle[0];
@@ -67,12 +67,16 @@
 		$nombre_material=$dat_nombre_material[0];
 		$nombreProveedor=$dat_nombre_material[1];
 
-		echo "<tr><td align='center'>$indice</td><td>$nombreProveedor</td><td>$nombre_material</td><td align='center'>$cantidad_unitaria</td></tr>";
+		echo "<tr><td align='center'>$indice</td>
+		<td>$nombreProveedor</td>
+		<td>$nombre_material</td>
+		<td align='center'>$fechaVenc</td>
+		<td align='center'>$cantidad_unitaria</td></tr>";
 		$indice++;
 	}
 	echo "</table>";
 	
-	echo "<center><a href='javascript:window.print();'><IMG border='no'
+	echo "<br><br><center><a href='javascript:window.print();'><IMG border='no'
 	 src='imagenes/print.jpg' width='40'></a></center>";
 	
 ?>

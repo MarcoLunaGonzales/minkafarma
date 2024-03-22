@@ -9,6 +9,10 @@ require("estilos_almacenes.inc");
 $global_almacen=$_COOKIE["global_almacen"];
 $codigo_registro=$_GET["codigo_registro"];
 		
+
+/*****************************/
+/*INICIO DEVOLUCION ALMACENES*/		
+/*****************************/
 $sql_detalle="select cod_salida_almacen, cod_material, cantidad_unitaria, lote, fecha_vencimiento, cod_ingreso_almacen
 			from salida_detalle_almacenes 
 			where cod_salida_almacen='$codigo_registro'";
@@ -52,6 +56,9 @@ while($dat_detalle=mysqli_fetch_array($resp_detalle))
 		}	
 	}
 }
+/*****************************/
+/*FIN DEVOLUCION ALMACENES*/		
+/*****************************/
 
 $sql="update salida_almacenes set salida_anulada=1, estado_salida=3 where cod_salida_almacenes='$codigo_registro'";
 $resp=mysqli_query($enlaceCon, $sql);

@@ -36,7 +36,7 @@ echo "<script language='Javascript'>
 	echo "<form method='post' action=''>";
 	$sql="select s.cod_salida_almacenes, s.cod_almacen, s.fecha, ts.nombre_tiposalida, a.nombre_almacen, s.observaciones, s.nro_correlativo 
 	FROM salida_almacenes s, tipos_salida ts, almacenes a 
-	where s.cod_tiposalida=ts.cod_tiposalida and s.almacen_destino='$global_almacen' and s.estado_salida=1 and a.cod_almacen=s.cod_almacen and s.salida_anulada <> 1";
+	where s.cod_tiposalida=ts.cod_tiposalida and s.almacen_destino='$global_almacen' and s.estado_salida=1 and a.cod_almacen=s.cod_almacen and s.salida_anulada <> 1 ORDER BY 1 desc";
 	//echo $sql;
 	$resp=mysqli_query($enlaceCon,$sql);
 	echo "<h1>Ingreso en Transito</h1>";
